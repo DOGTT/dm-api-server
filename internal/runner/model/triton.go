@@ -1,6 +1,6 @@
 package model
 
-import "github.com/dog-g/dog-api-server/internal/conf"
+import "github.com/DOGTT/dm-api-server/internal/conf"
 
 const (
 	ModelInferenceKindTriton = "triton"

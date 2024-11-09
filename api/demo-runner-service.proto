@@ -4,7 +4,7 @@ package dog_g.demo_runner_service;
 
 import "google/api/annotations.proto";
 
-option go_package="github.com/dog-g/dog-api-server/api;api";
+option go_package="github.com/DOGTT/dm-api-server/api;api";
 
 // 服务接口定义.
 // [EN] API of Service.

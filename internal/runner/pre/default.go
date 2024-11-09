@@ -1,8 +1,8 @@
 package pre
 
 import (
-	"github.com/dog-g/dog-api-server/internal/conf"
-	"github.com/dog-g/dog-api-server/internal/runner/model"
+	"github.com/DOGTT/dm-api-server/internal/conf"
+	"github.com/DOGTT/dm-api-server/internal/runner/model"
 )
 
 const (

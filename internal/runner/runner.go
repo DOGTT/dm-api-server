@@ -4,11 +4,11 @@ import (
 	"context"
 	"errors"
 
-	grpc_api "github.com/dog-g/dog-api-server/api/grpc"
-	"github.com/dog-g/dog-api-server/internal/conf"
-	"github.com/dog-g/dog-api-server/internal/runner/model"
-	"github.com/dog-g/dog-api-server/internal/runner/post"
-	"github.com/dog-g/dog-api-server/internal/runner/pre"
+	grpc_api "github.com/DOGTT/dm-api-server/api/grpc"
+	"github.com/DOGTT/dm-api-server/internal/conf"
+	"github.com/DOGTT/dm-api-server/internal/runner/model"
+	"github.com/DOGTT/dm-api-server/internal/runner/post"
+	"github.com/DOGTT/dm-api-server/internal/runner/pre"
 )
 
 func New(c *conf.RunnerConfig) (r *Runner, err error) {

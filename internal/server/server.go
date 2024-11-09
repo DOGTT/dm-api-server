@@ -8,9 +8,9 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/dog-g/dog-api-server/internal/conf"
-	"github.com/dog-g/dog-api-server/internal/runner"
-	"github.com/dog-g/dog-api-server/internal/service"
+	"github.com/DOGTT/dm-api-server/internal/conf"
+	"github.com/DOGTT/dm-api-server/internal/runner"
+	"github.com/DOGTT/dm-api-server/internal/service"
 	log "github.com/uptrace/opentelemetry-go-extra/otelzap"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"

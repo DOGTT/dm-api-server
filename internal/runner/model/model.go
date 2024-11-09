@@ -3,7 +3,7 @@ package model
 import (
 	"errors"
 
-	"github.com/dog-g/dog-api-server/internal/conf"
+	"github.com/DOGTT/dm-api-server/internal/conf"
 	log "github.com/uptrace/opentelemetry-go-extra/otelzap"
 	"go.uber.org/zap"
 )

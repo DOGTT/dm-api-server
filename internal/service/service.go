@@ -4,8 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	grpc_api "github.com/dog-g/dog-api-server/api/grpc"
-	"github.com/dog-g/dog-api-server/internal/runner"
+	grpc_api "github.com/DOGTT/dm-api-server/api/grpc"
+	"github.com/DOGTT/dm-api-server/internal/runner"
 	"github.com/gin-gonic/gin"
 	log "github.com/uptrace/opentelemetry-go-extra/otelzap"
 	"go.uber.org/zap"

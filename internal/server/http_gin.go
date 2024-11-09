@@ -7,12 +7,12 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/dog-g/dog-api-server/internal/conf"
-	"github.com/dog-g/dog-api-server/internal/service"
+	"github.com/DOGTT/dm-api-server/internal/conf"
+	"github.com/DOGTT/dm-api-server/internal/service"
 	"github.com/slok/go-http-metrics/middleware"
 	"go.uber.org/zap"
 
-	api "github.com/dog-g/dog-api-server/api/gin"
+	api "github.com/DOGTT/dm-api-server/api/gin"
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
 	metrics "github.com/slok/go-http-metrics/metrics/prometheus"

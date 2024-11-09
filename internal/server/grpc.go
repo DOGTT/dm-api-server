@@ -3,9 +3,9 @@ package server
 import (
 	"time"
 
-	api "github.com/dog-g/dog-api-server/api/grpc"
-	"github.com/dog-g/dog-api-server/internal/conf"
-	"github.com/dog-g/dog-api-server/internal/service"
+	api "github.com/DOGTT/dm-api-server/api/grpc"
+	"github.com/DOGTT/dm-api-server/internal/conf"
+	"github.com/DOGTT/dm-api-server/internal/service"
 	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
