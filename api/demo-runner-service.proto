@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package dog_g.demo_runner_service;
+
+import "google/api/annotations.proto";
+
+option go_package="github.com/dog-g/dog-api-server/api;api";
+
+// 服务接口定义.
+// [EN] API of Service.
+service DemoRunnerService {
+
+    // 给出提示后，模型将返回一个或多个预测完成，并且还可以返回每个位置的替代令牌的概率.
+    // [EN] Given a prompt, the model will return one or more predicted completions, and can also return the probabilities of alternative tokens at each position.
+    rpc TextCompletions(TextCompletionsReq) returns (TextCompletionsResp) {
+        option (google.api.http) = {
+            post: "/v1/completions"
+            body: "*"
+        };
+    }
+}
+
+
+// .
+// [EN] .
+message TextCompletionsReq {
+    // 模型名称.
+    // [EN] Model name.
+    string model = 1;
+    // .
+    // [EN] .
+    string prompt = 2;
+}
+
+// .
+// [EN] .
+message TextCompletionsResp {
+    string id = 1;
+    // 模型名称.
+    // [EN] Model name.
+    string model = 2;
+
+    repeated TextCompletionChoice choices = 3;
+}
+
+message TextCompletionChoice {
+    string text = 1;
+}
