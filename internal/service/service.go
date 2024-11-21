@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	grpc_api "github.com/DOGTT/dm-api-server/api/grpc"
-	"github.com/DOGTT/dm-api-server/internal/runner"
 	"github.com/gin-gonic/gin"
 	log "github.com/uptrace/opentelemetry-go-extra/otelzap"
 	"go.uber.org/zap"
@@ -13,13 +12,10 @@ import (
 
 type Service struct {
 	grpc_api.UnimplementedDemoRunnerServiceServer
-	r *runner.Runner
 }
 
 func NewService(runner *runner.Runner) *Service {
-	return &Service{
-		r: runner,
-	}
+	return &Service{}
 }
 
 func (s *Service) DemoRunnerServiceTextCompletions(c *gin.Context) {
@@ -45,5 +41,4 @@ func (s *Service) DemoRunnerServiceTextCompletions(c *gin.Context) {
 func (s *Service) TextCompletions(c context.Context, req *grpc_api.TextCompletionsReq) (res *grpc_api.TextCompletionsResp, err error) {
 	// Implement me
 	log.Ctx(c).Debug("grpc impl get req", zap.Any("req", req))
-	return s.r.Do(c, req)
-}
+	return nil

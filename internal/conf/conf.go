@@ -39,28 +39,6 @@ type MetricConfig struct {
 	Addr   string `default:":8002"`
 }
 
-type RunnerConfig struct {
-	ModelPipelines map[ModelName]*ModelPipeline `yaml:"model_pipelines"`
-}
-
-type ModelName string
-
-type ModelPipeline struct {
-	PreProcess     *PreProcess     `yaml:"pre_process"`
-	ModelInference *ModelInference `yaml:"model_inference"`
-	PostProcess    *PostProcess    `yaml:"post_process"`
-}
-
-type ModelInference struct {
-	Kind     string
-	GRPCSpec *GRPCSpec `yaml:"spec"`
-}
-
-type PreProcess struct {
-	Kind     string
-	GRPCSpec *GRPCSpec `yaml:"spec"`
-}
-
 type PostProcess struct {
 	Kind     string
 	GRPCSpec *GRPCSpec `yaml:"spec"`
