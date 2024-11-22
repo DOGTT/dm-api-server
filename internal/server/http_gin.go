@@ -20,6 +20,32 @@ import (
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 )
 
+// AuthMiddleware 鉴权中间件
+func AuthMiddleware(whitelist []string, svc *service.Service) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// 检查请求路径是否在白名单中
+		for _, path := range whitelist {
+			if c.Request.URL.Path == path {
+				c.Next() // 如果在白名单中，继续处理请求
+				return
+			}
+		}
+
+		// 从请求中获取 Authorization 标头
+		token := c.GetHeader("Authorization")
+
+		if err := svc.Auth(token); err != nil {
+			c.JSON(http.StatusUnauthorized,
+				gin.H{"error": "unauthorized", "msg": err.Error()})
+			c.Abort() // 中止请求
+			return
+		}
+
+		// 鉴权通过，继续处理请求
+		c.Next()
+	}
+}
+
 func NewGinHandler(c *conf.Server, svc *service.Service) http.Handler {
 	swagger, err := api.GetSwagger()
 	if err != nil {
@@ -31,6 +57,7 @@ func NewGinHandler(c *conf.Server, svc *service.Service) http.Handler {
 	swagger.Servers = nil
 	r := gin.Default()
 
+	r.Use(AuthMiddleware(c.HTTP.AuthWhitePathlist, svc))
 	r.Use(ginzap.Ginzap(zap.L(), time.RFC3339, true))
 	r.Use(ginzap.RecoveryWithZap(zap.L(), true))
 

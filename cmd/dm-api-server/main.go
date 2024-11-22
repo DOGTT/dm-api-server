@@ -1,16 +1,18 @@
 package main
 
 import (
-	"encoding/json"
+	"encoding/base64"
 	"flag"
 	"fmt"
 	"net/http"
 	"runtime"
 
 	"github.com/DOGTT/dm-api-server/internal/conf"
+	"github.com/DOGTT/dm-api-server/internal/data"
 	"github.com/DOGTT/dm-api-server/internal/metrics"
-	"github.com/DOGTT/dm-api-server/internal/runner"
 	"github.com/DOGTT/dm-api-server/internal/server"
+	"github.com/DOGTT/dm-api-server/internal/service"
+	"github.com/google/uuid"
 	"github.com/jinzhu/configor"
 	"github.com/uptrace/opentelemetry-go-extra/otelzap"
 	_ "go.uber.org/automaxprocs"
@@ -44,7 +46,9 @@ func init() {
 	flag.BoolVar(&printVersion, "version", false, "print version of this build, eg: -version")
 	metrics.Init()
 }
-
+func ShortenUUID(u uuid.UUID) string {
+	return base64.RawURLEncoding.EncodeToString(u[:])
+}
 func main() {
 	flag.Parse()
 	if printVersion {
@@ -60,19 +64,19 @@ func main() {
 	if err := configLoader.Load(&c, flagConfFile); err != nil {
 		panic(fmt.Sprintf("config:%v", err))
 	}
-	configValue, _ := json.Marshal(c.Runner)
-	fmt.Printf("Config: %s \n", string(configValue))
 	// set log
 	setLogger(c.Log)
 	// set metrics
 	go runMetricsServer(c.Metric)
-	// init runner
-	r, err := runner.New(c.Runner)
+	// init data
+	dc, err := data.New(c.Data)
 	if err != nil {
-		panic(fmt.Sprintf("runner new error:%v", err))
+		panic(fmt.Sprintf("data new error:%v", err))
 	}
+	// init service
+	svc := service.New(c.Service, dc)
 	// init server
-	srv, err := server.New(c.Server, r)
+	srv, err := server.New(c.Server, svc)
 	if err != nil {
 		panic(fmt.Sprintf("server new error:%v", err))
 	}

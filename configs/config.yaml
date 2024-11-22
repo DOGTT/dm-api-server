@@ -14,21 +14,8 @@ server:
 metric:
   enable: true
   addr: 0.0.0.0:8002
-runner:
-  model_pipelines:
-    code_gen:
-      model_inference:
-        kind: triton
-        spec:
-          grpc_endpoint: code_gen_triton:8083
-          timeout: 1s
-      pre_process:
-        kind: default
-        spec:
-          grpc_endpoint: gpt2_tokenizer:8084
-          timeout: 1s
-      post_process:
-        kind: default
-        spec:
-          grpc_endpoint: gpt2_tokenizer:8084
-          timeout: 1s
+
+service:
+
+data:
+  

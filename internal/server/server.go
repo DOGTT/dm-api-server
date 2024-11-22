@@ -9,7 +9,6 @@ import (
 	"syscall"
 
 	"github.com/DOGTT/dm-api-server/internal/conf"
-	"github.com/DOGTT/dm-api-server/internal/runner"
 	"github.com/DOGTT/dm-api-server/internal/service"
 	log "github.com/uptrace/opentelemetry-go-extra/otelzap"
 	"go.uber.org/zap"
@@ -25,10 +24,10 @@ type Server struct {
 }
 
 // New Server instance.
-func New(c *conf.Server, runner *runner.Runner) (*Server, error) {
+func New(c *conf.Server, svc *service.Service) (*Server, error) {
 	s := &Server{
 		c:   c,
-		svc: service.NewService(runner),
+		svc: svc,
 	}
 	if s.c.GRPC.Enable {
 		s.grpcServer = NewGRPCServer(c, s.svc)

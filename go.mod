@@ -8,7 +8,9 @@ require (
 	github.com/getkin/kin-openapi v0.114.0
 	github.com/gin-contrib/zap v0.1.0
 	github.com/gin-gonic/gin v1.9.0
+	github.com/google/uuid v1.6.0
 	github.com/jinzhu/configor v1.2.1
+	github.com/lib/pq v1.10.9
 	github.com/slok/go-http-metrics v0.10.0
 	github.com/uptrace/opentelemetry-go-extra/otelzap v0.1.21
 	go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin v0.40.0
@@ -18,6 +20,8 @@ require (
 	google.golang.org/genproto v0.0.0-20230306155012-7f2fa6fef1f4
 	google.golang.org/grpc v1.68.0
 	google.golang.org/protobuf v1.34.2
+	gorm.io/driver/postgres v1.5.10
+	gorm.io/gorm v1.25.12
 )
 
 require (
@@ -35,8 +39,6 @@ require (
 	github.com/prometheus/common v0.37.0 // indirect
 	github.com/prometheus/procfs v0.8.0 // indirect
 	golang.org/x/sync v0.8.0 // indirect
-	gorm.io/driver/postgres v1.5.10 // indirect
-	gorm.io/gorm v1.25.12 // indirect
 )
 
 require (

@@ -10,7 +10,9 @@ type Config struct {
 	Server *Server
 	Log    *zap.Config
 	Metric *MetricConfig
-	Runner *RunnerConfig
+
+	Service *ServiceConfig
+	Data    *DataConfig
 }
 
 type Server struct {
@@ -24,6 +26,8 @@ type HTTPServer struct {
 	Timeout      time.Duration `default:"1s"`
 	EnableMetric bool          `yaml:"enable_metric"`
 	EnableTrace  bool          `yaml:"enable_trace"`
+
+	AuthWhitePathlist []string `yaml:"auth_white_pathlist"`
 }
 
 type GRPCServer struct {

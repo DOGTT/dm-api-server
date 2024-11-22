@@ -17,3 +17,11 @@ func (config *PostgresConfig) ConnectionString() string {
 	return fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
 		config.Host, config.Port, config.User, config.Password, config.Dbname, config.SSLMode)
 }
+
+type RDSConfig struct {
+	*PostgresConfig
+}
+
+type DataConfig struct {
+	RDS *RDSConfig `yaml:"rds"`
+}
