@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package user;
+
+import "google/api/annotations.proto";
+
+option go_package="github.com/DOGTT/dm-api-server/api;api";
+
+
+
+message UserInfo {
+    string id = 1;
+    string nickname = 2;
+    string avatar_url = 3;
+}
