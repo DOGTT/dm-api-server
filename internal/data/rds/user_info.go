@@ -3,8 +3,6 @@ package rds
 
 import (
 	"time"
-
-	"github.com/lib/pq"
 )
 
 func init() {
@@ -15,9 +13,6 @@ func init() {
 type UserInfo struct {
 	ID        string `gorm:"type:varchar(22);primaryKey;"`
 	WeiChatID string `gorm:"type:varchar(32)"`
-	Name      string
-	PIDMain   string
-	PIDList   pq.StringArray
 
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`

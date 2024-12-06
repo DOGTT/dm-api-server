@@ -20,57 +20,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// CreateFootprintReq defines model for CreateFootprintReq.
-type CreateFootprintReq struct {
-	Latitude  *float64 `json:"latitude,omitempty"`
-	Longitude *float64 `json:"longitude,omitempty"`
-	Time      *string  `json:"time,omitempty"`
-	Token     *string  `json:"token,omitempty"`
-}
-
-// CreateFootprintResp defines model for CreateFootprintResp.
-type CreateFootprintResp = map[string]interface{}
-
-// DeleteFootprintReq defines model for DeleteFootprintReq.
-type DeleteFootprintReq struct {
-	Id    *string `json:"id,omitempty"`
-	Token *string `json:"token,omitempty"`
-}
-
-// DeleteFootprintResp defines model for DeleteFootprintResp.
-type DeleteFootprintResp = map[string]interface{}
-
-// Footprint defines model for Footprint.
-type Footprint struct {
-	Latitude  *float64 `json:"latitude,omitempty"`
-	Longitude *float64 `json:"longitude,omitempty"`
-	Time      *string  `json:"time,omitempty"`
-}
-
-// QueryFootprintByCoordinateReq defines model for QueryFootprintByCoordinateReq.
-type QueryFootprintByCoordinateReq struct {
-	Latitude  *float64 `json:"latitude,omitempty"`
-	Longitude *float64 `json:"longitude,omitempty"`
-	Token     *string  `json:"token,omitempty"`
-}
-
-// QueryFootprintByCoordinateResp defines model for QueryFootprintByCoordinateResp.
-type QueryFootprintByCoordinateResp struct {
-	Footprints *[]Footprint `json:"footprints,omitempty"`
-}
-
-// QueryFootprintByTimeReq defines model for QueryFootprintByTimeReq.
-type QueryFootprintByTimeReq struct {
-	EndTime   *string `json:"endTime,omitempty"`
-	StartTime *string `json:"startTime,omitempty"`
-	Token     *string `json:"token,omitempty"`
-}
-
-// QueryFootprintByTimeResp defines model for QueryFootprintByTimeResp.
-type QueryFootprintByTimeResp struct {
-	Footprints *[]Footprint `json:"footprints,omitempty"`
-}
-
 // RegisterWithLoginReq defines model for RegisterWithLoginReq.
 type RegisterWithLoginReq struct {
 	UserInfo *UserInfo `json:"userInfo,omitempty"`
@@ -83,17 +32,6 @@ type RegisterWithLoginResp struct {
 	Desc    *string              `json:"desc,omitempty"`
 	MsgCode *string              `json:"msgCode,omitempty"`
 }
-
-// UpdateFootprintReq defines model for UpdateFootprintReq.
-type UpdateFootprintReq struct {
-	Id        *string  `json:"id,omitempty"`
-	Latitude  *float64 `json:"latitude,omitempty"`
-	Longitude *float64 `json:"longitude,omitempty"`
-	Token     *string  `json:"token,omitempty"`
-}
-
-// UpdateFootprintResp defines model for UpdateFootprintResp.
-type UpdateFootprintResp = map[string]interface{}
 
 // UserInfo defines model for UserInfo.
 type UserInfo struct {
@@ -126,21 +64,6 @@ type BaseServiceWeChatLoginJSONRequestBody = WeChatLoginReq
 
 // BaseServiceWeChatRegisterWithLoginJSONRequestBody defines body for BaseServiceWeChatRegisterWithLogin for application/json ContentType.
 type BaseServiceWeChatRegisterWithLoginJSONRequestBody = RegisterWithLoginReq
-
-// BaseServiceCreateFootprintJSONRequestBody defines body for BaseServiceCreateFootprint for application/json ContentType.
-type BaseServiceCreateFootprintJSONRequestBody = CreateFootprintReq
-
-// BaseServiceDeleteFootprintJSONRequestBody defines body for BaseServiceDeleteFootprint for application/json ContentType.
-type BaseServiceDeleteFootprintJSONRequestBody = DeleteFootprintReq
-
-// BaseServiceQueryFootprintByCoordinateJSONRequestBody defines body for BaseServiceQueryFootprintByCoordinate for application/json ContentType.
-type BaseServiceQueryFootprintByCoordinateJSONRequestBody = QueryFootprintByCoordinateReq
-
-// BaseServiceQueryFootprintByTimeJSONRequestBody defines body for BaseServiceQueryFootprintByTime for application/json ContentType.
-type BaseServiceQueryFootprintByTimeJSONRequestBody = QueryFootprintByTimeReq
-
-// BaseServiceUpdateFootprintJSONRequestBody defines body for BaseServiceUpdateFootprint for application/json ContentType.
-type BaseServiceUpdateFootprintJSONRequestBody = UpdateFootprintReq
 
 // RequestEditorFn  is the function signature for the RequestEditor callback function
 type RequestEditorFn func(ctx context.Context, req *http.Request) error
@@ -224,31 +147,6 @@ type ClientInterface interface {
 	BaseServiceWeChatRegisterWithLoginWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	BaseServiceWeChatRegisterWithLogin(ctx context.Context, body BaseServiceWeChatRegisterWithLoginJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// BaseServiceCreateFootprintWithBody request with any body
-	BaseServiceCreateFootprintWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	BaseServiceCreateFootprint(ctx context.Context, body BaseServiceCreateFootprintJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// BaseServiceDeleteFootprintWithBody request with any body
-	BaseServiceDeleteFootprintWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	BaseServiceDeleteFootprint(ctx context.Context, body BaseServiceDeleteFootprintJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// BaseServiceQueryFootprintByCoordinateWithBody request with any body
-	BaseServiceQueryFootprintByCoordinateWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	BaseServiceQueryFootprintByCoordinate(ctx context.Context, body BaseServiceQueryFootprintByCoordinateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// BaseServiceQueryFootprintByTimeWithBody request with any body
-	BaseServiceQueryFootprintByTimeWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	BaseServiceQueryFootprintByTime(ctx context.Context, body BaseServiceQueryFootprintByTimeJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// BaseServiceUpdateFootprintWithBody request with any body
-	BaseServiceUpdateFootprintWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	BaseServiceUpdateFootprint(ctx context.Context, body BaseServiceUpdateFootprintJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
 func (c *Client) BaseServiceWeChatLoginWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -289,126 +187,6 @@ func (c *Client) BaseServiceWeChatRegisterWithLoginWithBody(ctx context.Context,
 
 func (c *Client) BaseServiceWeChatRegisterWithLogin(ctx context.Context, body BaseServiceWeChatRegisterWithLoginJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewBaseServiceWeChatRegisterWithLoginRequest(c.Server, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) BaseServiceCreateFootprintWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServiceCreateFootprintRequestWithBody(c.Server, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) BaseServiceCreateFootprint(ctx context.Context, body BaseServiceCreateFootprintJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServiceCreateFootprintRequest(c.Server, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) BaseServiceDeleteFootprintWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServiceDeleteFootprintRequestWithBody(c.Server, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) BaseServiceDeleteFootprint(ctx context.Context, body BaseServiceDeleteFootprintJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServiceDeleteFootprintRequest(c.Server, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) BaseServiceQueryFootprintByCoordinateWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServiceQueryFootprintByCoordinateRequestWithBody(c.Server, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) BaseServiceQueryFootprintByCoordinate(ctx context.Context, body BaseServiceQueryFootprintByCoordinateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServiceQueryFootprintByCoordinateRequest(c.Server, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) BaseServiceQueryFootprintByTimeWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServiceQueryFootprintByTimeRequestWithBody(c.Server, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) BaseServiceQueryFootprintByTime(ctx context.Context, body BaseServiceQueryFootprintByTimeJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServiceQueryFootprintByTimeRequest(c.Server, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) BaseServiceUpdateFootprintWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServiceUpdateFootprintRequestWithBody(c.Server, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) BaseServiceUpdateFootprint(ctx context.Context, body BaseServiceUpdateFootprintJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServiceUpdateFootprintRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -499,206 +277,6 @@ func NewBaseServiceWeChatRegisterWithLoginRequestWithBody(server string, content
 	return req, nil
 }
 
-// NewBaseServiceCreateFootprintRequest calls the generic BaseServiceCreateFootprint builder with application/json body
-func NewBaseServiceCreateFootprintRequest(server string, body BaseServiceCreateFootprintJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewBaseServiceCreateFootprintRequestWithBody(server, "application/json", bodyReader)
-}
-
-// NewBaseServiceCreateFootprintRequestWithBody generates requests for BaseServiceCreateFootprint with any type of body
-func NewBaseServiceCreateFootprintRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/v1/popf/create")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
-// NewBaseServiceDeleteFootprintRequest calls the generic BaseServiceDeleteFootprint builder with application/json body
-func NewBaseServiceDeleteFootprintRequest(server string, body BaseServiceDeleteFootprintJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewBaseServiceDeleteFootprintRequestWithBody(server, "application/json", bodyReader)
-}
-
-// NewBaseServiceDeleteFootprintRequestWithBody generates requests for BaseServiceDeleteFootprint with any type of body
-func NewBaseServiceDeleteFootprintRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/v1/popf/delete")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("DELETE", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
-// NewBaseServiceQueryFootprintByCoordinateRequest calls the generic BaseServiceQueryFootprintByCoordinate builder with application/json body
-func NewBaseServiceQueryFootprintByCoordinateRequest(server string, body BaseServiceQueryFootprintByCoordinateJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewBaseServiceQueryFootprintByCoordinateRequestWithBody(server, "application/json", bodyReader)
-}
-
-// NewBaseServiceQueryFootprintByCoordinateRequestWithBody generates requests for BaseServiceQueryFootprintByCoordinate with any type of body
-func NewBaseServiceQueryFootprintByCoordinateRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/v1/popf/query_by_coordinate")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
-// NewBaseServiceQueryFootprintByTimeRequest calls the generic BaseServiceQueryFootprintByTime builder with application/json body
-func NewBaseServiceQueryFootprintByTimeRequest(server string, body BaseServiceQueryFootprintByTimeJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewBaseServiceQueryFootprintByTimeRequestWithBody(server, "application/json", bodyReader)
-}
-
-// NewBaseServiceQueryFootprintByTimeRequestWithBody generates requests for BaseServiceQueryFootprintByTime with any type of body
-func NewBaseServiceQueryFootprintByTimeRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/v1/popf/query_by_time")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
-// NewBaseServiceUpdateFootprintRequest calls the generic BaseServiceUpdateFootprint builder with application/json body
-func NewBaseServiceUpdateFootprintRequest(server string, body BaseServiceUpdateFootprintJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewBaseServiceUpdateFootprintRequestWithBody(server, "application/json", bodyReader)
-}
-
-// NewBaseServiceUpdateFootprintRequestWithBody generates requests for BaseServiceUpdateFootprint with any type of body
-func NewBaseServiceUpdateFootprintRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/v1/popf/update")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("PUT", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
 func (c *Client) applyEditors(ctx context.Context, req *http.Request, additionalEditors []RequestEditorFn) error {
 	for _, r := range c.RequestEditors {
 		if err := r(ctx, req); err != nil {
@@ -751,31 +329,6 @@ type ClientWithResponsesInterface interface {
 	BaseServiceWeChatRegisterWithLoginWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceWeChatRegisterWithLoginResponse, error)
 
 	BaseServiceWeChatRegisterWithLoginWithResponse(ctx context.Context, body BaseServiceWeChatRegisterWithLoginJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceWeChatRegisterWithLoginResponse, error)
-
-	// BaseServiceCreateFootprintWithBodyWithResponse request with any body
-	BaseServiceCreateFootprintWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceCreateFootprintResponse, error)
-
-	BaseServiceCreateFootprintWithResponse(ctx context.Context, body BaseServiceCreateFootprintJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceCreateFootprintResponse, error)
-
-	// BaseServiceDeleteFootprintWithBodyWithResponse request with any body
-	BaseServiceDeleteFootprintWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceDeleteFootprintResponse, error)
-
-	BaseServiceDeleteFootprintWithResponse(ctx context.Context, body BaseServiceDeleteFootprintJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceDeleteFootprintResponse, error)
-
-	// BaseServiceQueryFootprintByCoordinateWithBodyWithResponse request with any body
-	BaseServiceQueryFootprintByCoordinateWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceQueryFootprintByCoordinateResponse, error)
-
-	BaseServiceQueryFootprintByCoordinateWithResponse(ctx context.Context, body BaseServiceQueryFootprintByCoordinateJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceQueryFootprintByCoordinateResponse, error)
-
-	// BaseServiceQueryFootprintByTimeWithBodyWithResponse request with any body
-	BaseServiceQueryFootprintByTimeWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceQueryFootprintByTimeResponse, error)
-
-	BaseServiceQueryFootprintByTimeWithResponse(ctx context.Context, body BaseServiceQueryFootprintByTimeJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceQueryFootprintByTimeResponse, error)
-
-	// BaseServiceUpdateFootprintWithBodyWithResponse request with any body
-	BaseServiceUpdateFootprintWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceUpdateFootprintResponse, error)
-
-	BaseServiceUpdateFootprintWithResponse(ctx context.Context, body BaseServiceUpdateFootprintJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceUpdateFootprintResponse, error)
 }
 
 type BaseServiceWeChatLoginResponse struct {
@@ -822,116 +375,6 @@ func (r BaseServiceWeChatRegisterWithLoginResponse) StatusCode() int {
 	return 0
 }
 
-type BaseServiceCreateFootprintResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *CreateFootprintResp
-}
-
-// Status returns HTTPResponse.Status
-func (r BaseServiceCreateFootprintResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r BaseServiceCreateFootprintResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type BaseServiceDeleteFootprintResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *DeleteFootprintResp
-}
-
-// Status returns HTTPResponse.Status
-func (r BaseServiceDeleteFootprintResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r BaseServiceDeleteFootprintResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type BaseServiceQueryFootprintByCoordinateResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *QueryFootprintByCoordinateResp
-}
-
-// Status returns HTTPResponse.Status
-func (r BaseServiceQueryFootprintByCoordinateResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r BaseServiceQueryFootprintByCoordinateResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type BaseServiceQueryFootprintByTimeResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *QueryFootprintByTimeResp
-}
-
-// Status returns HTTPResponse.Status
-func (r BaseServiceQueryFootprintByTimeResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r BaseServiceQueryFootprintByTimeResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type BaseServiceUpdateFootprintResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *UpdateFootprintResp
-}
-
-// Status returns HTTPResponse.Status
-func (r BaseServiceUpdateFootprintResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r BaseServiceUpdateFootprintResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
 // BaseServiceWeChatLoginWithBodyWithResponse request with arbitrary body returning *BaseServiceWeChatLoginResponse
 func (c *ClientWithResponses) BaseServiceWeChatLoginWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceWeChatLoginResponse, error) {
 	rsp, err := c.BaseServiceWeChatLoginWithBody(ctx, contentType, body, reqEditors...)
@@ -964,91 +407,6 @@ func (c *ClientWithResponses) BaseServiceWeChatRegisterWithLoginWithResponse(ctx
 		return nil, err
 	}
 	return ParseBaseServiceWeChatRegisterWithLoginResponse(rsp)
-}
-
-// BaseServiceCreateFootprintWithBodyWithResponse request with arbitrary body returning *BaseServiceCreateFootprintResponse
-func (c *ClientWithResponses) BaseServiceCreateFootprintWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceCreateFootprintResponse, error) {
-	rsp, err := c.BaseServiceCreateFootprintWithBody(ctx, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseBaseServiceCreateFootprintResponse(rsp)
-}
-
-func (c *ClientWithResponses) BaseServiceCreateFootprintWithResponse(ctx context.Context, body BaseServiceCreateFootprintJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceCreateFootprintResponse, error) {
-	rsp, err := c.BaseServiceCreateFootprint(ctx, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseBaseServiceCreateFootprintResponse(rsp)
-}
-
-// BaseServiceDeleteFootprintWithBodyWithResponse request with arbitrary body returning *BaseServiceDeleteFootprintResponse
-func (c *ClientWithResponses) BaseServiceDeleteFootprintWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceDeleteFootprintResponse, error) {
-	rsp, err := c.BaseServiceDeleteFootprintWithBody(ctx, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseBaseServiceDeleteFootprintResponse(rsp)
-}
-
-func (c *ClientWithResponses) BaseServiceDeleteFootprintWithResponse(ctx context.Context, body BaseServiceDeleteFootprintJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceDeleteFootprintResponse, error) {
-	rsp, err := c.BaseServiceDeleteFootprint(ctx, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseBaseServiceDeleteFootprintResponse(rsp)
-}
-
-// BaseServiceQueryFootprintByCoordinateWithBodyWithResponse request with arbitrary body returning *BaseServiceQueryFootprintByCoordinateResponse
-func (c *ClientWithResponses) BaseServiceQueryFootprintByCoordinateWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceQueryFootprintByCoordinateResponse, error) {
-	rsp, err := c.BaseServiceQueryFootprintByCoordinateWithBody(ctx, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseBaseServiceQueryFootprintByCoordinateResponse(rsp)
-}
-
-func (c *ClientWithResponses) BaseServiceQueryFootprintByCoordinateWithResponse(ctx context.Context, body BaseServiceQueryFootprintByCoordinateJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceQueryFootprintByCoordinateResponse, error) {
-	rsp, err := c.BaseServiceQueryFootprintByCoordinate(ctx, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseBaseServiceQueryFootprintByCoordinateResponse(rsp)
-}
-
-// BaseServiceQueryFootprintByTimeWithBodyWithResponse request with arbitrary body returning *BaseServiceQueryFootprintByTimeResponse
-func (c *ClientWithResponses) BaseServiceQueryFootprintByTimeWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceQueryFootprintByTimeResponse, error) {
-	rsp, err := c.BaseServiceQueryFootprintByTimeWithBody(ctx, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseBaseServiceQueryFootprintByTimeResponse(rsp)
-}
-
-func (c *ClientWithResponses) BaseServiceQueryFootprintByTimeWithResponse(ctx context.Context, body BaseServiceQueryFootprintByTimeJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceQueryFootprintByTimeResponse, error) {
-	rsp, err := c.BaseServiceQueryFootprintByTime(ctx, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseBaseServiceQueryFootprintByTimeResponse(rsp)
-}
-
-// BaseServiceUpdateFootprintWithBodyWithResponse request with arbitrary body returning *BaseServiceUpdateFootprintResponse
-func (c *ClientWithResponses) BaseServiceUpdateFootprintWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceUpdateFootprintResponse, error) {
-	rsp, err := c.BaseServiceUpdateFootprintWithBody(ctx, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseBaseServiceUpdateFootprintResponse(rsp)
-}
-
-func (c *ClientWithResponses) BaseServiceUpdateFootprintWithResponse(ctx context.Context, body BaseServiceUpdateFootprintJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceUpdateFootprintResponse, error) {
-	rsp, err := c.BaseServiceUpdateFootprint(ctx, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseBaseServiceUpdateFootprintResponse(rsp)
 }
 
 // ParseBaseServiceWeChatLoginResponse parses an HTTP response from a BaseServiceWeChatLoginWithResponse call
@@ -1103,136 +461,6 @@ func ParseBaseServiceWeChatRegisterWithLoginResponse(rsp *http.Response) (*BaseS
 	return response, nil
 }
 
-// ParseBaseServiceCreateFootprintResponse parses an HTTP response from a BaseServiceCreateFootprintWithResponse call
-func ParseBaseServiceCreateFootprintResponse(rsp *http.Response) (*BaseServiceCreateFootprintResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &BaseServiceCreateFootprintResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest CreateFootprintResp
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseBaseServiceDeleteFootprintResponse parses an HTTP response from a BaseServiceDeleteFootprintWithResponse call
-func ParseBaseServiceDeleteFootprintResponse(rsp *http.Response) (*BaseServiceDeleteFootprintResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &BaseServiceDeleteFootprintResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest DeleteFootprintResp
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseBaseServiceQueryFootprintByCoordinateResponse parses an HTTP response from a BaseServiceQueryFootprintByCoordinateWithResponse call
-func ParseBaseServiceQueryFootprintByCoordinateResponse(rsp *http.Response) (*BaseServiceQueryFootprintByCoordinateResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &BaseServiceQueryFootprintByCoordinateResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest QueryFootprintByCoordinateResp
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseBaseServiceQueryFootprintByTimeResponse parses an HTTP response from a BaseServiceQueryFootprintByTimeWithResponse call
-func ParseBaseServiceQueryFootprintByTimeResponse(rsp *http.Response) (*BaseServiceQueryFootprintByTimeResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &BaseServiceQueryFootprintByTimeResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest QueryFootprintByTimeResp
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseBaseServiceUpdateFootprintResponse parses an HTTP response from a BaseServiceUpdateFootprintWithResponse call
-func ParseBaseServiceUpdateFootprintResponse(rsp *http.Response) (*BaseServiceUpdateFootprintResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &BaseServiceUpdateFootprintResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest UpdateFootprintResp
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	}
-
-	return response, nil
-}
-
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
 
@@ -1241,21 +469,6 @@ type ServerInterface interface {
 
 	// (POST /v1/auth/wxlogin_with_register)
 	BaseServiceWeChatRegisterWithLogin(c *gin.Context)
-
-	// (POST /v1/popf/create)
-	BaseServiceCreateFootprint(c *gin.Context)
-
-	// (DELETE /v1/popf/delete)
-	BaseServiceDeleteFootprint(c *gin.Context)
-
-	// (POST /v1/popf/query_by_coordinate)
-	BaseServiceQueryFootprintByCoordinate(c *gin.Context)
-
-	// (POST /v1/popf/query_by_time)
-	BaseServiceQueryFootprintByTime(c *gin.Context)
-
-	// (PUT /v1/popf/update)
-	BaseServiceUpdateFootprint(c *gin.Context)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -1293,71 +506,6 @@ func (siw *ServerInterfaceWrapper) BaseServiceWeChatRegisterWithLogin(c *gin.Con
 	siw.Handler.BaseServiceWeChatRegisterWithLogin(c)
 }
 
-// BaseServiceCreateFootprint operation middleware
-func (siw *ServerInterfaceWrapper) BaseServiceCreateFootprint(c *gin.Context) {
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.BaseServiceCreateFootprint(c)
-}
-
-// BaseServiceDeleteFootprint operation middleware
-func (siw *ServerInterfaceWrapper) BaseServiceDeleteFootprint(c *gin.Context) {
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.BaseServiceDeleteFootprint(c)
-}
-
-// BaseServiceQueryFootprintByCoordinate operation middleware
-func (siw *ServerInterfaceWrapper) BaseServiceQueryFootprintByCoordinate(c *gin.Context) {
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.BaseServiceQueryFootprintByCoordinate(c)
-}
-
-// BaseServiceQueryFootprintByTime operation middleware
-func (siw *ServerInterfaceWrapper) BaseServiceQueryFootprintByTime(c *gin.Context) {
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.BaseServiceQueryFootprintByTime(c)
-}
-
-// BaseServiceUpdateFootprint operation middleware
-func (siw *ServerInterfaceWrapper) BaseServiceUpdateFootprint(c *gin.Context) {
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.BaseServiceUpdateFootprint(c)
-}
-
 // GinServerOptions provides options for the Gin server.
 type GinServerOptions struct {
 	BaseURL      string
@@ -1387,32 +535,21 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 
 	router.POST(options.BaseURL+"/v1/auth/wxlogin", wrapper.BaseServiceWeChatLogin)
 	router.POST(options.BaseURL+"/v1/auth/wxlogin_with_register", wrapper.BaseServiceWeChatRegisterWithLogin)
-	router.POST(options.BaseURL+"/v1/popf/create", wrapper.BaseServiceCreateFootprint)
-	router.DELETE(options.BaseURL+"/v1/popf/delete", wrapper.BaseServiceDeleteFootprint)
-	router.POST(options.BaseURL+"/v1/popf/query_by_coordinate", wrapper.BaseServiceQueryFootprintByCoordinate)
-	router.POST(options.BaseURL+"/v1/popf/query_by_time", wrapper.BaseServiceQueryFootprintByTime)
-	router.PUT(options.BaseURL+"/v1/popf/update", wrapper.BaseServiceUpdateFootprint)
 }
 
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"H4sIAAAAAAAC/8yXW28bRRTHv0o08LjyuvRt30gKUgTiUhL1oUTWePfYnnZ3Zjwz69SKLKE+cIfwAEhN",
-	"QbRApTy1RUVAWkG/TNZ2vwWaWd/WHl82jp28WKud4zn/c35ndvd/gHwWcUaBKom8AyT9GkTYXG4JwAre",
-	"ZkxxQai6DnV9lwvGQSgCJibEiqg4AH1dYSLCCnkoYHE5BOQg1eSAPETjqAwCtRwUMlrNE69IZEJ7C1IJ",
-	"Qqtmgd0GallpDTZh5VvgKx07UYfkI/8cxl2DEObVS4Kl5UykmSJnEHFZum4r5sMYRHOgdLO5xZgICMUK",
-	"LmRccmCYpTwlkpVe6Yemc6AgMhevC6ggD73mDo+R2ztD7pDgUAAWAjcXU7RDInsXgQY70w6GVFionfM4",
-	"NnY5F9Oa61AlUoG4QVTtXVYl1NqXWILYphU2L/luP67loP07WyxYdNotMmz9CLDC8zTcgK0aVoNNrum/",
-	"tBwUgPSt5CJZzSF0lwf4jI+yS3REJ6qY8qTcHeGerRE3sMJiV4TWUqd0gBL/NsULPwIzJE2fNURBuCKM",
-	"Ig917r1I/v2h++Tv9h93kTMmMNf4jc3MZRw82+4TMhkHmvNF6pzhcE/q07dIb48spFefHHW+Pz795yj5",
-	"8mH7p2/077ePksPfksdHpydfFD6mGzffem9v480PtjdYZeMjEA3iQ0EPOFGhTrGJJfRu6yjkoAYImW5e",
-	"LBQLV3QNunDMCfLQ1UKxcFVPA1Y10xO3ccXFsaq5+3dC3T3TNSbVpNTkv8enLx8mTw87x18lzw/T8UrV",
-	"IpNCYB25HWRVjZBBDhJQj0GqTRY0dQafUQXplwbmPCS+2cK9JRkdfhTmmqx62m2dhwgIkKdEDOaG5IzK",
-	"dBDeKBZXk13yNH22c++/kw4Frkrk3RxtDtrTC+MMSvtE1Uqi99DPS+TZcfLp16NTNJ/OxPtlRaSsr9M1",
-	"87K/S89IjTNecX3znT8D0+f3kxfPu38967486dw9mYVjzDKsCIPFYK0Zgs0aLYMgMN4mbf3wKgvhwat7",
-	"vy8EYcworQiCxfWtGYLNEC4Doa4/3EvlZskfWJoZh+Ln79oPPmv/8qj75NeFqEz3TSsCNNtirpnVHNd4",
-	"Ltj69tsObAlUxhauB1Lfu14wnoFnXQZMbGyIIRLbgNz/s/3j04WAjBmaFbGwmL81Y7AZt9wEhisHKLVj",
-	"mYjWXuv/AAAA//9bOHztvBQAAA==",
+	"H4sIAAAAAAAC/8xVT2/TThD9KtH8fkfLTunNN1o4VCBARVUPJaoWexJvm+xudidJq8gS4oDE31zgQMSl",
+	"Qkg5FRAH/gn4MnED3wKtnZI4MSo+FHGxrNnZeW/eG832IZAtJQUKMuD3wQQRtlj6u4kNbgj1Nqfoqmxw",
+	"sYltG1daKtTEMc3qGNQboi7t//8a6+DDf96spjct6G2d5sUO9A7WZYj2Bh0qBB8MaS4aEMfOaUTe3sOA",
+	"bHIBDaOWeYSM2FkctnE9YvSryCV7JXYgRBMUkHGgZRoliG7NKZHnxrqMmN7SzUIUHhaGBQ/2BWv9KXqu",
+	"t9Qn25bmirgU4MPk+efky7Pvr9+fvL0LzgLBUoYsqPgvWlFUfYmmVCh+oz3JfRSFJ+XHfZmfDfFpjbxJ",
+	"P+4MJ09H4w/D5MHRyYvH9vvkVTJ4mRwPxx/vu7dEZefytVrl4o2NiqxXbqLu8gBdcIA4NS3EGjM4Ddss",
+	"cKCL2mTFq27VXbE92MaZ4uDDqlt1V+00MIpSTbzuisc6FHm9g6ZVL1VNGlqmmnw9Hn87St4MJqOHyadB",
+	"Nl4ZW0ghNLOZG2Ge1Zwz4IDGdgcNrcnw0CIEUhCKFIwp1eRBWsLbM1LMdlOpyWpnalscrjEEn3QH04BR",
+	"UphsEC5Uq+eDblQGn1fu+pVsKFjDgL8zLw7U7MGiB7s9TtGunq7Bso68GyX3Hs1P0dnuLG3cc3Kq8IH5",
+	"y34Vvy6lXZud9CFb2rmMuBb/DAAA//8xs+7NaQcAAA==",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

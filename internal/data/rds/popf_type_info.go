@@ -11,7 +11,7 @@ func init() {
 
 // 足迹点类型信息
 type POFPTypeInfo struct {
-	ID   string `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
+	ID   string `gorm:"type:varchar(12);primaryKey;"`
 	Name string `gorm:"type:varchar(12)"`
 
 	CreatedAt time.Time `gorm:"autoCreateTime"`

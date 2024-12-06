@@ -43,11 +43,6 @@ type MetricConfig struct {
 	Addr   string `default:":8002"`
 }
 
-type PostProcess struct {
-	Kind     string
-	GRPCSpec *GRPCSpec `yaml:"spec"`
-}
-
 type GRPCSpec struct {
 	GRPCEndpoint string        `yaml:"grpc_endpoint"`
 	Timeout      time.Duration `default:"1s"`

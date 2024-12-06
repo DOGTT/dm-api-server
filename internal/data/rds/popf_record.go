@@ -13,7 +13,7 @@ func init() {
 
 // 足迹点互动记录
 type POFPRecord struct {
-	ID        uuid.UUID      `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
+	ID        uuid.UUID      `gorm:"type:uuid;primaryKey;"`
 	PID       string         `gorm:"type:varchar(32)"`
 	PhotoList pq.StringArray `gorm:"type:text[]"` // 使用 PostgreSQL 的数组类型
 	Title     string         `gorm:"size:255;not null"`

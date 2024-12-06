@@ -65,10 +65,10 @@ func generateUniqueID() string {
 }
 
 func main() {
-	uid := uuid.New()
-	fmt.Println(uid.String())
-	fmt.Println(generateUniqueID())
-	fmt.Println(ShortenUUID(uid))
+	// uid := uuid.New()
+	// fmt.Println(uid.String())
+	// fmt.Println(generateUniqueID())
+	// fmt.Println(ShortenUUID(uid))
 
 	flag.Parse()
 	if printVersion {
@@ -78,8 +78,8 @@ func main() {
 	// load config
 	c := conf.Config{}
 	configLoader := configor.New(&configor.Config{
-		Verbose: true,
-		Debug:   false,
+		Verbose: false,
+		Debug:   true,
 	})
 	if err := configLoader.Load(&c, flagConfFile); err != nil {
 		panic(fmt.Sprintf("config:%v", err))

@@ -29,45 +29,45 @@ service BaseService {
         };
     }
 
-    // 坐标查询足迹点
-    rpc QueryFootprintByCoordinate(QueryFootprintByCoordinateReq) returns (QueryFootprintByCoordinateResp) {
-        option (google.api.http) = {
-            post: "/v1/popf/query_by_coordinate"
-            body: "*"
-        };
-    }
+    // // 坐标查询足迹点
+    // rpc QueryFootprintByCoordinate(QueryFootprintByCoordinateReq) returns (QueryFootprintByCoordinateResp) {
+    //     option (google.api.http) = {
+    //         post: "/v1/popf/query_by_coordinate"
+    //         body: "*"
+    //     };
+    // }
 
-    // 查询足迹点
-    rpc QueryFootprintByTime(QueryFootprintByTimeReq) returns (QueryFootprintByTimeResp) {
-        option (google.api.http) = {
-            post: "/v1/popf/query_by_time"
-            body: "*"
-        };
-    }
+    // // 查询足迹点
+    // rpc QueryFootprintByTime(QueryFootprintByTimeReq) returns (QueryFootprintByTimeResp) {
+    //     option (google.api.http) = {
+    //         post: "/v1/popf/query_by_time"
+    //         body: "*"
+    //     };
+    // }
 
-    // 创建足迹点
-    rpc CreateFootprint(CreateFootprintReq) returns (CreateFootprintResp) {
-        option (google.api.http) = {
-            post: "/v1/popf/create"
-            body: "*"
-        };
-    }
+    // // 创建足迹点
+    // rpc CreateFootprint(CreateFootprintReq) returns (CreateFootprintResp) {
+    //     option (google.api.http) = {
+    //         post: "/v1/popf/create"
+    //         body: "*"
+    //     };
+    // }
 
-    // 删除足迹点
-    rpc DeleteFootprint(DeleteFootprintReq) returns (DeleteFootprintResp) {
-        option (google.api.http) = {
-            delete: "/v1/popf/delete"
-            body: "*"
-        };
-    }
+    // // 删除足迹点
+    // rpc DeleteFootprint(DeleteFootprintReq) returns (DeleteFootprintResp) {
+    //     option (google.api.http) = {
+    //         delete: "/v1/popf/delete"
+    //         body: "*"
+    //     };
+    // }
 
-    // 更新足迹点
-    rpc UpdateFootprint(UpdateFootprintReq) returns (UpdateFootprintResp) {
-        option (google.api.http) = {
-            put: "/v1/popf/update"
-            body: "*"
-        };
-    }
+    // // 更新足迹点
+    // rpc UpdateFootprint(UpdateFootprintReq) returns (UpdateFootprintResp) {
+    //     option (google.api.http) = {
+    //         put: "/v1/popf/update"
+    //         body: "*"
+    //     };
+    // }
 }
 
 message UpdateFootprintReq {

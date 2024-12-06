@@ -19,13 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	BaseService_WeChatLogin_FullMethodName                = "/base_service.BaseService/WeChatLogin"
-	BaseService_WeChatRegisterWithLogin_FullMethodName    = "/base_service.BaseService/WeChatRegisterWithLogin"
-	BaseService_QueryFootprintByCoordinate_FullMethodName = "/base_service.BaseService/QueryFootprintByCoordinate"
-	BaseService_QueryFootprintByTime_FullMethodName       = "/base_service.BaseService/QueryFootprintByTime"
-	BaseService_CreateFootprint_FullMethodName            = "/base_service.BaseService/CreateFootprint"
-	BaseService_DeleteFootprint_FullMethodName            = "/base_service.BaseService/DeleteFootprint"
-	BaseService_UpdateFootprint_FullMethodName            = "/base_service.BaseService/UpdateFootprint"
+	BaseService_WeChatLogin_FullMethodName             = "/base_service.BaseService/WeChatLogin"
+	BaseService_WeChatRegisterWithLogin_FullMethodName = "/base_service.BaseService/WeChatRegisterWithLogin"
 )
 
 // BaseServiceClient is the client API for BaseService service.
@@ -39,16 +34,6 @@ type BaseServiceClient interface {
 	WeChatLogin(ctx context.Context, in *WeChatLoginReq, opts ...grpc.CallOption) (*WeChatLoginResp, error)
 	// 微信小程序登录注册接口定义
 	WeChatRegisterWithLogin(ctx context.Context, in *RegisterWithLoginReq, opts ...grpc.CallOption) (*RegisterWithLoginResp, error)
-	// 坐标查询足迹点
-	QueryFootprintByCoordinate(ctx context.Context, in *QueryFootprintByCoordinateReq, opts ...grpc.CallOption) (*QueryFootprintByCoordinateResp, error)
-	// 查询足迹点
-	QueryFootprintByTime(ctx context.Context, in *QueryFootprintByTimeReq, opts ...grpc.CallOption) (*QueryFootprintByTimeResp, error)
-	// 创建足迹点
-	CreateFootprint(ctx context.Context, in *CreateFootprintReq, opts ...grpc.CallOption) (*CreateFootprintResp, error)
-	// 删除足迹点
-	DeleteFootprint(ctx context.Context, in *DeleteFootprintReq, opts ...grpc.CallOption) (*DeleteFootprintResp, error)
-	// 更新足迹点
-	UpdateFootprint(ctx context.Context, in *UpdateFootprintReq, opts ...grpc.CallOption) (*UpdateFootprintResp, error)
 }
 
 type baseServiceClient struct {
@@ -79,56 +64,6 @@ func (c *baseServiceClient) WeChatRegisterWithLogin(ctx context.Context, in *Reg
 	return out, nil
 }
 
-func (c *baseServiceClient) QueryFootprintByCoordinate(ctx context.Context, in *QueryFootprintByCoordinateReq, opts ...grpc.CallOption) (*QueryFootprintByCoordinateResp, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(QueryFootprintByCoordinateResp)
-	err := c.cc.Invoke(ctx, BaseService_QueryFootprintByCoordinate_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *baseServiceClient) QueryFootprintByTime(ctx context.Context, in *QueryFootprintByTimeReq, opts ...grpc.CallOption) (*QueryFootprintByTimeResp, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(QueryFootprintByTimeResp)
-	err := c.cc.Invoke(ctx, BaseService_QueryFootprintByTime_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *baseServiceClient) CreateFootprint(ctx context.Context, in *CreateFootprintReq, opts ...grpc.CallOption) (*CreateFootprintResp, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(CreateFootprintResp)
-	err := c.cc.Invoke(ctx, BaseService_CreateFootprint_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *baseServiceClient) DeleteFootprint(ctx context.Context, in *DeleteFootprintReq, opts ...grpc.CallOption) (*DeleteFootprintResp, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(DeleteFootprintResp)
-	err := c.cc.Invoke(ctx, BaseService_DeleteFootprint_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *baseServiceClient) UpdateFootprint(ctx context.Context, in *UpdateFootprintReq, opts ...grpc.CallOption) (*UpdateFootprintResp, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(UpdateFootprintResp)
-	err := c.cc.Invoke(ctx, BaseService_UpdateFootprint_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // BaseServiceServer is the server API for BaseService service.
 // All implementations must embed UnimplementedBaseServiceServer
 // for forward compatibility.
@@ -140,16 +75,6 @@ type BaseServiceServer interface {
 	WeChatLogin(context.Context, *WeChatLoginReq) (*WeChatLoginResp, error)
 	// 微信小程序登录注册接口定义
 	WeChatRegisterWithLogin(context.Context, *RegisterWithLoginReq) (*RegisterWithLoginResp, error)
-	// 坐标查询足迹点
-	QueryFootprintByCoordinate(context.Context, *QueryFootprintByCoordinateReq) (*QueryFootprintByCoordinateResp, error)
-	// 查询足迹点
-	QueryFootprintByTime(context.Context, *QueryFootprintByTimeReq) (*QueryFootprintByTimeResp, error)
-	// 创建足迹点
-	CreateFootprint(context.Context, *CreateFootprintReq) (*CreateFootprintResp, error)
-	// 删除足迹点
-	DeleteFootprint(context.Context, *DeleteFootprintReq) (*DeleteFootprintResp, error)
-	// 更新足迹点
-	UpdateFootprint(context.Context, *UpdateFootprintReq) (*UpdateFootprintResp, error)
 	mustEmbedUnimplementedBaseServiceServer()
 }
 
@@ -165,21 +90,6 @@ func (UnimplementedBaseServiceServer) WeChatLogin(context.Context, *WeChatLoginR
 }
 func (UnimplementedBaseServiceServer) WeChatRegisterWithLogin(context.Context, *RegisterWithLoginReq) (*RegisterWithLoginResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method WeChatRegisterWithLogin not implemented")
-}
-func (UnimplementedBaseServiceServer) QueryFootprintByCoordinate(context.Context, *QueryFootprintByCoordinateReq) (*QueryFootprintByCoordinateResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryFootprintByCoordinate not implemented")
-}
-func (UnimplementedBaseServiceServer) QueryFootprintByTime(context.Context, *QueryFootprintByTimeReq) (*QueryFootprintByTimeResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryFootprintByTime not implemented")
-}
-func (UnimplementedBaseServiceServer) CreateFootprint(context.Context, *CreateFootprintReq) (*CreateFootprintResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateFootprint not implemented")
-}
-func (UnimplementedBaseServiceServer) DeleteFootprint(context.Context, *DeleteFootprintReq) (*DeleteFootprintResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteFootprint not implemented")
-}
-func (UnimplementedBaseServiceServer) UpdateFootprint(context.Context, *UpdateFootprintReq) (*UpdateFootprintResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateFootprint not implemented")
 }
 func (UnimplementedBaseServiceServer) mustEmbedUnimplementedBaseServiceServer() {}
 func (UnimplementedBaseServiceServer) testEmbeddedByValue()                     {}
@@ -238,96 +148,6 @@ func _BaseService_WeChatRegisterWithLogin_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BaseService_QueryFootprintByCoordinate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryFootprintByCoordinateReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(BaseServiceServer).QueryFootprintByCoordinate(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: BaseService_QueryFootprintByCoordinate_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).QueryFootprintByCoordinate(ctx, req.(*QueryFootprintByCoordinateReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _BaseService_QueryFootprintByTime_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryFootprintByTimeReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(BaseServiceServer).QueryFootprintByTime(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: BaseService_QueryFootprintByTime_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).QueryFootprintByTime(ctx, req.(*QueryFootprintByTimeReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _BaseService_CreateFootprint_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateFootprintReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(BaseServiceServer).CreateFootprint(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: BaseService_CreateFootprint_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).CreateFootprint(ctx, req.(*CreateFootprintReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _BaseService_DeleteFootprint_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteFootprintReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(BaseServiceServer).DeleteFootprint(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: BaseService_DeleteFootprint_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).DeleteFootprint(ctx, req.(*DeleteFootprintReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _BaseService_UpdateFootprint_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateFootprintReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(BaseServiceServer).UpdateFootprint(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: BaseService_UpdateFootprint_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).UpdateFootprint(ctx, req.(*UpdateFootprintReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // BaseService_ServiceDesc is the grpc.ServiceDesc for BaseService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -342,26 +162,6 @@ var BaseService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "WeChatRegisterWithLogin",
 			Handler:    _BaseService_WeChatRegisterWithLogin_Handler,
-		},
-		{
-			MethodName: "QueryFootprintByCoordinate",
-			Handler:    _BaseService_QueryFootprintByCoordinate_Handler,
-		},
-		{
-			MethodName: "QueryFootprintByTime",
-			Handler:    _BaseService_QueryFootprintByTime_Handler,
-		},
-		{
-			MethodName: "CreateFootprint",
-			Handler:    _BaseService_CreateFootprint_Handler,
-		},
-		{
-			MethodName: "DeleteFootprint",
-			Handler:    _BaseService_DeleteFootprint_Handler,
-		},
-		{
-			MethodName: "UpdateFootprint",
-			Handler:    _BaseService_UpdateFootprint_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

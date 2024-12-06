@@ -84,6 +84,7 @@ func (s *Server) startGrpcServer(ch chan<- error) {
 		return
 	}
 	log.L().Info("GRPC Listening", zap.Any("addr", s.c.GRPC.Addr))
+
 	ch <- s.grpcServer.Serve(lis)
 }
 
