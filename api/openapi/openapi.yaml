@@ -32,13 +32,13 @@ paths:
         post:
             tags:
                 - BaseService
-            description: 微信小程序登录注册接口定义
-            operationId: BaseService_WeChatRegisterWithLogin
+            description: 微信小程序快速登录注册接口定义
+            operationId: BaseService_WeChatFastRegister
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/RegisterWithLoginReq'
+                            $ref: '#/components/schemas/WeChatFastRegisterReq'
                 required: true
             responses:
                 "200":
@@ -46,34 +46,69 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/RegisterWithLoginResp'
+                                $ref: '#/components/schemas/WeChatFastRegisterResp'
 components:
     schemas:
-        RegisterWithLoginReq:
+        PetInfo:
             type: object
             properties:
-                wxCode:
+                id:
+                    type: integer
+                    format: uint32
+                name:
                     type: string
-                userInfo:
-                    $ref: '#/components/schemas/UserInfo'
-        RegisterWithLoginResp:
+                gender:
+                    type: integer
+                    format: uint32
+                avatar:
+                    type: string
+                specie:
+                    type: string
+                breed:
+                    type: string
+                weight:
+                    type: integer
+                    format: int32
+                birthDate:
+                    type: string
+                createdAt:
+                    type: string
+                    format: date-time
+                updatedAt:
+                    type: string
+                    format: date-time
+        PetInfoReg:
             type: object
             properties:
-                msgCode:
+                name:
                     type: string
-                desc:
+                    description: 名字
+                avatarData:
                     type: string
-                data:
-                    $ref: '#/components/schemas/WeChatLoginRespData'
+                    description: base64 data
+            description: 宠物注册信息
         UserInfo:
             type: object
             properties:
                 id:
+                    type: integer
+                    format: uint32
+                pets:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/PetInfo'
+        WeChatFastRegisterReq:
+            type: object
+            properties:
+                wxCode:
                     type: string
-                nickname:
-                    type: string
-                avatarUrl:
-                    type: string
+                pet:
+                    $ref: '#/components/schemas/PetInfoReg'
+        WeChatFastRegisterResp:
+            type: object
+            properties:
+                data:
+                    $ref: '#/components/schemas/WeChatLoginRespData'
         WeChatLoginReq:
             type: object
             properties:
@@ -83,10 +118,6 @@ components:
         WeChatLoginResp:
             type: object
             properties:
-                msgCode:
-                    type: string
-                desc:
-                    type: string
                 data:
                     $ref: '#/components/schemas/WeChatLoginRespData'
         WeChatLoginRespData:
@@ -96,7 +127,5 @@ components:
                     type: string
                 userInfo:
                     $ref: '#/components/schemas/UserInfo'
-                openid:
-                    type: string
 tags:
     - name: BaseService

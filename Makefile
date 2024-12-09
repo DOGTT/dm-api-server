@@ -58,10 +58,10 @@ api:
 	       --proto_path=./third_party \
  	       --go_out=paths=source_relative:./api \
 		   --go-grpc_out=paths=source_relative:./api \
-	       --openapi_out=fq_schema_naming=false,default_response=false,paths=source_relative:./api/ \
+	       --openapi_out=fq_schema_naming=false,default_response=false,paths=source_relative:./api/openapi/ \
 	       $(API_PROTO_FILES)
 	mv ./api/*.go ./api/grpc/
-	oapi-codegen -package apigin -generate types,spec,client,gin ./api/openapi.yaml > ./api/gin/gin.gen.go
+	oapi-codegen -package apigin -generate types,spec,client,gin ./api/openapi/openapi.yaml > ./api/gin/gin.gen.go
 
 .PHONY: generate
 # generate

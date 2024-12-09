@@ -1,0 +1,1 @@
+ALTER SEQUENCE user_infos_id_seq RESTART WITH 1000001;

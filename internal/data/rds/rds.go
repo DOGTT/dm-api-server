@@ -9,12 +9,12 @@ import (
 
 var dbModelList = []any{}
 
-type Client struct {
+type RDSClient struct {
 	db *gorm.DB
 }
 
-func New(conf *conf.RDSConfig) (c *Client, err error) {
-	c = &Client{}
+func New(conf *conf.RDSConfig) (c *RDSClient, err error) {
+	c = &RDSClient{}
 	c.db, err = gorm.Open(postgres.Open(conf.ConnectionString()), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true,

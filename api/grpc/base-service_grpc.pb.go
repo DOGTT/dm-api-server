@@ -19,8 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	BaseService_WeChatLogin_FullMethodName             = "/base_service.BaseService/WeChatLogin"
-	BaseService_WeChatRegisterWithLogin_FullMethodName = "/base_service.BaseService/WeChatRegisterWithLogin"
+	BaseService_WeChatLogin_FullMethodName        = "/base_service.BaseService/WeChatLogin"
+	BaseService_WeChatFastRegister_FullMethodName = "/base_service.BaseService/WeChatFastRegister"
 )
 
 // BaseServiceClient is the client API for BaseService service.
@@ -32,8 +32,8 @@ const (
 type BaseServiceClient interface {
 	// 微信小程序登录接口
 	WeChatLogin(ctx context.Context, in *WeChatLoginReq, opts ...grpc.CallOption) (*WeChatLoginResp, error)
-	// 微信小程序登录注册接口定义
-	WeChatRegisterWithLogin(ctx context.Context, in *RegisterWithLoginReq, opts ...grpc.CallOption) (*RegisterWithLoginResp, error)
+	// 微信小程序快速登录注册接口定义
+	WeChatFastRegister(ctx context.Context, in *WeChatFastRegisterReq, opts ...grpc.CallOption) (*WeChatFastRegisterResp, error)
 }
 
 type baseServiceClient struct {
@@ -54,10 +54,10 @@ func (c *baseServiceClient) WeChatLogin(ctx context.Context, in *WeChatLoginReq,
 	return out, nil
 }
 
-func (c *baseServiceClient) WeChatRegisterWithLogin(ctx context.Context, in *RegisterWithLoginReq, opts ...grpc.CallOption) (*RegisterWithLoginResp, error) {
+func (c *baseServiceClient) WeChatFastRegister(ctx context.Context, in *WeChatFastRegisterReq, opts ...grpc.CallOption) (*WeChatFastRegisterResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(RegisterWithLoginResp)
-	err := c.cc.Invoke(ctx, BaseService_WeChatRegisterWithLogin_FullMethodName, in, out, cOpts...)
+	out := new(WeChatFastRegisterResp)
+	err := c.cc.Invoke(ctx, BaseService_WeChatFastRegister_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -73,8 +73,8 @@ func (c *baseServiceClient) WeChatRegisterWithLogin(ctx context.Context, in *Reg
 type BaseServiceServer interface {
 	// 微信小程序登录接口
 	WeChatLogin(context.Context, *WeChatLoginReq) (*WeChatLoginResp, error)
-	// 微信小程序登录注册接口定义
-	WeChatRegisterWithLogin(context.Context, *RegisterWithLoginReq) (*RegisterWithLoginResp, error)
+	// 微信小程序快速登录注册接口定义
+	WeChatFastRegister(context.Context, *WeChatFastRegisterReq) (*WeChatFastRegisterResp, error)
 	mustEmbedUnimplementedBaseServiceServer()
 }
 
@@ -88,8 +88,8 @@ type UnimplementedBaseServiceServer struct{}
 func (UnimplementedBaseServiceServer) WeChatLogin(context.Context, *WeChatLoginReq) (*WeChatLoginResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method WeChatLogin not implemented")
 }
-func (UnimplementedBaseServiceServer) WeChatRegisterWithLogin(context.Context, *RegisterWithLoginReq) (*RegisterWithLoginResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method WeChatRegisterWithLogin not implemented")
+func (UnimplementedBaseServiceServer) WeChatFastRegister(context.Context, *WeChatFastRegisterReq) (*WeChatFastRegisterResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WeChatFastRegister not implemented")
 }
 func (UnimplementedBaseServiceServer) mustEmbedUnimplementedBaseServiceServer() {}
 func (UnimplementedBaseServiceServer) testEmbeddedByValue()                     {}
@@ -130,20 +130,20 @@ func _BaseService_WeChatLogin_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BaseService_WeChatRegisterWithLogin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RegisterWithLoginReq)
+func _BaseService_WeChatFastRegister_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WeChatFastRegisterReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BaseServiceServer).WeChatRegisterWithLogin(ctx, in)
+		return srv.(BaseServiceServer).WeChatFastRegister(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BaseService_WeChatRegisterWithLogin_FullMethodName,
+		FullMethod: BaseService_WeChatFastRegister_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).WeChatRegisterWithLogin(ctx, req.(*RegisterWithLoginReq))
+		return srv.(BaseServiceServer).WeChatFastRegister(ctx, req.(*WeChatFastRegisterReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -160,8 +160,8 @@ var BaseService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _BaseService_WeChatLogin_Handler,
 		},
 		{
-			MethodName: "WeChatRegisterWithLogin",
-			Handler:    _BaseService_WeChatRegisterWithLogin_Handler,
+			MethodName: "WeChatFastRegister",
+			Handler:    _BaseService_WeChatFastRegister_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

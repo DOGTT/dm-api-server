@@ -94,7 +94,10 @@ func main() {
 		panic(fmt.Sprintf("data new error:%v", err))
 	}
 	// init service
-	svc := service.New(c.Service, dc)
+	svc, err := service.New(c.Service, dc)
+	if err != nil {
+		panic(fmt.Sprintf("service new error:%v", err))
+	}
 	// init server
 	srv, err := server.New(c.Server, svc)
 	if err != nil {

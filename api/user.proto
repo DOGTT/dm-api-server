@@ -3,13 +3,37 @@ syntax = "proto3";
 package user;
 
 import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
 
 option go_package="github.com/DOGTT/dm-api-server/api;api";
 
 
 
 message UserInfo {
-    string id = 1;
-    string nickname = 2;
-    string avatar_url = 3;
+    uint32 id = 1;
+    repeated PetInfo pets = 2;
+}   
+
+
+message PetInfo {
+    uint32 id = 1;
+
+    string name = 3;
+    uint32 gender = 4; // 性别，使用 uint32 表示
+    string avatar = 5;
+    string specie = 6;
+    string breed = 7;
+    int32 weight = 8; // 使用 int32 表示重量
+    string birth_date = 9;
+
+    google.protobuf.Timestamp created_at = 21;
+    google.protobuf.Timestamp updated_at = 22;
+}
+
+// 宠物注册信息
+message PetInfoReg {
+    // 名字
+    string name = 1;
+    // base64 data
+    string avatar_data = 2;
 }

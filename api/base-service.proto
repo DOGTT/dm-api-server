@@ -21,8 +21,8 @@ service BaseService {
             body: "*"
         };
     }
-    // 微信小程序登录注册接口定义
-    rpc WeChatRegisterWithLogin(RegisterWithLoginReq) returns (RegisterWithLoginResp) {
+    // 微信小程序快速登录注册接口定义
+    rpc WeChatFastRegister(WeChatFastRegisterReq) returns (WeChatFastRegisterResp) {
         option (google.api.http) = {
             post: "/v1/auth/wxlogin_with_register"
             body: "*"
@@ -68,6 +68,12 @@ service BaseService {
     //         body: "*"
     //     };
     // }
+}
+
+// 通用错误消息结构
+message ErrorMessage {
+    string code = 1;
+    string desc = 2;
 }
 
 message UpdateFootprintReq {
@@ -128,26 +134,19 @@ message WeChatLoginReq {
 }
 
 message WeChatLoginResp {
-    string msg_code = 1;
-    string desc = 2;
-    WeChatLoginRespData data = 3;
+    WeChatLoginRespData data = 1;
 }
 
 message WeChatLoginRespData {
     string token = 1;
     user.UserInfo user_info = 2;
-    string openid = 3;
-
 }
 
-message RegisterWithLoginReq {
+message WeChatFastRegisterReq {
     string wx_code = 1;
-    user.UserInfo user_info = 2;
+    user.PetInfoReg pet = 2;
 }
 
-message RegisterWithLoginResp {
-    string msg_code = 1;
-    string desc = 2;
-    WeChatLoginRespData data = 3;
+message WeChatFastRegisterResp {
+    WeChatLoginRespData data = 1;
 }
-
