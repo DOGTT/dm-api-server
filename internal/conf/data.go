@@ -18,6 +18,13 @@ func (c *RDSConfig) ConnectionString() string {
 		c.Host, c.Port, c.User, c.Password, c.Dbname, c.SSLMode)
 }
 
+type FDSConfig struct {
+	Endpoint  string `yaml:"endpoint"`
+	AccessKey string `yaml:"access_key"`
+	SecretKey string `yaml:"secret_key"`
+}
+
 type DataConfig struct {
 	RDS *RDSConfig `yaml:"rds"`
+	FDS *FDSConfig `yaml:"fds"`
 }

@@ -5,6 +5,7 @@ server:
     timeout: 1s
     enable_metric: true
     enable_trace: true
+    auth_white_pathlist: ["/v1/user/wx/login","/v1/user/wx/reg/fast"]
   grpc:
     enable: false
     addr: 0.0.0.0:8081

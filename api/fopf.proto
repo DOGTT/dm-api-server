@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package fopf;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package="github.com/DOGTT/dm-api-server/api;api";
+
+
+
+message POPFInfo {
+    uint32 id = 1;
+
+    string name = 3;
+    uint32 ssss = 4; 
+
+    google.protobuf.Timestamp created_at = 21;
+    google.protobuf.Timestamp updated_at = 22;
+}

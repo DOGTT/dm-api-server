@@ -16,7 +16,7 @@ type PetInfo struct {
 
 	Name      string `gorm:"type:varchar(20);"`
 	Gender    uint8  `gorm:"type:smallint;"`
-	Avatar    string `gorm:"type:varchar(255);"`
+	AvatarID  string `gorm:"type:varchar(255);"`
 	Specie    string `gorm:"type:varchar(20);"`
 	Breed     string `gorm:"type:varchar(20);"`
 	Weight    int    `gorm:"type:smallint;"`

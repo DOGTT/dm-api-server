@@ -9,7 +9,26 @@ info:
          [EN] API of Service.
     version: 0.0.1
 paths:
-    /v1/auth/wxlogin:
+    /v1/popf/create:
+        post:
+            tags:
+                - BaseService
+            description: 创建足迹点
+            operationId: BaseService_POFPCreate
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/POFPCreateReq'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/POFPCreateResp'
+    /v1/user/wx/login:
         post:
             tags:
                 - BaseService
@@ -28,17 +47,17 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/WeChatLoginResp'
-    /v1/auth/wxlogin_with_register:
+    /v1/user/wx/reg/fast:
         post:
             tags:
                 - BaseService
             description: 微信小程序快速登录注册接口定义
-            operationId: BaseService_WeChatFastRegister
+            operationId: BaseService_WeChatRegisterFast
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/WeChatFastRegisterReq'
+                            $ref: '#/components/schemas/WeChatRegisterFastReq'
                 required: true
             responses:
                 "200":
@@ -46,9 +65,34 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/WeChatFastRegisterResp'
+                                $ref: '#/components/schemas/WeChatRegisterFastResp'
 components:
     schemas:
+        POFPCreateReq:
+            type: object
+            properties:
+                pofp:
+                    $ref: '#/components/schemas/POPFInfo'
+        POFPCreateResp:
+            type: object
+            properties: {}
+        POPFInfo:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint32
+                name:
+                    type: string
+                ssss:
+                    type: integer
+                    format: uint32
+                createdAt:
+                    type: string
+                    format: date-time
+                updatedAt:
+                    type: string
+                    format: date-time
         PetInfo:
             type: object
             properties:
@@ -86,6 +130,7 @@ components:
                 avatarData:
                     type: string
                     description: base64 data
+                    format: bytes
             description: 宠物注册信息
         UserInfo:
             type: object
@@ -97,18 +142,6 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/PetInfo'
-        WeChatFastRegisterReq:
-            type: object
-            properties:
-                wxCode:
-                    type: string
-                pet:
-                    $ref: '#/components/schemas/PetInfoReg'
-        WeChatFastRegisterResp:
-            type: object
-            properties:
-                data:
-                    $ref: '#/components/schemas/WeChatLoginRespData'
         WeChatLoginReq:
             type: object
             properties:
@@ -127,5 +160,17 @@ components:
                     type: string
                 userInfo:
                     $ref: '#/components/schemas/UserInfo'
+        WeChatRegisterFastReq:
+            type: object
+            properties:
+                wxCode:
+                    type: string
+                pet:
+                    $ref: '#/components/schemas/PetInfoReg'
+        WeChatRegisterFastResp:
+            type: object
+            properties:
+                data:
+                    $ref: '#/components/schemas/WeChatLoginRespData'
 tags:
     - name: BaseService

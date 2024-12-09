@@ -1,9 +1,11 @@
 package service
 
 import (
+	"encoding/base64"
 	"errors"
 	"net/http"
 
+	gin_api "github.com/DOGTT/dm-api-server/api/gin"
 	api "github.com/DOGTT/dm-api-server/api/grpc"
 	grpc_api "github.com/DOGTT/dm-api-server/api/grpc"
 	"github.com/gin-gonic/gin"
@@ -33,12 +35,26 @@ func (s *Service) putGinError(c *gin.Context, err error) {
 }
 
 func (s *Service) BaseServiceWeChatFastRegister(c *gin.Context) {
-	req := &grpc_api.WeChatFastRegisterReq{}
+	req := &gin_api.WeChatRegisterFastReq{}
 	if err := c.Bind(&req); err != nil {
 		s.putGinError(c, EM_CommonFail_BadRequest)
 		return
 	}
-	res, err := s.WeChatFastRegister(c, req)
+	gReq := &api.WeChatRegisterFastReq{
+		WxCode: *req.WxCode,
+	}
+	if req.Pet != nil {
+		avatarData, err := base64.StdEncoding.DecodeString(*req.Pet.AvatarData)
+		if err != nil {
+			s.putGinError(c, EM_CommonFail_BadRequest)
+			return
+		}
+		gReq.Pet = &api.PetInfoReg{
+			Name:       *req.Pet.Name,
+			AvatarData: avatarData,
+		}
+	}
+	res, err := s.WeChatRegisterFast(c, gReq)
 	if err != nil {
 		s.putGinError(c, err)
 		return
@@ -53,6 +69,20 @@ func (s *Service) BaseServiceWeChatLogin(c *gin.Context) {
 		return
 	}
 	res, err := s.WeChatLogin(c, req)
+	if err != nil {
+		s.putGinError(c, err)
+		return
+	}
+	c.JSON(http.StatusOK, res)
+}
+
+func (s *Service) BaseServicePOFPCreate(c *gin.Context) {
+	req := &grpc_api.POFPCreateReq{}
+	if err := c.Bind(&req); err != nil {
+		s.putGinError(c, EM_CommonFail_BadRequest)
+		return
+	}
+	res, err := s.POFPCreate(c, req)
 	if err != nil {
 		s.putGinError(c, err)
 		return

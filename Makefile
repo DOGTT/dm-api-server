@@ -33,11 +33,11 @@ setup:
 	sudo unzip -o $(PROTOC_ZIP) -d /usr/local bin/protoc
 	sudo unzip -o $(PROTOC_ZIP) -d /usr/local 'include/*'
 	rm -f $(PROTOC_ZIP)
+	url -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.62.2
 
 .PHONY: init
 # setup go utils
 init:
-	go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 	go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 	go install github.com/google/gnostic/cmd/protoc-gen-openapi@latest

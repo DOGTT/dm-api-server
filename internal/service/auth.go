@@ -1,8 +1,9 @@
 package service
 
-func (s *Service) Auth(token string) error {
-	return nil
-}
-func (s *Service) wxIDToUID(openID string) (int64, error) {
-	return 0, nil
+func (s *Service) AuthToken(token string) (uint, *ErrMsg) {
+	uID, err := s.kp.ParseToken(token)
+	if err != nil {
+		return 0, EM_CommonFail_AuthFail.PutDesc(err.Error())
+	}
+	return uID, nil
 }

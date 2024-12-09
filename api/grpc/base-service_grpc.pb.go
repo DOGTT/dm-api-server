@@ -20,7 +20,8 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	BaseService_WeChatLogin_FullMethodName        = "/base_service.BaseService/WeChatLogin"
-	BaseService_WeChatFastRegister_FullMethodName = "/base_service.BaseService/WeChatFastRegister"
+	BaseService_WeChatRegisterFast_FullMethodName = "/base_service.BaseService/WeChatRegisterFast"
+	BaseService_POFPCreate_FullMethodName         = "/base_service.BaseService/POFPCreate"
 )
 
 // BaseServiceClient is the client API for BaseService service.
@@ -33,7 +34,9 @@ type BaseServiceClient interface {
 	// 微信小程序登录接口
 	WeChatLogin(ctx context.Context, in *WeChatLoginReq, opts ...grpc.CallOption) (*WeChatLoginResp, error)
 	// 微信小程序快速登录注册接口定义
-	WeChatFastRegister(ctx context.Context, in *WeChatFastRegisterReq, opts ...grpc.CallOption) (*WeChatFastRegisterResp, error)
+	WeChatRegisterFast(ctx context.Context, in *WeChatRegisterFastReq, opts ...grpc.CallOption) (*WeChatRegisterFastResp, error)
+	// 创建足迹点
+	POFPCreate(ctx context.Context, in *POFPCreateReq, opts ...grpc.CallOption) (*POFPCreateResp, error)
 }
 
 type baseServiceClient struct {
@@ -54,10 +57,20 @@ func (c *baseServiceClient) WeChatLogin(ctx context.Context, in *WeChatLoginReq,
 	return out, nil
 }
 
-func (c *baseServiceClient) WeChatFastRegister(ctx context.Context, in *WeChatFastRegisterReq, opts ...grpc.CallOption) (*WeChatFastRegisterResp, error) {
+func (c *baseServiceClient) WeChatRegisterFast(ctx context.Context, in *WeChatRegisterFastReq, opts ...grpc.CallOption) (*WeChatRegisterFastResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(WeChatFastRegisterResp)
-	err := c.cc.Invoke(ctx, BaseService_WeChatFastRegister_FullMethodName, in, out, cOpts...)
+	out := new(WeChatRegisterFastResp)
+	err := c.cc.Invoke(ctx, BaseService_WeChatRegisterFast_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *baseServiceClient) POFPCreate(ctx context.Context, in *POFPCreateReq, opts ...grpc.CallOption) (*POFPCreateResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(POFPCreateResp)
+	err := c.cc.Invoke(ctx, BaseService_POFPCreate_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -74,7 +87,9 @@ type BaseServiceServer interface {
 	// 微信小程序登录接口
 	WeChatLogin(context.Context, *WeChatLoginReq) (*WeChatLoginResp, error)
 	// 微信小程序快速登录注册接口定义
-	WeChatFastRegister(context.Context, *WeChatFastRegisterReq) (*WeChatFastRegisterResp, error)
+	WeChatRegisterFast(context.Context, *WeChatRegisterFastReq) (*WeChatRegisterFastResp, error)
+	// 创建足迹点
+	POFPCreate(context.Context, *POFPCreateReq) (*POFPCreateResp, error)
 	mustEmbedUnimplementedBaseServiceServer()
 }
 
@@ -88,8 +103,11 @@ type UnimplementedBaseServiceServer struct{}
 func (UnimplementedBaseServiceServer) WeChatLogin(context.Context, *WeChatLoginReq) (*WeChatLoginResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method WeChatLogin not implemented")
 }
-func (UnimplementedBaseServiceServer) WeChatFastRegister(context.Context, *WeChatFastRegisterReq) (*WeChatFastRegisterResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method WeChatFastRegister not implemented")
+func (UnimplementedBaseServiceServer) WeChatRegisterFast(context.Context, *WeChatRegisterFastReq) (*WeChatRegisterFastResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WeChatRegisterFast not implemented")
+}
+func (UnimplementedBaseServiceServer) POFPCreate(context.Context, *POFPCreateReq) (*POFPCreateResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method POFPCreate not implemented")
 }
 func (UnimplementedBaseServiceServer) mustEmbedUnimplementedBaseServiceServer() {}
 func (UnimplementedBaseServiceServer) testEmbeddedByValue()                     {}
@@ -130,20 +148,38 @@ func _BaseService_WeChatLogin_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BaseService_WeChatFastRegister_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(WeChatFastRegisterReq)
+func _BaseService_WeChatRegisterFast_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WeChatRegisterFastReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BaseServiceServer).WeChatFastRegister(ctx, in)
+		return srv.(BaseServiceServer).WeChatRegisterFast(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BaseService_WeChatFastRegister_FullMethodName,
+		FullMethod: BaseService_WeChatRegisterFast_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).WeChatFastRegister(ctx, req.(*WeChatFastRegisterReq))
+		return srv.(BaseServiceServer).WeChatRegisterFast(ctx, req.(*WeChatRegisterFastReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BaseService_POFPCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(POFPCreateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BaseServiceServer).POFPCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BaseService_POFPCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BaseServiceServer).POFPCreate(ctx, req.(*POFPCreateReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -160,8 +196,12 @@ var BaseService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _BaseService_WeChatLogin_Handler,
 		},
 		{
-			MethodName: "WeChatFastRegister",
-			Handler:    _BaseService_WeChatFastRegister_Handler,
+			MethodName: "WeChatRegisterFast",
+			Handler:    _BaseService_WeChatRegisterFast_Handler,
+		},
+		{
+			MethodName: "POFPCreate",
+			Handler:    _BaseService_POFPCreate_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

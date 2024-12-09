@@ -4,6 +4,7 @@ package base_service;
 option go_package="github.com/DOGTT/dm-api-server/api;api";
 
 
+import "fopf.proto";
 import "user.proto";
 import "google/api/annotations.proto";
 
@@ -17,14 +18,22 @@ service BaseService {
     // 微信小程序登录接口
     rpc WeChatLogin(WeChatLoginReq) returns (WeChatLoginResp) {
         option (google.api.http) = {
-            post: "/v1/auth/wxlogin"
+            post: "/v1/user/wx/login"
             body: "*"
         };
     }
     // 微信小程序快速登录注册接口定义
-    rpc WeChatFastRegister(WeChatFastRegisterReq) returns (WeChatFastRegisterResp) {
+    rpc WeChatRegisterFast(WeChatRegisterFastReq) returns (WeChatRegisterFastResp) {
         option (google.api.http) = {
-            post: "/v1/auth/wxlogin_with_register"
+            post: "/v1/user/wx/reg/fast"
+            body: "*"
+        };
+    }
+
+    // 创建足迹点
+    rpc POFPCreate(POFPCreateReq) returns (POFPCreateResp) {
+        option (google.api.http) = {
+            post: "/v1/popf/create"
             body: "*"
         };
     }
@@ -45,13 +54,7 @@ service BaseService {
     //     };
     // }
 
-    // // 创建足迹点
-    // rpc CreateFootprint(CreateFootprintReq) returns (CreateFootprintResp) {
-    //     option (google.api.http) = {
-    //         post: "/v1/popf/create"
-    //         body: "*"
-    //     };
-    // }
+
 
     // // 删除足迹点
     // rpc DeleteFootprint(DeleteFootprintReq) returns (DeleteFootprintResp) {
@@ -76,57 +79,56 @@ message ErrorMessage {
     string desc = 2;
 }
 
-message UpdateFootprintReq {
-    string token = 1; // 用户token
-    int64 id = 2; // 足迹点id
-    double latitude = 3; // 纬度
-    double longitude = 4; // 经度
+// message UpdateFootprintReq {
+//     string token = 1; // 用户token
+//     int64 id = 2; // 足迹点id
+//     double latitude = 3; // 纬度
+//     double longitude = 4; // 经度
+// }
+
+// message UpdateFootprintResp {}
+
+message POFPCreateReq {
+    fopf.POPFInfo pofp = 1;
 }
 
-message UpdateFootprintResp {}
+message POFPCreateResp {
 
-message CreateFootprintReq {
-    string token = 1; // 用户token
-    int64 time = 2; // 时间戳(秒)
-    double latitude = 3; // 纬度
-    double longitude = 4; // 经度
 }
 
-message CreateFootprintResp {}
+// message DeleteFootprintReq {
+//     string token = 1; // 用户token
+//     int64 id = 2; // 足迹点id
+// }
 
-message DeleteFootprintReq {
-    string token = 1; // 用户token
-    int64 id = 2; // 足迹点id
-}
+// message DeleteFootprintResp {
+// }
 
-message DeleteFootprintResp {
-}
+// message QueryFootprintByCoordinateReq {
+//     string token = 1; // 用户token
+//     double latitude = 2; // 纬度
+//     double longitude = 3; // 经度
+// }
 
-message QueryFootprintByCoordinateReq {
-    string token = 1; // 用户token
-    double latitude = 2; // 纬度
-    double longitude = 3; // 经度
-}
+// message QueryFootprintByCoordinateResp {
+//     repeated Footprint footprints = 1;
+// }
 
-message QueryFootprintByCoordinateResp {
-    repeated Footprint footprints = 1;
-}
+// message QueryFootprintByTimeReq {
+//     string token = 1; // 用户token
+//     int64 start_time = 2; // 查询开始时间戳(秒)
+//     int64 end_time = 3; // 查询结束时间戳(秒)
+// }
 
-message QueryFootprintByTimeReq {
-    string token = 1; // 用户token
-    int64 start_time = 2; // 查询开始时间戳(秒)
-    int64 end_time = 3; // 查询结束时间戳(秒)
-}
+// message QueryFootprintByTimeResp {
+//     repeated Footprint footprints = 1;
+// }
 
-message QueryFootprintByTimeResp {
-    repeated Footprint footprints = 1;
-}
-
-message Footprint {
-    int64 time = 1; // 时间戳(秒)
-    double latitude = 2; // 纬度
-    double longitude = 3; // 经度
-}
+// message Footprint {
+//     int64 time = 1; // 时间戳(秒)
+//     double latitude = 2; // 纬度
+//     double longitude = 3; // 经度
+// }
 
 // 登录请求
 message WeChatLoginReq {
@@ -142,11 +144,11 @@ message WeChatLoginRespData {
     user.UserInfo user_info = 2;
 }
 
-message WeChatFastRegisterReq {
+message WeChatRegisterFastReq {
     string wx_code = 1;
     user.PetInfoReg pet = 2;
 }
 
-message WeChatFastRegisterResp {
+message WeChatRegisterFastResp {
     WeChatLoginRespData data = 1;
 }

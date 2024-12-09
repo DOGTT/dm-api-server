@@ -17,5 +17,9 @@ func New(conf *conf.DataConfig) (d *DataEntry, err error) {
 	if err != nil {
 		return
 	}
+	d.FDSClient, err = fds.New(conf.FDS)
+	if err != nil {
+		return
+	}
 	return
 }

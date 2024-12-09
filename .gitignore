@@ -42,3 +42,5 @@ bin/
 /dm-api-server
 
 /configs/*.pem
+
+/data/

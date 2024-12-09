@@ -2,7 +2,6 @@ syntax = "proto3";
 
 package user;
 
-import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";
 
 option go_package="github.com/DOGTT/dm-api-server/api;api";
@@ -35,5 +34,5 @@ message PetInfoReg {
     // 名字
     string name = 1;
     // base64 data
-    string avatar_data = 2;
+    bytes avatar_data = 2;
 }

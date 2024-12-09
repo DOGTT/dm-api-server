@@ -13,6 +13,7 @@ import (
 	"go.uber.org/zap"
 
 	api "github.com/DOGTT/dm-api-server/api/gin"
+	grpc_api "github.com/DOGTT/dm-api-server/api/grpc"
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
 	metrics "github.com/slok/go-http-metrics/metrics/prometheus"
@@ -34,11 +35,16 @@ func AuthMiddleware(whitelist []string, svc *service.Service) gin.HandlerFunc {
 		// 从请求中获取 Authorization 标头
 		token := c.GetHeader("Authorization")
 
-		if err := svc.Auth(token); err != nil {
-			c.JSON(http.StatusUnauthorized,
-				gin.H{"error": "unauthorized", "msg": err.Error()})
+		if uid, err := svc.AuthToken(token); err != nil {
+			emAPI := &grpc_api.ErrorMessage{
+				Code: err.Code,
+				Desc: err.Desc,
+			}
+			c.JSON(err.HttpStatus, emAPI)
 			c.Abort() // 中止请求
 			return
+		} else {
+			c.Set("TOKEN_UID", uid)
 		}
 
 		// 鉴权通过，继续处理请求

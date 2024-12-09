@@ -1,4 +1,3 @@
-// poi_table.go
 package rds
 
 import (

@@ -1,19 +1,16 @@
 package main
 
 import (
-	"encoding/base64"
 	"flag"
 	"fmt"
 	"net/http"
 	"runtime"
-	"time"
 
 	"github.com/DOGTT/dm-api-server/internal/conf"
 	"github.com/DOGTT/dm-api-server/internal/data"
 	"github.com/DOGTT/dm-api-server/internal/metrics"
 	"github.com/DOGTT/dm-api-server/internal/server"
 	"github.com/DOGTT/dm-api-server/internal/service"
-	"github.com/google/uuid"
 	"github.com/jinzhu/configor"
 	"github.com/uptrace/opentelemetry-go-extra/otelzap"
 	_ "go.uber.org/automaxprocs"
@@ -47,28 +44,8 @@ func init() {
 	flag.BoolVar(&printVersion, "version", false, "print version of this build, eg: -version")
 	metrics.Init()
 }
-func ShortenUUID(u uuid.UUID) string {
-	return base64.RawURLEncoding.EncodeToString(u[:])
-}
-
-// 生成唯一标识符
-func generateUniqueID() string {
-	// 生成 UUID
-	uuid := uuid.New().String()
-	// 获取当前时间戳的最后 4 位
-	timestamp := time.Now().UnixMicro() % 10000 // 取时间戳的最后 4 位
-	// 从 UUID 中提取前 4 位（去掉 '-'）
-	uuidPart := uuid[:4]
-	// 组合 UUID 的前 4 位和时间戳
-	uniqueID := fmt.Sprintf("%s%04d", uuidPart, timestamp)
-	return uniqueID
-}
 
 func main() {
-	// uid := uuid.New()
-	// fmt.Println(uid.String())
-	// fmt.Println(generateUniqueID())
-	// fmt.Println(ShortenUUID(uid))
 
 	flag.Parse()
 	if printVersion {
