@@ -34,7 +34,7 @@ func (s *Service) putGinError(c *gin.Context, err error) {
 	c.JSON(httpCode, emAPI)
 }
 
-func (s *Service) BaseServiceWeChatFastRegister(c *gin.Context) {
+func (s *Service) BaseServiceWeChatRegisterFast(c *gin.Context) {
 	req := &gin_api.WeChatRegisterFastReq{}
 	if err := c.Bind(&req); err != nil {
 		s.putGinError(c, EM_CommonFail_BadRequest)
