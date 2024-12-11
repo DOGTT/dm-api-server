@@ -19,24 +19,11 @@ import (
 
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/gin-gonic/gin"
+	"github.com/oapi-codegen/runtime"
 )
 
-// POFPCreateReq defines model for POFPCreateReq.
-type POFPCreateReq struct {
-	Pofp *POPFInfo `json:"pofp,omitempty"`
-}
-
-// POFPCreateResp defines model for POFPCreateResp.
-type POFPCreateResp = map[string]interface{}
-
-// POPFInfo defines model for POPFInfo.
-type POPFInfo struct {
-	CreatedAt *time.Time `json:"createdAt,omitempty"`
-	Id        *uint32    `json:"id,omitempty"`
-	Name      *string    `json:"name,omitempty"`
-	Ssss      *uint32    `json:"ssss,omitempty"`
-	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
-}
+// LocationCommonSearchResp defines model for LocationCommonSearchResp.
+type LocationCommonSearchResp = map[string]interface{}
 
 // PetInfo defines model for PetInfo.
 type PetInfo struct {
@@ -61,6 +48,102 @@ type PetInfoReg struct {
 	Name *string `json:"name,omitempty"`
 }
 
+// PofpCommentInfo defines model for PofpCommentInfo.
+type PofpCommentInfo struct {
+	Content    *string    `json:"content,omitempty"`
+	CreatedAt  *time.Time `json:"createdAt,omitempty"`
+	ParentUuid *string    `json:"parentUuid,omitempty"`
+	UpdatedAt  *time.Time `json:"updatedAt,omitempty"`
+	Uuid       *string    `json:"uuid,omitempty"`
+}
+
+// PofpCommentReq defines model for PofpCommentReq.
+type PofpCommentReq struct {
+	Comment *PofpCommentInfo `json:"comment,omitempty"`
+}
+
+// PofpCommentResp defines model for PofpCommentResp.
+type PofpCommentResp = map[string]interface{}
+
+// PofpCreateReq 足迹创建
+type PofpCreateReq struct {
+	Pofp *PofpInfo `json:"pofp,omitempty"`
+}
+
+// PofpCreateResp defines model for PofpCreateResp.
+type PofpCreateResp = map[string]interface{}
+
+// PofpDeleteReq 足迹删除
+type PofpDeleteReq struct {
+	Uuid *string `json:"uuid,omitempty"`
+}
+
+// PofpDeleteResp defines model for PofpDeleteResp.
+type PofpDeleteResp = map[string]interface{}
+
+// PofpDetailQueryByIdResp defines model for PofpDetailQueryByIdResp.
+type PofpDetailQueryByIdResp struct {
+	Pofp            *PofpInfo        `json:"pofp,omitempty"`
+	PofpDynamicInfo *PofpDynamicInfo `json:"pofpDynamicInfo,omitempty"`
+}
+
+// PofpDynamicInfo defines model for PofpDynamicInfo.
+type PofpDynamicInfo struct {
+	Uuid *string `json:"uuid,omitempty"`
+}
+
+// PofpFullQueryByIdResp defines model for PofpFullQueryByIdResp.
+type PofpFullQueryByIdResp struct {
+	Pofp            *PofpInfo        `json:"pofp,omitempty"`
+	PofpDynamicInfo *PofpDynamicInfo `json:"pofpDynamicInfo,omitempty"`
+}
+
+// PofpInfo defines model for PofpInfo.
+type PofpInfo struct {
+	Address     *string            `json:"address,omitempty"`
+	CommentsCnt *int32             `json:"commentsCnt,omitempty"`
+	Content     *string            `json:"content,omitempty"`
+	CreatedAt   *time.Time         `json:"createdAt,omitempty"`
+	LastMark    *time.Time         `json:"lastMark,omitempty"`
+	LastView    *time.Time         `json:"lastView,omitempty"`
+	LatLng      *PointCoord        `json:"latLng,omitempty"`
+	LikesCnt    *int32             `json:"likesCnt,omitempty"`
+	MarksCnt    *int32             `json:"marksCnt,omitempty"`
+	Photos      *[]string          `json:"photos,omitempty"`
+	Pid         *uint32            `json:"pid,omitempty"`
+	PoiData     *map[string]string `json:"poiData,omitempty"`
+	PoiId       *string            `json:"poiId,omitempty"`
+	Title       *string            `json:"title,omitempty"`
+	TypeId      *uint32            `json:"typeId,omitempty"`
+	UpdatedAt   *time.Time         `json:"updatedAt,omitempty"`
+	Uuid        *string            `json:"uuid,omitempty"`
+	ViewsCnt    *int32             `json:"viewsCnt,omitempty"`
+}
+
+// PofpInteractionReq defines model for PofpInteractionReq.
+type PofpInteractionReq struct {
+	// IxnType 互动类型
+	IxnType *int    `json:"ixnType,omitempty"`
+	Uuid    *string `json:"uuid,omitempty"`
+}
+
+// PofpInteractionResp defines model for PofpInteractionResp.
+type PofpInteractionResp = map[string]interface{}
+
+// PofpUpdateReq 足迹更新
+type PofpUpdateReq struct {
+	Pofp *PofpInfo `json:"pofp,omitempty"`
+}
+
+// PofpUpdateResp defines model for PofpUpdateResp.
+type PofpUpdateResp = map[string]interface{}
+
+// PointCoord defines model for PointCoord.
+type PointCoord struct {
+	Lat *float32 `json:"lat,omitempty"`
+	Lng *float32 `json:"lng,omitempty"`
+}
+
 // UserInfo defines model for UserInfo.
 type UserInfo struct {
 	Id   *uint32    `json:"id,omitempty"`
@@ -74,16 +157,11 @@ type WeChatLoginReq struct {
 
 // WeChatLoginResp defines model for WeChatLoginResp.
 type WeChatLoginResp struct {
-	Data *WeChatLoginRespData `json:"data,omitempty"`
-}
-
-// WeChatLoginRespData defines model for WeChatLoginRespData.
-type WeChatLoginRespData struct {
 	Token    *string   `json:"token,omitempty"`
 	UserInfo *UserInfo `json:"userInfo,omitempty"`
 }
 
-// WeChatRegisterFastReq defines model for WeChatRegisterFastReq.
+// WeChatRegisterFastReq 快速注册请求
 type WeChatRegisterFastReq struct {
 	// Pet 宠物注册信息
 	Pet    *PetInfoReg `json:"pet,omitempty"`
@@ -92,11 +170,39 @@ type WeChatRegisterFastReq struct {
 
 // WeChatRegisterFastResp defines model for WeChatRegisterFastResp.
 type WeChatRegisterFastResp struct {
-	Data *WeChatLoginRespData `json:"data,omitempty"`
+	Token    *string   `json:"token,omitempty"`
+	UserInfo *UserInfo `json:"userInfo,omitempty"`
 }
 
-// BaseServicePOFPCreateJSONRequestBody defines body for BaseServicePOFPCreate for application/json ContentType.
-type BaseServicePOFPCreateJSONRequestBody = POFPCreateReq
+// BaseServiceLocationCommonSearchParams defines parameters for BaseServiceLocationCommonSearch.
+type BaseServiceLocationCommonSearchParams struct {
+	Input *string `form:"input,omitempty" json:"input,omitempty"`
+}
+
+// BaseServicePofpDetailQueryByIdParams defines parameters for BaseServicePofpDetailQueryById.
+type BaseServicePofpDetailQueryByIdParams struct {
+	Uuid *string `form:"uuid,omitempty" json:"uuid,omitempty"`
+}
+
+// BaseServicePofpFullQueryByIdParams defines parameters for BaseServicePofpFullQueryById.
+type BaseServicePofpFullQueryByIdParams struct {
+	Uuid *string `form:"uuid,omitempty" json:"uuid,omitempty"`
+}
+
+// BaseServicePofpDeleteJSONRequestBody defines body for BaseServicePofpDelete for application/json ContentType.
+type BaseServicePofpDeleteJSONRequestBody = PofpDeleteReq
+
+// BaseServicePofpCreateJSONRequestBody defines body for BaseServicePofpCreate for application/json ContentType.
+type BaseServicePofpCreateJSONRequestBody = PofpCreateReq
+
+// BaseServicePofpUpdateJSONRequestBody defines body for BaseServicePofpUpdate for application/json ContentType.
+type BaseServicePofpUpdateJSONRequestBody = PofpUpdateReq
+
+// BaseServicePofpCommentJSONRequestBody defines body for BaseServicePofpComment for application/json ContentType.
+type BaseServicePofpCommentJSONRequestBody = PofpCommentReq
+
+// BaseServicePofpInteractionJSONRequestBody defines body for BaseServicePofpInteraction for application/json ContentType.
+type BaseServicePofpInteractionJSONRequestBody = PofpInteractionReq
 
 // BaseServiceWeChatLoginJSONRequestBody defines body for BaseServiceWeChatLogin for application/json ContentType.
 type BaseServiceWeChatLoginJSONRequestBody = WeChatLoginReq
@@ -177,10 +283,39 @@ func WithRequestEditorFn(fn RequestEditorFn) ClientOption {
 
 // The interface specification for the client above.
 type ClientInterface interface {
-	// BaseServicePOFPCreateWithBody request with any body
-	BaseServicePOFPCreateWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// BaseServiceLocationCommonSearch request
+	BaseServiceLocationCommonSearch(ctx context.Context, params *BaseServiceLocationCommonSearchParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	BaseServicePOFPCreate(ctx context.Context, body BaseServicePOFPCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// BaseServicePofpDeleteWithBody request with any body
+	BaseServicePofpDeleteWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	BaseServicePofpDelete(ctx context.Context, body BaseServicePofpDeleteJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BaseServicePofpCreateWithBody request with any body
+	BaseServicePofpCreateWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	BaseServicePofpCreate(ctx context.Context, body BaseServicePofpCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BaseServicePofpUpdateWithBody request with any body
+	BaseServicePofpUpdateWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	BaseServicePofpUpdate(ctx context.Context, body BaseServicePofpUpdateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BaseServicePofpCommentWithBody request with any body
+	BaseServicePofpCommentWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	BaseServicePofpComment(ctx context.Context, body BaseServicePofpCommentJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BaseServicePofpDetailQueryById request
+	BaseServicePofpDetailQueryById(ctx context.Context, params *BaseServicePofpDetailQueryByIdParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BaseServicePofpFullQueryById request
+	BaseServicePofpFullQueryById(ctx context.Context, params *BaseServicePofpFullQueryByIdParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BaseServicePofpInteractionWithBody request with any body
+	BaseServicePofpInteractionWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	BaseServicePofpInteraction(ctx context.Context, body BaseServicePofpInteractionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// BaseServiceWeChatLoginWithBody request with any body
 	BaseServiceWeChatLoginWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -193,8 +328,8 @@ type ClientInterface interface {
 	BaseServiceWeChatRegisterFast(ctx context.Context, body BaseServiceWeChatRegisterFastJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
-func (c *Client) BaseServicePOFPCreateWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServicePOFPCreateRequestWithBody(c.Server, contentType, body)
+func (c *Client) BaseServiceLocationCommonSearch(ctx context.Context, params *BaseServiceLocationCommonSearchParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServiceLocationCommonSearchRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -205,8 +340,140 @@ func (c *Client) BaseServicePOFPCreateWithBody(ctx context.Context, contentType 
 	return c.Client.Do(req)
 }
 
-func (c *Client) BaseServicePOFPCreate(ctx context.Context, body BaseServicePOFPCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServicePOFPCreateRequest(c.Server, body)
+func (c *Client) BaseServicePofpDeleteWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServicePofpDeleteRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServicePofpDelete(ctx context.Context, body BaseServicePofpDeleteJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServicePofpDeleteRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServicePofpCreateWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServicePofpCreateRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServicePofpCreate(ctx context.Context, body BaseServicePofpCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServicePofpCreateRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServicePofpUpdateWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServicePofpUpdateRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServicePofpUpdate(ctx context.Context, body BaseServicePofpUpdateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServicePofpUpdateRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServicePofpCommentWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServicePofpCommentRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServicePofpComment(ctx context.Context, body BaseServicePofpCommentJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServicePofpCommentRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServicePofpDetailQueryById(ctx context.Context, params *BaseServicePofpDetailQueryByIdParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServicePofpDetailQueryByIdRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServicePofpFullQueryById(ctx context.Context, params *BaseServicePofpFullQueryByIdParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServicePofpFullQueryByIdRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServicePofpInteractionWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServicePofpInteractionRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServicePofpInteraction(ctx context.Context, body BaseServicePofpInteractionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServicePofpInteractionRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -265,19 +532,8 @@ func (c *Client) BaseServiceWeChatRegisterFast(ctx context.Context, body BaseSer
 	return c.Client.Do(req)
 }
 
-// NewBaseServicePOFPCreateRequest calls the generic BaseServicePOFPCreate builder with application/json body
-func NewBaseServicePOFPCreateRequest(server string, body BaseServicePOFPCreateJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewBaseServicePOFPCreateRequestWithBody(server, "application/json", bodyReader)
-}
-
-// NewBaseServicePOFPCreateRequestWithBody generates requests for BaseServicePOFPCreate with any type of body
-func NewBaseServicePOFPCreateRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+// NewBaseServiceLocationCommonSearchRequest generates requests for BaseServiceLocationCommonSearch
+func NewBaseServiceLocationCommonSearchRequest(server string, params *BaseServiceLocationCommonSearchParams) (*http.Request, error) {
 	var err error
 
 	serverURL, err := url.Parse(server)
@@ -285,7 +541,325 @@ func NewBaseServicePOFPCreateRequestWithBody(server string, contentType string, 
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/v1/popf/create")
+	operationPath := fmt.Sprintf("/v1/location/search")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Input != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "input", runtime.ParamLocationQuery, *params.Input); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewBaseServicePofpDeleteRequest calls the generic BaseServicePofpDelete builder with application/json body
+func NewBaseServicePofpDeleteRequest(server string, body BaseServicePofpDeleteJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewBaseServicePofpDeleteRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewBaseServicePofpDeleteRequestWithBody generates requests for BaseServicePofpDelete with any type of body
+func NewBaseServicePofpDeleteRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/popf")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewBaseServicePofpCreateRequest calls the generic BaseServicePofpCreate builder with application/json body
+func NewBaseServicePofpCreateRequest(server string, body BaseServicePofpCreateJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewBaseServicePofpCreateRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewBaseServicePofpCreateRequestWithBody generates requests for BaseServicePofpCreate with any type of body
+func NewBaseServicePofpCreateRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/popf")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewBaseServicePofpUpdateRequest calls the generic BaseServicePofpUpdate builder with application/json body
+func NewBaseServicePofpUpdateRequest(server string, body BaseServicePofpUpdateJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewBaseServicePofpUpdateRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewBaseServicePofpUpdateRequestWithBody generates requests for BaseServicePofpUpdate with any type of body
+func NewBaseServicePofpUpdateRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/popf")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewBaseServicePofpCommentRequest calls the generic BaseServicePofpComment builder with application/json body
+func NewBaseServicePofpCommentRequest(server string, body BaseServicePofpCommentJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewBaseServicePofpCommentRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewBaseServicePofpCommentRequestWithBody generates requests for BaseServicePofpComment with any type of body
+func NewBaseServicePofpCommentRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/popf/comment")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewBaseServicePofpDetailQueryByIdRequest generates requests for BaseServicePofpDetailQueryById
+func NewBaseServicePofpDetailQueryByIdRequest(server string, params *BaseServicePofpDetailQueryByIdParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/popf/detail_query_by_id")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Uuid != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "uuid", runtime.ParamLocationQuery, *params.Uuid); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewBaseServicePofpFullQueryByIdRequest generates requests for BaseServicePofpFullQueryById
+func NewBaseServicePofpFullQueryByIdRequest(server string, params *BaseServicePofpFullQueryByIdParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/popf/full_query_by_id")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Uuid != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "uuid", runtime.ParamLocationQuery, *params.Uuid); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewBaseServicePofpInteractionRequest calls the generic BaseServicePofpInteraction builder with application/json body
+func NewBaseServicePofpInteractionRequest(server string, body BaseServicePofpInteractionJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewBaseServicePofpInteractionRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewBaseServicePofpInteractionRequestWithBody generates requests for BaseServicePofpInteraction with any type of body
+func NewBaseServicePofpInteractionRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/popf/interaction")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -428,10 +1002,39 @@ func WithBaseURL(baseURL string) ClientOption {
 
 // ClientWithResponsesInterface is the interface specification for the client with responses above.
 type ClientWithResponsesInterface interface {
-	// BaseServicePOFPCreateWithBodyWithResponse request with any body
-	BaseServicePOFPCreateWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServicePOFPCreateResponse, error)
+	// BaseServiceLocationCommonSearchWithResponse request
+	BaseServiceLocationCommonSearchWithResponse(ctx context.Context, params *BaseServiceLocationCommonSearchParams, reqEditors ...RequestEditorFn) (*BaseServiceLocationCommonSearchResponse, error)
 
-	BaseServicePOFPCreateWithResponse(ctx context.Context, body BaseServicePOFPCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServicePOFPCreateResponse, error)
+	// BaseServicePofpDeleteWithBodyWithResponse request with any body
+	BaseServicePofpDeleteWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServicePofpDeleteResponse, error)
+
+	BaseServicePofpDeleteWithResponse(ctx context.Context, body BaseServicePofpDeleteJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServicePofpDeleteResponse, error)
+
+	// BaseServicePofpCreateWithBodyWithResponse request with any body
+	BaseServicePofpCreateWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServicePofpCreateResponse, error)
+
+	BaseServicePofpCreateWithResponse(ctx context.Context, body BaseServicePofpCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServicePofpCreateResponse, error)
+
+	// BaseServicePofpUpdateWithBodyWithResponse request with any body
+	BaseServicePofpUpdateWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServicePofpUpdateResponse, error)
+
+	BaseServicePofpUpdateWithResponse(ctx context.Context, body BaseServicePofpUpdateJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServicePofpUpdateResponse, error)
+
+	// BaseServicePofpCommentWithBodyWithResponse request with any body
+	BaseServicePofpCommentWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServicePofpCommentResponse, error)
+
+	BaseServicePofpCommentWithResponse(ctx context.Context, body BaseServicePofpCommentJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServicePofpCommentResponse, error)
+
+	// BaseServicePofpDetailQueryByIdWithResponse request
+	BaseServicePofpDetailQueryByIdWithResponse(ctx context.Context, params *BaseServicePofpDetailQueryByIdParams, reqEditors ...RequestEditorFn) (*BaseServicePofpDetailQueryByIdResponse, error)
+
+	// BaseServicePofpFullQueryByIdWithResponse request
+	BaseServicePofpFullQueryByIdWithResponse(ctx context.Context, params *BaseServicePofpFullQueryByIdParams, reqEditors ...RequestEditorFn) (*BaseServicePofpFullQueryByIdResponse, error)
+
+	// BaseServicePofpInteractionWithBodyWithResponse request with any body
+	BaseServicePofpInteractionWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServicePofpInteractionResponse, error)
+
+	BaseServicePofpInteractionWithResponse(ctx context.Context, body BaseServicePofpInteractionJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServicePofpInteractionResponse, error)
 
 	// BaseServiceWeChatLoginWithBodyWithResponse request with any body
 	BaseServiceWeChatLoginWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceWeChatLoginResponse, error)
@@ -444,14 +1047,14 @@ type ClientWithResponsesInterface interface {
 	BaseServiceWeChatRegisterFastWithResponse(ctx context.Context, body BaseServiceWeChatRegisterFastJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceWeChatRegisterFastResponse, error)
 }
 
-type BaseServicePOFPCreateResponse struct {
+type BaseServiceLocationCommonSearchResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *POFPCreateResp
+	JSON200      *LocationCommonSearchResp
 }
 
 // Status returns HTTPResponse.Status
-func (r BaseServicePOFPCreateResponse) Status() string {
+func (r BaseServiceLocationCommonSearchResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -459,7 +1062,161 @@ func (r BaseServicePOFPCreateResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r BaseServicePOFPCreateResponse) StatusCode() int {
+func (r BaseServiceLocationCommonSearchResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type BaseServicePofpDeleteResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *PofpDeleteResp
+}
+
+// Status returns HTTPResponse.Status
+func (r BaseServicePofpDeleteResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BaseServicePofpDeleteResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type BaseServicePofpCreateResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *PofpCreateResp
+}
+
+// Status returns HTTPResponse.Status
+func (r BaseServicePofpCreateResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BaseServicePofpCreateResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type BaseServicePofpUpdateResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *PofpUpdateResp
+}
+
+// Status returns HTTPResponse.Status
+func (r BaseServicePofpUpdateResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BaseServicePofpUpdateResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type BaseServicePofpCommentResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *PofpCommentResp
+}
+
+// Status returns HTTPResponse.Status
+func (r BaseServicePofpCommentResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BaseServicePofpCommentResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type BaseServicePofpDetailQueryByIdResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *PofpDetailQueryByIdResp
+}
+
+// Status returns HTTPResponse.Status
+func (r BaseServicePofpDetailQueryByIdResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BaseServicePofpDetailQueryByIdResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type BaseServicePofpFullQueryByIdResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *PofpFullQueryByIdResp
+}
+
+// Status returns HTTPResponse.Status
+func (r BaseServicePofpFullQueryByIdResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BaseServicePofpFullQueryByIdResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type BaseServicePofpInteractionResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *PofpInteractionResp
+}
+
+// Status returns HTTPResponse.Status
+func (r BaseServicePofpInteractionResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BaseServicePofpInteractionResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -510,21 +1267,116 @@ func (r BaseServiceWeChatRegisterFastResponse) StatusCode() int {
 	return 0
 }
 
-// BaseServicePOFPCreateWithBodyWithResponse request with arbitrary body returning *BaseServicePOFPCreateResponse
-func (c *ClientWithResponses) BaseServicePOFPCreateWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServicePOFPCreateResponse, error) {
-	rsp, err := c.BaseServicePOFPCreateWithBody(ctx, contentType, body, reqEditors...)
+// BaseServiceLocationCommonSearchWithResponse request returning *BaseServiceLocationCommonSearchResponse
+func (c *ClientWithResponses) BaseServiceLocationCommonSearchWithResponse(ctx context.Context, params *BaseServiceLocationCommonSearchParams, reqEditors ...RequestEditorFn) (*BaseServiceLocationCommonSearchResponse, error) {
+	rsp, err := c.BaseServiceLocationCommonSearch(ctx, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseBaseServicePOFPCreateResponse(rsp)
+	return ParseBaseServiceLocationCommonSearchResponse(rsp)
 }
 
-func (c *ClientWithResponses) BaseServicePOFPCreateWithResponse(ctx context.Context, body BaseServicePOFPCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServicePOFPCreateResponse, error) {
-	rsp, err := c.BaseServicePOFPCreate(ctx, body, reqEditors...)
+// BaseServicePofpDeleteWithBodyWithResponse request with arbitrary body returning *BaseServicePofpDeleteResponse
+func (c *ClientWithResponses) BaseServicePofpDeleteWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServicePofpDeleteResponse, error) {
+	rsp, err := c.BaseServicePofpDeleteWithBody(ctx, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseBaseServicePOFPCreateResponse(rsp)
+	return ParseBaseServicePofpDeleteResponse(rsp)
+}
+
+func (c *ClientWithResponses) BaseServicePofpDeleteWithResponse(ctx context.Context, body BaseServicePofpDeleteJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServicePofpDeleteResponse, error) {
+	rsp, err := c.BaseServicePofpDelete(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServicePofpDeleteResponse(rsp)
+}
+
+// BaseServicePofpCreateWithBodyWithResponse request with arbitrary body returning *BaseServicePofpCreateResponse
+func (c *ClientWithResponses) BaseServicePofpCreateWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServicePofpCreateResponse, error) {
+	rsp, err := c.BaseServicePofpCreateWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServicePofpCreateResponse(rsp)
+}
+
+func (c *ClientWithResponses) BaseServicePofpCreateWithResponse(ctx context.Context, body BaseServicePofpCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServicePofpCreateResponse, error) {
+	rsp, err := c.BaseServicePofpCreate(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServicePofpCreateResponse(rsp)
+}
+
+// BaseServicePofpUpdateWithBodyWithResponse request with arbitrary body returning *BaseServicePofpUpdateResponse
+func (c *ClientWithResponses) BaseServicePofpUpdateWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServicePofpUpdateResponse, error) {
+	rsp, err := c.BaseServicePofpUpdateWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServicePofpUpdateResponse(rsp)
+}
+
+func (c *ClientWithResponses) BaseServicePofpUpdateWithResponse(ctx context.Context, body BaseServicePofpUpdateJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServicePofpUpdateResponse, error) {
+	rsp, err := c.BaseServicePofpUpdate(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServicePofpUpdateResponse(rsp)
+}
+
+// BaseServicePofpCommentWithBodyWithResponse request with arbitrary body returning *BaseServicePofpCommentResponse
+func (c *ClientWithResponses) BaseServicePofpCommentWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServicePofpCommentResponse, error) {
+	rsp, err := c.BaseServicePofpCommentWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServicePofpCommentResponse(rsp)
+}
+
+func (c *ClientWithResponses) BaseServicePofpCommentWithResponse(ctx context.Context, body BaseServicePofpCommentJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServicePofpCommentResponse, error) {
+	rsp, err := c.BaseServicePofpComment(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServicePofpCommentResponse(rsp)
+}
+
+// BaseServicePofpDetailQueryByIdWithResponse request returning *BaseServicePofpDetailQueryByIdResponse
+func (c *ClientWithResponses) BaseServicePofpDetailQueryByIdWithResponse(ctx context.Context, params *BaseServicePofpDetailQueryByIdParams, reqEditors ...RequestEditorFn) (*BaseServicePofpDetailQueryByIdResponse, error) {
+	rsp, err := c.BaseServicePofpDetailQueryById(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServicePofpDetailQueryByIdResponse(rsp)
+}
+
+// BaseServicePofpFullQueryByIdWithResponse request returning *BaseServicePofpFullQueryByIdResponse
+func (c *ClientWithResponses) BaseServicePofpFullQueryByIdWithResponse(ctx context.Context, params *BaseServicePofpFullQueryByIdParams, reqEditors ...RequestEditorFn) (*BaseServicePofpFullQueryByIdResponse, error) {
+	rsp, err := c.BaseServicePofpFullQueryById(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServicePofpFullQueryByIdResponse(rsp)
+}
+
+// BaseServicePofpInteractionWithBodyWithResponse request with arbitrary body returning *BaseServicePofpInteractionResponse
+func (c *ClientWithResponses) BaseServicePofpInteractionWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServicePofpInteractionResponse, error) {
+	rsp, err := c.BaseServicePofpInteractionWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServicePofpInteractionResponse(rsp)
+}
+
+func (c *ClientWithResponses) BaseServicePofpInteractionWithResponse(ctx context.Context, body BaseServicePofpInteractionJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServicePofpInteractionResponse, error) {
+	rsp, err := c.BaseServicePofpInteraction(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServicePofpInteractionResponse(rsp)
 }
 
 // BaseServiceWeChatLoginWithBodyWithResponse request with arbitrary body returning *BaseServiceWeChatLoginResponse
@@ -561,22 +1413,204 @@ func (c *ClientWithResponses) BaseServiceWeChatRegisterFastWithResponse(ctx cont
 	return ParseBaseServiceWeChatRegisterFastResponse(rsp)
 }
 
-// ParseBaseServicePOFPCreateResponse parses an HTTP response from a BaseServicePOFPCreateWithResponse call
-func ParseBaseServicePOFPCreateResponse(rsp *http.Response) (*BaseServicePOFPCreateResponse, error) {
+// ParseBaseServiceLocationCommonSearchResponse parses an HTTP response from a BaseServiceLocationCommonSearchWithResponse call
+func ParseBaseServiceLocationCommonSearchResponse(rsp *http.Response) (*BaseServiceLocationCommonSearchResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &BaseServicePOFPCreateResponse{
+	response := &BaseServiceLocationCommonSearchResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest POFPCreateResp
+		var dest LocationCommonSearchResp
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseBaseServicePofpDeleteResponse parses an HTTP response from a BaseServicePofpDeleteWithResponse call
+func ParseBaseServicePofpDeleteResponse(rsp *http.Response) (*BaseServicePofpDeleteResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BaseServicePofpDeleteResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PofpDeleteResp
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseBaseServicePofpCreateResponse parses an HTTP response from a BaseServicePofpCreateWithResponse call
+func ParseBaseServicePofpCreateResponse(rsp *http.Response) (*BaseServicePofpCreateResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BaseServicePofpCreateResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PofpCreateResp
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseBaseServicePofpUpdateResponse parses an HTTP response from a BaseServicePofpUpdateWithResponse call
+func ParseBaseServicePofpUpdateResponse(rsp *http.Response) (*BaseServicePofpUpdateResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BaseServicePofpUpdateResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PofpUpdateResp
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseBaseServicePofpCommentResponse parses an HTTP response from a BaseServicePofpCommentWithResponse call
+func ParseBaseServicePofpCommentResponse(rsp *http.Response) (*BaseServicePofpCommentResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BaseServicePofpCommentResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PofpCommentResp
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseBaseServicePofpDetailQueryByIdResponse parses an HTTP response from a BaseServicePofpDetailQueryByIdWithResponse call
+func ParseBaseServicePofpDetailQueryByIdResponse(rsp *http.Response) (*BaseServicePofpDetailQueryByIdResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BaseServicePofpDetailQueryByIdResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PofpDetailQueryByIdResp
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseBaseServicePofpFullQueryByIdResponse parses an HTTP response from a BaseServicePofpFullQueryByIdWithResponse call
+func ParseBaseServicePofpFullQueryByIdResponse(rsp *http.Response) (*BaseServicePofpFullQueryByIdResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BaseServicePofpFullQueryByIdResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PofpFullQueryByIdResp
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseBaseServicePofpInteractionResponse parses an HTTP response from a BaseServicePofpInteractionWithResponse call
+func ParseBaseServicePofpInteractionResponse(rsp *http.Response) (*BaseServicePofpInteractionResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BaseServicePofpInteractionResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PofpInteractionResp
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -642,8 +1676,29 @@ func ParseBaseServiceWeChatRegisterFastResponse(rsp *http.Response) (*BaseServic
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
 
-	// (POST /v1/popf/create)
-	BaseServicePOFPCreate(c *gin.Context)
+	// (GET /v1/location/search)
+	BaseServiceLocationCommonSearch(c *gin.Context, params BaseServiceLocationCommonSearchParams)
+
+	// (DELETE /v1/popf)
+	BaseServicePofpDelete(c *gin.Context)
+
+	// (POST /v1/popf)
+	BaseServicePofpCreate(c *gin.Context)
+
+	// (PUT /v1/popf)
+	BaseServicePofpUpdate(c *gin.Context)
+
+	// (POST /v1/popf/comment)
+	BaseServicePofpComment(c *gin.Context)
+
+	// (GET /v1/popf/detail_query_by_id)
+	BaseServicePofpDetailQueryById(c *gin.Context, params BaseServicePofpDetailQueryByIdParams)
+
+	// (GET /v1/popf/full_query_by_id)
+	BaseServicePofpFullQueryById(c *gin.Context, params BaseServicePofpFullQueryByIdParams)
+
+	// (POST /v1/popf/interaction)
+	BaseServicePofpInteraction(c *gin.Context)
 
 	// (POST /v1/user/wx/login)
 	BaseServiceWeChatLogin(c *gin.Context)
@@ -661,8 +1716,21 @@ type ServerInterfaceWrapper struct {
 
 type MiddlewareFunc func(c *gin.Context)
 
-// BaseServicePOFPCreate operation middleware
-func (siw *ServerInterfaceWrapper) BaseServicePOFPCreate(c *gin.Context) {
+// BaseServiceLocationCommonSearch operation middleware
+func (siw *ServerInterfaceWrapper) BaseServiceLocationCommonSearch(c *gin.Context) {
+
+	var err error
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params BaseServiceLocationCommonSearchParams
+
+	// ------------- Optional query parameter "input" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "input", c.Request.URL.Query(), &params.Input)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter input: %w", err), http.StatusBadRequest)
+		return
+	}
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -671,7 +1739,124 @@ func (siw *ServerInterfaceWrapper) BaseServicePOFPCreate(c *gin.Context) {
 		}
 	}
 
-	siw.Handler.BaseServicePOFPCreate(c)
+	siw.Handler.BaseServiceLocationCommonSearch(c, params)
+}
+
+// BaseServicePofpDelete operation middleware
+func (siw *ServerInterfaceWrapper) BaseServicePofpDelete(c *gin.Context) {
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.BaseServicePofpDelete(c)
+}
+
+// BaseServicePofpCreate operation middleware
+func (siw *ServerInterfaceWrapper) BaseServicePofpCreate(c *gin.Context) {
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.BaseServicePofpCreate(c)
+}
+
+// BaseServicePofpUpdate operation middleware
+func (siw *ServerInterfaceWrapper) BaseServicePofpUpdate(c *gin.Context) {
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.BaseServicePofpUpdate(c)
+}
+
+// BaseServicePofpComment operation middleware
+func (siw *ServerInterfaceWrapper) BaseServicePofpComment(c *gin.Context) {
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.BaseServicePofpComment(c)
+}
+
+// BaseServicePofpDetailQueryById operation middleware
+func (siw *ServerInterfaceWrapper) BaseServicePofpDetailQueryById(c *gin.Context) {
+
+	var err error
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params BaseServicePofpDetailQueryByIdParams
+
+	// ------------- Optional query parameter "uuid" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "uuid", c.Request.URL.Query(), &params.Uuid)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter uuid: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.BaseServicePofpDetailQueryById(c, params)
+}
+
+// BaseServicePofpFullQueryById operation middleware
+func (siw *ServerInterfaceWrapper) BaseServicePofpFullQueryById(c *gin.Context) {
+
+	var err error
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params BaseServicePofpFullQueryByIdParams
+
+	// ------------- Optional query parameter "uuid" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "uuid", c.Request.URL.Query(), &params.Uuid)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter uuid: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.BaseServicePofpFullQueryById(c, params)
+}
+
+// BaseServicePofpInteraction operation middleware
+func (siw *ServerInterfaceWrapper) BaseServicePofpInteraction(c *gin.Context) {
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.BaseServicePofpInteraction(c)
 }
 
 // BaseServiceWeChatLogin operation middleware
@@ -727,7 +1912,14 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 		ErrorHandler:       errorHandler,
 	}
 
-	router.POST(options.BaseURL+"/v1/popf/create", wrapper.BaseServicePOFPCreate)
+	router.GET(options.BaseURL+"/v1/location/search", wrapper.BaseServiceLocationCommonSearch)
+	router.DELETE(options.BaseURL+"/v1/popf", wrapper.BaseServicePofpDelete)
+	router.POST(options.BaseURL+"/v1/popf", wrapper.BaseServicePofpCreate)
+	router.PUT(options.BaseURL+"/v1/popf", wrapper.BaseServicePofpUpdate)
+	router.POST(options.BaseURL+"/v1/popf/comment", wrapper.BaseServicePofpComment)
+	router.GET(options.BaseURL+"/v1/popf/detail_query_by_id", wrapper.BaseServicePofpDetailQueryById)
+	router.GET(options.BaseURL+"/v1/popf/full_query_by_id", wrapper.BaseServicePofpFullQueryById)
+	router.POST(options.BaseURL+"/v1/popf/interaction", wrapper.BaseServicePofpInteraction)
 	router.POST(options.BaseURL+"/v1/user/wx/login", wrapper.BaseServiceWeChatLogin)
 	router.POST(options.BaseURL+"/v1/user/wx/reg/fast", wrapper.BaseServiceWeChatRegisterFast)
 }
@@ -735,20 +1927,30 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"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",
+	"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",
+	"/S8AAP//4hiVLzEeAAA=",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

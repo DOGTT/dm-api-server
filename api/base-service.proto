@@ -3,12 +3,9 @@ syntax = "proto3";
 package base_service;
 option go_package="github.com/DOGTT/dm-api-server/api;api";
 
-
-import "fopf.proto";
+import "pofp.proto";
 import "user.proto";
 import "google/api/annotations.proto";
-
-
 
 
 // 通用业务服务接口定义.
@@ -30,47 +27,66 @@ service BaseService {
         };
     }
 
-    // 创建足迹点
-    rpc POFPCreate(POFPCreateReq) returns (POFPCreateResp) {
+    // 通用地点搜索
+    rpc LocationCommonSearch(LocationCommonSearchReq) returns (LocationCommonSearchResp) {
         option (google.api.http) = {
-            post: "/v1/popf/create"
+            get: "/v1/location/search"
+        };
+    }
+
+    // 创建足迹点
+    rpc PofpCreate(PofpCreateReq) returns (PofpCreateResp) {
+        option (google.api.http) = {
+            post: "/v1/popf"
             body: "*"
         };
     }
 
-    // // 坐标查询足迹点
-    // rpc QueryFootprintByCoordinate(QueryFootprintByCoordinateReq) returns (QueryFootprintByCoordinateResp) {
-    //     option (google.api.http) = {
-    //         post: "/v1/popf/query_by_coordinate"
-    //         body: "*"
-    //     };
-    // }
+    // 更新足迹点
+    rpc PofpUpdate(PofpUpdateReq) returns (PofpUpdateResp) {
+        option (google.api.http) = {
+            put: "/v1/popf"
+            body: "*"
+        };
+    }
+    
+    // 删除足迹点
+    rpc PofpDelete(PofpDeleteReq) returns (PofpDeleteResp) {
+        option (google.api.http) = {
+            delete: "/v1/popf"
+            body: "*"
+        };
+    }
+    
+    // 按照id查询足迹简要信息
+    rpc PofpDetailQueryById(PofpDetailQueryByIdReq) returns (PofpDetailQueryByIdResp) {
+        option (google.api.http) = {
+            get: "/v1/popf/detail_query_by_id"
+        };
+    }
 
-    // // 查询足迹点
-    // rpc QueryFootprintByTime(QueryFootprintByTimeReq) returns (QueryFootprintByTimeResp) {
-    //     option (google.api.http) = {
-    //         post: "/v1/popf/query_by_time"
-    //         body: "*"
-    //     };
-    // }
+    // 按照id查询足迹页完整信息
+    rpc PofpFullQueryById(PofpFullQueryByIdReq) returns (PofpFullQueryByIdResp) {
+        option (google.api.http) = {
+            get: "/v1/popf/full_query_by_id"
+        };
+    }
 
-
-
-    // // 删除足迹点
-    // rpc DeleteFootprint(DeleteFootprintReq) returns (DeleteFootprintResp) {
-    //     option (google.api.http) = {
-    //         delete: "/v1/popf/delete"
-    //         body: "*"
-    //     };
-    // }
-
-    // // 更新足迹点
-    // rpc UpdateFootprint(UpdateFootprintReq) returns (UpdateFootprintResp) {
-    //     option (google.api.http) = {
-    //         put: "/v1/popf/update"
-    //         body: "*"
-    //     };
-    // }
+    // 足迹点互动
+    rpc PofpInteraction(PofpInteractionReq) returns (PofpInteractionResp) {
+        option (google.api.http) = {
+            post: "/v1/popf/interaction"
+            body: "*"
+        };
+    }
+    
+    // 足迹点评论
+    rpc PofpComment(PofpCommentReq) returns (PofpCommentResp) {
+        option (google.api.http) = {
+            post: "/v1/popf/comment"
+            body: "*"
+        };
+    }
 }
 
 // 通用错误消息结构
@@ -79,56 +95,6 @@ message ErrorMessage {
     string desc = 2;
 }
 
-// message UpdateFootprintReq {
-//     string token = 1; // 用户token
-//     int64 id = 2; // 足迹点id
-//     double latitude = 3; // 纬度
-//     double longitude = 4; // 经度
-// }
-
-// message UpdateFootprintResp {}
-
-message POFPCreateReq {
-    fopf.POPFInfo pofp = 1;
-}
-
-message POFPCreateResp {
-
-}
-
-// message DeleteFootprintReq {
-//     string token = 1; // 用户token
-//     int64 id = 2; // 足迹点id
-// }
-
-// message DeleteFootprintResp {
-// }
-
-// message QueryFootprintByCoordinateReq {
-//     string token = 1; // 用户token
-//     double latitude = 2; // 纬度
-//     double longitude = 3; // 经度
-// }
-
-// message QueryFootprintByCoordinateResp {
-//     repeated Footprint footprints = 1;
-// }
-
-// message QueryFootprintByTimeReq {
-//     string token = 1; // 用户token
-//     int64 start_time = 2; // 查询开始时间戳(秒)
-//     int64 end_time = 3; // 查询结束时间戳(秒)
-// }
-
-// message QueryFootprintByTimeResp {
-//     repeated Footprint footprints = 1;
-// }
-
-// message Footprint {
-//     int64 time = 1; // 时间戳(秒)
-//     double latitude = 2; // 纬度
-//     double longitude = 3; // 经度
-// }
 
 // 登录请求
 message WeChatLoginReq {
@@ -136,19 +102,99 @@ message WeChatLoginReq {
 }
 
 message WeChatLoginResp {
-    WeChatLoginRespData data = 1;
-}
-
-message WeChatLoginRespData {
     string token = 1;
     user.UserInfo user_info = 2;
 }
 
+// 快速注册请求
 message WeChatRegisterFastReq {
     string wx_code = 1;
     user.PetInfoReg pet = 2;
 }
 
 message WeChatRegisterFastResp {
-    WeChatLoginRespData data = 1;
+    string token = 1;
+    user.UserInfo user_info = 2;
+}
+
+// 通用地点搜索请求
+message LocationCommonSearchReq {
+    string input = 1;
+}
+
+message LocationCommonSearchResp {
+    //TODO
+}
+
+// 足迹创建
+message PofpCreateReq {
+    pofp.PofpInfo pofp = 1;
+}
+
+message PofpCreateResp {
+
+}
+// 足迹更新
+message PofpUpdateReq {
+    pofp.PofpInfo pofp = 1;
+}
+
+message PofpUpdateResp {
+
+}
+
+// 足迹删除
+message PofpDeleteReq {
+    string uuid = 1;
+}
+
+message PofpDeleteResp {
+
+}
+
+message PofpQueryByBoundReq {
+    repeated int32 type_ids = 1;
+    pofp.BoundCoord bound = 2;
+}
+
+message PofpQueryByBoundResp {
+    repeated pofp.PofpInfo pofps = 1;
+}
+
+message PofpDetailQueryByIdReq {
+    string uuid = 1;
+}
+
+message PofpDetailQueryByIdResp {
+    pofp.PofpInfo pofp = 1;
+    pofp.PofpDynamicInfo pofp_dynamic_info = 2;
+}
+
+message PofpFullQueryByIdReq {
+    string uuid = 1;
+}
+
+message PofpFullQueryByIdResp {
+    pofp.PofpInfo pofp = 1;
+    pofp.PofpDynamicInfo pofp_dynamic_info = 2;
+}
+
+
+
+message PofpInteractionReq {
+    string uuid = 1;
+    // 互动类型
+    pofp.InteractionType ixn_type = 2;
+}
+
+message PofpInteractionResp {
+
+}
+
+message PofpCommentReq {
+    pofp.PofpCommentInfo comment = 1;
+}
+
+message PofpCommentResp {
+
 }

@@ -38,16 +38,16 @@ func (s *Service) WeChatLogin(ctx context.Context, req *grpc_api.WeChatLoginReq)
 		err = EM_CommonFail_Internal.PutDesc(err.Error())
 		return
 	}
-	res.Data.UserInfo, err = s.convertToUserInfo(ctx, userInfo)
+	res.UserInfo, err = s.convertToUserInfo(ctx, userInfo)
 	if err != nil {
 		return
 	}
-	token, err := s.kp.GenerateToken(userInfo.ID)
+	token, err := s.kp.GenerateToken(userInfo.Id)
 	if err != nil {
 		err = EM_CommonFail_Internal.PutDesc(err.Error())
 		return
 	}
-	res.Data.Token = token
+	res.Token = token
 	return
 }
 
@@ -82,16 +82,16 @@ func (s *Service) WeChatRegisterFast(ctx context.Context, req *grpc_api.WeChatRe
 		return
 	}
 	user := &rds.UserInfo{
-		WeChatID: resAuth.UnionID,
+		WeChatId: resAuth.UnionID,
 	}
 	pet := &rds.PetInfo{
 		Name:     req.GetPet().GetName(),
-		AvatarID: utils.GenShortenUUID(),
+		AvatarId: utils.GenShortenUUID(),
 	}
 	// save avatar
 	if req.GetPet().GetAvatarData() != nil {
 		err = s.data.PutObject(ctx, fds.BucketNameAvatar,
-			pet.AvatarID, req.GetPet().GetAvatarData())
+			pet.AvatarId, req.GetPet().GetAvatarData())
 		if err != nil {
 			err = EM_CommonFail_Internal.PutDesc(err.Error())
 			return
@@ -109,12 +109,12 @@ func (s *Service) WeChatRegisterFast(ctx context.Context, req *grpc_api.WeChatRe
 
 func (s *Service) convertToUserInfo(ctx context.Context, userInfo *rds.UserInfo) (res *grpc_api.UserInfo, err error) {
 	res = &grpc_api.UserInfo{
-		Id:   uint32(userInfo.ID),
+		Id:   uint32(userInfo.Id),
 		Pets: make([]*grpc_api.PetInfo, len(userInfo.Pets)),
 	}
 	for i, pet := range userInfo.Pets {
 		res.Pets[i] = &grpc_api.PetInfo{
-			Id:        uint32(pet.ID),
+			Id:        uint32(pet.Id),
 			Name:      pet.Name,
 			Gender:    uint32(pet.Gender),
 			BirthDate: pet.BirthDate,
@@ -122,9 +122,9 @@ func (s *Service) convertToUserInfo(ctx context.Context, userInfo *rds.UserInfo)
 			CreatedAt: timestamppb.New(pet.CreatedAt),
 			UpdatedAt: timestamppb.New(pet.UpdatedAt),
 		}
-		if pet.AvatarID != "" {
+		if pet.AvatarId != "" {
 			res.Pets[i].Avatar, err = s.data.GeneratePresignedURL(ctx,
-				fds.BucketNameAvatar, pet.AvatarID, utils.TokenExpireDuration)
+				fds.BucketNameAvatar, pet.AvatarId, utils.TokenExpireDuration)
 			if err != nil {
 				err = EM_CommonFail_Internal.PutDesc(err.Error())
 				return

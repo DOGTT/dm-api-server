@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package pofp;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package="github.com/DOGTT/dm-api-server/api;api";
+
+// 互动类型
+enum InteractionType {
+    // 点赞
+    LIKE = 0;
+    // 标记
+    MARK = 1;
+}
+
+message PointCoord {
+    float lat = 1;
+    float lng = 2;
+}
+
+message BoundCoord {
+    PointCoord sw = 1;
+    PointCoord ne = 2;
+}
+
+message PofpInfo {
+    string uuid = 1;
+    uint32 type_id = 2;
+    uint32 pid = 3;
+    string title = 4;
+    PointCoord lat_lng = 5;
+    repeated string photos = 6;
+    string content = 7;
+    string poi_id = 8;
+    string address = 9;
+    map<string, string> poi_data = 10;
+    int32 views_cnt = 11;
+    int32 likes_cnt = 12;
+    int32 marks_cnt = 13;
+    int32 comments_cnt = 14;
+    google.protobuf.Timestamp last_view = 15;
+    google.protobuf.Timestamp last_mark = 16;
+
+    google.protobuf.Timestamp created_at = 21;
+    google.protobuf.Timestamp updated_at = 22;
+}
+
+message PofpDynamicInfo {
+    string uuid = 1;
+    // TODO: add more fields
+    // 谁最近来过
+
+    // 图片轮播
+}
+
+message PofpCommentInfo {
+    string uuid = 1;
+    string parent_uuid = 2;
+    string content = 3;
+    google.protobuf.Timestamp created_at = 21;
+    google.protobuf.Timestamp updated_at = 22;
+}

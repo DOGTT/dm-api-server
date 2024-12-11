@@ -17,8 +17,8 @@ func init() {
 
 // 用户信息
 type UserInfo struct {
-	ID        uint      `gorm:"primaryKey;autoIncrement"`
-	WeChatID  string    `gorm:"type:varchar(32);unique"`
+	Id        uint      `gorm:"primaryKey;autoIncrement"`
+	WeChatId  string    `gorm:"type:varchar(32);unique"`
 	Phone     string    `gorm:"type:varchar(16);unique" validate:"email"`
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
@@ -51,7 +51,7 @@ func (c *RDSClient) CreateUserInfoWithPet(ctx context.Context, userInfo *UserInf
 		if err := tx.Create(&userInfo).Error; err != nil {
 			return err
 		}
-		petInfo.UID = userInfo.ID
+		petInfo.UId = userInfo.Id
 		if err := tx.Create(&petInfo).Error; err != nil {
 			return err
 		}
