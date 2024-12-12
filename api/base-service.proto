@@ -34,6 +34,13 @@ service BaseService {
         };
     }
 
+    // 批量获取对象上传预签名URL
+    rpc ObjectPutPresignURLBatchGet(ObjectPutPresignURLBatchGetReq) returns (ObjectPutPresignURLBatchGetResp) {
+        option (google.api.http) = {
+            get: "/v1/object/put_presign_url/batch"
+        };
+    }
+
     // 创建足迹点
     rpc PofpCreate(PofpCreateReq) returns (PofpCreateResp) {
         option (google.api.http) = {
@@ -54,6 +61,14 @@ service BaseService {
     rpc PofpDelete(PofpDeleteReq) returns (PofpDeleteResp) {
         option (google.api.http) = {
             delete: "/v1/popf"
+            body: "*"
+        };
+    }
+    
+    // 按照范围查询足迹基础信息
+    rpc PofpBaseQueryByBound(PofpBaseQueryByBoundReq) returns (PofpBaseQueryByBoundResp) {
+        option (google.api.http) = {
+            post: "/v1/popf/base_query_by_bound"
             body: "*"
         };
     }
@@ -126,6 +141,24 @@ message LocationCommonSearchResp {
     //TODO
 }
 
+// 对象类型
+enum ObjectType {
+    OT_DEFAULT = 0;
+    OT_POFP_IMAGE = 1;
+}
+
+// 批量获取对象上传预签名URL请求
+message ObjectPutPresignURLBatchGetReq {
+    ObjectType object_type  =1;
+    int32 object_count = 2;
+}
+
+message ObjectPutPresignURLBatchGetResp {
+    //TODO
+    repeated string urls = 1;
+    repeated string object_ids = 2;
+}
+
 // 足迹创建
 message PofpCreateReq {
     pofp.PofpInfo pofp = 1;
@@ -152,12 +185,14 @@ message PofpDeleteResp {
 
 }
 
-message PofpQueryByBoundReq {
+message PofpBaseQueryByBoundReq {
+    // 足迹类型id列表
     repeated int32 type_ids = 1;
+    // 坐标范围
     pofp.BoundCoord bound = 2;
 }
 
-message PofpQueryByBoundResp {
+message PofpBaseQueryByBoundResp {
     repeated pofp.PofpInfo pofps = 1;
 }
 

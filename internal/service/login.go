@@ -38,11 +38,18 @@ func (s *Service) WeChatLogin(ctx context.Context, req *grpc_api.WeChatLoginReq)
 		err = EM_CommonFail_Internal.PutDesc(err.Error())
 		return
 	}
+	ackPId := uint(0)
+	if len(userInfo.Pets) > 0 {
+		ackPId = userInfo.Pets[0].Id
+	}
 	res.UserInfo, err = s.convertToUserInfo(ctx, userInfo)
 	if err != nil {
 		return
 	}
-	token, err := s.kp.GenerateToken(userInfo.Id)
+	token, err := s.kp.GenerateToken(utils.TokenClaims{
+		UID: userInfo.Id,
+		PID: ackPId,
+	})
 	if err != nil {
 		err = EM_CommonFail_Internal.PutDesc(err.Error())
 		return
@@ -103,7 +110,21 @@ func (s *Service) WeChatRegisterFast(ctx context.Context, req *grpc_api.WeChatRe
 		err = EM_AuthFail_NotFound.PutDesc(err.Error())
 		return
 	}
-
+	// 3. Query Info
+	user.Pets = []*rds.PetInfo{pet}
+	res.UserInfo, err = s.convertToUserInfo(ctx, user)
+	if err != nil {
+		return
+	}
+	token, err := s.kp.GenerateToken(utils.TokenClaims{
+		UID: user.Id,
+		PID: pet.Id,
+	})
+	if err != nil {
+		err = EM_CommonFail_Internal.PutDesc(err.Error())
+		return
+	}
+	res.Token = token
 	return
 }
 

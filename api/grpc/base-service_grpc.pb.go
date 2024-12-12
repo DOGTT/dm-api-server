@@ -19,16 +19,18 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	BaseService_WeChatLogin_FullMethodName          = "/base_service.BaseService/WeChatLogin"
-	BaseService_WeChatRegisterFast_FullMethodName   = "/base_service.BaseService/WeChatRegisterFast"
-	BaseService_LocationCommonSearch_FullMethodName = "/base_service.BaseService/LocationCommonSearch"
-	BaseService_PofpCreate_FullMethodName           = "/base_service.BaseService/PofpCreate"
-	BaseService_PofpUpdate_FullMethodName           = "/base_service.BaseService/PofpUpdate"
-	BaseService_PofpDelete_FullMethodName           = "/base_service.BaseService/PofpDelete"
-	BaseService_PofpDetailQueryById_FullMethodName  = "/base_service.BaseService/PofpDetailQueryById"
-	BaseService_PofpFullQueryById_FullMethodName    = "/base_service.BaseService/PofpFullQueryById"
-	BaseService_PofpInteraction_FullMethodName      = "/base_service.BaseService/PofpInteraction"
-	BaseService_PofpComment_FullMethodName          = "/base_service.BaseService/PofpComment"
+	BaseService_WeChatLogin_FullMethodName                 = "/base_service.BaseService/WeChatLogin"
+	BaseService_WeChatRegisterFast_FullMethodName          = "/base_service.BaseService/WeChatRegisterFast"
+	BaseService_LocationCommonSearch_FullMethodName        = "/base_service.BaseService/LocationCommonSearch"
+	BaseService_ObjectPutPresignURLBatchGet_FullMethodName = "/base_service.BaseService/ObjectPutPresignURLBatchGet"
+	BaseService_PofpCreate_FullMethodName                  = "/base_service.BaseService/PofpCreate"
+	BaseService_PofpUpdate_FullMethodName                  = "/base_service.BaseService/PofpUpdate"
+	BaseService_PofpDelete_FullMethodName                  = "/base_service.BaseService/PofpDelete"
+	BaseService_PofpBaseQueryByBound_FullMethodName        = "/base_service.BaseService/PofpBaseQueryByBound"
+	BaseService_PofpDetailQueryById_FullMethodName         = "/base_service.BaseService/PofpDetailQueryById"
+	BaseService_PofpFullQueryById_FullMethodName           = "/base_service.BaseService/PofpFullQueryById"
+	BaseService_PofpInteraction_FullMethodName             = "/base_service.BaseService/PofpInteraction"
+	BaseService_PofpComment_FullMethodName                 = "/base_service.BaseService/PofpComment"
 )
 
 // BaseServiceClient is the client API for BaseService service.
@@ -44,12 +46,16 @@ type BaseServiceClient interface {
 	WeChatRegisterFast(ctx context.Context, in *WeChatRegisterFastReq, opts ...grpc.CallOption) (*WeChatRegisterFastResp, error)
 	// 通用地点搜索
 	LocationCommonSearch(ctx context.Context, in *LocationCommonSearchReq, opts ...grpc.CallOption) (*LocationCommonSearchResp, error)
+	// 批量获取对象上传预签名URL
+	ObjectPutPresignURLBatchGet(ctx context.Context, in *ObjectPutPresignURLBatchGetReq, opts ...grpc.CallOption) (*ObjectPutPresignURLBatchGetResp, error)
 	// 创建足迹点
 	PofpCreate(ctx context.Context, in *PofpCreateReq, opts ...grpc.CallOption) (*PofpCreateResp, error)
 	// 更新足迹点
 	PofpUpdate(ctx context.Context, in *PofpUpdateReq, opts ...grpc.CallOption) (*PofpUpdateResp, error)
 	// 删除足迹点
 	PofpDelete(ctx context.Context, in *PofpDeleteReq, opts ...grpc.CallOption) (*PofpDeleteResp, error)
+	// 按照范围查询足迹基础信息
+	PofpBaseQueryByBound(ctx context.Context, in *PofpBaseQueryByBoundReq, opts ...grpc.CallOption) (*PofpBaseQueryByBoundResp, error)
 	// 按照id查询足迹简要信息
 	PofpDetailQueryById(ctx context.Context, in *PofpDetailQueryByIdReq, opts ...grpc.CallOption) (*PofpDetailQueryByIdResp, error)
 	// 按照id查询足迹页完整信息
@@ -98,6 +104,16 @@ func (c *baseServiceClient) LocationCommonSearch(ctx context.Context, in *Locati
 	return out, nil
 }
 
+func (c *baseServiceClient) ObjectPutPresignURLBatchGet(ctx context.Context, in *ObjectPutPresignURLBatchGetReq, opts ...grpc.CallOption) (*ObjectPutPresignURLBatchGetResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ObjectPutPresignURLBatchGetResp)
+	err := c.cc.Invoke(ctx, BaseService_ObjectPutPresignURLBatchGet_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *baseServiceClient) PofpCreate(ctx context.Context, in *PofpCreateReq, opts ...grpc.CallOption) (*PofpCreateResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(PofpCreateResp)
@@ -122,6 +138,16 @@ func (c *baseServiceClient) PofpDelete(ctx context.Context, in *PofpDeleteReq, o
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(PofpDeleteResp)
 	err := c.cc.Invoke(ctx, BaseService_PofpDelete_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *baseServiceClient) PofpBaseQueryByBound(ctx context.Context, in *PofpBaseQueryByBoundReq, opts ...grpc.CallOption) (*PofpBaseQueryByBoundResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(PofpBaseQueryByBoundResp)
+	err := c.cc.Invoke(ctx, BaseService_PofpBaseQueryByBound_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -181,12 +207,16 @@ type BaseServiceServer interface {
 	WeChatRegisterFast(context.Context, *WeChatRegisterFastReq) (*WeChatRegisterFastResp, error)
 	// 通用地点搜索
 	LocationCommonSearch(context.Context, *LocationCommonSearchReq) (*LocationCommonSearchResp, error)
+	// 批量获取对象上传预签名URL
+	ObjectPutPresignURLBatchGet(context.Context, *ObjectPutPresignURLBatchGetReq) (*ObjectPutPresignURLBatchGetResp, error)
 	// 创建足迹点
 	PofpCreate(context.Context, *PofpCreateReq) (*PofpCreateResp, error)
 	// 更新足迹点
 	PofpUpdate(context.Context, *PofpUpdateReq) (*PofpUpdateResp, error)
 	// 删除足迹点
 	PofpDelete(context.Context, *PofpDeleteReq) (*PofpDeleteResp, error)
+	// 按照范围查询足迹基础信息
+	PofpBaseQueryByBound(context.Context, *PofpBaseQueryByBoundReq) (*PofpBaseQueryByBoundResp, error)
 	// 按照id查询足迹简要信息
 	PofpDetailQueryById(context.Context, *PofpDetailQueryByIdReq) (*PofpDetailQueryByIdResp, error)
 	// 按照id查询足迹页完整信息
@@ -214,6 +244,9 @@ func (UnimplementedBaseServiceServer) WeChatRegisterFast(context.Context, *WeCha
 func (UnimplementedBaseServiceServer) LocationCommonSearch(context.Context, *LocationCommonSearchReq) (*LocationCommonSearchResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LocationCommonSearch not implemented")
 }
+func (UnimplementedBaseServiceServer) ObjectPutPresignURLBatchGet(context.Context, *ObjectPutPresignURLBatchGetReq) (*ObjectPutPresignURLBatchGetResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ObjectPutPresignURLBatchGet not implemented")
+}
 func (UnimplementedBaseServiceServer) PofpCreate(context.Context, *PofpCreateReq) (*PofpCreateResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PofpCreate not implemented")
 }
@@ -222,6 +255,9 @@ func (UnimplementedBaseServiceServer) PofpUpdate(context.Context, *PofpUpdateReq
 }
 func (UnimplementedBaseServiceServer) PofpDelete(context.Context, *PofpDeleteReq) (*PofpDeleteResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PofpDelete not implemented")
+}
+func (UnimplementedBaseServiceServer) PofpBaseQueryByBound(context.Context, *PofpBaseQueryByBoundReq) (*PofpBaseQueryByBoundResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PofpBaseQueryByBound not implemented")
 }
 func (UnimplementedBaseServiceServer) PofpDetailQueryById(context.Context, *PofpDetailQueryByIdReq) (*PofpDetailQueryByIdResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PofpDetailQueryById not implemented")
@@ -310,6 +346,24 @@ func _BaseService_LocationCommonSearch_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BaseService_ObjectPutPresignURLBatchGet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ObjectPutPresignURLBatchGetReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BaseServiceServer).ObjectPutPresignURLBatchGet(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BaseService_ObjectPutPresignURLBatchGet_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BaseServiceServer).ObjectPutPresignURLBatchGet(ctx, req.(*ObjectPutPresignURLBatchGetReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _BaseService_PofpCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(PofpCreateReq)
 	if err := dec(in); err != nil {
@@ -360,6 +414,24 @@ func _BaseService_PofpDelete_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(BaseServiceServer).PofpDelete(ctx, req.(*PofpDeleteReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BaseService_PofpBaseQueryByBound_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PofpBaseQueryByBoundReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BaseServiceServer).PofpBaseQueryByBound(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BaseService_PofpBaseQueryByBound_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BaseServiceServer).PofpBaseQueryByBound(ctx, req.(*PofpBaseQueryByBoundReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -456,6 +528,10 @@ var BaseService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _BaseService_LocationCommonSearch_Handler,
 		},
 		{
+			MethodName: "ObjectPutPresignURLBatchGet",
+			Handler:    _BaseService_ObjectPutPresignURLBatchGet_Handler,
+		},
+		{
 			MethodName: "PofpCreate",
 			Handler:    _BaseService_PofpCreate_Handler,
 		},
@@ -466,6 +542,10 @@ var BaseService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PofpDelete",
 			Handler:    _BaseService_PofpDelete_Handler,
+		},
+		{
+			MethodName: "PofpBaseQueryByBound",
+			Handler:    _BaseService_PofpBaseQueryByBound_Handler,
 		},
 		{
 			MethodName: "PofpDetailQueryById",

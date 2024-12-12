@@ -47,7 +47,7 @@ func PointCoordToGeometry(p *grpc_api.PointCoord) string {
 
 func PointCoordFromGeometry(s string) *grpc_api.PointCoord {
 	var lat, lng float32
-	fmt.Sscanf(s, "SRID=4326;POINT(%f %f)", &lng, &lat) // 经度在前，纬度在后
+	_, _ = fmt.Sscanf(s, "SRID=4326;POINT(%f %f)", &lng, &lat) // 经度在前，纬度在后
 	return &grpc_api.PointCoord{
 		Lat: lat,
 		Lng: lng,

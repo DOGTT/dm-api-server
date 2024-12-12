@@ -35,7 +35,7 @@ func AuthMiddleware(whitelist []string, svc *service.Service) gin.HandlerFunc {
 		// 从请求中获取 Authorization 标头
 		token := c.GetHeader("Authorization")
 
-		if uid, err := svc.AuthToken(token); err != nil {
+		if tc, err := svc.AuthToken(token); err != nil {
 			emAPI := &grpc_api.ErrorMessage{
 				Code: err.Code,
 				Desc: err.Desc,
@@ -44,7 +44,7 @@ func AuthMiddleware(whitelist []string, svc *service.Service) gin.HandlerFunc {
 			c.Abort() // 中止请求
 			return
 		} else {
-			c.Set("TOKEN_UID", uid)
+			c.Set(string(service.TOKEN_CLAIM_KEY), tc)
 		}
 
 		// 鉴权通过，继续处理请求
@@ -68,7 +68,7 @@ func NewGinHandler(c *conf.Server, svc *service.Service) http.Handler {
 	r.Use(ginzap.RecoveryWithZap(zap.L(), true))
 
 	if c.HTTP.EnableTrace {
-		r.Use(otelgin.Middleware("dog-api-server"))
+		r.Use(otelgin.Middleware("dm-api-server"))
 	}
 	if c.HTTP.EnableMetric {
 		r.Use(ginmiddleware.Handler("", middleware.New(middleware.Config{

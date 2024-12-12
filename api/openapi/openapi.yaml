@@ -27,6 +27,30 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/LocationCommonSearchResp'
+    /v1/object/put_presign_url/batch:
+        get:
+            tags:
+                - BaseService
+            description: 批量获取对象上传预签名URL
+            operationId: BaseService_ObjectPutPresignURLBatchGet
+            parameters:
+                - name: objectType
+                  in: query
+                  schema:
+                    type: integer
+                    format: enum
+                - name: objectCount
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ObjectPutPresignURLBatchGetResp'
     /v1/popf:
         put:
             tags:
@@ -82,6 +106,25 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/PofpDeleteResp'
+    /v1/popf/base_query_by_bound:
+        post:
+            tags:
+                - BaseService
+            description: 按照范围查询足迹基础信息
+            operationId: BaseService_PofpBaseQueryByBound
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/PofpBaseQueryByBoundReq'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/PofpBaseQueryByBoundResp'
     /v1/popf/comment:
         post:
             tags:
@@ -196,9 +239,28 @@ paths:
                                 $ref: '#/components/schemas/WeChatRegisterFastResp'
 components:
     schemas:
+        BoundCoord:
+            type: object
+            properties:
+                sw:
+                    $ref: '#/components/schemas/PointCoord'
+                ne:
+                    $ref: '#/components/schemas/PointCoord'
         LocationCommonSearchResp:
             type: object
             properties: {}
+        ObjectPutPresignURLBatchGetResp:
+            type: object
+            properties:
+                urls:
+                    type: array
+                    items:
+                        type: string
+                    description: TODO
+                objectIds:
+                    type: array
+                    items:
+                        type: string
         PetInfo:
             type: object
             properties:
@@ -238,6 +300,26 @@ components:
                     description: base64 data
                     format: bytes
             description: 宠物注册信息
+        PofpBaseQueryByBoundReq:
+            type: object
+            properties:
+                typeIds:
+                    type: array
+                    items:
+                        type: integer
+                        format: int32
+                    description: 足迹类型id列表
+                bound:
+                    allOf:
+                        - $ref: '#/components/schemas/BoundCoord'
+                    description: 坐标范围
+        PofpBaseQueryByBoundResp:
+            type: object
+            properties:
+                pofps:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/PofpInfo'
         PofpCommentInfo:
             type: object
             properties:

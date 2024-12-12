@@ -22,8 +22,22 @@ import (
 	"github.com/oapi-codegen/runtime"
 )
 
+// BoundCoord defines model for BoundCoord.
+type BoundCoord struct {
+	Ne *PointCoord `json:"ne,omitempty"`
+	Sw *PointCoord `json:"sw,omitempty"`
+}
+
 // LocationCommonSearchResp defines model for LocationCommonSearchResp.
 type LocationCommonSearchResp = map[string]interface{}
+
+// ObjectPutPresignURLBatchGetResp defines model for ObjectPutPresignURLBatchGetResp.
+type ObjectPutPresignURLBatchGetResp struct {
+	ObjectIds *[]string `json:"objectIds,omitempty"`
+
+	// Urls TODO
+	Urls *[]string `json:"urls,omitempty"`
+}
 
 // PetInfo defines model for PetInfo.
 type PetInfo struct {
@@ -46,6 +60,20 @@ type PetInfoReg struct {
 
 	// Name 名字
 	Name *string `json:"name,omitempty"`
+}
+
+// PofpBaseQueryByBoundReq defines model for PofpBaseQueryByBoundReq.
+type PofpBaseQueryByBoundReq struct {
+	// Bound 坐标范围
+	Bound *BoundCoord `json:"bound,omitempty"`
+
+	// TypeIds 足迹类型id列表
+	TypeIds *[]int32 `json:"typeIds,omitempty"`
+}
+
+// PofpBaseQueryByBoundResp defines model for PofpBaseQueryByBoundResp.
+type PofpBaseQueryByBoundResp struct {
+	Pofps *[]PofpInfo `json:"pofps,omitempty"`
 }
 
 // PofpCommentInfo defines model for PofpCommentInfo.
@@ -179,6 +207,12 @@ type BaseServiceLocationCommonSearchParams struct {
 	Input *string `form:"input,omitempty" json:"input,omitempty"`
 }
 
+// BaseServiceObjectPutPresignURLBatchGetParams defines parameters for BaseServiceObjectPutPresignURLBatchGet.
+type BaseServiceObjectPutPresignURLBatchGetParams struct {
+	ObjectType  *int   `form:"objectType,omitempty" json:"objectType,omitempty"`
+	ObjectCount *int32 `form:"objectCount,omitempty" json:"objectCount,omitempty"`
+}
+
 // BaseServicePofpDetailQueryByIdParams defines parameters for BaseServicePofpDetailQueryById.
 type BaseServicePofpDetailQueryByIdParams struct {
 	Uuid *string `form:"uuid,omitempty" json:"uuid,omitempty"`
@@ -197,6 +231,9 @@ type BaseServicePofpCreateJSONRequestBody = PofpCreateReq
 
 // BaseServicePofpUpdateJSONRequestBody defines body for BaseServicePofpUpdate for application/json ContentType.
 type BaseServicePofpUpdateJSONRequestBody = PofpUpdateReq
+
+// BaseServicePofpBaseQueryByBoundJSONRequestBody defines body for BaseServicePofpBaseQueryByBound for application/json ContentType.
+type BaseServicePofpBaseQueryByBoundJSONRequestBody = PofpBaseQueryByBoundReq
 
 // BaseServicePofpCommentJSONRequestBody defines body for BaseServicePofpComment for application/json ContentType.
 type BaseServicePofpCommentJSONRequestBody = PofpCommentReq
@@ -286,6 +323,9 @@ type ClientInterface interface {
 	// BaseServiceLocationCommonSearch request
 	BaseServiceLocationCommonSearch(ctx context.Context, params *BaseServiceLocationCommonSearchParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// BaseServiceObjectPutPresignURLBatchGet request
+	BaseServiceObjectPutPresignURLBatchGet(ctx context.Context, params *BaseServiceObjectPutPresignURLBatchGetParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// BaseServicePofpDeleteWithBody request with any body
 	BaseServicePofpDeleteWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -300,6 +340,11 @@ type ClientInterface interface {
 	BaseServicePofpUpdateWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	BaseServicePofpUpdate(ctx context.Context, body BaseServicePofpUpdateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BaseServicePofpBaseQueryByBoundWithBody request with any body
+	BaseServicePofpBaseQueryByBoundWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	BaseServicePofpBaseQueryByBound(ctx context.Context, body BaseServicePofpBaseQueryByBoundJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// BaseServicePofpCommentWithBody request with any body
 	BaseServicePofpCommentWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -330,6 +375,18 @@ type ClientInterface interface {
 
 func (c *Client) BaseServiceLocationCommonSearch(ctx context.Context, params *BaseServiceLocationCommonSearchParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewBaseServiceLocationCommonSearchRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServiceObjectPutPresignURLBatchGet(ctx context.Context, params *BaseServiceObjectPutPresignURLBatchGetParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServiceObjectPutPresignURLBatchGetRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -402,6 +459,30 @@ func (c *Client) BaseServicePofpUpdateWithBody(ctx context.Context, contentType 
 
 func (c *Client) BaseServicePofpUpdate(ctx context.Context, body BaseServicePofpUpdateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewBaseServicePofpUpdateRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServicePofpBaseQueryByBoundWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServicePofpBaseQueryByBoundRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServicePofpBaseQueryByBound(ctx context.Context, body BaseServicePofpBaseQueryByBoundJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServicePofpBaseQueryByBoundRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -581,6 +662,71 @@ func NewBaseServiceLocationCommonSearchRequest(server string, params *BaseServic
 	return req, nil
 }
 
+// NewBaseServiceObjectPutPresignURLBatchGetRequest generates requests for BaseServiceObjectPutPresignURLBatchGet
+func NewBaseServiceObjectPutPresignURLBatchGetRequest(server string, params *BaseServiceObjectPutPresignURLBatchGetParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/object/put_presign_url/batch")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.ObjectType != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "objectType", runtime.ParamLocationQuery, *params.ObjectType); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ObjectCount != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "objectCount", runtime.ParamLocationQuery, *params.ObjectCount); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewBaseServicePofpDeleteRequest calls the generic BaseServicePofpDelete builder with application/json body
 func NewBaseServicePofpDeleteRequest(server string, body BaseServicePofpDeleteJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -692,6 +838,46 @@ func NewBaseServicePofpUpdateRequestWithBody(server string, contentType string, 
 	}
 
 	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewBaseServicePofpBaseQueryByBoundRequest calls the generic BaseServicePofpBaseQueryByBound builder with application/json body
+func NewBaseServicePofpBaseQueryByBoundRequest(server string, body BaseServicePofpBaseQueryByBoundJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewBaseServicePofpBaseQueryByBoundRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewBaseServicePofpBaseQueryByBoundRequestWithBody generates requests for BaseServicePofpBaseQueryByBound with any type of body
+func NewBaseServicePofpBaseQueryByBoundRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/popf/base_query_by_bound")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
 	if err != nil {
 		return nil, err
 	}
@@ -1005,6 +1191,9 @@ type ClientWithResponsesInterface interface {
 	// BaseServiceLocationCommonSearchWithResponse request
 	BaseServiceLocationCommonSearchWithResponse(ctx context.Context, params *BaseServiceLocationCommonSearchParams, reqEditors ...RequestEditorFn) (*BaseServiceLocationCommonSearchResponse, error)
 
+	// BaseServiceObjectPutPresignURLBatchGetWithResponse request
+	BaseServiceObjectPutPresignURLBatchGetWithResponse(ctx context.Context, params *BaseServiceObjectPutPresignURLBatchGetParams, reqEditors ...RequestEditorFn) (*BaseServiceObjectPutPresignURLBatchGetResponse, error)
+
 	// BaseServicePofpDeleteWithBodyWithResponse request with any body
 	BaseServicePofpDeleteWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServicePofpDeleteResponse, error)
 
@@ -1019,6 +1208,11 @@ type ClientWithResponsesInterface interface {
 	BaseServicePofpUpdateWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServicePofpUpdateResponse, error)
 
 	BaseServicePofpUpdateWithResponse(ctx context.Context, body BaseServicePofpUpdateJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServicePofpUpdateResponse, error)
+
+	// BaseServicePofpBaseQueryByBoundWithBodyWithResponse request with any body
+	BaseServicePofpBaseQueryByBoundWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServicePofpBaseQueryByBoundResponse, error)
+
+	BaseServicePofpBaseQueryByBoundWithResponse(ctx context.Context, body BaseServicePofpBaseQueryByBoundJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServicePofpBaseQueryByBoundResponse, error)
 
 	// BaseServicePofpCommentWithBodyWithResponse request with any body
 	BaseServicePofpCommentWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServicePofpCommentResponse, error)
@@ -1063,6 +1257,28 @@ func (r BaseServiceLocationCommonSearchResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r BaseServiceLocationCommonSearchResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type BaseServiceObjectPutPresignURLBatchGetResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *ObjectPutPresignURLBatchGetResp
+}
+
+// Status returns HTTPResponse.Status
+func (r BaseServiceObjectPutPresignURLBatchGetResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BaseServiceObjectPutPresignURLBatchGetResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -1129,6 +1345,28 @@ func (r BaseServicePofpUpdateResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r BaseServicePofpUpdateResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type BaseServicePofpBaseQueryByBoundResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *PofpBaseQueryByBoundResp
+}
+
+// Status returns HTTPResponse.Status
+func (r BaseServicePofpBaseQueryByBoundResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BaseServicePofpBaseQueryByBoundResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -1276,6 +1514,15 @@ func (c *ClientWithResponses) BaseServiceLocationCommonSearchWithResponse(ctx co
 	return ParseBaseServiceLocationCommonSearchResponse(rsp)
 }
 
+// BaseServiceObjectPutPresignURLBatchGetWithResponse request returning *BaseServiceObjectPutPresignURLBatchGetResponse
+func (c *ClientWithResponses) BaseServiceObjectPutPresignURLBatchGetWithResponse(ctx context.Context, params *BaseServiceObjectPutPresignURLBatchGetParams, reqEditors ...RequestEditorFn) (*BaseServiceObjectPutPresignURLBatchGetResponse, error) {
+	rsp, err := c.BaseServiceObjectPutPresignURLBatchGet(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServiceObjectPutPresignURLBatchGetResponse(rsp)
+}
+
 // BaseServicePofpDeleteWithBodyWithResponse request with arbitrary body returning *BaseServicePofpDeleteResponse
 func (c *ClientWithResponses) BaseServicePofpDeleteWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServicePofpDeleteResponse, error) {
 	rsp, err := c.BaseServicePofpDeleteWithBody(ctx, contentType, body, reqEditors...)
@@ -1325,6 +1572,23 @@ func (c *ClientWithResponses) BaseServicePofpUpdateWithResponse(ctx context.Cont
 		return nil, err
 	}
 	return ParseBaseServicePofpUpdateResponse(rsp)
+}
+
+// BaseServicePofpBaseQueryByBoundWithBodyWithResponse request with arbitrary body returning *BaseServicePofpBaseQueryByBoundResponse
+func (c *ClientWithResponses) BaseServicePofpBaseQueryByBoundWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServicePofpBaseQueryByBoundResponse, error) {
+	rsp, err := c.BaseServicePofpBaseQueryByBoundWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServicePofpBaseQueryByBoundResponse(rsp)
+}
+
+func (c *ClientWithResponses) BaseServicePofpBaseQueryByBoundWithResponse(ctx context.Context, body BaseServicePofpBaseQueryByBoundJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServicePofpBaseQueryByBoundResponse, error) {
+	rsp, err := c.BaseServicePofpBaseQueryByBound(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServicePofpBaseQueryByBoundResponse(rsp)
 }
 
 // BaseServicePofpCommentWithBodyWithResponse request with arbitrary body returning *BaseServicePofpCommentResponse
@@ -1439,6 +1703,32 @@ func ParseBaseServiceLocationCommonSearchResponse(rsp *http.Response) (*BaseServ
 	return response, nil
 }
 
+// ParseBaseServiceObjectPutPresignURLBatchGetResponse parses an HTTP response from a BaseServiceObjectPutPresignURLBatchGetWithResponse call
+func ParseBaseServiceObjectPutPresignURLBatchGetResponse(rsp *http.Response) (*BaseServiceObjectPutPresignURLBatchGetResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BaseServiceObjectPutPresignURLBatchGetResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ObjectPutPresignURLBatchGetResp
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseBaseServicePofpDeleteResponse parses an HTTP response from a BaseServicePofpDeleteWithResponse call
 func ParseBaseServicePofpDeleteResponse(rsp *http.Response) (*BaseServicePofpDeleteResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -1507,6 +1797,32 @@ func ParseBaseServicePofpUpdateResponse(rsp *http.Response) (*BaseServicePofpUpd
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest PofpUpdateResp
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseBaseServicePofpBaseQueryByBoundResponse parses an HTTP response from a BaseServicePofpBaseQueryByBoundWithResponse call
+func ParseBaseServicePofpBaseQueryByBoundResponse(rsp *http.Response) (*BaseServicePofpBaseQueryByBoundResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BaseServicePofpBaseQueryByBoundResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PofpBaseQueryByBoundResp
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -1679,6 +1995,9 @@ type ServerInterface interface {
 	// (GET /v1/location/search)
 	BaseServiceLocationCommonSearch(c *gin.Context, params BaseServiceLocationCommonSearchParams)
 
+	// (GET /v1/object/put_presign_url/batch)
+	BaseServiceObjectPutPresignURLBatchGet(c *gin.Context, params BaseServiceObjectPutPresignURLBatchGetParams)
+
 	// (DELETE /v1/popf)
 	BaseServicePofpDelete(c *gin.Context)
 
@@ -1687,6 +2006,9 @@ type ServerInterface interface {
 
 	// (PUT /v1/popf)
 	BaseServicePofpUpdate(c *gin.Context)
+
+	// (POST /v1/popf/base_query_by_bound)
+	BaseServicePofpBaseQueryByBound(c *gin.Context)
 
 	// (POST /v1/popf/comment)
 	BaseServicePofpComment(c *gin.Context)
@@ -1742,6 +2064,40 @@ func (siw *ServerInterfaceWrapper) BaseServiceLocationCommonSearch(c *gin.Contex
 	siw.Handler.BaseServiceLocationCommonSearch(c, params)
 }
 
+// BaseServiceObjectPutPresignURLBatchGet operation middleware
+func (siw *ServerInterfaceWrapper) BaseServiceObjectPutPresignURLBatchGet(c *gin.Context) {
+
+	var err error
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params BaseServiceObjectPutPresignURLBatchGetParams
+
+	// ------------- Optional query parameter "objectType" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "objectType", c.Request.URL.Query(), &params.ObjectType)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter objectType: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "objectCount" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "objectCount", c.Request.URL.Query(), &params.ObjectCount)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter objectCount: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.BaseServiceObjectPutPresignURLBatchGet(c, params)
+}
+
 // BaseServicePofpDelete operation middleware
 func (siw *ServerInterfaceWrapper) BaseServicePofpDelete(c *gin.Context) {
 
@@ -1779,6 +2135,19 @@ func (siw *ServerInterfaceWrapper) BaseServicePofpUpdate(c *gin.Context) {
 	}
 
 	siw.Handler.BaseServicePofpUpdate(c)
+}
+
+// BaseServicePofpBaseQueryByBound operation middleware
+func (siw *ServerInterfaceWrapper) BaseServicePofpBaseQueryByBound(c *gin.Context) {
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.BaseServicePofpBaseQueryByBound(c)
 }
 
 // BaseServicePofpComment operation middleware
@@ -1913,9 +2282,11 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	}
 
 	router.GET(options.BaseURL+"/v1/location/search", wrapper.BaseServiceLocationCommonSearch)
+	router.GET(options.BaseURL+"/v1/object/put_presign_url/batch", wrapper.BaseServiceObjectPutPresignURLBatchGet)
 	router.DELETE(options.BaseURL+"/v1/popf", wrapper.BaseServicePofpDelete)
 	router.POST(options.BaseURL+"/v1/popf", wrapper.BaseServicePofpCreate)
 	router.PUT(options.BaseURL+"/v1/popf", wrapper.BaseServicePofpUpdate)
+	router.POST(options.BaseURL+"/v1/popf/base_query_by_bound", wrapper.BaseServicePofpBaseQueryByBound)
 	router.POST(options.BaseURL+"/v1/popf/comment", wrapper.BaseServicePofpComment)
 	router.GET(options.BaseURL+"/v1/popf/detail_query_by_id", wrapper.BaseServicePofpDetailQueryById)
 	router.GET(options.BaseURL+"/v1/popf/full_query_by_id", wrapper.BaseServicePofpFullQueryById)
@@ -1927,30 +2298,34 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"H4sIAAAAAAAC/9RYXW8bRRf+K9G876WJ0xZx4bs2oVJEgZJSuChRNdk9tqfZnZnOzCa1okhtBYh+0QpR",
-	"UD9Em0IhCJG0avlIKsifydrOv0Czu87u2rPedRzX6o1l7ZyZOed5Zs45z6wgi7mcUaBKosoKklYdXBz8",
-	"PcUsrAij08x1GT0DWFj1OZBcj6kGB1RBbOECWAqtltBpULO0yvQYF4yDUASCVfASVlgk5kglCK3pOQtE",
-	"qPoMVmAeFQC2ccQSgBXYx5UerTLhYoUqyMYK3lLEBVTqnVIDaoNI2XuEqmNHY2NCFdRAaGtiF7Wk2DV7",
-	"LzlYxDzkcXtQ95eB1Opp+yyfVkuZ5MxBTS9hg7QE4ZpaVEH+xuPWtV+bL9b9L2/u7qw1r2yikpHCGaxw",
-	"7/QFLOGdtydsPViKvVtoKJCmSDqAdTlx55b/+/e99sZgWJXrIwk048RZjCqg6rCODscCqDrrEfuw2PTM",
-	"a+UEOwcXTbEGY/rv/wVUUQX9rxxf6HJ0m8vdmOXvlXXNtU2AYeROmsf2ny/aO1v+Vw/8V9s9x4izKi/i",
-	"aI6H0e59HJwBB3IcfLx376ceBwfkpbNNX08UJs5HHojGicas3bEdBpdSYD/ToNglVucC5E1NmmfHk15z",
-	"KGxOes6bEnZG2bJtAVKak0h4SeQ0LZaSS4edkhws1ftYLA424xMCy4PMUKdoLR9lQtU0Y8IO5pBFGAAV",
-	"F4vFAcx5nSkWMEIUuGZqog9YCNwI5hQv5ZyRTonDtk10wsDO6dShyNouPlCckVlznVBEOZC5yGxhNw+v",
-	"3pTQEoHlwgRk3x8FAlsaL2OJIpfox8G87ly8u/2Nf3299fyV/8ONZO8A1HPNoQ+Wg1KO9UnSZwNE+5SL",
-	"5oOXze+ejaiedXbPdHD/gvUg6+A0c1WHYRUjRz13IQTOCS9ynqHJxbMShDlDDnCzQKWvbV/EIiHRc5lN",
-	"3n0K03WsTrEaoUb+Wvde+f/cbW/+1Xx+tYe/5UvTzIaCByq1k6mcKbYI1NwhJiDsF/k+1H0cmIMakQrE",
-	"SSyVMWJ/57e9y4/Cdj4jbg6qIAlaMGj1MThQaT9fP176E4nWSAO0d/l+69v13b/v+9fXmg9v6d+vn/q3",
-	"f/Q37u9uXZv8jE6ce/eD+Ynjp2cnWHXiDIglYsEk2k/g6ASWEH3WVqiElkDIcPGpyanJIzoGxoFiTlAF",
-	"HZucmjymOcCqHgReXjpSdiJpXZaBqtafayErJmf9h89aV7eadx62Xj5BwdoimK2LRtIdk2APdhbYBQVC",
-	"osq5FUT0whd1b4Y6cgwRyj2dEEJoTUzPl5AAyRmVIX1Hp6a6tBbm3CFRWBcko/FrQh6RmQ8NAY1pRD58",
-	"L6Qb13Q0yejRvB7Q6HLGqyGWukE33JGg/Q9ze+vqVj9I4z4faQAueiDVCWY3Di32tF4JAtbbEAE2qijh",
-	"weoIge9SMYPCrdsdqUz4av1XGN9Q0Y0Q31iwjgHfhF49AL6eAd6wHSkMb9hgjBDeuH8aA7yJ9mmIbFFO",
-	"vKOYz/Q+3O3Nz9sb27lnOlpvhIc6fhUax6lOvBMNg7sdPJCcD8rR+YXG+bCpNNbC5s1rrS9+IXbz0dP2",
-	"5pOIj43L7Z+v7D9b5qTx1FtMscIYSI5x1cWsF6RhAK96zsHh3lv7w9+42bz7shjiqUegNwTv3oerYdAm",
-	"sQQtkFpCQZyHakLWjjC9dKn6MaSYbvl+QB60migvXyo7Wrplk+D/u7G7s+Y/u91av+Fv3w6FY6gM+hGS",
-	"kIUjIqNL4r5mIrpl75AkCKiVq1iqwjyEcjZiIxC1SbWWz0xSh46UoG5hPhaeelT3wHTFIyudlJy0WJ1f",
-	"/S8AAP//4hiVLzEeAAA=",
+	"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",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

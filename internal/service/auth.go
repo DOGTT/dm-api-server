@@ -1,20 +1,24 @@
 package service
 
-import "strings"
+import (
+	"strings"
 
-func (s *Service) AuthToken(token string) (uint, *ErrMsg) {
+	"github.com/DOGTT/dm-api-server/internal/utils"
+)
+
+func (s *Service) AuthToken(token string) (*utils.TokenClaims, *ErrMsg) {
 	tokenSpt := strings.Split(token, " ")
 	if len(tokenSpt) != 2 {
-		return 0, EM_CommonFail_AuthFail.PutDesc("invalid token")
+		return nil, EM_CommonFail_AuthFail.PutDesc("invalid token")
 	}
 	tokenType := tokenSpt[0]
 	tokenData := tokenSpt[1]
 	if tokenType != "Bearer" {
-		return 0, EM_CommonFail_AuthFail.PutDesc("invalid token type")
+		return nil, EM_CommonFail_AuthFail.PutDesc("invalid token type")
 	}
-	uID, err := s.kp.ParseToken(tokenData)
+	tc, err := s.kp.ParseToken(tokenData)
 	if err != nil {
-		return 0, EM_CommonFail_AuthFail.PutDesc(err.Error())
+		return nil, EM_CommonFail_AuthFail.PutDesc(err.Error())
 	}
-	return uID, nil
+	return &tc, nil
 }

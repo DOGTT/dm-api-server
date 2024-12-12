@@ -40,10 +40,16 @@ func LoadKeyPair(privateKeyPath, publicKeyPath string) (*KeyPair, error) {
 	}, nil
 }
 
+type TokenClaims struct {
+	UID uint `json:"uid"` // 用户 ID
+	PID uint `json:"pid"` // 项目 ID
+}
+
 // GenerateToken 生成 RS256 JWT Token
-func (kp *KeyPair) GenerateToken(userID uint) (string, error) {
+func (kp *KeyPair) GenerateToken(tc TokenClaims) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodRS256, jwt.MapClaims{
-		"id":  userID,
+		"uid": tc.UID,
+		"pid": tc.PID,
 		"exp": time.Now().Add(TokenExpireDuration).Unix(), // 设置过期时间 24 小时
 		"iat": time.Now().Unix(),                          // 签发时间
 	})
@@ -51,25 +57,32 @@ func (kp *KeyPair) GenerateToken(userID uint) (string, error) {
 }
 
 // ParseToken 验证并解析 RS256 JWT Token
-func (kp *KeyPair) ParseToken(tokenString string) (uint, error) {
+func (kp *KeyPair) ParseToken(tokenString string) (TokenClaims, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 		return kp.PublicKey, nil
 	})
-
+	tc := TokenClaims{}
 	if err != nil {
-		return 0, err
+		return tc, err
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		if id, ok := claims["id"].(float64); ok {
-			return uint(id), nil
+		uid, ok := claims["uid"].(int)
+		if !ok {
+			return tc, errors.New("invalid token claims")
 		}
-	}
+		tc.UID = uint(uid)
+		pid, ok := claims["pid"].(int)
+		if !ok {
+			return tc, errors.New("invalid token claims")
+		}
+		tc.PID = uint(pid)
 
-	return 0, errors.New("invalid token claims")
+	}
+	return tc, nil
 }
 
 // 加载私钥
