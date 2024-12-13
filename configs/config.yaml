@@ -17,6 +17,7 @@ metric:
   addr: 0.0.0.0:8002
 
 service:
+  test_wx_code: abcd
   key_pair:
     public_key: "./public_key.pem"
     private_key: "./private_key.pem"

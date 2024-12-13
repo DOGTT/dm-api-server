@@ -15,21 +15,33 @@ import (
 	"gorm.io/gorm"
 )
 
-func (s *Service) WeChatLogin(ctx context.Context, req *grpc_api.WeChatLoginReq) (res *grpc_api.WeChatLoginResp, err error) {
-	// Implement me
-	log.Ctx(ctx).Debug("wx login get req", zap.Any("req", req))
-	res = &grpc_api.WeChatLoginResp{}
-	resAuth, err := s.miniAppHandle.GetAuth().Code2SessionContext(ctx, req.GetWxCode())
+func (s *Service) wxCodeToWxId(ctx context.Context, wxCode string) (wxId string, err error) {
+	// testID
+	if wxCode != "" && wxCode == s.conf.TestWxCode {
+		return wxCode, nil
+	}
+
+	resAuth, err := s.miniAppHandle.GetAuth().Code2SessionContext(ctx, wxCode)
 	if err != nil {
 		err = EM_AuthFail_WX.PutDesc(err.Error())
 		return
 	}
 	if resAuth.ErrCode != 0 {
 		err = EM_AuthFail_WX.PutDesc(fmt.Sprintf("auth_code:%d", resAuth.ErrCode))
+	}
+	wxId = resAuth.UnionID
+	return
+}
+
+func (s *Service) WeChatLogin(ctx context.Context, req *grpc_api.WeChatLoginReq) (res *grpc_api.WeChatLoginResp, err error) {
+	log.Ctx(ctx).Debug("wx login get req", zap.Any("req", req))
+	res = &grpc_api.WeChatLoginResp{}
+	wxId, err := s.wxCodeToWxId(ctx, req.GetWxCode())
+	if err != nil {
 		return
 	}
 	// query user info
-	userInfo, err := s.data.GetUserInfoByWeChatID(ctx, resAuth.UnionID)
+	userInfo, err := s.data.GetUserInfoByWeChatID(ctx, wxId)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		err = EM_AuthFail_NotFound.PutDesc(err.Error())
 		return
@@ -79,17 +91,12 @@ func (s *Service) WeChatRegisterFast(ctx context.Context, req *grpc_api.WeChatRe
 		return
 	}
 	res = &grpc_api.WeChatRegisterFastResp{}
-	resAuth, err := s.miniAppHandle.GetAuth().Code2SessionContext(ctx, req.GetWxCode())
+	wxId, err := s.wxCodeToWxId(ctx, req.GetWxCode())
 	if err != nil {
-		err = EM_AuthFail_WX.PutDesc(err.Error())
-		return
-	}
-	if resAuth.ErrCode != 0 {
-		err = EM_AuthFail_WX.PutDesc(fmt.Sprintf("auth_code:%d", resAuth.ErrCode))
 		return
 	}
 	user := &rds.UserInfo{
-		WeChatId: resAuth.UnionID,
+		WeChatId: wxId,
 	}
 	pet := &rds.PetInfo{
 		Name:     req.GetPet().GetName(),
@@ -144,8 +151,8 @@ func (s *Service) convertToUserInfo(ctx context.Context, userInfo *rds.UserInfo)
 			UpdatedAt: timestamppb.New(pet.UpdatedAt),
 		}
 		if pet.AvatarId != "" {
-			res.Pets[i].Avatar, err = s.data.GeneratePresignedURL(ctx,
-				fds.BucketNameAvatar, pet.AvatarId, utils.TokenExpireDuration)
+			res.Pets[i].Avatar, err = s.data.GenerateGetPresignedURL(ctx,
+				fds.BucketNameAvatar, pet.AvatarId, fds.PreSignDurationDefault)
 			if err != nil {
 				err = EM_CommonFail_Internal.PutDesc(err.Error())
 				return

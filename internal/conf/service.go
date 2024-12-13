@@ -1,7 +1,8 @@
 package conf
 
 type ServiceConfig struct {
-	KeyPair KeyPairConfig `yaml:"key_pair"`
+	TestWxCode string        `yaml:"test_wx_code"`
+	KeyPair    KeyPairConfig `yaml:"key_pair"`
 }
 
 type KeyPairConfig struct {

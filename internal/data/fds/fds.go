@@ -1,36 +1,57 @@
 package fds
 
 import (
-	"bytes"
-	"context"
-	"net/http"
+	"fmt"
 	"time"
 
+	grpc_api "github.com/DOGTT/dm-api-server/api/grpc"
 	"github.com/DOGTT/dm-api-server/internal/conf"
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
-)
-
-var (
-	BucketList = []string{}
+	log "github.com/uptrace/opentelemetry-go-extra/otelzap"
+	"go.uber.org/zap"
 )
 
 const (
-	BucketNameAvatar = "avatar"
+	BucketNameDefault   = "default"
+	BucketNameAvatar    = "avatar"
+	BucketNamePofpImage = "pofpImage"
+
+	PreSignDurationDefault = time.Minute * 10
+)
+
+var (
+	bucketInitList = []string{
+		BucketNameDefault,
+		BucketNameAvatar,
+		BucketNamePofpImage}
+
+	bucketNameMapForObjectType = map[grpc_api.ObjectType]string{
+		grpc_api.ObjectType_OT_DEFAULT:    BucketNameDefault,
+		grpc_api.ObjectType_OT_POFP_IMAGE: BucketNamePofpImage,
+	}
 )
 
 func init() {
-	BucketList = append(BucketList,
-		BucketNameAvatar,
-	)
+}
+
+func GetBucketName(objectType grpc_api.ObjectType) string {
+	name := bucketNameMapForObjectType[objectType]
+	if name == "" {
+		log.L().Warn("objectType not found in bucketNameMapForObjectType",
+			zap.String("objectType", objectType.String()))
+		return BucketNameDefault
+	}
+	return name
 }
 
 // 文件型数据
 type FDSClient struct {
-	c   *conf.FDSConfig
-	svc *s3.S3
+	c     *conf.FDSConfig
+	s3api *s3.S3
 }
 
 func New(c *conf.FDSConfig) (fc *FDSClient, err error) {
@@ -47,11 +68,11 @@ func New(c *conf.FDSConfig) (fc *FDSClient, err error) {
 		return nil, err
 	}
 	// 创建 S3 客户端
-	svc := s3.New(sess)
+	s3api := s3.New(sess)
 	// 创建 bucket
 	fdsClient := &FDSClient{
-		c:   c,
-		svc: svc,
+		c:     c,
+		s3api: s3api,
 	}
 	if err := fdsClient.initCreateBucket(); err != nil {
 		return nil, err
@@ -61,43 +82,24 @@ func New(c *conf.FDSConfig) (fc *FDSClient, err error) {
 
 // createBucket 创建 bucket
 func (c *FDSClient) initCreateBucket() error {
-	for i := range BucketList {
-		_, err := c.svc.CreateBucket(&s3.CreateBucketInput{
-			Bucket: aws.String(BucketList[i]),
+	for i := range bucketInitList {
+		_, err := c.s3api.CreateBucket(&s3.CreateBucketInput{
+			Bucket: aws.String(bucketInitList[i]),
 		})
 		if err != nil {
-			return err
+			aerr, ok := err.(awserr.Error)
+			if !ok {
+				return err
+			}
+			switch aerr.Code() {
+			case s3.ErrCodeBucketAlreadyExists:
+				fmt.Printf("Bucket %s already exists\n", bucketInitList[i])
+			case s3.ErrCodeBucketAlreadyOwnedByYou:
+				fmt.Printf("Bucket %s already owned by you\n", bucketInitList[i])
+			default:
+				return err
+			}
 		}
 	}
 	return nil
-}
-
-func (c *FDSClient) PutObject(ctx context.Context, bucket string, fileID string, fileBytes []byte) error {
-	contentType := detectContentType(fileBytes)
-	_, err := c.svc.PutObjectWithContext(ctx, &s3.PutObjectInput{
-		Bucket:      aws.String(bucket),
-		Key:         aws.String(fileID),
-		Body:        bytes.NewReader(fileBytes),
-		ContentType: aws.String(contentType),
-	})
-	return err
-}
-
-// GeneratePresignedURL 生成预签名 URL
-func (c *FDSClient) GeneratePresignedURL(ctx context.Context, bucket string, fileID string, expires time.Duration) (string, error) {
-	req, _ := c.svc.GetObjectRequest(&s3.GetObjectInput{
-		Bucket: aws.String(bucket),
-		Key:    aws.String(fileID),
-	})
-
-	url, err := req.Presign(expires)
-	if err != nil {
-		return "", err
-	}
-	return url, nil
-}
-
-// detectContentType 自动检测文件类型
-func detectContentType(fileBytes []byte) string {
-	return http.DetectContentType(fileBytes)
 }
