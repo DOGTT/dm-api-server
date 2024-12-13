@@ -39,4 +39,8 @@ bin/
 *.swo
 *.log
 
-/dog-api-server
+/dm-api-server
+
+/configs/*.pem
+
+/data/

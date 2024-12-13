@@ -5,6 +5,7 @@ server:
     timeout: 1s
     enable_metric: true
     enable_trace: true
+    auth_white_pathlist: ["/v1/user/wx/login","/v1/user/wx/reg/fast"]
   grpc:
     enable: false
     addr: 0.0.0.0:8081
@@ -14,21 +15,18 @@ server:
 metric:
   enable: true
   addr: 0.0.0.0:8002
-runner:
-  model_pipelines:
-    code_gen:
-      model_inference:
-        kind: triton
-        spec:
-          grpc_endpoint: code_gen_triton:8083
-          timeout: 1s
-      pre_process:
-        kind: default
-        spec:
-          grpc_endpoint: gpt2_tokenizer:8084
-          timeout: 1s
-      post_process:
-        kind: default
-        spec:
-          grpc_endpoint: gpt2_tokenizer:8084
-          timeout: 1s
+
+service:
+  test_wx_code: abcd
+  key_pair:
+    public_key: "./public_key.pem"
+    private_key: "./private_key.pem"
+
+data:
+  rds:
+    host: localhost
+    port: 5432
+    user: "dev"
+    password: "123456"
+    dbname: "dev_db"
+    sslmode: disable

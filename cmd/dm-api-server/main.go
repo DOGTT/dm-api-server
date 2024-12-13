@@ -1,16 +1,16 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
 	"net/http"
 	"runtime"
 
-	"github.com/dog-g/dog-api-server/internal/conf"
-	"github.com/dog-g/dog-api-server/internal/metrics"
-	"github.com/dog-g/dog-api-server/internal/runner"
-	"github.com/dog-g/dog-api-server/internal/server"
+	"github.com/DOGTT/dm-api-server/internal/conf"
+	"github.com/DOGTT/dm-api-server/internal/data"
+	"github.com/DOGTT/dm-api-server/internal/metrics"
+	"github.com/DOGTT/dm-api-server/internal/server"
+	"github.com/DOGTT/dm-api-server/internal/service"
 	"github.com/jinzhu/configor"
 	"github.com/uptrace/opentelemetry-go-extra/otelzap"
 	_ "go.uber.org/automaxprocs"
@@ -46,6 +46,7 @@ func init() {
 }
 
 func main() {
+
 	flag.Parse()
 	if printVersion {
 		printFullVersionInfo()
@@ -54,25 +55,28 @@ func main() {
 	// load config
 	c := conf.Config{}
 	configLoader := configor.New(&configor.Config{
-		Verbose: true,
-		Debug:   false,
+		Verbose: false,
+		Debug:   true,
 	})
 	if err := configLoader.Load(&c, flagConfFile); err != nil {
 		panic(fmt.Sprintf("config:%v", err))
 	}
-	configValue, _ := json.Marshal(c.Runner)
-	fmt.Printf("Config: %s \n", string(configValue))
 	// set log
 	setLogger(c.Log)
 	// set metrics
 	go runMetricsServer(c.Metric)
-	// init runner
-	r, err := runner.New(c.Runner)
+	// init data
+	dc, err := data.New(c.Data)
 	if err != nil {
-		panic(fmt.Sprintf("runner new error:%v", err))
+		panic(fmt.Sprintf("data new error:%v", err))
+	}
+	// init service
+	svc, err := service.New(c.Service, dc)
+	if err != nil {
+		panic(fmt.Sprintf("service new error:%v", err))
 	}
 	// init server
-	srv, err := server.New(c.Server, r)
+	srv, err := server.New(c.Server, svc)
 	if err != nil {
 		panic(fmt.Sprintf("server new error:%v", err))
 	}

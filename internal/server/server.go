@@ -8,9 +8,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/dog-g/dog-api-server/internal/conf"
-	"github.com/dog-g/dog-api-server/internal/runner"
-	"github.com/dog-g/dog-api-server/internal/service"
+	"github.com/DOGTT/dm-api-server/internal/conf"
+	"github.com/DOGTT/dm-api-server/internal/service"
 	log "github.com/uptrace/opentelemetry-go-extra/otelzap"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -25,10 +24,10 @@ type Server struct {
 }
 
 // New Server instance.
-func New(c *conf.Server, runner *runner.Runner) (*Server, error) {
+func New(c *conf.Server, svc *service.Service) (*Server, error) {
 	s := &Server{
 		c:   c,
-		svc: service.NewService(runner),
+		svc: svc,
 	}
 	if s.c.GRPC.Enable {
 		s.grpcServer = NewGRPCServer(c, s.svc)
@@ -85,6 +84,7 @@ func (s *Server) startGrpcServer(ch chan<- error) {
 		return
 	}
 	log.L().Info("GRPC Listening", zap.Any("addr", s.c.GRPC.Addr))
+
 	ch <- s.grpcServer.Serve(lis)
 }
 

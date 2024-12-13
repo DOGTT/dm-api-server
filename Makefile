@@ -33,15 +33,15 @@ setup:
 	sudo unzip -o $(PROTOC_ZIP) -d /usr/local bin/protoc
 	sudo unzip -o $(PROTOC_ZIP) -d /usr/local 'include/*'
 	rm -f $(PROTOC_ZIP)
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.62.2
 
 .PHONY: init
 # setup go utils
 init:
-	go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 	go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 	go install github.com/google/gnostic/cmd/protoc-gen-openapi@latest
-	go install github.com/deepmap/oapi-codegen/cmd/oapi-codegen@latest
+	go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@latest
 
 .PHONY: internal
 # generate internal proto
@@ -58,10 +58,10 @@ api:
 	       --proto_path=./third_party \
  	       --go_out=paths=source_relative:./api \
 		   --go-grpc_out=paths=source_relative:./api \
-	       --openapi_out=fq_schema_naming=false,default_response=false,paths=source_relative:./api/ \
+	       --openapi_out=fq_schema_naming=false,default_response=false,paths=source_relative:./api/openapi/ \
 	       $(API_PROTO_FILES)
 	mv ./api/*.go ./api/grpc/
-	oapi-codegen -package apigin -generate types,spec,client,gin ./api/openapi.yaml > ./api/gin/gin.gen.go
+	oapi-codegen -package apigin -generate types,spec,client,gin ./api/openapi/openapi.yaml > ./api/gin/gin.gen.go
 
 .PHONY: generate
 # generate

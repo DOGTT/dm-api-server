@@ -1,0 +1,235 @@
+syntax = "proto3";
+
+package base_service;
+option go_package="github.com/DOGTT/dm-api-server/api;api";
+
+import "pofp.proto";
+import "user.proto";
+import "google/api/annotations.proto";
+
+
+// 通用业务服务接口定义.
+// [EN] API of Service. 
+service BaseService {
+
+    // 微信小程序登录接口
+    rpc WeChatLogin(WeChatLoginReq) returns (WeChatLoginResp) {
+        option (google.api.http) = {
+            post: "/v1/user/wx/login"
+            body: "*"
+        };
+    }
+    // 微信小程序快速登录注册接口定义
+    rpc WeChatRegisterFast(WeChatRegisterFastReq) returns (WeChatRegisterFastResp) {
+        option (google.api.http) = {
+            post: "/v1/user/wx/reg/fast"
+            body: "*"
+        };
+    }
+
+    // 通用地点搜索
+    rpc LocationCommonSearch(LocationCommonSearchReq) returns (LocationCommonSearchResp) {
+        option (google.api.http) = {
+            get: "/v1/location/search"
+        };
+    }
+
+    // 批量获取对象上传预签名URL
+    rpc ObjectPutPresignURLBatchGet(ObjectPutPresignURLBatchGetReq) returns (ObjectPutPresignURLBatchGetResp) {
+        option (google.api.http) = {
+            get: "/v1/object/put_presign_url/batch"
+        };
+    }
+
+    // 创建足迹点
+    rpc PofpCreate(PofpCreateReq) returns (PofpCreateResp) {
+        option (google.api.http) = {
+            post: "/v1/popf"
+            body: "*"
+        };
+    }
+
+    // 更新足迹点
+    rpc PofpUpdate(PofpUpdateReq) returns (PofpUpdateResp) {
+        option (google.api.http) = {
+            put: "/v1/popf"
+            body: "*"
+        };
+    }
+    
+    // 删除足迹点
+    rpc PofpDelete(PofpDeleteReq) returns (PofpDeleteResp) {
+        option (google.api.http) = {
+            delete: "/v1/popf"
+            body: "*"
+        };
+    }
+    
+    // 按照范围查询足迹基础信息
+    rpc PofpBaseQueryByBound(PofpBaseQueryByBoundReq) returns (PofpBaseQueryByBoundResp) {
+        option (google.api.http) = {
+            post: "/v1/popf/base_query_by_bound"
+            body: "*"
+        };
+    }
+    
+    // 按照id查询足迹简要信息
+    rpc PofpDetailQueryById(PofpDetailQueryByIdReq) returns (PofpDetailQueryByIdResp) {
+        option (google.api.http) = {
+            get: "/v1/popf/detail_query_by_id"
+        };
+    }
+
+    // 按照id查询足迹页完整信息
+    rpc PofpFullQueryById(PofpFullQueryByIdReq) returns (PofpFullQueryByIdResp) {
+        option (google.api.http) = {
+            get: "/v1/popf/full_query_by_id"
+        };
+    }
+
+    // 足迹点互动
+    rpc PofpInteraction(PofpInteractionReq) returns (PofpInteractionResp) {
+        option (google.api.http) = {
+            post: "/v1/popf/interaction"
+            body: "*"
+        };
+    }
+    
+    // 足迹点评论
+    rpc PofpComment(PofpCommentReq) returns (PofpCommentResp) {
+        option (google.api.http) = {
+            post: "/v1/popf/comment"
+            body: "*"
+        };
+    }
+}
+
+// 通用错误消息结构
+message ErrorMessage {
+    string code = 1;
+    string desc = 2;
+}
+
+
+// 登录请求
+message WeChatLoginReq {
+    string wx_code = 1; // 微信小程序登录时获取临时登录凭证code
+}
+
+message WeChatLoginResp {
+    string token = 1;
+    user.UserInfo user_info = 2;
+}
+
+// 快速注册请求
+message WeChatRegisterFastReq {
+    string wx_code = 1;
+    user.PetInfoReg pet = 2;
+}
+
+message WeChatRegisterFastResp {
+    string token = 1;
+    user.UserInfo user_info = 2;
+}
+
+// 通用地点搜索请求
+message LocationCommonSearchReq {
+    string input = 1;
+}
+
+message LocationCommonSearchResp {
+    //TODO
+}
+
+// 对象类型
+enum ObjectType {
+    OT_DEFAULT = 0;
+    OT_POFP_IMAGE = 1;
+}
+
+// 批量获取对象上传预签名URL请求
+message ObjectPutPresignURLBatchGetReq {
+    ObjectType object_type  =1;
+    int32 object_count = 2;
+}
+
+message ObjectPutPresignURLBatchGetResp {
+    //TODO
+    repeated string urls = 1;
+    repeated string object_ids = 2;
+}
+
+// 足迹创建
+message PofpCreateReq {
+    pofp.PofpInfo pofp = 1;
+}
+
+message PofpCreateResp {
+
+}
+// 足迹更新
+message PofpUpdateReq {
+    pofp.PofpInfo pofp = 1;
+}
+
+message PofpUpdateResp {
+
+}
+
+// 足迹删除
+message PofpDeleteReq {
+    string uuid = 1;
+}
+
+message PofpDeleteResp {
+
+}
+
+message PofpBaseQueryByBoundReq {
+    // 足迹类型id列表
+    repeated int32 type_ids = 1;
+    // 坐标范围
+    pofp.BoundCoord bound = 2;
+}
+
+message PofpBaseQueryByBoundResp {
+    repeated pofp.PofpInfo pofps = 1;
+}
+
+message PofpDetailQueryByIdReq {
+    string uuid = 1;
+}
+
+message PofpDetailQueryByIdResp {
+    pofp.PofpInfo pofp = 1;
+    pofp.PofpDynamicInfo pofp_dynamic_info = 2;
+}
+
+message PofpFullQueryByIdReq {
+    string uuid = 1;
+}
+
+message PofpFullQueryByIdResp {
+    pofp.PofpInfo pofp = 1;
+    pofp.PofpDynamicInfo pofp_dynamic_info = 2;
+}
+
+
+
+message PofpInteractionReq {
+    string uuid = 1;
+    // 互动类型
+    pofp.InteractionType ixn_type = 2;
+}
+
+message PofpInteractionResp {
+
+}
+
+message PofpCommentReq {
+    pofp.PofpCommentInfo comment = 1;
+}
+
+message PofpCommentResp {
+
+}
