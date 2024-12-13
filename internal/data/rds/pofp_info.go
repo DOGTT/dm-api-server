@@ -7,6 +7,7 @@ import (
 
 	grpc_api "github.com/DOGTT/dm-api-server/api/grpc"
 	"github.com/lib/pq"
+	"gorm.io/gorm/clause"
 )
 
 func init() {
@@ -75,4 +76,35 @@ func (c *RDSClient) GetPofpInfo(ctx context.Context, uuid string) (*PofpInfo, er
 		return nil, err
 	}
 	return &info, nil
+}
+
+func (c *RDSClient) BatchQueryPofpInfoListByBound(ctx context.Context, typeIDs []uint, bc *grpc_api.BoundCoord) ([]*PofpInfo, error) {
+
+	var results []*PofpInfo
+	query := c.db.WithContext(ctx).Model(&PofpInfo{}).
+		Select("uuid, type_id, p_id, lat_lng, title").
+		Where("ST_Contains(ST_MakeEnvelope(?, ?, ?, ?, 4326), lat_lng)",
+			bc.Sw.Lng, bc.Sw.Lat, bc.Ne.Lng, bc.Ne.Lng)
+	// 如果 typeIDs 不为 nil，则添加筛选条件
+	if typeIDs != nil {
+		query = query.Where("type_id IN ?", typeIDs)
+	}
+	err := query.Limit(100).Scan(&results).Error
+	return results, err
+}
+
+func (c *RDSClient) IncreasePofpViewCount(ctx context.Context, uuid string) (int, error) {
+	var info PofpInfo
+	// 锁定行
+	if err := c.db.WithContext(ctx).Model(&info).Where("uuid = ?", uuid).
+		Select(InxTypeFieldName[InxTypeLike]).Clauses(clause.Locking{Strength: "UPDATE"}).First(&info).Error; err != nil {
+		return 0, err
+	}
+
+	// 更新操作
+	info.ViewsCnt++
+	if err := c.db.WithContext(ctx).Save(&info).Error; err != nil {
+		return 0, err
+	}
+	return info.ViewsCnt, nil
 }

@@ -6,6 +6,8 @@ import (
 	grpc_api "github.com/DOGTT/dm-api-server/api/grpc"
 	"github.com/DOGTT/dm-api-server/internal/data/rds"
 	"github.com/DOGTT/dm-api-server/internal/utils"
+	log "github.com/uptrace/opentelemetry-go-extra/otelzap"
+	"go.uber.org/zap"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -103,9 +105,12 @@ func (s *Service) PofpDetailQueryById(ctx context.Context, req *grpc_api.PofpDet
 	if err != nil {
 		return
 	}
-	// 添加访问信息
-	// tokenInfo := getCliamFromContext(ctx)
-
+	// 异步添加访问信息
+	go func() {
+		if _, err := s.data.IncreasePofpViewCount(ctx, pofoInfo.UUID); err != nil {
+			log.Ctx(ctx).Error("increase pofp view count fail", zap.Error(err))
+		}
+	}()
 	return
 }
 
@@ -143,11 +148,33 @@ func (s *Service) PofpFullQueryById(ctx context.Context, req *grpc_api.PofpFullQ
 }
 
 func (s *Service) PofpBaseQueryByBound(ctx context.Context, req *grpc_api.PofpBaseQueryByBoundReq) (res *grpc_api.PofpBaseQueryByBoundResp, err error) {
-	// TODO
+	var pofoList []*rds.PofpInfo
+	pofoList, err = s.data.BatchQueryPofpInfoListByBound(ctx,
+		utils.ConvertToUintSlice(req.GetTypeIds()), req.GetBound())
+	if err != nil {
+		err = EM_CommonFail_Internal.PutDesc(err.Error())
+		return
+	}
+	res = &grpc_api.PofpBaseQueryByBoundResp{
+		Pofps: make([]*grpc_api.PofpInfo, len(pofoList)),
+	}
+	for i, pofo := range pofoList {
+		res.Pofps[i], err = s.convertToPofpInfo(ctx, pofo)
+		if err != nil {
+			return
+		}
+	}
 	return
 }
 
 func (s *Service) PofpInteraction(ctx context.Context, req *grpc_api.PofpInteractionReq) (res *grpc_api.PofpInteractionResp, err error) {
+	tc := getCliamFromContext(ctx)
+	err = s.data.CreatePofpIxnRecordWithCount(ctx, &rds.UserPofpIxnRecord{
+		PofpUUID: req.GetUuid(),
+		IntType:  rds.InxType(req.GetIxnType()),
+		PId:      tc.PID,
+		UId:      tc.UID,
+	})
 	return
 }
 

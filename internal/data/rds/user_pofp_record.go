@@ -1,31 +1,66 @@
 package rds
 
 import (
+	"context"
 	"time"
 
-	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 func init() {
-	dbModelList = append(dbModelList, &UserPofpRecord{})
+	dbModelList = append(dbModelList, &UserPofpIxnRecord{})
 }
 
+type InxType uint
+
 const (
-	IntTypeView    = iota
-	IntTypeLike    // 喜欢
-	IntTypeMark    // 标记过
-	IntTypeComment // 评论
+	InxTypeView    InxType = iota
+	InxTypeLike            // 喜欢
+	InxTypeMark            // 标记过
+	InxTypeComment         // 评论
+)
+
+var (
+	InxTypeFieldName = []string{"views_cnt", "likes_cnt", "marks_cnt", "comments_cnt"}
 )
 
 // 足迹点个互动记录 喜欢/踩过/评论
-type UserPofpRecord struct {
-	UUID     uuid.UUID `gorm:"type:uuid;primaryKey;"`
-	UId      uint      `gorm:"index"`
-	PId      uint      `gorm:"index"`
-	PofpUUID string    `gorm:"index"`
+type UserPofpIxnRecord struct {
+	UId      uint   `gorm:"index"`
+	PId      uint   `gorm:"index"`
+	PofpUUID string `gorm:"index"`
 	//
-	IntType int `gorm:"type:int;default:0"` // 0-点赞,1-收藏
+	IntType InxType `gorm:"type:int;default:0"` // 0-点赞,1-收藏
 
 	CreatedAt time.Time `gorm:"autoCreateTime"`
-	UpdatedAt time.Time `gorm:"autoUpdateTime"`
+}
+
+func (c *RDSClient) CreatePofpIxnRecord(ctx context.Context, d *UserPofpIxnRecord) error {
+	return c.db.WithContext(ctx).Create(d).Error
+}
+
+func (c *RDSClient) CreatePofpIxnRecordWithCount(ctx context.Context, d *UserPofpIxnRecord) error {
+
+	return c.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		var info PofpInfo
+		if err := tx.Model(&PofpInfo{}).Where("uuid = ?", d.PofpUUID).
+			Select(InxTypeFieldName[d.IntType]).First(&info).Error; err != nil {
+			return err
+		}
+		if err := tx.Create(d).Error; err != nil {
+			return err
+		}
+		switch d.IntType {
+		case InxTypeLike:
+			info.LikesCnt++
+		case InxTypeMark:
+			info.MarksCnt++
+		case InxTypeComment:
+			info.CommentsCnt++
+		}
+		if err := tx.Save(&info).Error; err != nil {
+			return err
+		}
+		return nil
+	})
 }
