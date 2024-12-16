@@ -24,6 +24,7 @@ type KeyPair struct {
 
 // LoadKeyPair 从文件加载 RSA 密钥对
 func LoadKeyPair(privateKeyPath, publicKeyPath string) (*KeyPair, error) {
+	fmt.Println("Loading key pair...", privateKeyPath, publicKeyPath)
 	privateKey, err := LoadPrivateKey(privateKeyPath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to load private key: %w", err)
@@ -93,11 +94,14 @@ func LoadPrivateKey(path string) (*rsa.PrivateKey, error) {
 	}
 
 	block, _ := pem.Decode(keyData)
-	if block == nil || block.Type != "RSA PRIVATE KEY" {
+	if block == nil || block.Type != "PRIVATE KEY" {
 		return nil, errors.New("invalid private key")
 	}
-
-	return x509.ParsePKCS1PrivateKey(block.Bytes)
+	pk, err := x509.ParsePKCS8PrivateKey(block.Bytes)
+	if err != nil {
+		return nil, err
+	}
+	return pk.(*rsa.PrivateKey), nil
 }
 
 // 加载公钥
@@ -108,9 +112,12 @@ func LoadPublicKey(path string) (*rsa.PublicKey, error) {
 	}
 
 	block, _ := pem.Decode(keyData)
-	if block == nil || block.Type != "RSA PUBLIC KEY" {
+	if block == nil || block.Type != "PUBLIC KEY" {
 		return nil, errors.New("invalid public key")
 	}
-
-	return x509.ParsePKCS1PublicKey(block.Bytes)
+	pk, err := x509.ParsePKIXPublicKey(block.Bytes)
+	if err != nil {
+		return nil, err
+	}
+	return pk.(*rsa.PublicKey), nil
 }

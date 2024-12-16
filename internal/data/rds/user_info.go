@@ -23,7 +23,7 @@ type UserInfo struct {
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
 
-	Pets []*PetInfo `gorm:"foreignKey:UID"`
+	Pets []*PetInfo `gorm:"foreignKey:UId"`
 }
 
 func (u *UserInfo) BeforeCreate(tx *gorm.DB) (err error) {

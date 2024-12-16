@@ -18,7 +18,7 @@ import (
 const (
 	BucketNameDefault   = "default"
 	BucketNameAvatar    = "avatar"
-	BucketNamePofpImage = "pofpImage"
+	BucketNamePofpImage = "pofp-image"
 
 	PreSignDurationDefault = time.Minute * 10
 )
@@ -63,6 +63,7 @@ func New(c *conf.FDSConfig) (fc *FDSClient, err error) {
 		Region:           aws.String("us-east-1"), // MinIO 不需要真实的区域，但需要设置
 		Credentials:      credentials.NewStaticCredentials(c.AccessKey, c.SecretKey, ""),
 		S3ForcePathStyle: aws.Bool(true),
+		DisableSSL:       aws.Bool(true),
 	})
 	if err != nil {
 		return nil, err

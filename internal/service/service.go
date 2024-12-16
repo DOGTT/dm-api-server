@@ -30,9 +30,8 @@ func New(conf *conf.ServiceConfig, data *data.DataEntry) (*Service, error) {
 		data: data,
 
 		wcClient: wechat.NewWechat(),
-		// miniAppHandle:
 	}
-	s.kp, err = utils.LoadKeyPair(conf.KeyPair.PublicKey, conf.KeyPair.PrivateKey)
+	s.kp, err = utils.LoadKeyPair(conf.KeyPair.PrivateKey, conf.KeyPair.PublicKey)
 	if err != nil {
 		return nil, err
 	}
@@ -41,9 +40,7 @@ func New(conf *conf.ServiceConfig, data *data.DataEntry) (*Service, error) {
 		AppID:     "xxx",
 		AppSecret: "xxx",
 		Token:     "xxx",
-		//EncodingAESKey: "xxxx",
-		Cache: memory,
-		// Cache: redisCache,
+		Cache:     memory,
 	}
 	s.miniAppHandle = s.wcClient.GetMiniProgram(cfg)
 

@@ -4,9 +4,6 @@
 openapi: 3.0.3
 info:
     title: BaseService API
-    description: |-
-        通用业务服务接口定义.
-         [EN] API of Service.
     version: 0.0.1
 paths:
     /v1/location/search:
@@ -93,12 +90,11 @@ paths:
                 - BaseService
             description: 删除足迹点
             operationId: BaseService_PofpDelete
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/PofpDeleteReq'
-                required: true
+            parameters:
+                - name: uuid
+                  in: query
+                  schema:
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -352,12 +348,6 @@ components:
         PofpCreateResp:
             type: object
             properties: {}
-        PofpDeleteReq:
-            type: object
-            properties:
-                uuid:
-                    type: string
-            description: 足迹删除
         PofpDeleteResp:
             type: object
             properties: {}

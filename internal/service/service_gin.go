@@ -13,21 +13,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type ConetxtKey string
+type ContextKey string
 
 const (
-	TOKEN_CLAIM_KEY ConetxtKey = "Token-Claim"
+	TOKEN_CLAIM_KEY ContextKey = "Token-Claim"
 )
 
 func withGinContext(c *gin.Context) context.Context {
-	ctx := context.WithValue(c, ConetxtKey("Server-Origin"), "gin-server")
+	ctx := context.WithValue(c, ContextKey("Server-Origin"), "gin-server")
 	for key, value := range c.Keys {
-		ctx = context.WithValue(ctx, ConetxtKey(key), value)
+		ctx = context.WithValue(ctx, ContextKey(key), value)
 	}
 	return ctx
 }
 
-func getCliamFromContext(ctx context.Context) utils.TokenClaims {
+func getClaimFromContext(ctx context.Context) utils.TokenClaims {
 	return ctx.Value(TOKEN_CLAIM_KEY).(utils.TokenClaims)
 }
 
@@ -56,7 +56,7 @@ func (s *Service) putGinError(c *gin.Context, err error) {
 
 func (s *Service) BaseServiceWeChatRegisterFast(c *gin.Context) {
 	req := &gin_api.WeChatRegisterFastReq{}
-	if err := c.Bind(&req); err != nil {
+	if err := c.ShouldBind(&req); err != nil {
 		s.putGinError(c, EM_CommonFail_BadRequest)
 		return
 	}
@@ -84,7 +84,7 @@ func (s *Service) BaseServiceWeChatRegisterFast(c *gin.Context) {
 
 func (s *Service) BaseServiceWeChatLogin(c *gin.Context) {
 	req := &grpc_api.WeChatLoginReq{}
-	if err := c.Bind(&req); err != nil {
+	if err := c.ShouldBind(&req); err != nil {
 		s.putGinError(c, EM_CommonFail_BadRequest)
 		return
 	}
@@ -123,7 +123,7 @@ func (s *Service) BaseServiceObjectPutPresignURLBatchGet(c *gin.Context, params 
 
 func (s *Service) BaseServicePofpCreate(c *gin.Context) {
 	req := &grpc_api.PofpCreateReq{}
-	if err := c.Bind(&req); err != nil {
+	if err := c.ShouldBind(&req); err != nil {
 		s.putGinError(c, EM_CommonFail_BadRequest)
 		return
 	}
@@ -137,7 +137,7 @@ func (s *Service) BaseServicePofpCreate(c *gin.Context) {
 
 func (s *Service) BaseServicePofpDelete(c *gin.Context) {
 	req := &grpc_api.PofpDeleteReq{}
-	if err := c.Bind(&req); err != nil {
+	if err := c.ShouldBind(&req); err != nil {
 		s.putGinError(c, EM_CommonFail_BadRequest)
 		return
 	}
@@ -151,7 +151,7 @@ func (s *Service) BaseServicePofpDelete(c *gin.Context) {
 
 func (s *Service) BaseServicePofpUpdate(c *gin.Context) {
 	req := &grpc_api.PofpUpdateReq{}
-	if err := c.Bind(&req); err != nil {
+	if err := c.ShouldBind(&req); err != nil {
 		s.putGinError(c, EM_CommonFail_BadRequest)
 		return
 	}
@@ -165,7 +165,7 @@ func (s *Service) BaseServicePofpUpdate(c *gin.Context) {
 
 func (s *Service) BaseServicePofpBaseQueryByBound(c *gin.Context) {
 	req := &grpc_api.PofpBaseQueryByBoundReq{}
-	if err := c.Bind(&req); err != nil {
+	if err := c.ShouldBind(&req); err != nil {
 		s.putGinError(c, EM_CommonFail_BadRequest)
 		return
 	}
@@ -203,7 +203,7 @@ func (s *Service) BaseServicePofpFullQueryById(c *gin.Context, params gin_api.Ba
 
 func (s *Service) BaseServicePofpInteraction(c *gin.Context) {
 	req := &grpc_api.PofpInteractionReq{}
-	if err := c.Bind(&req); err != nil {
+	if err := c.ShouldBind(&req); err != nil {
 		s.putGinError(c, EM_CommonFail_BadRequest)
 		return
 	}
@@ -217,8 +217,8 @@ func (s *Service) BaseServicePofpInteraction(c *gin.Context) {
 
 func (s *Service) BaseServicePofpComment(c *gin.Context) {
 	req := &grpc_api.PofpCommentReq{}
-	if err := c.Bind(&req); err != nil {
-		s.putGinError(c, EM_CommonFail_BadRequest)
+	if err := c.ShouldBind(&req); err != nil {
+		s.putGinError(c, EM_CommonFail_BadRequest.PutDesc(err.Error()))
 		return
 	}
 	res, err := s.PofpComment(withGinContext(c), req)

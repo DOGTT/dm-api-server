@@ -10,6 +10,12 @@ import "google/api/annotations.proto";
 
 // 通用业务服务接口定义.
 // [EN] API of Service. 
+/**
+servers:
+  - url: http://localhost:8080
+**/
+
+
 service BaseService {
 
     // 微信小程序登录接口
@@ -61,7 +67,6 @@ service BaseService {
     rpc PofpDelete(PofpDeleteReq) returns (PofpDeleteResp) {
         option (google.api.http) = {
             delete: "/v1/popf"
-            body: "*"
         };
     }
     
@@ -113,7 +118,7 @@ message ErrorMessage {
 
 // 登录请求
 message WeChatLoginReq {
-    string wx_code = 1; // 微信小程序登录时获取临时登录凭证code
+    string wxCode = 1; // 微信小程序登录时获取临时登录凭证code
 }
 
 message WeChatLoginResp {

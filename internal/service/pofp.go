@@ -168,7 +168,7 @@ func (s *Service) PofpBaseQueryByBound(ctx context.Context, req *grpc_api.PofpBa
 }
 
 func (s *Service) PofpInteraction(ctx context.Context, req *grpc_api.PofpInteractionReq) (res *grpc_api.PofpInteractionResp, err error) {
-	tc := getCliamFromContext(ctx)
+	tc := getClaimFromContext(ctx)
 	err = s.data.CreatePofpIxnRecordWithCount(ctx, &rds.UserPofpIxnRecord{
 		PofpUUID: req.GetUuid(),
 		IntType:  rds.InxType(req.GetIxnType()),

@@ -36,9 +36,6 @@ const (
 // BaseServiceClient is the client API for BaseService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-//
-// 通用业务服务接口定义.
-// [EN] API of Service.
 type BaseServiceClient interface {
 	// 微信小程序登录接口
 	WeChatLogin(ctx context.Context, in *WeChatLoginReq, opts ...grpc.CallOption) (*WeChatLoginResp, error)
@@ -197,9 +194,6 @@ func (c *baseServiceClient) PofpComment(ctx context.Context, in *PofpCommentReq,
 // BaseServiceServer is the server API for BaseService service.
 // All implementations must embed UnimplementedBaseServiceServer
 // for forward compatibility.
-//
-// 通用业务服务接口定义.
-// [EN] API of Service.
 type BaseServiceServer interface {
 	// 微信小程序登录接口
 	WeChatLogin(context.Context, *WeChatLoginReq) (*WeChatLoginResp, error)

@@ -10,6 +10,8 @@ import (
 	"github.com/DOGTT/dm-api-server/internal/conf"
 	"github.com/DOGTT/dm-api-server/internal/service"
 	"github.com/slok/go-http-metrics/middleware"
+
+	"github.com/gin-contrib/cors"
 	"go.uber.org/zap"
 
 	api "github.com/DOGTT/dm-api-server/api/gin"
@@ -62,6 +64,15 @@ func NewGinHandler(c *conf.Server, svc *service.Service) http.Handler {
 	// that server names match. We don't know how this thing will be run.
 	swagger.Servers = nil
 	r := gin.Default()
+
+	// 配置 CORS
+	r.Use(cors.New(cors.Config{
+		// 允许所有来源访问
+		AllowOrigins:     []string{"*"},                                       // 可以是特定的 URL 地址，也可以是 "*" 允许所有来源
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}, // 允许的方法
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"}, // 允许的请求头
+		AllowCredentials: true,                                                // 是否允许客户端携带 Cookie
+	}))
 
 	r.Use(AuthMiddleware(c.HTTP.AuthWhitePathlist, svc))
 	r.Use(ginzap.Ginzap(zap.L(), time.RFC3339, true))
