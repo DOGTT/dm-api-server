@@ -31,10 +31,13 @@ func (s *Service) PofpCreate(ctx context.Context, req *base_api.PofpCreateReq) (
 	if err = validPofpCreateRequest(req); err != nil {
 		return
 	}
+	res = &base_api.PofpCreateResp{}
+	tc := getClaimFromContext(ctx)
 	po := req.GetPofp()
 	pofpInfo := &rds.PofpInfo{
 		UUID:    utils.GenShortenUUID(),
 		TypeId:  uint(po.GetTypeId()),
+		PId:     tc.PID,
 		Title:   po.GetTitle(),
 		LatLng:  rds.PointCoordToGeometry(po.GetLatLng()),
 		Photos:  nil,
@@ -49,7 +52,8 @@ func (s *Service) PofpCreate(ctx context.Context, req *base_api.PofpCreateReq) (
 }
 
 func (s *Service) PofpDelete(ctx context.Context, req *base_api.PofpDeleteReq) (res *base_api.PofpDeleteResp, err error) {
-
+	res = &base_api.PofpDeleteResp{}
+	// tc := getClaimFromContext(ctx)
 	if err = s.data.DeletePofpInfo(ctx, req.GetUuid()); err != nil {
 		return
 	}

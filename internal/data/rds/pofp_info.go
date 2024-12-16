@@ -19,7 +19,7 @@ type PofpInfo struct {
 	UUID   string `gorm:"type:varchar(32);primaryKey;"`
 	TypeId uint   `gorm:"index"`
 	// - 归属的PetID
-	PId uint `gorm:"index"`
+	PId uint64 `gorm:"index"`
 	// - 关键内容
 	Title   string         `gorm:"type:text;size:50;not null"`
 	LatLng  string         `gorm:"type:geometry(Point,4326);not null"`

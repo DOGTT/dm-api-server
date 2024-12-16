@@ -4,6 +4,10 @@
 openapi: 3.0.3
 info:
     title: BaseService API
+    description: |-
+        @securityDefinitions.apikey BearerAuth
+         @in header
+         @name Authorization
     version: 0.0.1
 paths:
     /v1/location/search:
@@ -199,7 +203,9 @@ paths:
         post:
             tags:
                 - BaseService
-            description: 微信小程序登录接口
+            description: |-
+                微信小程序登录接口
+                 @security BearerAuth
             operationId: BaseService_WeChatLogin
             requestBody:
                 content:
@@ -234,11 +240,6 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/WeChatRegisterFastResp'
 components:
-    securitySchemes:
-        bearerAuth:
-            type: http
-            scheme: bearer
-            bearerFormat: JWT  # 可选，指明使用 JWT
     schemas:
         BoundCoord:
             type: object
@@ -352,7 +353,9 @@ components:
             description: 足迹创建
         PofpCreateResp:
             type: object
-            properties: {}
+            properties:
+                pofp:
+                    $ref: '#/components/schemas/PofpInfo'
         PofpDeleteResp:
             type: object
             properties: {}
@@ -498,5 +501,3 @@ components:
                     $ref: '#/components/schemas/UserInfo'
 tags:
     - name: BaseService
-security:
-  - bearerAuth: []  

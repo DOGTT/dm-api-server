@@ -75,7 +75,7 @@ func (kp *KeyPair) ParseToken(tokenString string) (TokenClaims, error) {
 		if !ok {
 			return tc, errors.New("invalid token claims")
 		}
-		tc.PID = (uint64)(uid)
+		tc.UID = (uint64)(uid)
 		pid, ok := claims["pid"].(float64)
 		if !ok {
 			return tc, errors.New("invalid token claims")

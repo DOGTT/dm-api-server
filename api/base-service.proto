@@ -16,10 +16,13 @@ servers:
   - url: http://localhost:8080
 **/
 
-
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
 service BaseService {
 
     // 微信小程序登录接口
+    // @security BearerAuth
     rpc WeChatLogin(WeChatLoginReq) returns (WeChatLoginResp) {
         option (google.api.http) = {
             post: "/v1/user/wx/login"
@@ -171,7 +174,7 @@ message PofpCreateReq {
 }
 
 message PofpCreateResp {
-
+    pofp.PofpInfo pofp = 1;
 }
 // 足迹更新
 message PofpUpdateReq {

@@ -36,8 +36,13 @@ const (
 // BaseServiceClient is the client API for BaseService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+//
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
 type BaseServiceClient interface {
 	// 微信小程序登录接口
+	// @security BearerAuth
 	WeChatLogin(ctx context.Context, in *WeChatLoginReq, opts ...grpc.CallOption) (*WeChatLoginResp, error)
 	// 微信小程序快速登录注册接口定义
 	WeChatRegisterFast(ctx context.Context, in *WeChatRegisterFastReq, opts ...grpc.CallOption) (*WeChatRegisterFastResp, error)
@@ -194,8 +199,13 @@ func (c *baseServiceClient) PofpComment(ctx context.Context, in *PofpCommentReq,
 // BaseServiceServer is the server API for BaseService service.
 // All implementations must embed UnimplementedBaseServiceServer
 // for forward compatibility.
+//
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
 type BaseServiceServer interface {
 	// 微信小程序登录接口
+	// @security BearerAuth
 	WeChatLogin(context.Context, *WeChatLoginReq) (*WeChatLoginResp, error)
 	// 微信小程序快速登录注册接口定义
 	WeChatRegisterFast(context.Context, *WeChatRegisterFastReq) (*WeChatRegisterFastResp, error)

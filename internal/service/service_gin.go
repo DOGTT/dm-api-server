@@ -27,8 +27,8 @@ func withGinContext(c *gin.Context) context.Context {
 	return ctx
 }
 
-func getClaimFromContext(ctx context.Context) utils.TokenClaims {
-	return ctx.Value(TOKEN_CLAIM_KEY).(utils.TokenClaims)
+func getClaimFromContext(ctx context.Context) *utils.TokenClaims {
+	return ctx.Value(TOKEN_CLAIM_KEY).(*utils.TokenClaims)
 }
 
 func (s *Service) putGinError(c *gin.Context, err error) {
