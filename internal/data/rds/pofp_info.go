@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	grpc_api "github.com/DOGTT/dm-api-server/api/grpc"
+	base_api "github.com/DOGTT/dm-api-server/api/base"
 	"github.com/lib/pq"
 	"gorm.io/gorm/clause"
 )
@@ -42,14 +42,14 @@ type PofpInfo struct {
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
 }
 
-func PointCoordToGeometry(p *grpc_api.PointCoord) string {
+func PointCoordToGeometry(p *base_api.PointCoord) string {
 	return fmt.Sprintf("SRID=4326;POINT(%f %f)", p.Lng, p.Lat)
 }
 
-func PointCoordFromGeometry(s string) *grpc_api.PointCoord {
+func PointCoordFromGeometry(s string) *base_api.PointCoord {
 	var lat, lng float32
 	_, _ = fmt.Sscanf(s, "SRID=4326;POINT(%f %f)", &lng, &lat) // 经度在前，纬度在后
-	return &grpc_api.PointCoord{
+	return &base_api.PointCoord{
 		Lat: lat,
 		Lng: lng,
 	}
@@ -78,7 +78,7 @@ func (c *RDSClient) GetPofpInfo(ctx context.Context, uuid string) (*PofpInfo, er
 	return &info, nil
 }
 
-func (c *RDSClient) BatchQueryPofpInfoListByBound(ctx context.Context, typeIDs []uint, bc *grpc_api.BoundCoord) ([]*PofpInfo, error) {
+func (c *RDSClient) BatchQueryPofpInfoListByBound(ctx context.Context, typeIDs []uint, bc *base_api.BoundCoord) ([]*PofpInfo, error) {
 
 	var results []*PofpInfo
 	query := c.db.WithContext(ctx).Model(&PofpInfo{}).

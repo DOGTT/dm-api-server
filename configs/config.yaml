@@ -3,8 +3,9 @@ server:
     enable: true
     addr: 0.0.0.0:8080
     timeout: 1s
-    enable_metric: true
-    enable_trace: true
+    enable_metric: false
+    enable_trace: false
+    enable_swagger: true
     auth_white_pathlist: ["/v1/user/wx/login", "/v1/user/wx/reg/fast"]
   grpc:
     enable: false

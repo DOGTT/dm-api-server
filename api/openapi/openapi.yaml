@@ -31,12 +31,12 @@ paths:
             description: 批量获取对象上传预签名URL
             operationId: BaseService_ObjectPutPresignURLBatchGet
             parameters:
-                - name: objectType
+                - name: object_type
                   in: query
                   schema:
                     type: integer
                     format: enum
-                - name: objectCount
+                - name: object_count
                   in: query
                   schema:
                     type: integer
@@ -253,7 +253,7 @@ components:
                     items:
                         type: string
                     description: TODO
-                objectIds:
+                object_ids:
                     type: array
                     items:
                         type: string
@@ -277,12 +277,12 @@ components:
                 weight:
                     type: integer
                     format: int32
-                birthDate:
+                birth_date:
                     type: string
-                createdAt:
+                created_at:
                     type: string
                     format: date-time
-                updatedAt:
+                updated_at:
                     type: string
                     format: date-time
         PetInfoReg:
@@ -291,7 +291,7 @@ components:
                 name:
                     type: string
                     description: 名字
-                avatarData:
+                avatar_data:
                     type: string
                     description: base64 data
                     format: bytes
@@ -299,7 +299,7 @@ components:
         PofpBaseQueryByBoundReq:
             type: object
             properties:
-                typeIds:
+                type_ids:
                     type: array
                     items:
                         type: integer
@@ -321,14 +321,14 @@ components:
             properties:
                 uuid:
                     type: string
-                parentUuid:
+                parent_uuid:
                     type: string
                 content:
                     type: string
-                createdAt:
+                created_at:
                     type: string
                     format: date-time
-                updatedAt:
+                updated_at:
                     type: string
                     format: date-time
         PofpCommentReq:
@@ -356,7 +356,7 @@ components:
             properties:
                 pofp:
                     $ref: '#/components/schemas/PofpInfo'
-                pofpDynamicInfo:
+                pofp_dynamic_info:
                     $ref: '#/components/schemas/PofpDynamicInfo'
         PofpDynamicInfo:
             type: object
@@ -368,14 +368,14 @@ components:
             properties:
                 pofp:
                     $ref: '#/components/schemas/PofpInfo'
-                pofpDynamicInfo:
+                pofp_dynamic_info:
                     $ref: '#/components/schemas/PofpDynamicInfo'
         PofpInfo:
             type: object
             properties:
                 uuid:
                     type: string
-                typeId:
+                type_id:
                     type: integer
                     format: uint32
                 pid:
@@ -383,7 +383,7 @@ components:
                     format: uint32
                 title:
                     type: string
-                latLng:
+                lat_lng:
                     $ref: '#/components/schemas/PointCoord'
                 photos:
                     type: array
@@ -391,36 +391,36 @@ components:
                         type: string
                 content:
                     type: string
-                poiId:
+                poi_id:
                     type: string
                 address:
                     type: string
-                poiData:
+                poi_data:
                     type: object
                     additionalProperties:
                         type: string
-                viewsCnt:
+                views_cnt:
                     type: integer
                     format: int32
-                likesCnt:
+                likes_cnt:
                     type: integer
                     format: int32
-                marksCnt:
+                marks_cnt:
                     type: integer
                     format: int32
-                commentsCnt:
+                comments_cnt:
                     type: integer
                     format: int32
-                lastView:
+                last_view:
                     type: string
                     format: date-time
-                lastMark:
+                last_mark:
                     type: string
                     format: date-time
-                createdAt:
+                created_at:
                     type: string
                     format: date-time
-                updatedAt:
+                updated_at:
                     type: string
                     format: date-time
         PofpInteractionReq:
@@ -428,7 +428,7 @@ components:
             properties:
                 uuid:
                     type: string
-                ixnType:
+                ixn_type:
                     type: integer
                     description: 互动类型
                     format: enum
@@ -474,12 +474,12 @@ components:
             properties:
                 token:
                     type: string
-                userInfo:
+                user_info:
                     $ref: '#/components/schemas/UserInfo'
         WeChatRegisterFastReq:
             type: object
             properties:
-                wxCode:
+                wx_code:
                     type: string
                 pet:
                     $ref: '#/components/schemas/PetInfoReg'
@@ -489,7 +489,7 @@ components:
             properties:
                 token:
                     type: string
-                userInfo:
+                user_info:
                     $ref: '#/components/schemas/UserInfo'
 tags:
     - name: BaseService

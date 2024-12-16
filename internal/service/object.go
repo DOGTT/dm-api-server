@@ -3,12 +3,12 @@ package service
 import (
 	"context"
 
-	grpc_api "github.com/DOGTT/dm-api-server/api/grpc"
+	base_api "github.com/DOGTT/dm-api-server/api/base"
 	"github.com/DOGTT/dm-api-server/internal/data/fds"
 	"github.com/DOGTT/dm-api-server/internal/utils"
 )
 
-func (s *Service) ObjectPutPresignURLBatchGet(ctx context.Context, req *grpc_api.ObjectPutPresignURLBatchGetReq) (res *grpc_api.ObjectPutPresignURLBatchGetResp, err error) {
+func (s *Service) ObjectPutPresignURLBatchGet(ctx context.Context, req *base_api.ObjectPutPresignURLBatchGetReq) (res *base_api.ObjectPutPresignURLBatchGetResp, err error) {
 
 	var (
 		urls      = make([]string, 0, req.GetObjectCount())
@@ -25,7 +25,7 @@ func (s *Service) ObjectPutPresignURLBatchGet(ctx context.Context, req *grpc_api
 		urls = append(urls, url)
 		objectIDs = append(objectIDs, uuid)
 	}
-	res = &grpc_api.ObjectPutPresignURLBatchGetResp{
+	res = &base_api.ObjectPutPresignURLBatchGetResp{
 		Urls:      urls,
 		ObjectIds: objectIDs,
 	}

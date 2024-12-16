@@ -1,8 +1,9 @@
 syntax = "proto3";
 
 package base_service;
-option go_package="github.com/DOGTT/dm-api-server/api;api";
+option go_package="github.com/DOGTT/dm-api-server/api/base;api";
 
+import "validate/validate.proto";
 import "pofp.proto";
 import "user.proto";
 import "google/api/annotations.proto";
@@ -219,12 +220,18 @@ message PofpFullQueryByIdResp {
     pofp.PofpDynamicInfo pofp_dynamic_info = 2;
 }
 
-
+// 互动类型
+enum InteractionType {
+    // 点赞
+    LIKE = 0;
+    // 标记
+    MARK = 1;
+}
 
 message PofpInteractionReq {
     string uuid = 1;
     // 互动类型
-    pofp.InteractionType ixn_type = 2;
+    InteractionType ixn_type = 2 [(validate.rules).enum = {defined_only: true}];
 }
 
 message PofpInteractionResp {

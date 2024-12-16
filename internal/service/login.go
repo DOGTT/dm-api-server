@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	grpc_api "github.com/DOGTT/dm-api-server/api/grpc"
+	base_api "github.com/DOGTT/dm-api-server/api/base"
 	"github.com/DOGTT/dm-api-server/internal/data/fds"
 	"github.com/DOGTT/dm-api-server/internal/data/rds"
 	"github.com/DOGTT/dm-api-server/internal/utils"
@@ -33,9 +33,9 @@ func (s *Service) wxCodeToWxId(ctx context.Context, wxCode string) (wxId string,
 	return
 }
 
-func (s *Service) WeChatLogin(ctx context.Context, req *grpc_api.WeChatLoginReq) (res *grpc_api.WeChatLoginResp, err error) {
+func (s *Service) WeChatLogin(ctx context.Context, req *base_api.WeChatLoginReq) (res *base_api.WeChatLoginResp, err error) {
 	log.Ctx(ctx).Debug("wx login get req", zap.Any("req", req))
-	res = &grpc_api.WeChatLoginResp{}
+	res = &base_api.WeChatLoginResp{}
 	wxId, err := s.wxCodeToWxId(ctx, req.GetWxCode())
 	if err != nil {
 		return
@@ -70,7 +70,7 @@ func (s *Service) WeChatLogin(ctx context.Context, req *grpc_api.WeChatLoginReq)
 	return
 }
 
-func validRegisterRequest(req *grpc_api.WeChatRegisterFastReq) error {
+func validRegisterRequest(req *base_api.WeChatRegisterFastReq) error {
 	if req == nil {
 		return EM_CommonFail_BadRequest.PutDesc("req is required")
 	}
@@ -83,14 +83,14 @@ func validRegisterRequest(req *grpc_api.WeChatRegisterFastReq) error {
 	return nil
 }
 
-func (s *Service) WeChatRegisterFast(ctx context.Context, req *grpc_api.WeChatRegisterFastReq) (res *grpc_api.WeChatRegisterFastResp, err error) {
+func (s *Service) WeChatRegisterFast(ctx context.Context, req *base_api.WeChatRegisterFastReq) (res *base_api.WeChatRegisterFastResp, err error) {
 	// Implement me
 	log.Ctx(ctx).Debug("grpc impl get req", zap.Any("req", req))
 	if validRegisterRequest(req) != nil {
 		err = EM_CommonFail_BadRequest.PutDesc("pet is required")
 		return
 	}
-	res = &grpc_api.WeChatRegisterFastResp{}
+	res = &base_api.WeChatRegisterFastResp{}
 	wxId, err := s.wxCodeToWxId(ctx, req.GetWxCode())
 	if err != nil {
 		return
@@ -135,13 +135,13 @@ func (s *Service) WeChatRegisterFast(ctx context.Context, req *grpc_api.WeChatRe
 	return
 }
 
-func (s *Service) convertToUserInfo(ctx context.Context, userInfo *rds.UserInfo) (res *grpc_api.UserInfo, err error) {
-	res = &grpc_api.UserInfo{
+func (s *Service) convertToUserInfo(ctx context.Context, userInfo *rds.UserInfo) (res *base_api.UserInfo, err error) {
+	res = &base_api.UserInfo{
 		Id:   uint32(userInfo.Id),
-		Pets: make([]*grpc_api.PetInfo, len(userInfo.Pets)),
+		Pets: make([]*base_api.PetInfo, len(userInfo.Pets)),
 	}
 	for i, pet := range userInfo.Pets {
-		res.Pets[i] = &grpc_api.PetInfo{
+		res.Pets[i] = &base_api.PetInfo{
 			Id:        uint32(pet.Id),
 			Name:      pet.Name,
 			Gender:    uint32(pet.Gender),

@@ -3,10 +3,10 @@ package service
 import (
 	"context"
 
-	grpc_api "github.com/DOGTT/dm-api-server/api/grpc"
+	base_api "github.com/DOGTT/dm-api-server/api/base"
 )
 
-func (s *Service) LocationCommonSearch(ctx context.Context, req *grpc_api.LocationCommonSearchReq) (res *grpc_api.LocationCommonSearchResp, err error) {
+func (s *Service) LocationCommonSearch(ctx context.Context, req *base_api.LocationCommonSearchReq) (res *base_api.LocationCommonSearchResp, err error) {
 	// 调用地图api
 	return
 }

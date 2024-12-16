@@ -3,8 +3,9 @@ syntax = "proto3";
 package user;
 
 import "google/protobuf/timestamp.proto";
+import "validate/validate.proto";
 
-option go_package="github.com/DOGTT/dm-api-server/api;api";
+option go_package="github.com/DOGTT/dm-api-server/api/base;api";
 
 
 

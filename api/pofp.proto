@@ -3,16 +3,11 @@ syntax = "proto3";
 package pofp;
 
 import "google/protobuf/timestamp.proto";
+import "validate/validate.proto";
 
-option go_package="github.com/DOGTT/dm-api-server/api;api";
+option go_package="github.com/DOGTT/dm-api-server/api/base;api";
 
-// 互动类型
-enum InteractionType {
-    // 点赞
-    LIKE = 0;
-    // 标记
-    MARK = 1;
-}
+
 
 message PointCoord {
     float lat = 1;

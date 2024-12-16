@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	grpc_api "github.com/DOGTT/dm-api-server/api/grpc"
+	base_api "github.com/DOGTT/dm-api-server/api/base"
 	"github.com/DOGTT/dm-api-server/internal/conf"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
@@ -29,16 +29,16 @@ var (
 		BucketNameAvatar,
 		BucketNamePofpImage}
 
-	bucketNameMapForObjectType = map[grpc_api.ObjectType]string{
-		grpc_api.ObjectType_OT_DEFAULT:    BucketNameDefault,
-		grpc_api.ObjectType_OT_POFP_IMAGE: BucketNamePofpImage,
+	bucketNameMapForObjectType = map[base_api.ObjectType]string{
+		base_api.ObjectType_OT_DEFAULT:    BucketNameDefault,
+		base_api.ObjectType_OT_POFP_IMAGE: BucketNamePofpImage,
 	}
 )
 
 func init() {
 }
 
-func GetBucketName(objectType grpc_api.ObjectType) string {
+func GetBucketName(objectType base_api.ObjectType) string {
 	name := bucketNameMapForObjectType[objectType]
 	if name == "" {
 		log.L().Warn("objectType not found in bucketNameMapForObjectType",

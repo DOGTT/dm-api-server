@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 
-	grpc_api "github.com/DOGTT/dm-api-server/api/grpc"
+	base_api "github.com/DOGTT/dm-api-server/api/base"
 	"github.com/DOGTT/dm-api-server/internal/data/rds"
 	"github.com/DOGTT/dm-api-server/internal/utils"
 	log "github.com/uptrace/opentelemetry-go-extra/otelzap"
@@ -11,7 +11,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-func validPofpCreateRequest(req *grpc_api.PofpCreateReq) error {
+func validPofpCreateRequest(req *base_api.PofpCreateReq) error {
 	if req == nil {
 		return EM_CommonFail_BadRequest.PutDesc("req is required")
 	}
@@ -26,7 +26,7 @@ func validPofpCreateRequest(req *grpc_api.PofpCreateReq) error {
 	return nil
 }
 
-func (s *Service) PofpCreate(ctx context.Context, req *grpc_api.PofpCreateReq) (res *grpc_api.PofpCreateResp, err error) {
+func (s *Service) PofpCreate(ctx context.Context, req *base_api.PofpCreateReq) (res *base_api.PofpCreateResp, err error) {
 	// valid
 	if err = validPofpCreateRequest(req); err != nil {
 		return
@@ -48,7 +48,7 @@ func (s *Service) PofpCreate(ctx context.Context, req *grpc_api.PofpCreateReq) (
 	return
 }
 
-func (s *Service) PofpDelete(ctx context.Context, req *grpc_api.PofpDeleteReq) (res *grpc_api.PofpDeleteResp, err error) {
+func (s *Service) PofpDelete(ctx context.Context, req *base_api.PofpDeleteReq) (res *base_api.PofpDeleteResp, err error) {
 
 	if err = s.data.DeletePofpInfo(ctx, req.GetUuid()); err != nil {
 		return
@@ -56,7 +56,7 @@ func (s *Service) PofpDelete(ctx context.Context, req *grpc_api.PofpDeleteReq) (
 	return
 }
 
-func validPofpUpdateRequest(req *grpc_api.PofpUpdateReq) error {
+func validPofpUpdateRequest(req *base_api.PofpUpdateReq) error {
 	if req == nil {
 		return EM_CommonFail_BadRequest.PutDesc("req is required")
 	}
@@ -71,7 +71,7 @@ func validPofpUpdateRequest(req *grpc_api.PofpUpdateReq) error {
 	return nil
 }
 
-func (s *Service) PofpUpdate(ctx context.Context, req *grpc_api.PofpUpdateReq) (res *grpc_api.PofpUpdateResp, err error) {
+func (s *Service) PofpUpdate(ctx context.Context, req *base_api.PofpUpdateReq) (res *base_api.PofpUpdateResp, err error) {
 	// valid
 	if err = validPofpUpdateRequest(req); err != nil {
 		return
@@ -93,14 +93,14 @@ func (s *Service) PofpUpdate(ctx context.Context, req *grpc_api.PofpUpdateReq) (
 	return
 }
 
-func (s *Service) PofpDetailQueryById(ctx context.Context, req *grpc_api.PofpDetailQueryByIdReq) (res *grpc_api.PofpDetailQueryByIdResp, err error) {
+func (s *Service) PofpDetailQueryById(ctx context.Context, req *base_api.PofpDetailQueryByIdReq) (res *base_api.PofpDetailQueryByIdResp, err error) {
 	var pofoInfo *rds.PofpInfo
 	pofoInfo, err = s.data.GetPofpInfo(ctx, req.GetUuid())
 	if err != nil {
 		err = EM_CommonFail_Internal.PutDesc(err.Error())
 		return
 	}
-	res = &grpc_api.PofpDetailQueryByIdResp{}
+	res = &base_api.PofpDetailQueryByIdResp{}
 	res.Pofp, err = s.convertToPofpInfo(ctx, pofoInfo)
 	if err != nil {
 		return
@@ -114,8 +114,8 @@ func (s *Service) PofpDetailQueryById(ctx context.Context, req *grpc_api.PofpDet
 	return
 }
 
-func (s *Service) convertToPofpInfo(ctx context.Context, pInfo *rds.PofpInfo) (res *grpc_api.PofpInfo, err error) {
-	res = &grpc_api.PofpInfo{
+func (s *Service) convertToPofpInfo(ctx context.Context, pInfo *rds.PofpInfo) (res *base_api.PofpInfo, err error) {
+	res = &base_api.PofpInfo{
 		Uuid:        pInfo.UUID,
 		TypeId:      uint32(pInfo.TypeId),
 		Title:       pInfo.Title,
@@ -142,12 +142,12 @@ func (s *Service) convertToPofpInfo(ctx context.Context, pInfo *rds.PofpInfo) (r
 	return
 }
 
-func (s *Service) PofpFullQueryById(ctx context.Context, req *grpc_api.PofpFullQueryByIdReq) (res *grpc_api.PofpFullQueryByIdResp, err error) {
+func (s *Service) PofpFullQueryById(ctx context.Context, req *base_api.PofpFullQueryByIdReq) (res *base_api.PofpFullQueryByIdResp, err error) {
 	// TODO
 	return
 }
 
-func (s *Service) PofpBaseQueryByBound(ctx context.Context, req *grpc_api.PofpBaseQueryByBoundReq) (res *grpc_api.PofpBaseQueryByBoundResp, err error) {
+func (s *Service) PofpBaseQueryByBound(ctx context.Context, req *base_api.PofpBaseQueryByBoundReq) (res *base_api.PofpBaseQueryByBoundResp, err error) {
 	var pofoList []*rds.PofpInfo
 	pofoList, err = s.data.BatchQueryPofpInfoListByBound(ctx,
 		utils.ConvertToUintSlice(req.GetTypeIds()), req.GetBound())
@@ -155,8 +155,8 @@ func (s *Service) PofpBaseQueryByBound(ctx context.Context, req *grpc_api.PofpBa
 		err = EM_CommonFail_Internal.PutDesc(err.Error())
 		return
 	}
-	res = &grpc_api.PofpBaseQueryByBoundResp{
-		Pofps: make([]*grpc_api.PofpInfo, len(pofoList)),
+	res = &base_api.PofpBaseQueryByBoundResp{
+		Pofps: make([]*base_api.PofpInfo, len(pofoList)),
 	}
 	for i, pofo := range pofoList {
 		res.Pofps[i], err = s.convertToPofpInfo(ctx, pofo)
@@ -167,7 +167,7 @@ func (s *Service) PofpBaseQueryByBound(ctx context.Context, req *grpc_api.PofpBa
 	return
 }
 
-func (s *Service) PofpInteraction(ctx context.Context, req *grpc_api.PofpInteractionReq) (res *grpc_api.PofpInteractionResp, err error) {
+func (s *Service) PofpInteraction(ctx context.Context, req *base_api.PofpInteractionReq) (res *base_api.PofpInteractionResp, err error) {
 	tc := getClaimFromContext(ctx)
 	err = s.data.CreatePofpIxnRecordWithCount(ctx, &rds.UserPofpIxnRecord{
 		PofpUUID: req.GetUuid(),
@@ -178,7 +178,7 @@ func (s *Service) PofpInteraction(ctx context.Context, req *grpc_api.PofpInterac
 	return
 }
 
-func (s *Service) PofpComment(ctx context.Context, req *grpc_api.PofpCommentReq) (res *grpc_api.PofpCommentResp, err error) {
+func (s *Service) PofpComment(ctx context.Context, req *base_api.PofpCommentReq) (res *base_api.PofpCommentResp, err error) {
 	// TODO
 	return
 }
