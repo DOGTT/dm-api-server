@@ -63,16 +63,16 @@ func (s *Service) BaseServiceWeChatRegisterFast(c *gin.Context) {
 	req := &api.WeChatRegisterFastReq{
 		WxCode: *reqG.WxCode,
 	}
-	if req.Pet != nil {
+	if reqG.Pet != nil {
+		req.Pet = &api.PetInfoReg{
+			Name: *reqG.Pet.Name,
+		}
 		avatarData, err := base64.StdEncoding.DecodeString(*reqG.Pet.AvatarData)
 		if err != nil {
 			s.putGinError(c, EM_CommonFail_BadRequest)
 			return
 		}
-		req.Pet = &api.PetInfoReg{
-			Name:       *reqG.Pet.Name,
-			AvatarData: avatarData,
-		}
+		req.Pet.AvatarData = avatarData
 	}
 	if err := req.Validate(); err != nil {
 		s.putGinError(c, EM_CommonFail_BadRequest.PutDesc(err.Error()))

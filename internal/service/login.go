@@ -50,7 +50,7 @@ func (s *Service) WeChatLogin(ctx context.Context, req *base_api.WeChatLoginReq)
 		err = EM_CommonFail_Internal.PutDesc(err.Error())
 		return
 	}
-	ackPId := uint(0)
+	ackPId := uint64(0)
 	if len(userInfo.Pets) > 0 {
 		ackPId = userInfo.Pets[0].Id
 	}
@@ -102,20 +102,24 @@ func (s *Service) WeChatRegisterFast(ctx context.Context, req *base_api.WeChatRe
 		Name:     req.GetPet().GetName(),
 		AvatarId: utils.GenShortenUUID(),
 	}
-	// save avatar
+	// 2. create user
+	err = s.data.CreateUserInfoWithPet(ctx, user, pet)
+	if rds.IsDuplicateErr(err) {
+		err = EM_UserFail_AlreadyExist.PutDesc(err.Error())
+		return
+	}
+	if err != nil {
+		err = EM_CommonFail_DBError.PutDesc(err.Error())
+		return
+	}
+	// 3.save avatar
 	if req.GetPet().GetAvatarData() != nil {
 		err = s.data.PutObject(ctx, fds.BucketNameAvatar,
 			pet.AvatarId, req.GetPet().GetAvatarData())
 		if err != nil {
-			err = EM_CommonFail_Internal.PutDesc(err.Error())
+			err = EM_CommonFail_DBError.PutDesc(err.Error())
 			return
 		}
-	}
-	// 2. create user
-	err = s.data.CreateUserInfoWithPet(ctx, user, pet)
-	if errors.Is(err, gorm.ErrDuplicatedKey) {
-		err = EM_AuthFail_NotFound.PutDesc(err.Error())
-		return
 	}
 	// 3. Query Info
 	user.Pets = []*rds.PetInfo{pet}

@@ -17,3 +17,9 @@ docker run -p 9000:9000 -p 9001:9001 --name minio \
 
 docker stop minio
 docker rm minio
+
+
+docker run -p 5433:80 \
+    -e "PGADMIN_DEFAULT_EMAIL=dev@dev.com" \
+    -e "PGADMIN_DEFAULT_PASSWORD=admin" \
+    -d dpage/pgadmin4

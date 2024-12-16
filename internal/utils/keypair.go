@@ -42,8 +42,8 @@ func LoadKeyPair(privateKeyPath, publicKeyPath string) (*KeyPair, error) {
 }
 
 type TokenClaims struct {
-	UID uint `json:"uid"` // 用户 ID
-	PID uint `json:"pid"` // 项目 ID
+	UID uint64 `json:"uid"` // 用户 ID
+	PID uint64 `json:"pid"` // 项目 ID
 }
 
 // GenerateToken 生成 RS256 JWT Token
@@ -71,17 +71,16 @@ func (kp *KeyPair) ParseToken(tokenString string) (TokenClaims, error) {
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		uid, ok := claims["uid"].(int)
+		uid, ok := claims["uid"].(float64)
 		if !ok {
 			return tc, errors.New("invalid token claims")
 		}
-		tc.UID = uint(uid)
-		pid, ok := claims["pid"].(int)
+		tc.PID = (uint64)(uid)
+		pid, ok := claims["pid"].(float64)
 		if !ok {
 			return tc, errors.New("invalid token claims")
 		}
-		tc.PID = uint(pid)
-
+		tc.PID = (uint64)(pid)
 	}
 	return tc, nil
 }

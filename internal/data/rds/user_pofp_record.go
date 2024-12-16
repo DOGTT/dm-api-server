@@ -26,8 +26,8 @@ var (
 
 // 足迹点个互动记录 喜欢/踩过/评论
 type UserPofpIxnRecord struct {
-	UId      uint   `gorm:"index"`
-	PId      uint   `gorm:"index"`
+	UId      uint64 `gorm:"index"`
+	PId      uint64 `gorm:"index"`
 	PofpUUID string `gorm:"index"`
 	//
 	IntType InxType `gorm:"type:int;default:0"` // 0-点赞,1-收藏

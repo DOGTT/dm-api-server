@@ -234,6 +234,11 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/WeChatRegisterFastResp'
 components:
+    securitySchemes:
+        bearerAuth:
+            type: http
+            scheme: bearer
+            bearerFormat: JWT  # 可选，指明使用 JWT
     schemas:
         BoundCoord:
             type: object
@@ -493,3 +498,5 @@ components:
                     $ref: '#/components/schemas/UserInfo'
 tags:
     - name: BaseService
+security:
+  - bearerAuth: []  
