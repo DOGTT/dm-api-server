@@ -19,40 +19,63 @@ message BoundCoord {
     PointCoord ne = 2;
 }
 
+// 足迹点类型
+message PofpTypeInfo {
+    uint32 id = 1;
+    string name = 2;
+    int32 coverage_radius = 3;
+    string theme_color = 4;
+    google.protobuf.Timestamp created_at = 31;
+    google.protobuf.Timestamp updated_at = 32;
+}
+
 message PofpInfo {
+    // 足迹 ID
     string uuid = 1;
+    // 足迹类型, 不可更新
     uint32 type_id = 2;
-    uint32 pid = 3;
+    // 足迹作者, 不可更新
+    uint64 pid = 3;
+    // 足迹名称, 可更新
     string title = 4;
+    // 足迹位置, 不可更新
     PointCoord lat_lng = 5;
     repeated string photos = 6;
+    // 内容, 可更新
     string content = 7;
+    // POI ID, 不可更新
     string poi_id = 8;
+    // POI 地址, 不可更新
     string address = 9;
+    // POI 详细信息, 不可更新
     map<string, string> poi_data = 10;
+    // 查看数，只读
     int32 views_cnt = 11;
+    // 喜欢数，只读
     int32 likes_cnt = 12;
+    // 标记数，只读
     int32 marks_cnt = 13;
+    // 评论数，只读
     int32 comments_cnt = 14;
     google.protobuf.Timestamp last_view = 15;
     google.protobuf.Timestamp last_mark = 16;
 
-    google.protobuf.Timestamp created_at = 21;
-    google.protobuf.Timestamp updated_at = 22;
+    google.protobuf.Timestamp created_at = 31;
+    google.protobuf.Timestamp updated_at = 32;
 }
 
 message PofpDynamicInfo {
     string uuid = 1;
     // TODO: add more fields
     // 谁最近来过
-
     // 图片轮播
 }
 
+// 足迹评论
 message PofpCommentInfo {
     string uuid = 1;
     string parent_uuid = 2;
     string content = 3;
-    google.protobuf.Timestamp created_at = 21;
-    google.protobuf.Timestamp updated_at = 22;
+    google.protobuf.Timestamp created_at = 31;
+    google.protobuf.Timestamp updated_at = 32;
 }

@@ -51,6 +51,13 @@ service BaseService {
         };
     }
 
+    // 列表查询足迹点类型
+    rpc PofpTypeList(PofpTypeListReq) returns (PofpTypeListResp) {
+        option (google.api.http) = {
+            get: "/v1/popf/type"
+        };
+    }
+
     // 创建足迹点
     rpc PofpCreate(PofpCreateReq) returns (PofpCreateResp) {
         option (google.api.http) = {
@@ -168,6 +175,14 @@ message ObjectPutPresignURLBatchGetResp {
     repeated string object_ids = 2;
 }
 
+message PofpTypeListReq {
+
+}
+
+message PofpTypeListResp {
+    repeated pofp.PofpTypeInfo pofp_types = 1;
+}
+
 // 足迹创建
 message PofpCreateReq {
     pofp.PofpInfo pofp = 1;
@@ -176,6 +191,7 @@ message PofpCreateReq {
 message PofpCreateResp {
     pofp.PofpInfo pofp = 1;
 }
+
 // 足迹更新
 message PofpUpdateReq {
     pofp.PofpInfo pofp = 1;

@@ -3,7 +3,6 @@ package rds
 import (
 	"time"
 
-	"github.com/google/uuid"
 	"github.com/lib/pq"
 )
 
@@ -13,7 +12,7 @@ func init() {
 
 // 足迹点评论
 type PofpComment struct {
-	UUID uuid.UUID `gorm:"type:uuid;primaryKey;"`
+	UUID string `gorm:"type:varchar(22);primaryKey;"`
 	// - 归属的PetID
 	PId uint `gorm:"index"`
 	//

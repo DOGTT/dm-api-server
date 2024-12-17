@@ -105,8 +105,9 @@ func (s *Service) BaseServiceWeChatLogin(c *gin.Context) {
 }
 
 func (s *Service) BaseServiceLocationCommonSearch(c *gin.Context, params gin_api.BaseServiceLocationCommonSearchParams) {
-	req := &base_api.LocationCommonSearchReq{
-		Input: *params.Input,
+	req := &base_api.LocationCommonSearchReq{}
+	if params.Input != nil {
+		req.Input = *params.Input
 	}
 	if err := req.Validate(); err != nil {
 		s.putGinError(c, EM_CommonFail_BadRequest.PutDesc(err.Error()))
@@ -130,6 +131,20 @@ func (s *Service) BaseServiceObjectPutPresignURLBatchGet(c *gin.Context, params 
 		return
 	}
 	res, err := s.ObjectPutPresignURLBatchGet(withGinContext(c), req)
+	if err != nil {
+		s.putGinError(c, err)
+		return
+	}
+	c.JSON(http.StatusOK, res)
+}
+
+func (s *Service) BaseServicePofpTypeList(c *gin.Context) {
+	req := &base_api.PofpTypeListReq{}
+	if err := req.Validate(); err != nil {
+		s.putGinError(c, EM_CommonFail_BadRequest.PutDesc(err.Error()))
+		return
+	}
+	res, err := s.PofpTypeList(withGinContext(c), req)
 	if err != nil {
 		s.putGinError(c, err)
 		return

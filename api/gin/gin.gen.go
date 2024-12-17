@@ -46,7 +46,7 @@ type PetInfo struct {
 	Breed     *string    `json:"breed,omitempty"`
 	CreatedAt *time.Time `json:"created_at,omitempty"`
 	Gender    *uint32    `json:"gender,omitempty"`
-	Id        *uint32    `json:"id,omitempty"`
+	Id        *string    `json:"id,omitempty"`
 	Name      *string    `json:"name,omitempty"`
 	Specie    *string    `json:"specie,omitempty"`
 	UpdatedAt *time.Time `json:"updated_at,omitempty"`
@@ -76,7 +76,7 @@ type PofpBaseQueryByBoundResp struct {
 	Pofps *[]PofpInfo `json:"pofps,omitempty"`
 }
 
-// PofpCommentInfo defines model for PofpCommentInfo.
+// PofpCommentInfo 足迹评论
 type PofpCommentInfo struct {
 	Content    *string    `json:"content,omitempty"`
 	CreatedAt  *time.Time `json:"created_at,omitempty"`
@@ -87,6 +87,7 @@ type PofpCommentInfo struct {
 
 // PofpCommentReq defines model for PofpCommentReq.
 type PofpCommentReq struct {
+	// Comment 足迹评论
 	Comment *PofpCommentInfo `json:"comment,omitempty"`
 }
 
@@ -125,24 +126,43 @@ type PofpFullQueryByIdResp struct {
 
 // PofpInfo defines model for PofpInfo.
 type PofpInfo struct {
-	Address     *string            `json:"address,omitempty"`
-	CommentsCnt *int32             `json:"comments_cnt,omitempty"`
-	Content     *string            `json:"content,omitempty"`
-	CreatedAt   *time.Time         `json:"created_at,omitempty"`
-	LastMark    *time.Time         `json:"last_mark,omitempty"`
-	LastView    *time.Time         `json:"last_view,omitempty"`
-	LatLng      *PointCoord        `json:"lat_lng,omitempty"`
-	LikesCnt    *int32             `json:"likes_cnt,omitempty"`
-	MarksCnt    *int32             `json:"marks_cnt,omitempty"`
-	Photos      *[]string          `json:"photos,omitempty"`
-	Pid         *uint32            `json:"pid,omitempty"`
-	PoiData     *map[string]string `json:"poi_data,omitempty"`
-	PoiId       *string            `json:"poi_id,omitempty"`
-	Title       *string            `json:"title,omitempty"`
-	TypeId      *uint32            `json:"type_id,omitempty"`
-	UpdatedAt   *time.Time         `json:"updated_at,omitempty"`
-	Uuid        *string            `json:"uuid,omitempty"`
-	ViewsCnt    *int32             `json:"views_cnt,omitempty"`
+	// Address POI 地址, 不可更新
+	Address *string `json:"address,omitempty"`
+
+	// CommentsCnt 评论数，只读
+	CommentsCnt *int32 `json:"comments_cnt,omitempty"`
+
+	// Content 内容, 可更新
+	Content   *string    `json:"content,omitempty"`
+	CreatedAt *time.Time `json:"created_at,omitempty"`
+	LastMark  *time.Time `json:"last_mark,omitempty"`
+	LastView  *time.Time `json:"last_view,omitempty"`
+
+	// LatLng 足迹位置, 不可更新
+	LatLng *PointCoord `json:"lat_lng,omitempty"`
+
+	// LikesCnt 喜欢数，只读
+	LikesCnt *int32 `json:"likes_cnt,omitempty"`
+
+	// MarksCnt 标记数，只读
+	MarksCnt *int32    `json:"marks_cnt,omitempty"`
+	Photos   *[]string `json:"photos,omitempty"`
+	Pid      *string   `json:"pid,omitempty"`
+
+	// PoiData POI 详细信息, 不可更新
+	PoiData *map[string]string `json:"poi_data,omitempty"`
+
+	// PoiId POI ID, 不可更新
+	PoiId *string `json:"poi_id,omitempty"`
+
+	// Title 足迹名称, 可更新
+	Title     *string    `json:"title,omitempty"`
+	TypeId    *uint32    `json:"type_id,omitempty"`
+	UpdatedAt *time.Time `json:"updated_at,omitempty"`
+	Uuid      *string    `json:"uuid,omitempty"`
+
+	// ViewsCnt 查看数，只读
+	ViewsCnt *int32 `json:"views_cnt,omitempty"`
 }
 
 // PofpInteractionReq defines model for PofpInteractionReq.
@@ -154,6 +174,21 @@ type PofpInteractionReq struct {
 
 // PofpInteractionResp defines model for PofpInteractionResp.
 type PofpInteractionResp = map[string]interface{}
+
+// PofpTypeInfo 足迹点类型
+type PofpTypeInfo struct {
+	CoverageRadius *int32     `json:"coverage_radius,omitempty"`
+	CreatedAt      *time.Time `json:"created_at,omitempty"`
+	Id             *uint32    `json:"id,omitempty"`
+	Name           *string    `json:"name,omitempty"`
+	ThemeColor     *string    `json:"theme_color,omitempty"`
+	UpdatedAt      *time.Time `json:"updated_at,omitempty"`
+}
+
+// PofpTypeListResp defines model for PofpTypeListResp.
+type PofpTypeListResp struct {
+	PofpTypes *[]PofpTypeInfo `json:"pofp_types,omitempty"`
+}
 
 // PofpUpdateReq 足迹更新
 type PofpUpdateReq struct {
@@ -171,7 +206,7 @@ type PointCoord struct {
 
 // UserInfo defines model for UserInfo.
 type UserInfo struct {
-	Id   *uint32    `json:"id,omitempty"`
+	Id   *string    `json:"id,omitempty"`
 	Pets *[]PetInfo `json:"pets,omitempty"`
 }
 
@@ -359,6 +394,9 @@ type ClientInterface interface {
 
 	BaseServicePofpInteraction(ctx context.Context, body BaseServicePofpInteractionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// BaseServicePofpTypeList request
+	BaseServicePofpTypeList(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// BaseServiceWeChatLoginWithBody request with any body
 	BaseServiceWeChatLoginWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -540,6 +578,18 @@ func (c *Client) BaseServicePofpInteractionWithBody(ctx context.Context, content
 
 func (c *Client) BaseServicePofpInteraction(ctx context.Context, body BaseServicePofpInteractionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewBaseServicePofpInteractionRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServicePofpTypeList(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServicePofpTypeListRequest(c.Server)
 	if err != nil {
 		return nil, err
 	}
@@ -1059,6 +1109,33 @@ func NewBaseServicePofpInteractionRequestWithBody(server string, contentType str
 	return req, nil
 }
 
+// NewBaseServicePofpTypeListRequest generates requests for BaseServicePofpTypeList
+func NewBaseServicePofpTypeListRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/popf/type")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewBaseServiceWeChatLoginRequest calls the generic BaseServiceWeChatLogin builder with application/json body
 func NewBaseServiceWeChatLoginRequest(server string, body BaseServiceWeChatLoginJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -1221,6 +1298,9 @@ type ClientWithResponsesInterface interface {
 	BaseServicePofpInteractionWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServicePofpInteractionResponse, error)
 
 	BaseServicePofpInteractionWithResponse(ctx context.Context, body BaseServicePofpInteractionJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServicePofpInteractionResponse, error)
+
+	// BaseServicePofpTypeListWithResponse request
+	BaseServicePofpTypeListWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*BaseServicePofpTypeListResponse, error)
 
 	// BaseServiceWeChatLoginWithBodyWithResponse request with any body
 	BaseServiceWeChatLoginWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceWeChatLoginResponse, error)
@@ -1453,6 +1533,28 @@ func (r BaseServicePofpInteractionResponse) StatusCode() int {
 	return 0
 }
 
+type BaseServicePofpTypeListResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *PofpTypeListResp
+}
+
+// Status returns HTTPResponse.Status
+func (r BaseServicePofpTypeListResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BaseServicePofpTypeListResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type BaseServiceWeChatLoginResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -1625,6 +1727,15 @@ func (c *ClientWithResponses) BaseServicePofpInteractionWithResponse(ctx context
 		return nil, err
 	}
 	return ParseBaseServicePofpInteractionResponse(rsp)
+}
+
+// BaseServicePofpTypeListWithResponse request returning *BaseServicePofpTypeListResponse
+func (c *ClientWithResponses) BaseServicePofpTypeListWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*BaseServicePofpTypeListResponse, error) {
+	rsp, err := c.BaseServicePofpTypeList(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServicePofpTypeListResponse(rsp)
 }
 
 // BaseServiceWeChatLoginWithBodyWithResponse request with arbitrary body returning *BaseServiceWeChatLoginResponse
@@ -1921,6 +2032,32 @@ func ParseBaseServicePofpInteractionResponse(rsp *http.Response) (*BaseServicePo
 	return response, nil
 }
 
+// ParseBaseServicePofpTypeListResponse parses an HTTP response from a BaseServicePofpTypeListWithResponse call
+func ParseBaseServicePofpTypeListResponse(rsp *http.Response) (*BaseServicePofpTypeListResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BaseServicePofpTypeListResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PofpTypeListResp
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseBaseServiceWeChatLoginResponse parses an HTTP response from a BaseServiceWeChatLoginWithResponse call
 func ParseBaseServiceWeChatLoginResponse(rsp *http.Response) (*BaseServiceWeChatLoginResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -2005,6 +2142,9 @@ type ServerInterface interface {
 
 	// (POST /v1/popf/interaction)
 	BaseServicePofpInteraction(c *gin.Context)
+
+	// (GET /v1/popf/type)
+	BaseServicePofpTypeList(c *gin.Context)
 
 	// (POST /v1/user/wx/login)
 	BaseServiceWeChatLogin(c *gin.Context)
@@ -2225,6 +2365,19 @@ func (siw *ServerInterfaceWrapper) BaseServicePofpInteraction(c *gin.Context) {
 	siw.Handler.BaseServicePofpInteraction(c)
 }
 
+// BaseServicePofpTypeList operation middleware
+func (siw *ServerInterfaceWrapper) BaseServicePofpTypeList(c *gin.Context) {
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.BaseServicePofpTypeList(c)
+}
+
 // BaseServiceWeChatLogin operation middleware
 func (siw *ServerInterfaceWrapper) BaseServiceWeChatLogin(c *gin.Context) {
 
@@ -2288,6 +2441,7 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	router.GET(options.BaseURL+"/v1/popf/detail_query_by_id", wrapper.BaseServicePofpDetailQueryById)
 	router.GET(options.BaseURL+"/v1/popf/full_query_by_id", wrapper.BaseServicePofpFullQueryById)
 	router.POST(options.BaseURL+"/v1/popf/interaction", wrapper.BaseServicePofpInteraction)
+	router.GET(options.BaseURL+"/v1/popf/type", wrapper.BaseServicePofpTypeList)
 	router.POST(options.BaseURL+"/v1/user/wx/login", wrapper.BaseServiceWeChatLogin)
 	router.POST(options.BaseURL+"/v1/user/wx/reg/fast", wrapper.BaseServiceWeChatRegisterFast)
 }
@@ -2295,35 +2449,39 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"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",
-	"euHvAAAA//9Ox9lTnyQAAA==",
+	"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",
+	"AAA=",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

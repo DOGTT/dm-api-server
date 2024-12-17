@@ -115,7 +115,7 @@ func (s *Service) WeChatRegisterFast(ctx context.Context, req *base_api.WeChatRe
 	// 3.save avatar
 	if req.GetPet().GetAvatarData() != nil {
 		err = s.data.PutObject(ctx, fds.BucketNameAvatar,
-			pet.AvatarId, req.GetPet().GetAvatarData())
+			getAvatarIdFromFDS(pet.AvatarId, pet.Id), req.GetPet().GetAvatarData())
 		if err != nil {
 			err = EM_CommonFail_DBError.PutDesc(err.Error())
 			return
@@ -139,14 +139,18 @@ func (s *Service) WeChatRegisterFast(ctx context.Context, req *base_api.WeChatRe
 	return
 }
 
+func getAvatarIdFromFDS(avatarId string, pid uint64) string {
+	return fmt.Sprintf("%d_%s", pid, avatarId)
+}
+
 func (s *Service) convertToUserInfo(ctx context.Context, userInfo *rds.UserInfo) (res *base_api.UserInfo, err error) {
 	res = &base_api.UserInfo{
-		Id:   uint32(userInfo.Id),
+		Id:   userInfo.Id,
 		Pets: make([]*base_api.PetInfo, len(userInfo.Pets)),
 	}
 	for i, pet := range userInfo.Pets {
 		res.Pets[i] = &base_api.PetInfo{
-			Id:        uint32(pet.Id),
+			Id:        pet.Id,
 			Name:      pet.Name,
 			Gender:    uint32(pet.Gender),
 			BirthDate: pet.BirthDate,
@@ -156,7 +160,7 @@ func (s *Service) convertToUserInfo(ctx context.Context, userInfo *rds.UserInfo)
 		}
 		if pet.AvatarId != "" {
 			res.Pets[i].Avatar, err = s.data.GenerateGetPresignedURL(ctx,
-				fds.BucketNameAvatar, pet.AvatarId, fds.PreSignDurationDefault)
+				fds.BucketNameAvatar, getAvatarIdFromFDS(pet.AvatarId, pet.Id), fds.PreSignDurationDefault)
 			if err != nil {
 				err = EM_CommonFail_Internal.PutDesc(err.Error())
 				return

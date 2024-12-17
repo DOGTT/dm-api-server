@@ -295,6 +295,171 @@ var _ interface {
 	ErrorName() string
 } = BoundCoordValidationError{}
 
+// Validate checks the field values on PofpTypeInfo with the rules defined in
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *PofpTypeInfo) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on PofpTypeInfo with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in PofpTypeInfoMultiError, or
+// nil if none found.
+func (m *PofpTypeInfo) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *PofpTypeInfo) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Id
+
+	// no validation rules for Name
+
+	// no validation rules for CoverageRadius
+
+	// no validation rules for ThemeColor
+
+	if all {
+		switch v := interface{}(m.GetCreatedAt()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, PofpTypeInfoValidationError{
+					field:  "CreatedAt",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, PofpTypeInfoValidationError{
+					field:  "CreatedAt",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetCreatedAt()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return PofpTypeInfoValidationError{
+				field:  "CreatedAt",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if all {
+		switch v := interface{}(m.GetUpdatedAt()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, PofpTypeInfoValidationError{
+					field:  "UpdatedAt",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, PofpTypeInfoValidationError{
+					field:  "UpdatedAt",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetUpdatedAt()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return PofpTypeInfoValidationError{
+				field:  "UpdatedAt",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if len(errors) > 0 {
+		return PofpTypeInfoMultiError(errors)
+	}
+
+	return nil
+}
+
+// PofpTypeInfoMultiError is an error wrapping multiple validation errors
+// returned by PofpTypeInfo.ValidateAll() if the designated constraints aren't met.
+type PofpTypeInfoMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m PofpTypeInfoMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m PofpTypeInfoMultiError) AllErrors() []error { return m }
+
+// PofpTypeInfoValidationError is the validation error returned by
+// PofpTypeInfo.Validate if the designated constraints aren't met.
+type PofpTypeInfoValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e PofpTypeInfoValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e PofpTypeInfoValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e PofpTypeInfoValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e PofpTypeInfoValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e PofpTypeInfoValidationError) ErrorName() string { return "PofpTypeInfoValidationError" }
+
+// Error satisfies the builtin error interface
+func (e PofpTypeInfoValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sPofpTypeInfo.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = PofpTypeInfoValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = PofpTypeInfoValidationError{}
+
 // Validate checks the field values on PofpInfo with the rules defined in the
 // proto definition for this message. If any rules are violated, the first
 // error encountered is returned, or nil if there are no violations.

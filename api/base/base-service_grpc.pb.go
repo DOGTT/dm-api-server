@@ -23,6 +23,7 @@ const (
 	BaseService_WeChatRegisterFast_FullMethodName          = "/base_service.BaseService/WeChatRegisterFast"
 	BaseService_LocationCommonSearch_FullMethodName        = "/base_service.BaseService/LocationCommonSearch"
 	BaseService_ObjectPutPresignURLBatchGet_FullMethodName = "/base_service.BaseService/ObjectPutPresignURLBatchGet"
+	BaseService_PofpTypeList_FullMethodName                = "/base_service.BaseService/PofpTypeList"
 	BaseService_PofpCreate_FullMethodName                  = "/base_service.BaseService/PofpCreate"
 	BaseService_PofpUpdate_FullMethodName                  = "/base_service.BaseService/PofpUpdate"
 	BaseService_PofpDelete_FullMethodName                  = "/base_service.BaseService/PofpDelete"
@@ -50,6 +51,8 @@ type BaseServiceClient interface {
 	LocationCommonSearch(ctx context.Context, in *LocationCommonSearchReq, opts ...grpc.CallOption) (*LocationCommonSearchResp, error)
 	// 批量获取对象上传预签名URL
 	ObjectPutPresignURLBatchGet(ctx context.Context, in *ObjectPutPresignURLBatchGetReq, opts ...grpc.CallOption) (*ObjectPutPresignURLBatchGetResp, error)
+	// 列表查询足迹点类型
+	PofpTypeList(ctx context.Context, in *PofpTypeListReq, opts ...grpc.CallOption) (*PofpTypeListResp, error)
 	// 创建足迹点
 	PofpCreate(ctx context.Context, in *PofpCreateReq, opts ...grpc.CallOption) (*PofpCreateResp, error)
 	// 更新足迹点
@@ -110,6 +113,16 @@ func (c *baseServiceClient) ObjectPutPresignURLBatchGet(ctx context.Context, in 
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ObjectPutPresignURLBatchGetResp)
 	err := c.cc.Invoke(ctx, BaseService_ObjectPutPresignURLBatchGet_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *baseServiceClient) PofpTypeList(ctx context.Context, in *PofpTypeListReq, opts ...grpc.CallOption) (*PofpTypeListResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(PofpTypeListResp)
+	err := c.cc.Invoke(ctx, BaseService_PofpTypeList_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -213,6 +226,8 @@ type BaseServiceServer interface {
 	LocationCommonSearch(context.Context, *LocationCommonSearchReq) (*LocationCommonSearchResp, error)
 	// 批量获取对象上传预签名URL
 	ObjectPutPresignURLBatchGet(context.Context, *ObjectPutPresignURLBatchGetReq) (*ObjectPutPresignURLBatchGetResp, error)
+	// 列表查询足迹点类型
+	PofpTypeList(context.Context, *PofpTypeListReq) (*PofpTypeListResp, error)
 	// 创建足迹点
 	PofpCreate(context.Context, *PofpCreateReq) (*PofpCreateResp, error)
 	// 更新足迹点
@@ -250,6 +265,9 @@ func (UnimplementedBaseServiceServer) LocationCommonSearch(context.Context, *Loc
 }
 func (UnimplementedBaseServiceServer) ObjectPutPresignURLBatchGet(context.Context, *ObjectPutPresignURLBatchGetReq) (*ObjectPutPresignURLBatchGetResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ObjectPutPresignURLBatchGet not implemented")
+}
+func (UnimplementedBaseServiceServer) PofpTypeList(context.Context, *PofpTypeListReq) (*PofpTypeListResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PofpTypeList not implemented")
 }
 func (UnimplementedBaseServiceServer) PofpCreate(context.Context, *PofpCreateReq) (*PofpCreateResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PofpCreate not implemented")
@@ -364,6 +382,24 @@ func _BaseService_ObjectPutPresignURLBatchGet_Handler(srv interface{}, ctx conte
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(BaseServiceServer).ObjectPutPresignURLBatchGet(ctx, req.(*ObjectPutPresignURLBatchGetReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BaseService_PofpTypeList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PofpTypeListReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BaseServiceServer).PofpTypeList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BaseService_PofpTypeList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BaseServiceServer).PofpTypeList(ctx, req.(*PofpTypeListReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -534,6 +570,10 @@ var BaseService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ObjectPutPresignURLBatchGet",
 			Handler:    _BaseService_ObjectPutPresignURLBatchGet_Handler,
+		},
+		{
+			MethodName: "PofpTypeList",
+			Handler:    _BaseService_PofpTypeList_Handler,
 		},
 		{
 			MethodName: "PofpCreate",

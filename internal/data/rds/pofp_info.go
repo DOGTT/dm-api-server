@@ -16,7 +16,7 @@ func init() {
 
 // 足迹点基本信息
 type PofpInfo struct {
-	UUID   string `gorm:"type:varchar(32);primaryKey;"`
+	UUID   string `gorm:"type:varchar(22);primaryKey;"`
 	TypeId uint   `gorm:"index"`
 	// - 归属的PetID
 	PId uint64 `gorm:"index"`
@@ -43,6 +43,9 @@ type PofpInfo struct {
 }
 
 func PointCoordToGeometry(p *base_api.PointCoord) string {
+	if p == nil {
+		return ""
+	}
 	return fmt.Sprintf("SRID=4326;POINT(%f %f)", p.Lng, p.Lat)
 }
 
@@ -60,13 +63,23 @@ func (c *RDSClient) CreatePofpInfo(ctx context.Context, info *PofpInfo) error {
 }
 
 func (c *RDSClient) UpdatePofpInfo(ctx context.Context, info *PofpInfo) error {
+	if info.UUID == "" {
+		return fmt.Errorf("uuid is empty")
+	}
+	updateField := []string{}
+	if info.Content != "" {
+		updateField = append(updateField, "content")
+	}
+	if info.Title != "" {
+		updateField = append(updateField, "title")
+	}
 	return c.db.WithContext(ctx).Model(&PofpInfo{}).Where("uuid = ?", info.UUID).
-		Select("title", "content").
+		Select(updateField).
 		Updates(info).Error
 }
 
-func (c *RDSClient) DeletePofpInfo(ctx context.Context, uuid string) error {
-	return c.db.WithContext(ctx).Where("uuid = ?", uuid).Delete(PofpInfo{}).Error
+func (c *RDSClient) DeletePofpInfo(ctx context.Context, uuid string, pid uint64) error {
+	return c.db.WithContext(ctx).Where(&PofpInfo{UUID: uuid, PId: pid}).Delete(PofpInfo{}).Error
 }
 
 func (c *RDSClient) GetPofpInfo(ctx context.Context, uuid string) (*PofpInfo, error) {

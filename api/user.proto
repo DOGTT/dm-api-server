@@ -10,14 +10,13 @@ option go_package="github.com/DOGTT/dm-api-server/api/base;api";
 
 
 message UserInfo {
-    uint32 id = 1;
+    uint64 id = 1;
     repeated PetInfo pets = 2;
 }   
 
 
 message PetInfo {
-    uint32 id = 1;
-
+    uint64 id = 1;
     string name = 3;
     uint32 gender = 4; // 性别，使用 uint32 表示
     string avatar = 5;
