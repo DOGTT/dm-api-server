@@ -22,7 +22,7 @@ type PofpInfo struct {
 	PId uint64 `gorm:"index"`
 	// - 关键内容
 	Title   string         `gorm:"type:text;size:50;not null"`
-	LatLng  string         `gorm:"type:geometry(Point,4326);not null"`
+	LngLat  string         `gorm:"type:geometry(Point,4326);not null"`
 	Photos  pq.StringArray `gorm:"type:text[]"`
 	Content string         `gorm:"type:text;size:1024;"`
 	// Tags       pq.StringArray `gorm:"type:text[]"`
@@ -50,8 +50,9 @@ func PointCoordToGeometry(p *base_api.PointCoord) string {
 }
 
 func PointCoordFromGeometry(s string) *base_api.PointCoord {
+	// 将十六进制字符串转换为字节切片
 	var lat, lng float32
-	_, _ = fmt.Sscanf(s, "SRID=4326;POINT(%f %f)", &lng, &lat) // 经度在前，纬度在后
+	_, _ = fmt.Sscanf(string(s), "POINT(%f %f)", &lng, &lat) // 经度在前，纬度在后
 	return &base_api.PointCoord{
 		Lat: lat,
 		Lng: lng,
@@ -95,11 +96,11 @@ func (c *RDSClient) BatchQueryPofpInfoListByBound(ctx context.Context, typeIDs [
 
 	var results []*PofpInfo
 	query := c.db.WithContext(ctx).Model(&PofpInfo{}).
-		Select("uuid, type_id, p_id, lat_lng, title").
-		Where("ST_Contains(ST_MakeEnvelope(?, ?, ?, ?, 4326), lat_lng)",
-			bc.Sw.Lng, bc.Sw.Lat, bc.Ne.Lng, bc.Ne.Lng)
+		Select("uuid, type_id, p_id, ST_AsText(lng_lat) AS lng_lat, title").
+		Where("ST_Contains(ST_MakeEnvelope(?, ?, ?, ?, 4326), lng_lat)",
+			bc.Sw.Lng, bc.Sw.Lat, bc.Ne.Lng, bc.Ne.Lat)
 	// 如果 typeIDs 不为 nil，则添加筛选条件
-	if typeIDs != nil {
+	if typeIDs != nil && len(typeIDs) > 0 {
 		query = query.Where("type_id IN ?", typeIDs)
 	}
 	err := query.Limit(100).Scan(&results).Error

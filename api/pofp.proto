@@ -39,7 +39,7 @@ message PofpInfo {
     // 足迹名称, 可更新
     string title = 4;
     // 足迹位置, 不可更新
-    PointCoord lat_lng = 5;
+    PointCoord lng_lat = 5;
     repeated string photos = 6;
     // 内容, 可更新
     string content = 7;

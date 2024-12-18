@@ -396,15 +396,18 @@ components:
             properties:
                 uuid:
                     type: string
+                    description: 足迹 ID
                 type_id:
                     type: integer
+                    description: 足迹类型, 不可更新
                     format: uint32
                 pid:
                     type: string
+                    description: 足迹作者, 不可更新
                 title:
                     type: string
                     description: 足迹名称, 可更新
-                lat_lng:
+                lng_lat:
                     allOf:
                         - $ref: '#/components/schemas/PointCoord'
                     description: 足迹位置, 不可更新
@@ -548,10 +551,5 @@ components:
                     type: string
                 user_info:
                     $ref: '#/components/schemas/UserInfo'
-    securitySchemes:
-        bearerAuth:
-            type: http
-            scheme: bearer
-            bearerFormat: JWT  # 可选，指明使用 JWT
-security:
-  - bearerAuth: []  
+tags:
+    - name: BaseService

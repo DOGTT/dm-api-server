@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package base_service;
+package base_service.v1;
 option go_package="github.com/DOGTT/dm-api-server/api/base;api";
 
 import "validate/validate.proto";
@@ -10,7 +10,6 @@ import "google/api/annotations.proto";
 
 
 // 通用业务服务接口定义.
-// [EN] API of Service. 
 /**
 servers:
   - url: http://localhost:8080

@@ -491,11 +491,11 @@ func (m *PofpInfo) validate(all bool) error {
 	// no validation rules for Title
 
 	if all {
-		switch v := interface{}(m.GetLatLng()).(type) {
+		switch v := interface{}(m.GetLngLat()).(type) {
 		case interface{ ValidateAll() error }:
 			if err := v.ValidateAll(); err != nil {
 				errors = append(errors, PofpInfoValidationError{
-					field:  "LatLng",
+					field:  "LngLat",
 					reason: "embedded message failed validation",
 					cause:  err,
 				})
@@ -503,16 +503,16 @@ func (m *PofpInfo) validate(all bool) error {
 		case interface{ Validate() error }:
 			if err := v.Validate(); err != nil {
 				errors = append(errors, PofpInfoValidationError{
-					field:  "LatLng",
+					field:  "LngLat",
 					reason: "embedded message failed validation",
 					cause:  err,
 				})
 			}
 		}
-	} else if v, ok := interface{}(m.GetLatLng()).(interface{ Validate() error }); ok {
+	} else if v, ok := interface{}(m.GetLngLat()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
 			return PofpInfoValidationError{
-				field:  "LatLng",
+				field:  "LngLat",
 				reason: "embedded message failed validation",
 				cause:  err,
 			}

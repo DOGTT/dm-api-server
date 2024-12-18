@@ -61,7 +61,7 @@ func (s *Service) PofpCreate(ctx context.Context, req *base_api.PofpCreateReq) (
 		TypeId:  uint(po.GetTypeId()),
 		PId:     tc.PID,
 		Title:   po.GetTitle(),
-		LatLng:  rds.PointCoordToGeometry(po.GetLatLng()),
+		LngLat:  rds.PointCoordToGeometry(po.GetLngLat()),
 		Photos:  nil,
 		Content: po.GetContent(),
 		Address: po.GetAddress(),
@@ -150,7 +150,7 @@ func (s *Service) convertToPofpInfo(ctx context.Context, pInfo *rds.PofpInfo) (r
 		Pid:         pInfo.PId,
 		TypeId:      uint32(pInfo.TypeId),
 		Title:       pInfo.Title,
-		LatLng:      rds.PointCoordFromGeometry(pInfo.LatLng),
+		LngLat:      rds.PointCoordFromGeometry(pInfo.LngLat),
 		Photos:      nil,
 		Content:     pInfo.Content,
 		Address:     pInfo.Address,
@@ -158,11 +158,18 @@ func (s *Service) convertToPofpInfo(ctx context.Context, pInfo *rds.PofpInfo) (r
 		ViewsCnt:    int32(pInfo.ViewsCnt),
 		LikesCnt:    int32(pInfo.LikesCnt),
 		CommentsCnt: int32(pInfo.CommentsCnt),
-		LastView:    timestamppb.New(pInfo.LastView),
-		LastMark:    timestamppb.New(pInfo.LastMark),
-
-		CreatedAt: timestamppb.New(pInfo.CreatedAt),
-		UpdatedAt: timestamppb.New(pInfo.UpdatedAt),
+	}
+	if !pInfo.LastView.IsZero() {
+		res.LastView = timestamppb.New(pInfo.LastView)
+	}
+	if !pInfo.LastMark.IsZero() {
+		res.LastMark = timestamppb.New(pInfo.LastMark)
+	}
+	if !pInfo.CreatedAt.IsZero() {
+		res.CreatedAt = timestamppb.New(pInfo.CreatedAt)
+	}
+	if !pInfo.UpdatedAt.IsZero() {
+		res.UpdatedAt = timestamppb.New(pInfo.UpdatedAt)
 	}
 	// res.Pets[i].Avatar, err = s.data.GeneratePresignedURL(ctx,
 	// 	fds.BucketNameAvatar, pet.AvatarId, utils.TokenExpireDuration)
@@ -187,6 +194,7 @@ func (s *Service) PofpBaseQueryByBound(ctx context.Context, req *base_api.PofpBa
 		err = EM_CommonFail_Internal.PutDesc(err.Error())
 		return
 	}
+	log.Ctx(ctx).Debug("query result", zap.String("pofoList", spew.Sdump(pofoList)))
 	res = &base_api.PofpBaseQueryByBoundResp{
 		Pofps: make([]*base_api.PofpInfo, len(pofoList)),
 	}

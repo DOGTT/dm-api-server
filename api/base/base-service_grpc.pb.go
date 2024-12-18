@@ -19,19 +19,19 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	BaseService_WeChatLogin_FullMethodName                 = "/base_service.BaseService/WeChatLogin"
-	BaseService_WeChatRegisterFast_FullMethodName          = "/base_service.BaseService/WeChatRegisterFast"
-	BaseService_LocationCommonSearch_FullMethodName        = "/base_service.BaseService/LocationCommonSearch"
-	BaseService_ObjectPutPresignURLBatchGet_FullMethodName = "/base_service.BaseService/ObjectPutPresignURLBatchGet"
-	BaseService_PofpTypeList_FullMethodName                = "/base_service.BaseService/PofpTypeList"
-	BaseService_PofpCreate_FullMethodName                  = "/base_service.BaseService/PofpCreate"
-	BaseService_PofpUpdate_FullMethodName                  = "/base_service.BaseService/PofpUpdate"
-	BaseService_PofpDelete_FullMethodName                  = "/base_service.BaseService/PofpDelete"
-	BaseService_PofpBaseQueryByBound_FullMethodName        = "/base_service.BaseService/PofpBaseQueryByBound"
-	BaseService_PofpDetailQueryById_FullMethodName         = "/base_service.BaseService/PofpDetailQueryById"
-	BaseService_PofpFullQueryById_FullMethodName           = "/base_service.BaseService/PofpFullQueryById"
-	BaseService_PofpInteraction_FullMethodName             = "/base_service.BaseService/PofpInteraction"
-	BaseService_PofpComment_FullMethodName                 = "/base_service.BaseService/PofpComment"
+	BaseService_WeChatLogin_FullMethodName                 = "/base_service.v1.BaseService/WeChatLogin"
+	BaseService_WeChatRegisterFast_FullMethodName          = "/base_service.v1.BaseService/WeChatRegisterFast"
+	BaseService_LocationCommonSearch_FullMethodName        = "/base_service.v1.BaseService/LocationCommonSearch"
+	BaseService_ObjectPutPresignURLBatchGet_FullMethodName = "/base_service.v1.BaseService/ObjectPutPresignURLBatchGet"
+	BaseService_PofpTypeList_FullMethodName                = "/base_service.v1.BaseService/PofpTypeList"
+	BaseService_PofpCreate_FullMethodName                  = "/base_service.v1.BaseService/PofpCreate"
+	BaseService_PofpUpdate_FullMethodName                  = "/base_service.v1.BaseService/PofpUpdate"
+	BaseService_PofpDelete_FullMethodName                  = "/base_service.v1.BaseService/PofpDelete"
+	BaseService_PofpBaseQueryByBound_FullMethodName        = "/base_service.v1.BaseService/PofpBaseQueryByBound"
+	BaseService_PofpDetailQueryById_FullMethodName         = "/base_service.v1.BaseService/PofpDetailQueryById"
+	BaseService_PofpFullQueryById_FullMethodName           = "/base_service.v1.BaseService/PofpFullQueryById"
+	BaseService_PofpInteraction_FullMethodName             = "/base_service.v1.BaseService/PofpInteraction"
+	BaseService_PofpComment_FullMethodName                 = "/base_service.v1.BaseService/PofpComment"
 )
 
 // BaseServiceClient is the client API for BaseService service.
@@ -552,7 +552,7 @@ func _BaseService_PofpComment_Handler(srv interface{}, ctx context.Context, dec 
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var BaseService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "base_service.BaseService",
+	ServiceName: "base_service.v1.BaseService",
 	HandlerType: (*BaseServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
