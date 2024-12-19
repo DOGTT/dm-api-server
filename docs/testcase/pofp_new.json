@@ -2,7 +2,7 @@
     "pofp": {
         "type_id": 1,
         "title": "测试足迹点",
-        "lat_lng": {
+        "lng_lat": {
             "lat": 22.2222,
             "lng": 103.3333
         },

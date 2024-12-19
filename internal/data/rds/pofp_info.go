@@ -100,25 +100,41 @@ func (c *RDSClient) BatchQueryPofpInfoListByBound(ctx context.Context, typeIDs [
 		Where("ST_Contains(ST_MakeEnvelope(?, ?, ?, ?, 4326), lng_lat)",
 			bc.Sw.Lng, bc.Sw.Lat, bc.Ne.Lng, bc.Ne.Lat)
 	// 如果 typeIDs 不为 nil，则添加筛选条件
-	if typeIDs != nil && len(typeIDs) > 0 {
+	if len(typeIDs) > 0 {
 		query = query.Where("type_id IN ?", typeIDs)
 	}
 	err := query.Limit(100).Scan(&results).Error
 	return results, err
 }
 
-func (c *RDSClient) IncreasePofpViewCount(ctx context.Context, uuid string) (int, error) {
+func (c *RDSClient) IncreasePofpViewCount(ctx context.Context, uuid string, t InxType) (int, error) {
 	var info PofpInfo
+	field := InxTypeFieldName[t]
 	// 锁定行
 	if err := c.db.WithContext(ctx).Model(&info).Where("uuid = ?", uuid).
-		Select(InxTypeFieldName[InxTypeLike]).Clauses(clause.Locking{Strength: "UPDATE"}).First(&info).Error; err != nil {
+		Select(field).Clauses(clause.Locking{Strength: "UPDATE"}).First(&info).Error; err != nil {
 		return 0, err
 	}
 
 	// 更新操作
-	info.ViewsCnt++
-	if err := c.db.WithContext(ctx).Save(&info).Error; err != nil {
+	info.UUID = uuid
+	resCount := 0
+	switch t {
+	case InxTypeView:
+		info.ViewsCnt++
+		resCount = info.ViewsCnt
+	case InxTypeLike:
+		info.LikesCnt++
+		resCount = info.LikesCnt
+	case InxTypeMark:
+		info.MarksCnt++
+		resCount = info.MarksCnt
+	case InxTypeComment:
+		info.CommentsCnt++
+		resCount = info.CommentsCnt
+	}
+	if err := c.db.WithContext(ctx).Select(field).Save(&info).Error; err != nil {
 		return 0, err
 	}
-	return info.ViewsCnt, nil
+	return resCount, nil
 }

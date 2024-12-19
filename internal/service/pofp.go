@@ -137,7 +137,7 @@ func (s *Service) PofpDetailQueryById(ctx context.Context, req *base_api.PofpDet
 	}
 	// 异步添加访问信息
 	go func() {
-		if _, err := s.data.IncreasePofpViewCount(ctx, pofoInfo.UUID); err != nil {
+		if _, err := s.data.IncreasePofpViewCount(ctx, pofoInfo.UUID, rds.InxTypeView); err != nil {
 			log.Ctx(ctx).Error("increase pofp view count fail", zap.Error(err))
 		}
 	}()
@@ -157,6 +157,7 @@ func (s *Service) convertToPofpInfo(ctx context.Context, pInfo *rds.PofpInfo) (r
 		PoiId:       pInfo.PoiId,
 		ViewsCnt:    int32(pInfo.ViewsCnt),
 		LikesCnt:    int32(pInfo.LikesCnt),
+		MarksCnt:    int32(pInfo.MarksCnt),
 		CommentsCnt: int32(pInfo.CommentsCnt),
 	}
 	if !pInfo.LastView.IsZero() {
@@ -209,6 +210,7 @@ func (s *Service) PofpBaseQueryByBound(ctx context.Context, req *base_api.PofpBa
 
 func (s *Service) PofpInteraction(ctx context.Context, req *base_api.PofpInteractionReq) (res *base_api.PofpInteractionResp, err error) {
 	tc := getClaimFromContext(ctx)
+	res = new(base_api.PofpInteractionResp)
 	err = s.data.CreatePofpIxnRecordWithCount(ctx, &rds.UserPofpIxnRecord{
 		PofpUUID: req.GetUuid(),
 		IntType:  rds.InxType(req.GetIxnType()),

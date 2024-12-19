@@ -240,10 +240,11 @@ message PofpFullQueryByIdResp {
 
 // 互动类型
 enum InteractionType {
+    VIEW = 0;
     // 点赞
-    LIKE = 0;
+    LIKE = 1;
     // 标记
-    MARK = 1;
+    MARK = 2;
 }
 
 message PofpInteractionReq {
