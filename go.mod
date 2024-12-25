@@ -7,7 +7,6 @@ toolchain go1.23.4
 require (
 	github.com/aws/aws-sdk-go v1.55.5
 	github.com/davecgh/go-spew v1.1.1
-	github.com/envoyproxy/protoc-gen-validate v1.1.0
 	github.com/getkin/kin-openapi v0.114.0
 	github.com/gin-contrib/cors v1.7.2
 	github.com/gin-contrib/zap v0.1.0

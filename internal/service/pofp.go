@@ -4,12 +4,12 @@ import (
 	"context"
 
 	base_api "github.com/DOGTT/dm-api-server/api/base"
+	"github.com/DOGTT/dm-api-server/internal/data/fds"
 	"github.com/DOGTT/dm-api-server/internal/data/rds"
 	"github.com/DOGTT/dm-api-server/internal/utils"
 	"github.com/davecgh/go-spew/spew"
 	log "github.com/uptrace/opentelemetry-go-extra/otelzap"
 	"go.uber.org/zap"
-	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func validPofpCreateRequest(req *base_api.PofpCreateReq) error {
@@ -40,8 +40,8 @@ func (s *Service) PofpTypeList(ctx context.Context, req *base_api.PofpTypeListRe
 			Name:           v.Name,
 			CoverageRadius: int32(v.CoverageRadius),
 			ThemeColor:     v.ThemeColor,
-			CreatedAt:      timestamppb.New(v.CreatedAt),
-			UpdatedAt:      timestamppb.New(v.UpdatedAt),
+			CreatedAt:      v.CreatedAt.UnixMilli(),
+			UpdatedAt:      v.UpdatedAt.UnixMilli(),
 		}
 	}
 	return
@@ -151,7 +151,6 @@ func (s *Service) convertToPofpInfo(ctx context.Context, pInfo *rds.PofpInfo) (r
 		TypeId:      uint32(pInfo.TypeId),
 		Title:       pInfo.Title,
 		LngLat:      rds.PointCoordFromGeometry(pInfo.LngLat),
-		Photos:      nil,
 		Content:     pInfo.Content,
 		Address:     pInfo.Address,
 		PoiId:       pInfo.PoiId,
@@ -161,23 +160,32 @@ func (s *Service) convertToPofpInfo(ctx context.Context, pInfo *rds.PofpInfo) (r
 		CommentsCnt: int32(pInfo.CommentsCnt),
 	}
 	if !pInfo.LastView.IsZero() {
-		res.LastView = timestamppb.New(pInfo.LastView)
+		res.LastView = pInfo.LastView.UnixMilli()
 	}
 	if !pInfo.LastMark.IsZero() {
-		res.LastMark = timestamppb.New(pInfo.LastMark)
+		res.LastMark = pInfo.LastMark.UnixMilli()
 	}
 	if !pInfo.CreatedAt.IsZero() {
-		res.CreatedAt = timestamppb.New(pInfo.CreatedAt)
+		res.CreatedAt = pInfo.CreatedAt.UnixMilli()
 	}
 	if !pInfo.UpdatedAt.IsZero() {
-		res.UpdatedAt = timestamppb.New(pInfo.UpdatedAt)
+		res.UpdatedAt = pInfo.UpdatedAt.UnixMilli()
 	}
-	// res.Pets[i].Avatar, err = s.data.GeneratePresignedURL(ctx,
-	// 	fds.BucketNameAvatar, pet.AvatarId, utils.TokenExpireDuration)
-	// if err != nil {
-	// 	err = EM_CommonFail_Internal.PutDesc(err.Error())
-	// 	return
-	// }
+	if pInfo.Photos != nil {
+		res.Media = make([]*base_api.MediaInfo, len(pInfo.Photos))
+		for i, uuid := range pInfo.Photos {
+			res.Media[i] = &base_api.MediaInfo{
+				Type: base_api.MediaType_MT_POFP_IMAGE,
+				Uuid: uuid,
+			}
+			res.Media[i].GetUrl, err = s.data.GenerateGetPresignedURL(ctx,
+				fds.BucketNamePofpImage, uuid, utils.TokenExpireDuration)
+			if err != nil {
+				err = EM_CommonFail_Internal.PutDesc(err.Error())
+				return
+			}
+		}
+	}
 	return
 }
 

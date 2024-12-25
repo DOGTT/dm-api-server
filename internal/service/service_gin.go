@@ -74,10 +74,6 @@ func (s *Service) BaseServiceWeChatRegisterFast(c *gin.Context) {
 		}
 		req.Pet.AvatarData = avatarData
 	}
-	if err := req.Validate(); err != nil {
-		s.putGinError(c, EM_CommonFail_BadRequest.PutDesc(err.Error()))
-		return
-	}
 	res, err := s.WeChatRegisterFast(withGinContext(c), req)
 	if err != nil {
 		s.putGinError(c, err)
@@ -90,10 +86,6 @@ func (s *Service) BaseServiceWeChatLogin(c *gin.Context) {
 	req := &base_api.WeChatLoginReq{}
 	if err := c.ShouldBind(&req); err != nil {
 		s.putGinError(c, EM_CommonFail_BadRequest)
-		return
-	}
-	if err := req.Validate(); err != nil {
-		s.putGinError(c, EM_CommonFail_BadRequest.PutDesc(err.Error()))
 		return
 	}
 	res, err := s.WeChatLogin(withGinContext(c), req)
@@ -109,10 +101,6 @@ func (s *Service) BaseServiceLocationCommonSearch(c *gin.Context, params gin_api
 	if params.Input != nil {
 		req.Input = *params.Input
 	}
-	if err := req.Validate(); err != nil {
-		s.putGinError(c, EM_CommonFail_BadRequest.PutDesc(err.Error()))
-		return
-	}
 	res, err := s.LocationCommonSearch(withGinContext(c), req)
 	if err != nil {
 		s.putGinError(c, err)
@@ -121,16 +109,12 @@ func (s *Service) BaseServiceLocationCommonSearch(c *gin.Context, params gin_api
 	c.JSON(http.StatusOK, res)
 }
 
-func (s *Service) BaseServiceObjectPutPresignURLBatchGet(c *gin.Context, params gin_api.BaseServiceObjectPutPresignURLBatchGetParams) {
-	req := &base_api.ObjectPutPresignURLBatchGetReq{
-		ObjectType:  base_api.ObjectType(*params.ObjectType),
-		ObjectCount: *params.ObjectCount,
+func (s *Service) BaseServiceMediaPutPresignURLBatchGet(c *gin.Context, params gin_api.BaseServiceMediaPutPresignURLBatchGetParams) {
+	req := &base_api.MediaPutPresignURLBatchGetReq{
+		MediaType: base_api.MediaType(*params.MediaType),
+		Count:     *params.Count,
 	}
-	if err := req.Validate(); err != nil {
-		s.putGinError(c, EM_CommonFail_BadRequest.PutDesc(err.Error()))
-		return
-	}
-	res, err := s.ObjectPutPresignURLBatchGet(withGinContext(c), req)
+	res, err := s.MediaPutPresignURLBatchGet(withGinContext(c), req)
 	if err != nil {
 		s.putGinError(c, err)
 		return
@@ -140,10 +124,6 @@ func (s *Service) BaseServiceObjectPutPresignURLBatchGet(c *gin.Context, params 
 
 func (s *Service) BaseServicePofpTypeList(c *gin.Context) {
 	req := &base_api.PofpTypeListReq{}
-	if err := req.Validate(); err != nil {
-		s.putGinError(c, EM_CommonFail_BadRequest.PutDesc(err.Error()))
-		return
-	}
 	res, err := s.PofpTypeList(withGinContext(c), req)
 	if err != nil {
 		s.putGinError(c, err)
@@ -156,10 +136,6 @@ func (s *Service) BaseServicePofpCreate(c *gin.Context) {
 	req := &base_api.PofpCreateReq{}
 	if err := c.ShouldBind(&req); err != nil {
 		s.putGinError(c, EM_CommonFail_BadRequest)
-		return
-	}
-	if err := req.Validate(); err != nil {
-		s.putGinError(c, EM_CommonFail_BadRequest.PutDesc(err.Error()))
 		return
 	}
 	res, err := s.PofpCreate(withGinContext(c), req)
@@ -175,10 +151,7 @@ func (s *Service) BaseServicePofpDelete(c *gin.Context, params gin_api.BaseServi
 	req := &base_api.PofpDeleteReq{
 		Uuid: *params.Uuid,
 	}
-	if err := req.Validate(); err != nil {
-		s.putGinError(c, EM_CommonFail_BadRequest.PutDesc(err.Error()))
-		return
-	}
+
 	res, err := s.PofpDelete(withGinContext(c), req)
 	if err != nil {
 		s.putGinError(c, err)
@@ -193,10 +166,7 @@ func (s *Service) BaseServicePofpUpdate(c *gin.Context) {
 		s.putGinError(c, EM_CommonFail_BadRequest)
 		return
 	}
-	if err := req.Validate(); err != nil {
-		s.putGinError(c, EM_CommonFail_BadRequest.PutDesc(err.Error()))
-		return
-	}
+
 	res, err := s.PofpUpdate(withGinContext(c), req)
 	if err != nil {
 		s.putGinError(c, err)
@@ -211,10 +181,7 @@ func (s *Service) BaseServicePofpBaseQueryByBound(c *gin.Context) {
 		s.putGinError(c, EM_CommonFail_BadRequest)
 		return
 	}
-	if err := req.Validate(); err != nil {
-		s.putGinError(c, EM_CommonFail_BadRequest.PutDesc(err.Error()))
-		return
-	}
+
 	res, err := s.PofpBaseQueryByBound(withGinContext(c), req)
 	if err != nil {
 		s.putGinError(c, err)
@@ -227,10 +194,7 @@ func (s *Service) BaseServicePofpDetailQueryById(c *gin.Context, params gin_api.
 	req := &base_api.PofpDetailQueryByIdReq{
 		Uuid: *params.Uuid,
 	}
-	if err := req.Validate(); err != nil {
-		s.putGinError(c, EM_CommonFail_BadRequest.PutDesc(err.Error()))
-		return
-	}
+
 	res, err := s.PofpDetailQueryById(withGinContext(c), req)
 	if err != nil {
 		s.putGinError(c, err)
@@ -243,10 +207,7 @@ func (s *Service) BaseServicePofpFullQueryById(c *gin.Context, params gin_api.Ba
 	req := &base_api.PofpFullQueryByIdReq{
 		Uuid: *params.Uuid,
 	}
-	if err := req.Validate(); err != nil {
-		s.putGinError(c, EM_CommonFail_BadRequest.PutDesc(err.Error()))
-		return
-	}
+
 	res, err := s.PofpFullQueryById(withGinContext(c), req)
 	if err != nil {
 		s.putGinError(c, err)
@@ -261,10 +222,7 @@ func (s *Service) BaseServicePofpInteraction(c *gin.Context) {
 		s.putGinError(c, EM_CommonFail_BadRequest)
 		return
 	}
-	if err := req.Validate(); err != nil {
-		s.putGinError(c, EM_CommonFail_BadRequest.PutDesc(err.Error()))
-		return
-	}
+
 	res, err := s.PofpInteraction(withGinContext(c), req)
 	if err != nil {
 		s.putGinError(c, err)
@@ -279,10 +237,7 @@ func (s *Service) BaseServicePofpComment(c *gin.Context) {
 		s.putGinError(c, EM_CommonFail_BadRequest.PutDesc(err.Error()))
 		return
 	}
-	if err := req.Validate(); err != nil {
-		s.putGinError(c, EM_CommonFail_BadRequest.PutDesc(err.Error()))
-		return
-	}
+
 	res, err := s.PofpComment(withGinContext(c), req)
 	if err != nil {
 		s.putGinError(c, err)

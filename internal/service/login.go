@@ -11,7 +11,6 @@ import (
 	"github.com/DOGTT/dm-api-server/internal/utils"
 	log "github.com/uptrace/opentelemetry-go-extra/otelzap"
 	"go.uber.org/zap"
-	"google.golang.org/protobuf/types/known/timestamppb"
 	"gorm.io/gorm"
 )
 
@@ -155,8 +154,8 @@ func (s *Service) convertToUserInfo(ctx context.Context, userInfo *rds.UserInfo)
 			Gender:    uint32(pet.Gender),
 			BirthDate: pet.BirthDate,
 
-			CreatedAt: timestamppb.New(pet.CreatedAt),
-			UpdatedAt: timestamppb.New(pet.UpdatedAt),
+			CreatedAt: pet.CreatedAt.UnixMilli(),
+			UpdatedAt: pet.UpdatedAt.UnixMilli(),
 		}
 		if pet.AvatarId != "" {
 			res.Pets[i].Avatar, err = s.data.GenerateGetPresignedURL(ctx,

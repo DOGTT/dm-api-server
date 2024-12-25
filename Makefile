@@ -42,7 +42,6 @@ init:
 	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 	go install github.com/google/gnostic/cmd/protoc-gen-openapi@latest
 	go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@latest
-	go install github.com/envoyproxy/protoc-gen-validate@latest
 
 .PHONY: internal
 # generate internal proto
@@ -60,8 +59,6 @@ api:
 	protoc --proto_path=./api \
 	       --proto_path=./third_party \
  	       --go_out=paths=source_relative:./api/base \
-		   --validate_out="lang=go:./api/base" \
-		   --validate_opt=paths=source_relative \
 		   --go-grpc_out=paths=source_relative:./api/base \
 	       --openapi_out=fq_schema_naming=false,naming=proto,default_response=false,paths=source_relative:./api/openapi/ \
 	       $(API_PROTO_FILES)

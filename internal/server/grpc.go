@@ -1,7 +1,6 @@
 package server
 
 import (
-	"context"
 	"time"
 
 	api "github.com/DOGTT/dm-api-server/api/base"
@@ -12,34 +11,34 @@ import (
 	"google.golang.org/grpc"
 )
 
-type validator interface {
-	Validate() error
-}
+// type validator interface {
+// 	Validate() error
+// }
 
-// 创建验证拦截器
-func validationInterceptor() grpc.UnaryServerInterceptor {
-	return func(
-		ctx context.Context,
-		req interface{},
-		info *grpc.UnaryServerInfo,
-		handler grpc.UnaryHandler,
-	) (interface{}, error) {
-		// 验证请求
-		if v, ok := req.(validator); ok {
-			if err := v.Validate(); err != nil {
-				return nil, err
-			}
-		}
-		// 调用下一个处理程序
-		return handler(ctx, req)
-	}
-}
+// // 创建验证拦截器
+// func validationInterceptor() grpc.UnaryServerInterceptor {
+// 	return func(
+// 		ctx context.Context,
+// 		req interface{},
+// 		info *grpc.UnaryServerInfo,
+// 		handler grpc.UnaryHandler,
+// 	) (interface{}, error) {
+// 		// 验证请求
+// 		if v, ok := req.(validator); ok {
+// 			if err := v.Validate(); err != nil {
+// 				return nil, err
+// 			}
+// 		}
+// 		// 调用下一个处理程序
+// 		return handler(ctx, req)
+// 	}
+// }
 
 func NewGRPCServer(c *conf.Server, svc *service.Service) *grpc.Server {
 	var opts = []grpc.ServerOption{
 		grpc.ConnectionTimeout(time.Second * 30),
 	}
-	unaryInterceptors := []grpc.UnaryServerInterceptor{validationInterceptor()}
+	unaryInterceptors := []grpc.UnaryServerInterceptor{}
 	streamInterceptors := []grpc.StreamServerInterceptor{}
 	if c.GRPC.EnableTrace {
 		opts = append(opts, grpc.StatsHandler(otelgrpc.NewServerHandler()))

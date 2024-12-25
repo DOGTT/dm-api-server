@@ -19,19 +19,19 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	BaseService_WeChatLogin_FullMethodName                 = "/base_service.v1.BaseService/WeChatLogin"
-	BaseService_WeChatRegisterFast_FullMethodName          = "/base_service.v1.BaseService/WeChatRegisterFast"
-	BaseService_LocationCommonSearch_FullMethodName        = "/base_service.v1.BaseService/LocationCommonSearch"
-	BaseService_ObjectPutPresignURLBatchGet_FullMethodName = "/base_service.v1.BaseService/ObjectPutPresignURLBatchGet"
-	BaseService_PofpTypeList_FullMethodName                = "/base_service.v1.BaseService/PofpTypeList"
-	BaseService_PofpCreate_FullMethodName                  = "/base_service.v1.BaseService/PofpCreate"
-	BaseService_PofpUpdate_FullMethodName                  = "/base_service.v1.BaseService/PofpUpdate"
-	BaseService_PofpDelete_FullMethodName                  = "/base_service.v1.BaseService/PofpDelete"
-	BaseService_PofpBaseQueryByBound_FullMethodName        = "/base_service.v1.BaseService/PofpBaseQueryByBound"
-	BaseService_PofpDetailQueryById_FullMethodName         = "/base_service.v1.BaseService/PofpDetailQueryById"
-	BaseService_PofpFullQueryById_FullMethodName           = "/base_service.v1.BaseService/PofpFullQueryById"
-	BaseService_PofpInteraction_FullMethodName             = "/base_service.v1.BaseService/PofpInteraction"
-	BaseService_PofpComment_FullMethodName                 = "/base_service.v1.BaseService/PofpComment"
+	BaseService_WeChatLogin_FullMethodName                = "/base_service.v1.BaseService/WeChatLogin"
+	BaseService_WeChatRegisterFast_FullMethodName         = "/base_service.v1.BaseService/WeChatRegisterFast"
+	BaseService_LocationCommonSearch_FullMethodName       = "/base_service.v1.BaseService/LocationCommonSearch"
+	BaseService_MediaPutPresignURLBatchGet_FullMethodName = "/base_service.v1.BaseService/MediaPutPresignURLBatchGet"
+	BaseService_PofpTypeList_FullMethodName               = "/base_service.v1.BaseService/PofpTypeList"
+	BaseService_PofpCreate_FullMethodName                 = "/base_service.v1.BaseService/PofpCreate"
+	BaseService_PofpUpdate_FullMethodName                 = "/base_service.v1.BaseService/PofpUpdate"
+	BaseService_PofpDelete_FullMethodName                 = "/base_service.v1.BaseService/PofpDelete"
+	BaseService_PofpBaseQueryByBound_FullMethodName       = "/base_service.v1.BaseService/PofpBaseQueryByBound"
+	BaseService_PofpDetailQueryById_FullMethodName        = "/base_service.v1.BaseService/PofpDetailQueryById"
+	BaseService_PofpFullQueryById_FullMethodName          = "/base_service.v1.BaseService/PofpFullQueryById"
+	BaseService_PofpInteraction_FullMethodName            = "/base_service.v1.BaseService/PofpInteraction"
+	BaseService_PofpComment_FullMethodName                = "/base_service.v1.BaseService/PofpComment"
 )
 
 // BaseServiceClient is the client API for BaseService service.
@@ -50,7 +50,7 @@ type BaseServiceClient interface {
 	// 通用地点搜索
 	LocationCommonSearch(ctx context.Context, in *LocationCommonSearchReq, opts ...grpc.CallOption) (*LocationCommonSearchResp, error)
 	// 批量获取对象上传预签名URL
-	ObjectPutPresignURLBatchGet(ctx context.Context, in *ObjectPutPresignURLBatchGetReq, opts ...grpc.CallOption) (*ObjectPutPresignURLBatchGetResp, error)
+	MediaPutPresignURLBatchGet(ctx context.Context, in *MediaPutPresignURLBatchGetReq, opts ...grpc.CallOption) (*MediaPutPresignURLBatchGetResp, error)
 	// 列表查询足迹点类型
 	PofpTypeList(ctx context.Context, in *PofpTypeListReq, opts ...grpc.CallOption) (*PofpTypeListResp, error)
 	// 创建足迹点
@@ -109,10 +109,10 @@ func (c *baseServiceClient) LocationCommonSearch(ctx context.Context, in *Locati
 	return out, nil
 }
 
-func (c *baseServiceClient) ObjectPutPresignURLBatchGet(ctx context.Context, in *ObjectPutPresignURLBatchGetReq, opts ...grpc.CallOption) (*ObjectPutPresignURLBatchGetResp, error) {
+func (c *baseServiceClient) MediaPutPresignURLBatchGet(ctx context.Context, in *MediaPutPresignURLBatchGetReq, opts ...grpc.CallOption) (*MediaPutPresignURLBatchGetResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ObjectPutPresignURLBatchGetResp)
-	err := c.cc.Invoke(ctx, BaseService_ObjectPutPresignURLBatchGet_FullMethodName, in, out, cOpts...)
+	out := new(MediaPutPresignURLBatchGetResp)
+	err := c.cc.Invoke(ctx, BaseService_MediaPutPresignURLBatchGet_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -225,7 +225,7 @@ type BaseServiceServer interface {
 	// 通用地点搜索
 	LocationCommonSearch(context.Context, *LocationCommonSearchReq) (*LocationCommonSearchResp, error)
 	// 批量获取对象上传预签名URL
-	ObjectPutPresignURLBatchGet(context.Context, *ObjectPutPresignURLBatchGetReq) (*ObjectPutPresignURLBatchGetResp, error)
+	MediaPutPresignURLBatchGet(context.Context, *MediaPutPresignURLBatchGetReq) (*MediaPutPresignURLBatchGetResp, error)
 	// 列表查询足迹点类型
 	PofpTypeList(context.Context, *PofpTypeListReq) (*PofpTypeListResp, error)
 	// 创建足迹点
@@ -263,8 +263,8 @@ func (UnimplementedBaseServiceServer) WeChatRegisterFast(context.Context, *WeCha
 func (UnimplementedBaseServiceServer) LocationCommonSearch(context.Context, *LocationCommonSearchReq) (*LocationCommonSearchResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LocationCommonSearch not implemented")
 }
-func (UnimplementedBaseServiceServer) ObjectPutPresignURLBatchGet(context.Context, *ObjectPutPresignURLBatchGetReq) (*ObjectPutPresignURLBatchGetResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ObjectPutPresignURLBatchGet not implemented")
+func (UnimplementedBaseServiceServer) MediaPutPresignURLBatchGet(context.Context, *MediaPutPresignURLBatchGetReq) (*MediaPutPresignURLBatchGetResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MediaPutPresignURLBatchGet not implemented")
 }
 func (UnimplementedBaseServiceServer) PofpTypeList(context.Context, *PofpTypeListReq) (*PofpTypeListResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PofpTypeList not implemented")
@@ -368,20 +368,20 @@ func _BaseService_LocationCommonSearch_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BaseService_ObjectPutPresignURLBatchGet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ObjectPutPresignURLBatchGetReq)
+func _BaseService_MediaPutPresignURLBatchGet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MediaPutPresignURLBatchGetReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BaseServiceServer).ObjectPutPresignURLBatchGet(ctx, in)
+		return srv.(BaseServiceServer).MediaPutPresignURLBatchGet(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BaseService_ObjectPutPresignURLBatchGet_FullMethodName,
+		FullMethod: BaseService_MediaPutPresignURLBatchGet_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).ObjectPutPresignURLBatchGet(ctx, req.(*ObjectPutPresignURLBatchGetReq))
+		return srv.(BaseServiceServer).MediaPutPresignURLBatchGet(ctx, req.(*MediaPutPresignURLBatchGetReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -568,8 +568,8 @@ var BaseService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _BaseService_LocationCommonSearch_Handler,
 		},
 		{
-			MethodName: "ObjectPutPresignURLBatchGet",
-			Handler:    _BaseService_ObjectPutPresignURLBatchGet_Handler,
+			MethodName: "MediaPutPresignURLBatchGet",
+			Handler:    _BaseService_MediaPutPresignURLBatchGet_Handler,
 		},
 		{
 			MethodName: "PofpTypeList",

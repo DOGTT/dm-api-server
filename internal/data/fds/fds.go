@@ -29,16 +29,16 @@ var (
 		BucketNameAvatar,
 		BucketNamePofpImage}
 
-	bucketNameMapForObjectType = map[base_api.ObjectType]string{
-		base_api.ObjectType_OT_DEFAULT:    BucketNameDefault,
-		base_api.ObjectType_OT_POFP_IMAGE: BucketNamePofpImage,
+	bucketNameMapForObjectType = map[base_api.MediaType]string{
+		base_api.MediaType_MT_DEFAULT:    BucketNameDefault,
+		base_api.MediaType_MT_POFP_IMAGE: BucketNamePofpImage,
 	}
 )
 
 func init() {
 }
 
-func GetBucketName(objectType base_api.ObjectType) string {
+func GetBucketName(objectType base_api.MediaType) string {
 	name := bucketNameMapForObjectType[objectType]
 	if name == "" {
 		log.L().Warn("objectType not found in bucketNameMapForObjectType",

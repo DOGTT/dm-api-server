@@ -2,22 +2,11 @@ syntax = "proto3";
 
 package pofp;
 
-import "google/protobuf/timestamp.proto";
-import "validate/validate.proto";
+import "common.proto";
 
 option go_package="github.com/DOGTT/dm-api-server/api/base;api";
 
 
-
-message PointCoord {
-    float lat = 1;
-    float lng = 2;
-}
-
-message BoundCoord {
-    PointCoord sw = 1;
-    PointCoord ne = 2;
-}
 
 // 足迹点类型
 message PofpTypeInfo {
@@ -25,9 +14,11 @@ message PofpTypeInfo {
     string name = 2;
     int32 coverage_radius = 3;
     string theme_color = 4;
-    google.protobuf.Timestamp created_at = 31;
-    google.protobuf.Timestamp updated_at = 32;
+    int64 created_at = 31;
+    int64 updated_at = 32;
 }
+
+
 
 message PofpInfo {
     // 足迹 ID
@@ -39,8 +30,9 @@ message PofpInfo {
     // 足迹名称, 可更新
     string title = 4;
     // 足迹位置, 不可更新
-    PointCoord lng_lat = 5;
-    repeated string photos = 6;
+    common.PointCoord lng_lat = 5;
+    // 媒体信息
+    repeated common.MediaInfo media = 6;
     // 内容, 可更新
     string content = 7;
     // POI ID, 不可更新
@@ -57,11 +49,11 @@ message PofpInfo {
     int32 marks_cnt = 13;
     // 评论数，只读
     int32 comments_cnt = 14;
-    google.protobuf.Timestamp last_view = 15;
-    google.protobuf.Timestamp last_mark = 16;
+    int64 last_view = 15;
+    int64 last_mark = 16;
 
-    google.protobuf.Timestamp created_at = 31;
-    google.protobuf.Timestamp updated_at = 32;
+    int64 created_at = 31;
+    int64 updated_at = 32;
 }
 
 message PofpDynamicInfo {
@@ -76,6 +68,6 @@ message PofpCommentInfo {
     string uuid = 1;
     string parent_uuid = 2;
     string content = 3;
-    google.protobuf.Timestamp created_at = 31;
-    google.protobuf.Timestamp updated_at = 32;
+    int64 created_at = 31;
+    int64 updated_at = 32;
 }

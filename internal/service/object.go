@@ -8,26 +8,25 @@ import (
 	"github.com/DOGTT/dm-api-server/internal/utils"
 )
 
-func (s *Service) ObjectPutPresignURLBatchGet(ctx context.Context, req *base_api.ObjectPutPresignURLBatchGetReq) (res *base_api.ObjectPutPresignURLBatchGetResp, err error) {
+func (s *Service) MediaPutPresignURLBatchGet(ctx context.Context, req *base_api.MediaPutPresignURLBatchGetReq) (res *base_api.MediaPutPresignURLBatchGetResp, err error) {
 
 	var (
-		urls      = make([]string, 0, req.GetObjectCount())
-		objectIDs = make([]string, 0, req.GetObjectCount())
+		n = int(req.GetCount())
 	)
-	for i := 0; i < int(req.GetObjectCount()); i++ {
-		uuid := utils.GenUUID()
-		url, err := s.data.GeneratePutPresignedURL(ctx,
-			fds.GetBucketName(req.GetObjectType()), uuid, fds.PreSignDurationDefault)
+	res = &base_api.MediaPutPresignURLBatchGetResp{
+		Media: make([]*base_api.MediaInfo, 0, n),
+	}
+	for i := 0; i < n; i++ {
+		res.Media[i] = &base_api.MediaInfo{
+			Type: req.GetMediaType(),
+			Uuid: utils.GenUUID(),
+		}
+		res.Media[i].PutUrl, err = s.data.GeneratePutPresignedURL(ctx,
+			fds.GetBucketName(req.GetMediaType()), res.Media[i].Uuid, fds.PreSignDurationDefault)
 		if err != nil {
 			err = EM_CommonFail_Internal.PutDesc(err.Error())
 			return nil, err
 		}
-		urls = append(urls, url)
-		objectIDs = append(objectIDs, uuid)
-	}
-	res = &base_api.ObjectPutPresignURLBatchGetResp{
-		Urls:      urls,
-		ObjectIds: objectIDs,
 	}
 	return
 }

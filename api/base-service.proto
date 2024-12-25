@@ -3,11 +3,10 @@ syntax = "proto3";
 package base_service.v1;
 option go_package="github.com/DOGTT/dm-api-server/api/base;api";
 
-import "validate/validate.proto";
+import "common.proto";
 import "pofp.proto";
 import "user.proto";
 import "google/api/annotations.proto";
-
 
 // 通用业务服务接口定义.
 /**
@@ -44,9 +43,9 @@ service BaseService {
     }
 
     // 批量获取对象上传预签名URL
-    rpc ObjectPutPresignURLBatchGet(ObjectPutPresignURLBatchGetReq) returns (ObjectPutPresignURLBatchGetResp) {
+    rpc MediaPutPresignURLBatchGet(MediaPutPresignURLBatchGetReq) returns (MediaPutPresignURLBatchGetResp) {
         option (google.api.http) = {
-            get: "/v1/object/put_presign_url/batch"
+            get: "/v1/media/put_presign_url/batch"
         };
     }
 
@@ -156,22 +155,15 @@ message LocationCommonSearchResp {
     //TODO
 }
 
-// 对象类型
-enum ObjectType {
-    OT_DEFAULT = 0;
-    OT_POFP_IMAGE = 1;
-}
 
 // 批量获取对象上传预签名URL请求
-message ObjectPutPresignURLBatchGetReq {
-    ObjectType object_type  =1;
-    int32 object_count = 2;
+message MediaPutPresignURLBatchGetReq {
+    common.MediaType media_type  = 1;
+    int32 count = 2;
 }
 
-message ObjectPutPresignURLBatchGetResp {
-    //TODO
-    repeated string urls = 1;
-    repeated string object_ids = 2;
+message MediaPutPresignURLBatchGetResp {
+    repeated common.MediaInfo media = 1;
 }
 
 message PofpTypeListReq {
@@ -213,7 +205,7 @@ message PofpBaseQueryByBoundReq {
     // 足迹类型id列表
     repeated int32 type_ids = 1;
     // 坐标范围
-    pofp.BoundCoord bound = 2;
+    common.BoundCoord bound = 2;
 }
 
 message PofpBaseQueryByBoundResp {
@@ -250,7 +242,7 @@ enum InteractionType {
 message PofpInteractionReq {
     string uuid = 1;
     // 互动类型
-    InteractionType ixn_type = 2 [(validate.rules).enum = {defined_only: true}];
+    InteractionType ixn_type = 2;
 }
 
 message PofpInteractionResp {

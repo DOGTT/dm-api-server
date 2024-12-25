@@ -15,7 +15,6 @@ import (
 	"net/url"
 	"path"
 	"strings"
-	"time"
 
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/gin-gonic/gin"
@@ -31,26 +30,38 @@ type BoundCoord struct {
 // LocationCommonSearchResp defines model for LocationCommonSearchResp.
 type LocationCommonSearchResp = map[string]interface{}
 
-// ObjectPutPresignURLBatchGetResp defines model for ObjectPutPresignURLBatchGetResp.
-type ObjectPutPresignURLBatchGetResp struct {
-	ObjectIds *[]string `json:"object_ids,omitempty"`
+// MediaInfo defines model for MediaInfo.
+type MediaInfo struct {
+	// GetUrl 读取URL
+	GetUrl *string `json:"get_url,omitempty"`
 
-	// Urls TODO
-	Urls *[]string `json:"urls,omitempty"`
+	// PutUrl 写入URL
+	PutUrl *string `json:"put_url,omitempty"`
+
+	// Type 类型
+	Type *int `json:"type,omitempty"`
+
+	// Uuid ID, 可写入
+	Uuid *string `json:"uuid,omitempty"`
+}
+
+// MediaPutPresignURLBatchGetResp defines model for MediaPutPresignURLBatchGetResp.
+type MediaPutPresignURLBatchGetResp struct {
+	Media *[]MediaInfo `json:"media,omitempty"`
 }
 
 // PetInfo defines model for PetInfo.
 type PetInfo struct {
-	Avatar    *string    `json:"avatar,omitempty"`
-	BirthDate *string    `json:"birth_date,omitempty"`
-	Breed     *string    `json:"breed,omitempty"`
-	CreatedAt *time.Time `json:"created_at,omitempty"`
-	Gender    *uint32    `json:"gender,omitempty"`
-	Id        *string    `json:"id,omitempty"`
-	Name      *string    `json:"name,omitempty"`
-	Specie    *string    `json:"specie,omitempty"`
-	UpdatedAt *time.Time `json:"updated_at,omitempty"`
-	Weight    *int32     `json:"weight,omitempty"`
+	Avatar    *string `json:"avatar,omitempty"`
+	BirthDate *string `json:"birth_date,omitempty"`
+	Breed     *string `json:"breed,omitempty"`
+	CreatedAt *string `json:"created_at,omitempty"`
+	Gender    *uint32 `json:"gender,omitempty"`
+	Id        *string `json:"id,omitempty"`
+	Name      *string `json:"name,omitempty"`
+	Specie    *string `json:"specie,omitempty"`
+	UpdatedAt *string `json:"updated_at,omitempty"`
+	Weight    *int32  `json:"weight,omitempty"`
 }
 
 // PetInfoReg 宠物注册信息
@@ -78,11 +89,11 @@ type PofpBaseQueryByBoundResp struct {
 
 // PofpCommentInfo 足迹评论
 type PofpCommentInfo struct {
-	Content    *string    `json:"content,omitempty"`
-	CreatedAt  *time.Time `json:"created_at,omitempty"`
-	ParentUuid *string    `json:"parent_uuid,omitempty"`
-	UpdatedAt  *time.Time `json:"updated_at,omitempty"`
-	Uuid       *string    `json:"uuid,omitempty"`
+	Content    *string `json:"content,omitempty"`
+	CreatedAt  *string `json:"created_at,omitempty"`
+	ParentUuid *string `json:"parent_uuid,omitempty"`
+	UpdatedAt  *string `json:"updated_at,omitempty"`
+	Uuid       *string `json:"uuid,omitempty"`
 }
 
 // PofpCommentReq defines model for PofpCommentReq.
@@ -133,10 +144,10 @@ type PofpInfo struct {
 	CommentsCnt *int32 `json:"comments_cnt,omitempty"`
 
 	// Content 内容, 可更新
-	Content   *string    `json:"content,omitempty"`
-	CreatedAt *time.Time `json:"created_at,omitempty"`
-	LastMark  *time.Time `json:"last_mark,omitempty"`
-	LastView  *time.Time `json:"last_view,omitempty"`
+	Content   *string `json:"content,omitempty"`
+	CreatedAt *string `json:"created_at,omitempty"`
+	LastMark  *string `json:"last_mark,omitempty"`
+	LastView  *string `json:"last_view,omitempty"`
 
 	// LikesCnt 喜欢数，只读
 	LikesCnt *int32 `json:"likes_cnt,omitempty"`
@@ -145,8 +156,10 @@ type PofpInfo struct {
 	LngLat *PointCoord `json:"lng_lat,omitempty"`
 
 	// MarksCnt 标记数，只读
-	MarksCnt *int32    `json:"marks_cnt,omitempty"`
-	Photos   *[]string `json:"photos,omitempty"`
+	MarksCnt *int32 `json:"marks_cnt,omitempty"`
+
+	// Media 媒体信息
+	Media *[]MediaInfo `json:"media,omitempty"`
 
 	// Pid 足迹作者, 不可更新
 	Pid *string `json:"pid,omitempty"`
@@ -161,8 +174,8 @@ type PofpInfo struct {
 	Title *string `json:"title,omitempty"`
 
 	// TypeId 足迹类型, 不可更新
-	TypeId    *uint32    `json:"type_id,omitempty"`
-	UpdatedAt *time.Time `json:"updated_at,omitempty"`
+	TypeId    *uint32 `json:"type_id,omitempty"`
+	UpdatedAt *string `json:"updated_at,omitempty"`
 
 	// Uuid 足迹 ID
 	Uuid *string `json:"uuid,omitempty"`
@@ -183,12 +196,12 @@ type PofpInteractionResp = map[string]interface{}
 
 // PofpTypeInfo 足迹点类型
 type PofpTypeInfo struct {
-	CoverageRadius *int32     `json:"coverage_radius,omitempty"`
-	CreatedAt      *time.Time `json:"created_at,omitempty"`
-	Id             *uint32    `json:"id,omitempty"`
-	Name           *string    `json:"name,omitempty"`
-	ThemeColor     *string    `json:"theme_color,omitempty"`
-	UpdatedAt      *time.Time `json:"updated_at,omitempty"`
+	CoverageRadius *int32  `json:"coverage_radius,omitempty"`
+	CreatedAt      *string `json:"created_at,omitempty"`
+	Id             *uint32 `json:"id,omitempty"`
+	Name           *string `json:"name,omitempty"`
+	ThemeColor     *string `json:"theme_color,omitempty"`
+	UpdatedAt      *string `json:"updated_at,omitempty"`
 }
 
 // PofpTypeListResp defines model for PofpTypeListResp.
@@ -245,10 +258,10 @@ type BaseServiceLocationCommonSearchParams struct {
 	Input *string `form:"input,omitempty" json:"input,omitempty"`
 }
 
-// BaseServiceObjectPutPresignURLBatchGetParams defines parameters for BaseServiceObjectPutPresignURLBatchGet.
-type BaseServiceObjectPutPresignURLBatchGetParams struct {
-	ObjectType  *int   `form:"object_type,omitempty" json:"object_type,omitempty"`
-	ObjectCount *int32 `form:"object_count,omitempty" json:"object_count,omitempty"`
+// BaseServiceMediaPutPresignURLBatchGetParams defines parameters for BaseServiceMediaPutPresignURLBatchGet.
+type BaseServiceMediaPutPresignURLBatchGetParams struct {
+	MediaType *int   `form:"media_type,omitempty" json:"media_type,omitempty"`
+	Count     *int32 `form:"count,omitempty" json:"count,omitempty"`
 }
 
 // BaseServicePofpDeleteParams defines parameters for BaseServicePofpDelete.
@@ -363,8 +376,8 @@ type ClientInterface interface {
 	// BaseServiceLocationCommonSearch request
 	BaseServiceLocationCommonSearch(ctx context.Context, params *BaseServiceLocationCommonSearchParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// BaseServiceObjectPutPresignURLBatchGet request
-	BaseServiceObjectPutPresignURLBatchGet(ctx context.Context, params *BaseServiceObjectPutPresignURLBatchGetParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// BaseServiceMediaPutPresignURLBatchGet request
+	BaseServiceMediaPutPresignURLBatchGet(ctx context.Context, params *BaseServiceMediaPutPresignURLBatchGetParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// BaseServicePofpDelete request
 	BaseServicePofpDelete(ctx context.Context, params *BaseServicePofpDeleteParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -426,8 +439,8 @@ func (c *Client) BaseServiceLocationCommonSearch(ctx context.Context, params *Ba
 	return c.Client.Do(req)
 }
 
-func (c *Client) BaseServiceObjectPutPresignURLBatchGet(ctx context.Context, params *BaseServiceObjectPutPresignURLBatchGetParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServiceObjectPutPresignURLBatchGetRequest(c.Server, params)
+func (c *Client) BaseServiceMediaPutPresignURLBatchGet(ctx context.Context, params *BaseServiceMediaPutPresignURLBatchGetParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServiceMediaPutPresignURLBatchGetRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -703,8 +716,8 @@ func NewBaseServiceLocationCommonSearchRequest(server string, params *BaseServic
 	return req, nil
 }
 
-// NewBaseServiceObjectPutPresignURLBatchGetRequest generates requests for BaseServiceObjectPutPresignURLBatchGet
-func NewBaseServiceObjectPutPresignURLBatchGetRequest(server string, params *BaseServiceObjectPutPresignURLBatchGetParams) (*http.Request, error) {
+// NewBaseServiceMediaPutPresignURLBatchGetRequest generates requests for BaseServiceMediaPutPresignURLBatchGet
+func NewBaseServiceMediaPutPresignURLBatchGetRequest(server string, params *BaseServiceMediaPutPresignURLBatchGetParams) (*http.Request, error) {
 	var err error
 
 	serverURL, err := url.Parse(server)
@@ -712,7 +725,7 @@ func NewBaseServiceObjectPutPresignURLBatchGetRequest(server string, params *Bas
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/v1/object/put_presign_url/batch")
+	operationPath := fmt.Sprintf("/v1/media/put_presign_url/batch")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -725,9 +738,9 @@ func NewBaseServiceObjectPutPresignURLBatchGetRequest(server string, params *Bas
 	if params != nil {
 		queryValues := queryURL.Query()
 
-		if params.ObjectType != nil {
+		if params.MediaType != nil {
 
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "object_type", runtime.ParamLocationQuery, *params.ObjectType); err != nil {
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "media_type", runtime.ParamLocationQuery, *params.MediaType); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -741,9 +754,9 @@ func NewBaseServiceObjectPutPresignURLBatchGetRequest(server string, params *Bas
 
 		}
 
-		if params.ObjectCount != nil {
+		if params.Count != nil {
 
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "object_count", runtime.ParamLocationQuery, *params.ObjectCount); err != nil {
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "count", runtime.ParamLocationQuery, *params.Count); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -1268,8 +1281,8 @@ type ClientWithResponsesInterface interface {
 	// BaseServiceLocationCommonSearchWithResponse request
 	BaseServiceLocationCommonSearchWithResponse(ctx context.Context, params *BaseServiceLocationCommonSearchParams, reqEditors ...RequestEditorFn) (*BaseServiceLocationCommonSearchResponse, error)
 
-	// BaseServiceObjectPutPresignURLBatchGetWithResponse request
-	BaseServiceObjectPutPresignURLBatchGetWithResponse(ctx context.Context, params *BaseServiceObjectPutPresignURLBatchGetParams, reqEditors ...RequestEditorFn) (*BaseServiceObjectPutPresignURLBatchGetResponse, error)
+	// BaseServiceMediaPutPresignURLBatchGetWithResponse request
+	BaseServiceMediaPutPresignURLBatchGetWithResponse(ctx context.Context, params *BaseServiceMediaPutPresignURLBatchGetParams, reqEditors ...RequestEditorFn) (*BaseServiceMediaPutPresignURLBatchGetResponse, error)
 
 	// BaseServicePofpDeleteWithResponse request
 	BaseServicePofpDeleteWithResponse(ctx context.Context, params *BaseServicePofpDeleteParams, reqEditors ...RequestEditorFn) (*BaseServicePofpDeleteResponse, error)
@@ -1341,14 +1354,14 @@ func (r BaseServiceLocationCommonSearchResponse) StatusCode() int {
 	return 0
 }
 
-type BaseServiceObjectPutPresignURLBatchGetResponse struct {
+type BaseServiceMediaPutPresignURLBatchGetResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *ObjectPutPresignURLBatchGetResp
+	JSON200      *MediaPutPresignURLBatchGetResp
 }
 
 // Status returns HTTPResponse.Status
-func (r BaseServiceObjectPutPresignURLBatchGetResponse) Status() string {
+func (r BaseServiceMediaPutPresignURLBatchGetResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -1356,7 +1369,7 @@ func (r BaseServiceObjectPutPresignURLBatchGetResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r BaseServiceObjectPutPresignURLBatchGetResponse) StatusCode() int {
+func (r BaseServiceMediaPutPresignURLBatchGetResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -1614,13 +1627,13 @@ func (c *ClientWithResponses) BaseServiceLocationCommonSearchWithResponse(ctx co
 	return ParseBaseServiceLocationCommonSearchResponse(rsp)
 }
 
-// BaseServiceObjectPutPresignURLBatchGetWithResponse request returning *BaseServiceObjectPutPresignURLBatchGetResponse
-func (c *ClientWithResponses) BaseServiceObjectPutPresignURLBatchGetWithResponse(ctx context.Context, params *BaseServiceObjectPutPresignURLBatchGetParams, reqEditors ...RequestEditorFn) (*BaseServiceObjectPutPresignURLBatchGetResponse, error) {
-	rsp, err := c.BaseServiceObjectPutPresignURLBatchGet(ctx, params, reqEditors...)
+// BaseServiceMediaPutPresignURLBatchGetWithResponse request returning *BaseServiceMediaPutPresignURLBatchGetResponse
+func (c *ClientWithResponses) BaseServiceMediaPutPresignURLBatchGetWithResponse(ctx context.Context, params *BaseServiceMediaPutPresignURLBatchGetParams, reqEditors ...RequestEditorFn) (*BaseServiceMediaPutPresignURLBatchGetResponse, error) {
+	rsp, err := c.BaseServiceMediaPutPresignURLBatchGet(ctx, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseBaseServiceObjectPutPresignURLBatchGetResponse(rsp)
+	return ParseBaseServiceMediaPutPresignURLBatchGetResponse(rsp)
 }
 
 // BaseServicePofpDeleteWithResponse request returning *BaseServicePofpDeleteResponse
@@ -1804,22 +1817,22 @@ func ParseBaseServiceLocationCommonSearchResponse(rsp *http.Response) (*BaseServ
 	return response, nil
 }
 
-// ParseBaseServiceObjectPutPresignURLBatchGetResponse parses an HTTP response from a BaseServiceObjectPutPresignURLBatchGetWithResponse call
-func ParseBaseServiceObjectPutPresignURLBatchGetResponse(rsp *http.Response) (*BaseServiceObjectPutPresignURLBatchGetResponse, error) {
+// ParseBaseServiceMediaPutPresignURLBatchGetResponse parses an HTTP response from a BaseServiceMediaPutPresignURLBatchGetWithResponse call
+func ParseBaseServiceMediaPutPresignURLBatchGetResponse(rsp *http.Response) (*BaseServiceMediaPutPresignURLBatchGetResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &BaseServiceObjectPutPresignURLBatchGetResponse{
+	response := &BaseServiceMediaPutPresignURLBatchGetResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest ObjectPutPresignURLBatchGetResp
+		var dest MediaPutPresignURLBatchGetResp
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -2122,8 +2135,8 @@ type ServerInterface interface {
 	// (GET /v1/location/search)
 	BaseServiceLocationCommonSearch(c *gin.Context, params BaseServiceLocationCommonSearchParams)
 
-	// (GET /v1/object/put_presign_url/batch)
-	BaseServiceObjectPutPresignURLBatchGet(c *gin.Context, params BaseServiceObjectPutPresignURLBatchGetParams)
+	// (GET /v1/media/put_presign_url/batch)
+	BaseServiceMediaPutPresignURLBatchGet(c *gin.Context, params BaseServiceMediaPutPresignURLBatchGetParams)
 
 	// (DELETE /v1/popf)
 	BaseServicePofpDelete(c *gin.Context, params BaseServicePofpDeleteParams)
@@ -2194,27 +2207,27 @@ func (siw *ServerInterfaceWrapper) BaseServiceLocationCommonSearch(c *gin.Contex
 	siw.Handler.BaseServiceLocationCommonSearch(c, params)
 }
 
-// BaseServiceObjectPutPresignURLBatchGet operation middleware
-func (siw *ServerInterfaceWrapper) BaseServiceObjectPutPresignURLBatchGet(c *gin.Context) {
+// BaseServiceMediaPutPresignURLBatchGet operation middleware
+func (siw *ServerInterfaceWrapper) BaseServiceMediaPutPresignURLBatchGet(c *gin.Context) {
 
 	var err error
 
 	// Parameter object where we will unmarshal all parameters from the context
-	var params BaseServiceObjectPutPresignURLBatchGetParams
+	var params BaseServiceMediaPutPresignURLBatchGetParams
 
-	// ------------- Optional query parameter "object_type" -------------
+	// ------------- Optional query parameter "media_type" -------------
 
-	err = runtime.BindQueryParameter("form", true, false, "object_type", c.Request.URL.Query(), &params.ObjectType)
+	err = runtime.BindQueryParameter("form", true, false, "media_type", c.Request.URL.Query(), &params.MediaType)
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter object_type: %w", err), http.StatusBadRequest)
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter media_type: %w", err), http.StatusBadRequest)
 		return
 	}
 
-	// ------------- Optional query parameter "object_count" -------------
+	// ------------- Optional query parameter "count" -------------
 
-	err = runtime.BindQueryParameter("form", true, false, "object_count", c.Request.URL.Query(), &params.ObjectCount)
+	err = runtime.BindQueryParameter("form", true, false, "count", c.Request.URL.Query(), &params.Count)
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter object_count: %w", err), http.StatusBadRequest)
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter count: %w", err), http.StatusBadRequest)
 		return
 	}
 
@@ -2225,7 +2238,7 @@ func (siw *ServerInterfaceWrapper) BaseServiceObjectPutPresignURLBatchGet(c *gin
 		}
 	}
 
-	siw.Handler.BaseServiceObjectPutPresignURLBatchGet(c, params)
+	siw.Handler.BaseServiceMediaPutPresignURLBatchGet(c, params)
 }
 
 // BaseServicePofpDelete operation middleware
@@ -2438,7 +2451,7 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	}
 
 	router.GET(options.BaseURL+"/v1/location/search", wrapper.BaseServiceLocationCommonSearch)
-	router.GET(options.BaseURL+"/v1/object/put_presign_url/batch", wrapper.BaseServiceObjectPutPresignURLBatchGet)
+	router.GET(options.BaseURL+"/v1/media/put_presign_url/batch", wrapper.BaseServiceMediaPutPresignURLBatchGet)
 	router.DELETE(options.BaseURL+"/v1/popf", wrapper.BaseServicePofpDelete)
 	router.POST(options.BaseURL+"/v1/popf", wrapper.BaseServicePofpCreate)
 	router.PUT(options.BaseURL+"/v1/popf", wrapper.BaseServicePofpUpdate)
@@ -2455,39 +2468,40 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"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",
-	"jk3XoOV678iK9ti4vPG/AAAA//8ahhOuXikAAA==",
+	"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",
+	"lc3/BQAA//9VNOrEkSkAAA==",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file
