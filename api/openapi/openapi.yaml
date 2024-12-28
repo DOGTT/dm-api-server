@@ -253,6 +253,7 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/WeChatRegisterFastResp'
 components:
+<<<<<<< HEAD
     schemas:
         BoundCoord:
             type: object
@@ -558,5 +559,310 @@ components:
             type: http
             scheme: bearer
             bearerFormat: JWT  # 可选，指明使用 JWT
+=======
+  schemas:
+    BoundCoord:
+      type: object
+      properties:
+        sw:
+          $ref: "#/components/schemas/PointCoord"
+        ne:
+          $ref: "#/components/schemas/PointCoord"
+    LocationCommonSearchResp:
+      type: object
+      properties: {}
+    ObjectPutPresignURLBatchGetResp:
+      type: object
+      properties:
+        urls:
+          type: array
+          items:
+            type: string
+          description: TODO
+        object_ids:
+          type: array
+          items:
+            type: string
+    PetInfo:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        gender:
+          type: integer
+          format: uint32
+        avatar:
+          type: string
+        specie:
+          type: string
+        breed:
+          type: string
+        weight:
+          type: integer
+          format: int32
+        birth_date:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    PetInfoReg:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 名字
+        avatar_data:
+          type: string
+          description: base64 data
+          format: bytes
+      description: 宠物注册信息
+    PofpBaseQueryByBoundReq:
+      type: object
+      properties:
+        type_ids:
+          type: array
+          items:
+            type: integer
+            format: int32
+          description: 足迹类型id列表
+        bound:
+          allOf:
+            - $ref: "#/components/schemas/BoundCoord"
+          description: 坐标范围
+    PofpBaseQueryByBoundResp:
+      type: object
+      properties:
+        pofps:
+          type: array
+          items:
+            $ref: "#/components/schemas/PofpInfo"
+    PofpCommentInfo:
+      type: object
+      properties:
+        uuid:
+          type: string
+        parent_uuid:
+          type: string
+        content:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      description: 足迹评论
+    PofpCommentReq:
+      type: object
+      properties:
+        comment:
+          $ref: "#/components/schemas/PofpCommentInfo"
+    PofpCommentResp:
+      type: object
+      properties: {}
+    PofpCreateReq:
+      type: object
+      properties:
+        pofp:
+          $ref: "#/components/schemas/PofpInfo"
+      description: 足迹创建
+    PofpCreateResp:
+      type: object
+      properties:
+        pofp:
+          $ref: "#/components/schemas/PofpInfo"
+    PofpDeleteResp:
+      type: object
+      properties: {}
+    PofpDetailQueryByIdResp:
+      type: object
+      properties:
+        pofp:
+          $ref: "#/components/schemas/PofpInfo"
+        pofp_dynamic_info:
+          $ref: "#/components/schemas/PofpDynamicInfo"
+    PofpDynamicInfo:
+      type: object
+      properties:
+        uuid:
+          type: string
+    PofpFullQueryByIdResp:
+      type: object
+      properties:
+        pofp:
+          $ref: "#/components/schemas/PofpInfo"
+        pofp_dynamic_info:
+          $ref: "#/components/schemas/PofpDynamicInfo"
+    PofpInfo:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: 足迹 ID
+        type_id:
+          type: integer
+          description: 足迹类型, 不可更新
+          format: uint32
+        pid:
+          type: string
+          description: 足迹作者, 不可更新
+        title:
+          type: string
+          description: 足迹名称, 可更新
+        lng_lat:
+          allOf:
+            - $ref: "#/components/schemas/PointCoord"
+          description: 足迹位置, 不可更新
+        photos:
+          type: array
+          items:
+            type: string
+        content:
+          type: string
+          description: 内容, 可更新
+        poi_id:
+          type: string
+          description: POI ID, 不可更新
+        address:
+          type: string
+          description: POI 地址, 不可更新
+        poi_data:
+          type: object
+          additionalProperties:
+            type: string
+          description: POI 详细信息, 不可更新
+        views_cnt:
+          type: integer
+          description: 查看数，只读
+          format: int32
+        likes_cnt:
+          type: integer
+          description: 喜欢数，只读
+          format: int32
+        marks_cnt:
+          type: integer
+          description: 标记数，只读
+          format: int32
+        comments_cnt:
+          type: integer
+          description: 评论数，只读
+          format: int32
+        last_view:
+          type: string
+          format: date-time
+        last_mark:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    PofpInteractionReq:
+      type: object
+      properties:
+        uuid:
+          type: string
+        ixn_type:
+          type: integer
+          description: 互动类型
+          format: enum
+    PofpInteractionResp:
+      type: object
+      properties: {}
+    PofpTypeInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: uint32
+        name:
+          type: string
+        coverage_radius:
+          type: integer
+          format: int32
+        theme_color:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      description: 足迹点类型
+    PofpTypeListResp:
+      type: object
+      properties:
+        pofp_types:
+          type: array
+          items:
+            $ref: "#/components/schemas/PofpTypeInfo"
+    PofpUpdateReq:
+      type: object
+      properties:
+        pofp:
+          $ref: "#/components/schemas/PofpInfo"
+      description: 足迹更新
+    PofpUpdateResp:
+      type: object
+      properties: {}
+    PointCoord:
+      type: object
+      properties:
+        lat:
+          type: number
+          format: float
+        lng:
+          type: number
+          format: float
+    UserInfo:
+      type: object
+      properties:
+        id:
+          type: string
+        pets:
+          type: array
+          items:
+            $ref: "#/components/schemas/PetInfo"
+    WeChatLoginReq:
+      type: object
+      properties:
+        wx_code:
+          type: string
+      description: 登录请求
+    WeChatLoginResp:
+      type: object
+      properties:
+        token:
+          type: string
+        user_info:
+          $ref: "#/components/schemas/UserInfo"
+    WeChatRegisterFastReq:
+      type: object
+      properties:
+        wx_code:
+          type: string
+        pet:
+          $ref: "#/components/schemas/PetInfoReg"
+      description: 快速注册请求
+    WeChatRegisterFastResp:
+      type: object
+      properties:
+        token:
+          type: string
+        user_info:
+          $ref: "#/components/schemas/UserInfo"
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT # 可选，指明使用 JWT
+>>>>>>> 38f05c1 (mod: code)
 security:
   - bearerAuth: []  

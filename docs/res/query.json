@@ -1,0 +1,37 @@
+{
+    "statusCode": 200,
+    "data": {
+        "pofps": [
+            {
+                "uuid": "BC5EGUolRAW8_XAEB1P0ug",
+                "type_id": 1,
+                "pid": 1,
+                "title": "青少年宫旁草地",
+                "lng_lat": {
+                    "lat": 22.545864,
+                    "lng": 113.88149
+                }
+            },
+            {
+                "uuid": "d3HThWQBQZ2mnCWDjJsw6g",
+                "type_id": 2,
+                "pid": 1,
+                "title": "宠爱友好餐厅",
+                "lng_lat": {
+                    "lat": 22.551,
+                    "lng": 113.8775
+                }
+            },
+            {
+                "uuid": "PLoWF4X5QCCZIpLD38PlMg",
+                "type_id": 3,
+                "pid": 1,
+                "title": "啦啦宠物公园",
+                "lng_lat": {
+                    "lat": 22.560347,
+                    "lng": 113.88895
+                }
+            }
+        ]
+    }
+}
