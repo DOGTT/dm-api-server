@@ -11,3 +11,5 @@ INSERT INTO pofp_type_info (id, name, coverage_radius, theme_color, created_at, 
 VALUES (3, '露营', 500, '#0000FF', '2024-05-06 10:10:00', '2024-05-06 10:10:00');
 INSERT INTO pofp_type_info (id, name, coverage_radius, theme_color, created_at, updated_at) 
 VALUES (4, '远足', 500, '#0000FF', '2024-05-06 10:10:00', '2024-05-06 10:10:00');
+INSERT INTO pofp_type_info (id, name, coverage_radius, theme_color, created_at, updated_at) 
+VALUES (4, '探险', 500, '#0000FF', '2024-05-06 10:10:00', '2024-05-06 10:10:00');
