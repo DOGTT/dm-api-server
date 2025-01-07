@@ -92,6 +92,18 @@ func (c *RDSClient) GetPofpInfo(ctx context.Context, uuid string) (*PofpInfo, er
 	return &info, nil
 }
 
+func (c *RDSClient) ExistPofpInfo(ctx context.Context, uuid string) error {
+	var count int64
+	err := c.db.WithContext(ctx).Model(&PofpInfo{}).Where("uuid = ?", uuid).Count(&count).Error
+	if err != nil {
+		return err
+	}
+	if count < 1 {
+		return fmt.Errorf("not found")
+	}
+	return nil
+}
+
 func (c *RDSClient) BatchQueryPofpInfoListByBound(ctx context.Context, typeIDs []uint, bc *base_api.BoundCoord) ([]*PofpInfo, error) {
 
 	var results []*PofpInfo

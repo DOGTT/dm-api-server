@@ -230,5 +230,20 @@ func (s *Service) PofpInteraction(ctx context.Context, req *base_api.PofpInterac
 
 func (s *Service) PofpComment(ctx context.Context, req *base_api.PofpCommentReq) (res *base_api.PofpCommentResp, err error) {
 	// TODO
+	tc := getClaimFromContext(ctx)
+	// 查询pofp信息，检查是否存在
+	pofpUUID := req.GetComment().GetRootUuid()
+	if err = s.data.ExistPofpInfo(ctx, pofpUUID); err != nil {
+		return
+	}
+	res = new(base_api.PofpCommentResp)
+
+	err = s.data.CreatePofpIxnRecordWithCount(ctx, &rds.UserPofpIxnRecord{
+		PofpUUID: pofpUUID,
+		IntType:  rds.InxTypeComment,
+		PId:      tc.PID,
+		UId:      tc.UID,
+	})
+
 	return
 }

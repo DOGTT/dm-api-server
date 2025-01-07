@@ -230,13 +230,30 @@ message PofpFullQueryByIdResp {
     pofp.PofpDynamicInfo pofp_dynamic_info = 2;
 }
 
+// 状态互动类型
+enum StateInxType {
+    DEFAULT = 0;
+    // 喜欢/收藏/关注
+    LIKE = 1;
+    // 标记， 代表曾经来过
+    MARK = 2;
+}
+
+// 事件互动类型
+enum EventInxType {
+    DEFAULT = 0;
+    // 到达
+    ARRIVE = 1;
+    // 评论
+    COMMENT = 2;
+    // 加入
+    JOIN = 3;
+}
+
 // 互动类型
 enum InteractionType {
-    VIEW = 0;
-    // 点赞
-    LIKE = 1;
-    // 标记
-    MARK = 2;
+    STATE_INX = 0;
+    EVENT_INX = 1;
 }
 
 message PofpInteractionReq {

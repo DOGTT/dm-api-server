@@ -104,18 +104,18 @@ build:
 UNAME=$(shell uname)
 # package docker image
 package:
-	docker build --build-arg APP_NAME=$(NAME) -f Dockerfile -t registry.xxxxx.com/xxxxx-studio/$(NAME):$(IMAGE_VERSION) .
+	docker build --build-arg APP_NAME=$(NAME) -f Dockerfile -t ghcr.io/dogtt/$(NAME):$(IMAGE_VERSION) .
 
 .PHONY: docker
 UNAME=$(shell uname)
 # build docker image
 docker:
-	docker build --build-arg APP_NAME=$(NAME) -f Dockerfile -t registry.xxxxx.com/xxxxx-studio/$(NAME):$(IMAGE_VERSION) ./
+	docker build --build-arg APP_NAME=$(NAME) -f Dockerfile -t ghcr.io/dogtt/$(NAME):$(IMAGE_VERSION) ./
 
 .PHONY: push-image
 # push docker image to repo
 push-image: docker
-	docker push registry.xxxxx.com/xxxxx-studio/$(NAME):$(IMAGE_VERSION)
+	docker push ghcr.io/dogtt/$(NAME):$(IMAGE_VERSION)
 
 .PHONY: release-chart
 # release helm chart

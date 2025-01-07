@@ -13,15 +13,24 @@ func init() {
 type PetInfo struct {
 	Id  uint64 `gorm:"primaryKey;autoIncrement"`
 	UId uint64 `gorm:"index"` // 外键字段，指向 UserInfo 的 ID
-
-	Name      string `gorm:"type:varchar(20);"`
-	Gender    uint8  `gorm:"type:smallint;"`
-	AvatarId  string `gorm:"type:varchar(255);"`
-	Specie    string `gorm:"type:varchar(20);"`
-	Breed     string `gorm:"type:varchar(20);"`
-	Weight    int    `gorm:"type:smallint;"`
+	// 物种
+	Specie string `gorm:"type:varchar(5);"`
+	// 名字
+	Name string `gorm:"type:varchar(20);"`
+	// 简介
+	Introduce string `gorm:"type:varchar(128);"`
+	// 性别
+	Gender uint8 `gorm:"type:smallint;"`
+	// 生日
 	BirthDate string `gorm:"type:varchar(10);"`
-	// PhotoList pq.StringArray `gorm:"type:text[]"`
+	// 头像
+	AvatarId string `gorm:"type:varchar(255);"`
+	// 体型
+	Size string `gorm:"type:varchar(3);"`
+	// 品种
+	Breed string `gorm:"type:varchar(20);"`
+	// 体重
+	Weight int `gorm:"type:smallint;"`
 
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
