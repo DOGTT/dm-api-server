@@ -26,8 +26,8 @@ var (
 
 // 足迹点个互动记录 喜欢/踩过/评论
 type UserPofpIxnRecord struct {
-	UId      uint   `gorm:"index"`
-	PId      uint   `gorm:"index"`
+	UId      uint64 `gorm:"index"`
+	PId      uint64 `gorm:"index"`
 	PofpUUID string `gorm:"index"`
 	//
 	IntType InxType `gorm:"type:int;default:0"` // 0-点赞,1-收藏
@@ -43,13 +43,15 @@ func (c *RDSClient) CreatePofpIxnRecordWithCount(ctx context.Context, d *UserPof
 
 	return c.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		var info PofpInfo
+		field := InxTypeFieldName[d.IntType]
 		if err := tx.Model(&PofpInfo{}).Where("uuid = ?", d.PofpUUID).
-			Select(InxTypeFieldName[d.IntType]).First(&info).Error; err != nil {
+			Select(field).First(&info).Error; err != nil {
 			return err
 		}
 		if err := tx.Create(d).Error; err != nil {
 			return err
 		}
+		info.UUID = d.PofpUUID
 		switch d.IntType {
 		case InxTypeLike:
 			info.LikesCnt++
@@ -58,7 +60,7 @@ func (c *RDSClient) CreatePofpIxnRecordWithCount(ctx context.Context, d *UserPof
 		case InxTypeComment:
 			info.CommentsCnt++
 		}
-		if err := tx.Save(&info).Error; err != nil {
+		if err := tx.Select(field).Save(&info).Error; err != nil {
 			return err
 		}
 		return nil

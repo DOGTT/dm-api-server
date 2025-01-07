@@ -1,6 +1,7 @@
 package conf
 
 import (
+	"strings"
 	"time"
 
 	"go.uber.org/zap"
@@ -21,13 +22,23 @@ type Server struct {
 }
 
 type HTTPServer struct {
-	Enable       bool          `default:"true"`
-	Addr         string        `default:":8080"`
-	Timeout      time.Duration `default:"1s"`
-	EnableMetric bool          `yaml:"enable_metric"`
-	EnableTrace  bool          `yaml:"enable_trace"`
+	Enable            bool          `default:"true"`
+	Addr              string        `default:":8080"`
+	Timeout           time.Duration `default:"1s"`
+	AuthWhitePathlist []string      `yaml:"auth_white_pathlist"`
+	EnableMetric      bool          `yaml:"enable_metric"`
+	EnableTrace       bool          `yaml:"enable_trace"`
+	EnableSwagger     bool          `yaml:"enable_swagger"`
+	EnableCORS        bool          `yaml:"enable_cors"`
+}
 
-	AuthWhitePathlist []string `yaml:"auth_white_pathlist"`
+func GetAddrSplit(addr string) (ip string, portStr string) {
+
+	s := strings.Split(addr, ":")
+	if s == nil || len(s) < 2 {
+		return
+	}
+	return s[0], s[1]
 }
 
 type GRPCServer struct {

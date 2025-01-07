@@ -24,6 +24,7 @@ type KeyPair struct {
 
 // LoadKeyPair 从文件加载 RSA 密钥对
 func LoadKeyPair(privateKeyPath, publicKeyPath string) (*KeyPair, error) {
+	fmt.Println("Loading key pair...", privateKeyPath, publicKeyPath)
 	privateKey, err := LoadPrivateKey(privateKeyPath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to load private key: %w", err)
@@ -41,8 +42,8 @@ func LoadKeyPair(privateKeyPath, publicKeyPath string) (*KeyPair, error) {
 }
 
 type TokenClaims struct {
-	UID uint `json:"uid"` // 用户 ID
-	PID uint `json:"pid"` // 项目 ID
+	UID uint64 `json:"uid"` // 用户 ID
+	PID uint64 `json:"pid"` // 项目 ID
 }
 
 // GenerateToken 生成 RS256 JWT Token
@@ -70,17 +71,16 @@ func (kp *KeyPair) ParseToken(tokenString string) (TokenClaims, error) {
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		uid, ok := claims["uid"].(int)
+		uid, ok := claims["uid"].(float64)
 		if !ok {
 			return tc, errors.New("invalid token claims")
 		}
-		tc.UID = uint(uid)
-		pid, ok := claims["pid"].(int)
+		tc.UID = (uint64)(uid)
+		pid, ok := claims["pid"].(float64)
 		if !ok {
 			return tc, errors.New("invalid token claims")
 		}
-		tc.PID = uint(pid)
-
+		tc.PID = (uint64)(pid)
 	}
 	return tc, nil
 }
@@ -93,11 +93,14 @@ func LoadPrivateKey(path string) (*rsa.PrivateKey, error) {
 	}
 
 	block, _ := pem.Decode(keyData)
-	if block == nil || block.Type != "RSA PRIVATE KEY" {
+	if block == nil || block.Type != "PRIVATE KEY" {
 		return nil, errors.New("invalid private key")
 	}
-
-	return x509.ParsePKCS1PrivateKey(block.Bytes)
+	pk, err := x509.ParsePKCS8PrivateKey(block.Bytes)
+	if err != nil {
+		return nil, err
+	}
+	return pk.(*rsa.PrivateKey), nil
 }
 
 // 加载公钥
@@ -108,9 +111,12 @@ func LoadPublicKey(path string) (*rsa.PublicKey, error) {
 	}
 
 	block, _ := pem.Decode(keyData)
-	if block == nil || block.Type != "RSA PUBLIC KEY" {
+	if block == nil || block.Type != "PUBLIC KEY" {
 		return nil, errors.New("invalid public key")
 	}
-
-	return x509.ParsePKCS1PublicKey(block.Bytes)
+	pk, err := x509.ParsePKIXPublicKey(block.Bytes)
+	if err != nil {
+		return nil, err
+	}
+	return pk.(*rsa.PublicKey), nil
 }

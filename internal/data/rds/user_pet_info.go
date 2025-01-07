@@ -11,8 +11,8 @@ func init() {
 
 // 宠信息
 type PetInfo struct {
-	Id  uint `gorm:"primaryKey;autoIncrement"`
-	UId uint `gorm:"index"` // 外键字段，指向 UserInfo 的 ID
+	Id  uint64 `gorm:"primaryKey;autoIncrement"`
+	UId uint64 `gorm:"index"` // 外键字段，指向 UserInfo 的 ID
 
 	Name      string `gorm:"type:varchar(20);"`
 	Gender    uint8  `gorm:"type:smallint;"`
@@ -20,7 +20,7 @@ type PetInfo struct {
 	Specie    string `gorm:"type:varchar(20);"`
 	Breed     string `gorm:"type:varchar(20);"`
 	Weight    int    `gorm:"type:smallint;"`
-	BirthDate string `gorm:"type:date;"`
+	BirthDate string `gorm:"type:varchar(10);"`
 	// PhotoList pq.StringArray `gorm:"type:text[]"`
 
 	CreatedAt time.Time `gorm:"autoCreateTime"`

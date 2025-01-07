@@ -13,9 +13,12 @@ var (
 	EM_CommonFail_AuthFail      = &ErrMsg{HttpStatus: http.StatusUnauthorized, Code: "CommonFail.AuthFail"}
 	EM_CommonFail_BadRequest    = &ErrMsg{HttpStatus: http.StatusBadRequest, Code: "CommonFail.BadRequest"}
 	EM_CommonFail_Internal      = &ErrMsg{HttpStatus: http.StatusInternalServerError, Code: "CommonFail.Internal"}
+	EM_CommonFail_DBError       = &ErrMsg{HttpStatus: http.StatusInternalServerError, Code: "CommonFail.DBError"}
 
 	EM_AuthFail_WX       = &ErrMsg{HttpStatus: http.StatusBadRequest, Code: "AuthFail.WeChat"}
-	EM_AuthFail_NotFound = &ErrMsg{HttpStatus: http.StatusBadRequest, Code: "AuthFail.NotFound"}
+	EM_AuthFail_NotFound = &ErrMsg{HttpStatus: http.StatusNotFound, Code: "AuthFail.NotFound"}
+
+	EM_UserFail_AlreadyExist = &ErrMsg{HttpStatus: http.StatusBadRequest, Code: "UserFail.AlreadyExist"}
 )
 
 type ErrMsg struct {

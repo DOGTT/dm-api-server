@@ -5,13 +5,12 @@ import (
 	"errors"
 	"fmt"
 
-	grpc_api "github.com/DOGTT/dm-api-server/api/grpc"
+	base_api "github.com/DOGTT/dm-api-server/api/base"
 	"github.com/DOGTT/dm-api-server/internal/data/fds"
 	"github.com/DOGTT/dm-api-server/internal/data/rds"
 	"github.com/DOGTT/dm-api-server/internal/utils"
 	log "github.com/uptrace/opentelemetry-go-extra/otelzap"
 	"go.uber.org/zap"
-	"google.golang.org/protobuf/types/known/timestamppb"
 	"gorm.io/gorm"
 )
 
@@ -33,9 +32,9 @@ func (s *Service) wxCodeToWxId(ctx context.Context, wxCode string) (wxId string,
 	return
 }
 
-func (s *Service) WeChatLogin(ctx context.Context, req *grpc_api.WeChatLoginReq) (res *grpc_api.WeChatLoginResp, err error) {
+func (s *Service) WeChatLogin(ctx context.Context, req *base_api.WeChatLoginReq) (res *base_api.WeChatLoginResp, err error) {
 	log.Ctx(ctx).Debug("wx login get req", zap.Any("req", req))
-	res = &grpc_api.WeChatLoginResp{}
+	res = &base_api.WeChatLoginResp{}
 	wxId, err := s.wxCodeToWxId(ctx, req.GetWxCode())
 	if err != nil {
 		return
@@ -50,7 +49,7 @@ func (s *Service) WeChatLogin(ctx context.Context, req *grpc_api.WeChatLoginReq)
 		err = EM_CommonFail_Internal.PutDesc(err.Error())
 		return
 	}
-	ackPId := uint(0)
+	ackPId := uint64(0)
 	if len(userInfo.Pets) > 0 {
 		ackPId = userInfo.Pets[0].Id
 	}
@@ -70,7 +69,7 @@ func (s *Service) WeChatLogin(ctx context.Context, req *grpc_api.WeChatLoginReq)
 	return
 }
 
-func validRegisterRequest(req *grpc_api.WeChatRegisterFastReq) error {
+func validRegisterRequest(req *base_api.WeChatRegisterFastReq) error {
 	if req == nil {
 		return EM_CommonFail_BadRequest.PutDesc("req is required")
 	}
@@ -83,14 +82,14 @@ func validRegisterRequest(req *grpc_api.WeChatRegisterFastReq) error {
 	return nil
 }
 
-func (s *Service) WeChatRegisterFast(ctx context.Context, req *grpc_api.WeChatRegisterFastReq) (res *grpc_api.WeChatRegisterFastResp, err error) {
+func (s *Service) WeChatRegisterFast(ctx context.Context, req *base_api.WeChatRegisterFastReq) (res *base_api.WeChatRegisterFastResp, err error) {
 	// Implement me
 	log.Ctx(ctx).Debug("grpc impl get req", zap.Any("req", req))
 	if validRegisterRequest(req) != nil {
 		err = EM_CommonFail_BadRequest.PutDesc("pet is required")
 		return
 	}
-	res = &grpc_api.WeChatRegisterFastResp{}
+	res = &base_api.WeChatRegisterFastResp{}
 	wxId, err := s.wxCodeToWxId(ctx, req.GetWxCode())
 	if err != nil {
 		return
@@ -102,20 +101,24 @@ func (s *Service) WeChatRegisterFast(ctx context.Context, req *grpc_api.WeChatRe
 		Name:     req.GetPet().GetName(),
 		AvatarId: utils.GenShortenUUID(),
 	}
-	// save avatar
-	if req.GetPet().GetAvatarData() != nil {
-		err = s.data.PutObject(ctx, fds.BucketNameAvatar,
-			pet.AvatarId, req.GetPet().GetAvatarData())
-		if err != nil {
-			err = EM_CommonFail_Internal.PutDesc(err.Error())
-			return
-		}
-	}
 	// 2. create user
 	err = s.data.CreateUserInfoWithPet(ctx, user, pet)
-	if errors.Is(err, gorm.ErrDuplicatedKey) {
-		err = EM_AuthFail_NotFound.PutDesc(err.Error())
+	if rds.IsDuplicateErr(err) {
+		err = EM_UserFail_AlreadyExist.PutDesc(err.Error())
 		return
+	}
+	if err != nil {
+		err = EM_CommonFail_DBError.PutDesc(err.Error())
+		return
+	}
+	// 3.save avatar
+	if req.GetPet().GetAvatarData() != nil {
+		err = s.data.PutObject(ctx, fds.BucketNameAvatar,
+			getAvatarIdFromFDS(pet.AvatarId, pet.Id), req.GetPet().GetAvatarData())
+		if err != nil {
+			err = EM_CommonFail_DBError.PutDesc(err.Error())
+			return
+		}
 	}
 	// 3. Query Info
 	user.Pets = []*rds.PetInfo{pet}
@@ -135,24 +138,28 @@ func (s *Service) WeChatRegisterFast(ctx context.Context, req *grpc_api.WeChatRe
 	return
 }
 
-func (s *Service) convertToUserInfo(ctx context.Context, userInfo *rds.UserInfo) (res *grpc_api.UserInfo, err error) {
-	res = &grpc_api.UserInfo{
-		Id:   uint32(userInfo.Id),
-		Pets: make([]*grpc_api.PetInfo, len(userInfo.Pets)),
+func getAvatarIdFromFDS(avatarId string, pid uint64) string {
+	return fmt.Sprintf("%d_%s", pid, avatarId)
+}
+
+func (s *Service) convertToUserInfo(ctx context.Context, userInfo *rds.UserInfo) (res *base_api.UserInfo, err error) {
+	res = &base_api.UserInfo{
+		Id:   userInfo.Id,
+		Pets: make([]*base_api.PetInfo, len(userInfo.Pets)),
 	}
 	for i, pet := range userInfo.Pets {
-		res.Pets[i] = &grpc_api.PetInfo{
-			Id:        uint32(pet.Id),
+		res.Pets[i] = &base_api.PetInfo{
+			Id:        pet.Id,
 			Name:      pet.Name,
 			Gender:    uint32(pet.Gender),
 			BirthDate: pet.BirthDate,
 
-			CreatedAt: timestamppb.New(pet.CreatedAt),
-			UpdatedAt: timestamppb.New(pet.UpdatedAt),
+			CreatedAt: pet.CreatedAt.UnixMilli(),
+			UpdatedAt: pet.UpdatedAt.UnixMilli(),
 		}
 		if pet.AvatarId != "" {
 			res.Pets[i].Avatar, err = s.data.GenerateGetPresignedURL(ctx,
-				fds.BucketNameAvatar, pet.AvatarId, fds.PreSignDurationDefault)
+				fds.BucketNameAvatar, getAvatarIdFromFDS(pet.AvatarId, pet.Id), fds.PreSignDurationDefault)
 			if err != nil {
 				err = EM_CommonFail_Internal.PutDesc(err.Error())
 				return

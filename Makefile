@@ -5,6 +5,7 @@ BUILDTS:=$(shell date -u '+%Y-%m-%d %I:%M:%S')
 GIT_HASH:=$(shell git rev-parse HEAD)
 GIT_BRANCH:=$(shell git rev-parse --abbrev-ref HEAD)
 VERSION:=$(shell git describe --tags --always)
+IMAGE_VERSION:=$(GIT_BRANCH)-$(VERSION)
 
 LDFLAGS += -X 'main.Name=$(NAME)'
 LDFLAGS += -X 'main.Version=$(VERSION)'
@@ -54,13 +55,14 @@ internal:
 .PHONY: api
 # generate api proto
 api:
+	@mkdir -p ./api/base
+	@mkdir -p ./api/openapi
 	protoc --proto_path=./api \
 	       --proto_path=./third_party \
- 	       --go_out=paths=source_relative:./api \
-		   --go-grpc_out=paths=source_relative:./api \
-	       --openapi_out=fq_schema_naming=false,default_response=false,paths=source_relative:./api/openapi/ \
+ 	       --go_out=paths=source_relative:./api/base \
+		   --go-grpc_out=paths=source_relative:./api/base \
+	       --openapi_out=fq_schema_naming=false,naming=proto,default_response=false,paths=source_relative:./api/openapi/ \
 	       $(API_PROTO_FILES)
-	mv ./api/*.go ./api/grpc/
 	oapi-codegen -package apigin -generate types,spec,client,gin ./api/openapi/openapi.yaml > ./api/gin/gin.gen.go
 
 .PHONY: generate
@@ -102,7 +104,7 @@ build:
 UNAME=$(shell uname)
 # package docker image
 package:
-	docker build --build-arg APP_NAME=$(NAME) -f Dockerfile -t registry.xxxxx.com/xxxxx-studio/$(NAME):$(VERSION) .
+	docker build --build-arg APP_NAME=$(NAME) -f Dockerfile -t registry.xxxxx.com/xxxxx-studio/$(NAME):$(IMAGE_VERSION) .
 
 .PHONY: docker
 UNAME=$(shell uname)

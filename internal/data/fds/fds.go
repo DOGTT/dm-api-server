@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	grpc_api "github.com/DOGTT/dm-api-server/api/grpc"
+	base_api "github.com/DOGTT/dm-api-server/api/base"
 	"github.com/DOGTT/dm-api-server/internal/conf"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
@@ -18,7 +18,7 @@ import (
 const (
 	BucketNameDefault   = "default"
 	BucketNameAvatar    = "avatar"
-	BucketNamePofpImage = "pofpImage"
+	BucketNamePofpImage = "pofp-image"
 
 	PreSignDurationDefault = time.Minute * 10
 )
@@ -29,16 +29,16 @@ var (
 		BucketNameAvatar,
 		BucketNamePofpImage}
 
-	bucketNameMapForObjectType = map[grpc_api.ObjectType]string{
-		grpc_api.ObjectType_OT_DEFAULT:    BucketNameDefault,
-		grpc_api.ObjectType_OT_POFP_IMAGE: BucketNamePofpImage,
+	bucketNameMapForObjectType = map[base_api.MediaType]string{
+		base_api.MediaType_MT_DEFAULT:    BucketNameDefault,
+		base_api.MediaType_MT_POFP_IMAGE: BucketNamePofpImage,
 	}
 )
 
 func init() {
 }
 
-func GetBucketName(objectType grpc_api.ObjectType) string {
+func GetBucketName(objectType base_api.MediaType) string {
 	name := bucketNameMapForObjectType[objectType]
 	if name == "" {
 		log.L().Warn("objectType not found in bucketNameMapForObjectType",
@@ -63,6 +63,7 @@ func New(c *conf.FDSConfig) (fc *FDSClient, err error) {
 		Region:           aws.String("us-east-1"), // MinIO 不需要真实的区域，但需要设置
 		Credentials:      credentials.NewStaticCredentials(c.AccessKey, c.SecretKey, ""),
 		S3ForcePathStyle: aws.Bool(true),
+		DisableSSL:       aws.Bool(true),
 	})
 	if err != nil {
 		return nil, err

@@ -1,0 +1,7 @@
+    securitySchemes:
+        bearerAuth:
+            type: http
+            scheme: bearer
+            bearerFormat: JWT  # 可选，指明使用 JWT
+security:
+  - bearerAuth: []  

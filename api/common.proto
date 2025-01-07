@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package common;
+
+
+option go_package="github.com/DOGTT/dm-api-server/api/base;api";
+
+
+message PointCoord {
+    float lat = 1;
+    float lng = 2;
+}
+
+message BoundCoord {
+    PointCoord sw = 1;
+    PointCoord ne = 2;
+}
+
+enum MediaType {
+    MT_DEFAULT = 0;
+    MT_POFP_IMAGE = 1;
+}
+
+message MediaInfo {
+    // ID, 可写入
+    string uuid = 1;
+    // 类型
+    MediaType type = 2;
+    // 读取URL
+    string get_url = 3;
+    // 写入URL
+    string put_url = 4;
+}
