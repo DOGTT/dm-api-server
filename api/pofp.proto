@@ -66,8 +66,11 @@ message PofpDynamicInfo {
 // 足迹评论
 message PofpCommentInfo {
     string uuid = 1;
-    string parent_uuid = 2;
-    string content = 3;
+    string root_uuid = 2;
+    string parent_uuid = 3;
+    string content = 4;
+
+    
     int64 created_at = 31;
     int64 updated_at = 32;
 }

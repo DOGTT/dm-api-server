@@ -14,10 +14,9 @@ func init() {
 type InxType uint
 
 const (
-	InxTypeView    InxType = iota
-	InxTypeLike            // 喜欢
-	InxTypeMark            // 标记过
-	InxTypeComment         // 评论
+	InxTypeView InxType = iota
+	InxTypeLike         // 喜欢 -- 状态型
+	InxTypeMark         // 标记过 -- 可重复
 )
 
 var (
@@ -26,7 +25,6 @@ var (
 
 // 足迹点个互动记录 喜欢/踩过/评论
 type UserPofpIxnRecord struct {
-	UId      uint64 `gorm:"index"`
 	PId      uint64 `gorm:"index"`
 	PofpUUID string `gorm:"index"`
 	//
