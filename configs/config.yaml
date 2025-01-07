@@ -35,3 +35,6 @@ data:
     endpoint: http://127.0.0.1:9000
     access_key: dev
     secret_key: 12345678
+  map_data:
+    endpoint: https://restapi.amap.com/v3
+    key: YOUR_AMAP_KEY

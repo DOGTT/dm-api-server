@@ -5,6 +5,7 @@ BUILDTS:=$(shell date -u '+%Y-%m-%d %I:%M:%S')
 GIT_HASH:=$(shell git rev-parse HEAD)
 GIT_BRANCH:=$(shell git rev-parse --abbrev-ref HEAD)
 VERSION:=$(shell git describe --tags --always)
+IMAGE_VERSION:=$(GIT_BRANCH)-$(VERSION)
 
 LDFLAGS += -X 'main.Name=$(NAME)'
 LDFLAGS += -X 'main.Version=$(VERSION)'
@@ -103,7 +104,7 @@ build:
 UNAME=$(shell uname)
 # package docker image
 package:
-	docker build --build-arg APP_NAME=$(NAME) -f Dockerfile -t registry.xxxxx.com/xxxxx-studio/$(NAME):$(VERSION) .
+	docker build --build-arg APP_NAME=$(NAME) -f Dockerfile -t registry.xxxxx.com/xxxxx-studio/$(NAME):$(IMAGE_VERSION) .
 
 .PHONY: docker
 UNAME=$(shell uname)

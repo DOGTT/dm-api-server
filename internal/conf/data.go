@@ -24,7 +24,13 @@ type FDSConfig struct {
 	SecretKey string `yaml:"secret_key"`
 }
 
+type MapDataConfig struct {
+	Endpoint string `yaml:"endpoint"`
+	Key      string `yaml:"key"`
+}
+
 type DataConfig struct {
-	RDS *RDSConfig `yaml:"rds"`
-	FDS *FDSConfig `yaml:"fds"`
+	RDS     *RDSConfig     `yaml:"rds"`
+	FDS     *FDSConfig     `yaml:"fds"`
+	MapData *MapDataConfig `yaml:"map_data"`
 }
