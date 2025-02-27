@@ -13,6 +13,12 @@
 - [ ] git ci/cd
 - [ ] call channel to units
 
+# Feature
+
+- [ ] 基础业务实现
+- [ ] 回复通知
+- [ ] 阅读位置记录
+- [ ] 消息系统
 
 ## Dev Env
 ```
