@@ -6,7 +6,7 @@ import "common.proto";
 
 option go_package = "github.com/DOGTT/dm-api-server/api/base;api";
 
-// 足迹点类型
+// 足迹频道类型
 message PofpTypeInfo {
   uint32 id = 1;
   string name = 2;

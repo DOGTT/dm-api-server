@@ -23,7 +23,7 @@ var (
 	InxTypeFieldName = []string{"views_cnt", "likes_cnt", "marks_cnt", "comments_cnt"}
 )
 
-// 足迹点个互动记录 喜欢/踩过/评论
+// 足迹频道个互动记录 喜欢/踩过/评论
 type UserPofpIxnRecord struct {
 	PId      uint64 `gorm:"index"`
 	PofpUUID string `gorm:"index"`

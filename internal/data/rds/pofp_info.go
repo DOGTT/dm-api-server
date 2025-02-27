@@ -14,7 +14,7 @@ func init() {
 	dbModelList = append(dbModelList, &PofpInfo{})
 }
 
-// 足迹点基本信息
+// 足迹频道基本信息
 type PofpInfo struct {
 	UUID   string `gorm:"type:varchar(22);primaryKey;"`
 	TypeId uint   `gorm:"index"`

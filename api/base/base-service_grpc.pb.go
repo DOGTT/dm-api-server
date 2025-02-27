@@ -51,13 +51,13 @@ type BaseServiceClient interface {
 	LocationCommonSearch(ctx context.Context, in *LocationCommonSearchReq, opts ...grpc.CallOption) (*LocationCommonSearchResp, error)
 	// 批量获取对象上传预签名URL
 	MediaPutPresignURLBatchGet(ctx context.Context, in *MediaPutPresignURLBatchGetReq, opts ...grpc.CallOption) (*MediaPutPresignURLBatchGetResp, error)
-	// 列表查询足迹点类型
+	// 列表查询足迹频道类型
 	PofpTypeList(ctx context.Context, in *PofpTypeListReq, opts ...grpc.CallOption) (*PofpTypeListResp, error)
-	// 创建足迹点
+	// 创建足迹频道
 	PofpCreate(ctx context.Context, in *PofpCreateReq, opts ...grpc.CallOption) (*PofpCreateResp, error)
-	// 更新足迹点
+	// 更新足迹频道
 	PofpUpdate(ctx context.Context, in *PofpUpdateReq, opts ...grpc.CallOption) (*PofpUpdateResp, error)
-	// 删除足迹点
+	// 删除足迹频道
 	PofpDelete(ctx context.Context, in *PofpDeleteReq, opts ...grpc.CallOption) (*PofpDeleteResp, error)
 	// 按照范围查询足迹基础信息
 	PofpBaseQueryByBound(ctx context.Context, in *PofpBaseQueryByBoundReq, opts ...grpc.CallOption) (*PofpBaseQueryByBoundResp, error)
@@ -65,9 +65,9 @@ type BaseServiceClient interface {
 	PofpDetailQueryById(ctx context.Context, in *PofpDetailQueryByIdReq, opts ...grpc.CallOption) (*PofpDetailQueryByIdResp, error)
 	// 按照id查询足迹页完整信息
 	PofpFullQueryById(ctx context.Context, in *PofpFullQueryByIdReq, opts ...grpc.CallOption) (*PofpFullQueryByIdResp, error)
-	// 足迹点互动
+	// 足迹频道互动
 	PofpInteraction(ctx context.Context, in *PofpInteractionReq, opts ...grpc.CallOption) (*PofpInteractionResp, error)
-	// 足迹点评论
+	// 足迹频道评论
 	PofpComment(ctx context.Context, in *PofpCommentReq, opts ...grpc.CallOption) (*PofpCommentResp, error)
 }
 
@@ -226,13 +226,13 @@ type BaseServiceServer interface {
 	LocationCommonSearch(context.Context, *LocationCommonSearchReq) (*LocationCommonSearchResp, error)
 	// 批量获取对象上传预签名URL
 	MediaPutPresignURLBatchGet(context.Context, *MediaPutPresignURLBatchGetReq) (*MediaPutPresignURLBatchGetResp, error)
-	// 列表查询足迹点类型
+	// 列表查询足迹频道类型
 	PofpTypeList(context.Context, *PofpTypeListReq) (*PofpTypeListResp, error)
-	// 创建足迹点
+	// 创建足迹频道
 	PofpCreate(context.Context, *PofpCreateReq) (*PofpCreateResp, error)
-	// 更新足迹点
+	// 更新足迹频道
 	PofpUpdate(context.Context, *PofpUpdateReq) (*PofpUpdateResp, error)
-	// 删除足迹点
+	// 删除足迹频道
 	PofpDelete(context.Context, *PofpDeleteReq) (*PofpDeleteResp, error)
 	// 按照范围查询足迹基础信息
 	PofpBaseQueryByBound(context.Context, *PofpBaseQueryByBoundReq) (*PofpBaseQueryByBoundResp, error)
@@ -240,9 +240,9 @@ type BaseServiceServer interface {
 	PofpDetailQueryById(context.Context, *PofpDetailQueryByIdReq) (*PofpDetailQueryByIdResp, error)
 	// 按照id查询足迹页完整信息
 	PofpFullQueryById(context.Context, *PofpFullQueryByIdReq) (*PofpFullQueryByIdResp, error)
-	// 足迹点互动
+	// 足迹频道互动
 	PofpInteraction(context.Context, *PofpInteractionReq) (*PofpInteractionResp, error)
-	// 足迹点评论
+	// 足迹频道评论
 	PofpComment(context.Context, *PofpCommentReq) (*PofpCommentResp, error)
 	mustEmbedUnimplementedBaseServiceServer()
 }

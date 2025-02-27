@@ -56,7 +56,7 @@ paths:
         put:
             tags:
                 - BaseService
-            description: 更新足迹点
+            description: 更新足迹频道
             operationId: BaseService_PofpUpdate
             requestBody:
                 content:
@@ -74,7 +74,7 @@ paths:
         post:
             tags:
                 - BaseService
-            description: 创建足迹点
+            description: 创建足迹频道
             operationId: BaseService_PofpCreate
             requestBody:
                 content:
@@ -92,7 +92,7 @@ paths:
         delete:
             tags:
                 - BaseService
-            description: 删除足迹点
+            description: 删除足迹频道
             operationId: BaseService_PofpDelete
             parameters:
                 - name: uuid
@@ -129,7 +129,7 @@ paths:
         post:
             tags:
                 - BaseService
-            description: 足迹点评论
+            description: 足迹频道评论
             operationId: BaseService_PofpComment
             requestBody:
                 content:
@@ -184,7 +184,7 @@ paths:
         post:
             tags:
                 - BaseService
-            description: 足迹点互动
+            description: 足迹频道互动
             operationId: BaseService_PofpInteraction
             requestBody:
                 content:
@@ -203,7 +203,7 @@ paths:
         get:
             tags:
                 - BaseService
-            description: 列表查询足迹点类型
+            description: 列表查询足迹频道类型
             operationId: BaseService_PofpTypeList
             responses:
                 "200":
@@ -492,7 +492,7 @@ components:
                     type: string
                 updated_at:
                     type: string
-            description: 足迹点类型
+            description: 足迹频道类型
         PofpTypeListResp:
             type: object
             properties:

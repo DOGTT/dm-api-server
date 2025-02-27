@@ -20,7 +20,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// 足迹点类型
+// 足迹频道类型
 type PofpTypeInfo struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

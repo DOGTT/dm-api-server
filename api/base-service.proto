@@ -49,14 +49,14 @@ service BaseService {
         };
     }
 
-    // 列表查询足迹点类型
+    // 列表查询足迹频道类型
     rpc PofpTypeList(PofpTypeListReq) returns (PofpTypeListResp) {
         option (google.api.http) = {
             get: "/v1/popf/type"
         };
     }
 
-    // 创建足迹点
+    // 创建足迹频道
     rpc PofpCreate(PofpCreateReq) returns (PofpCreateResp) {
         option (google.api.http) = {
             post: "/v1/popf"
@@ -64,7 +64,7 @@ service BaseService {
         };
     }
 
-    // 更新足迹点
+    // 更新足迹频道
     rpc PofpUpdate(PofpUpdateReq) returns (PofpUpdateResp) {
         option (google.api.http) = {
             put: "/v1/popf"
@@ -72,7 +72,7 @@ service BaseService {
         };
     }
     
-    // 删除足迹点
+    // 删除足迹频道
     rpc PofpDelete(PofpDeleteReq) returns (PofpDeleteResp) {
         option (google.api.http) = {
             delete: "/v1/popf"
@@ -87,21 +87,21 @@ service BaseService {
         };
     }
     
-    // 按照id查询足迹简要信息
+    // 按照id查询足迹静态完整信息
     rpc PofpDetailQueryById(PofpDetailQueryByIdReq) returns (PofpDetailQueryByIdResp) {
         option (google.api.http) = {
             get: "/v1/popf/detail_query_by_id"
         };
     }
 
-    // 按照id查询足迹页完整信息
+    // 按照id查询足迹频道动态信息
     rpc PofpFullQueryById(PofpFullQueryByIdReq) returns (PofpFullQueryByIdResp) {
         option (google.api.http) = {
             get: "/v1/popf/full_query_by_id"
         };
     }
 
-    // 足迹点互动
+    // 足迹频道互动
     rpc PofpInteraction(PofpInteractionReq) returns (PofpInteractionResp) {
         option (google.api.http) = {
             post: "/v1/popf/interaction"
@@ -109,13 +109,18 @@ service BaseService {
         };
     }
     
-    // 足迹点评论
+    // 足迹频道评论
     rpc PofpComment(PofpCommentReq) returns (PofpCommentResp) {
         option (google.api.http) = {
             post: "/v1/popf/comment"
             body: "*"
         };
     }
+
+    // 评论加载
+
+
+    // 最新评论查询
 }
 
 // 通用错误消息结构

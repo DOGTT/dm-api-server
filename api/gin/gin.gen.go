@@ -195,7 +195,7 @@ type PofpInteractionReq struct {
 // PofpInteractionResp defines model for PofpInteractionResp.
 type PofpInteractionResp = map[string]interface{}
 
-// PofpTypeInfo 足迹点类型
+// PofpTypeInfo 足迹频道类型
 type PofpTypeInfo struct {
 	CoverageRadius *int32  `json:"coverage_radius,omitempty"`
 	CreatedAt      *string `json:"created_at,omitempty"`
