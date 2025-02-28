@@ -1,13 +1,13 @@
 syntax = "proto3";
 
-package pofp;
+package fpc;
 
 import "common.proto";
 
 option go_package = "github.com/DOGTT/dm-api-server/api/base;api";
 
 // 足迹频道类型
-message PofpTypeInfo {
+message FpcTypeInfo {
   uint32 id = 1;
   string name = 2;
   int32 coverage_radius = 3;
@@ -16,27 +16,28 @@ message PofpTypeInfo {
   int64 updated_at = 32;
 }
 
-message PofpMeta {
-  // 足迹 ID
+message FpcMeta {
+  // 足迹频道 ID
   string uuid = 1;
-  // 足迹类型, 不可更新
+  // 足迹频道类型, 不可更新
   uint32 type_id = 2;
   // 足迹作者, 不可更新
-  uint64 pid = 3;
+  uint64 uid = 3;
   // 足迹名称, 可更新
   string title = 4;
+  // 头像
+  common.MediaInfo avatar = 6;
   // 简介, 可更新
   string intro = 7;
   LocationInfo location = 8;
 
-  // 媒体信息
-  repeated common.MediaInfo media = 6;
+
 
   int64 created_at = 31;
   int64 updated_at = 32;
 }
 
-message PofpInfo {
+message FpcInfo {
 
   // 查看数，只读
   int32 views_cnt = 11;

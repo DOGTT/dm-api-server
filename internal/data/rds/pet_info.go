@@ -11,8 +11,11 @@ func init() {
 
 // 宠信息
 type PetInfo struct {
-	Id  uint64 `gorm:"primaryKey;autoIncrement"`
-	UId uint64 `gorm:"index"` // 外键字段，指向 UserInfo 的 ID
+	Id uint64 `gorm:"primaryKey;autoIncrement"`
+	// 创建者用户id
+	CreaterUid uint64 `gorm:"type:bigint;"`
+	// 状态
+	Status uint8 `gorm:"type:smallint;"`
 	// 物种
 	Specie string `gorm:"type:varchar(5);"`
 	// 名字

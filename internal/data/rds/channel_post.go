@@ -8,32 +8,33 @@ import (
 )
 
 func init() {
-	dbModelList = append(dbModelList, &PofpComment{})
+	dbModelList = append(dbModelList, &ChannelPostInfo{})
 }
 
-// 足迹频道评论
-type PofpComment struct {
+// 足迹频道帖子
+type ChannelPostInfo struct {
 	// 评论唯一id
 	UUID string `gorm:"type:varchar(22);primaryKey;"`
-	// - 评论者PetID
-	PId uint `gorm:"index"`
+	// - 创建者UId
+	UId uint64 `gorm:"index"`
 	// 底层足迹id
-	PofpUUID string `gorm:"index"`
-	// 上级id
+	ChannelUUID string `gorm:"index"`
+	// 关联的上级帖子id, 空则为根帖子
 	ParentUUID string
-	// 是否为根消息
-	IsRoot bool `gorm:"default:true"`
-	// 评论内容
+	// 帖子内容
 	Content string `gorm:"type:text"`
-	//
+	// 帖子图片
 	Photos pq.StringArray `gorm:"type:text[]"`
-	//
+	// 添加的标签
+	Tags []string `gorm:"type:text[]"`
+
+	// -- 动态信息
 	Likes int `gorm:"default:0"`
 
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
 }
 
-func (c *RDSClient) CreatePofpComment(ctx context.Context, d *PofpComment) error {
+func (c *RDSClient) CreatePofpComment(ctx context.Context, d *ChannelPost) error {
 	return c.db.WithContext(ctx).Create(d).Error
 }

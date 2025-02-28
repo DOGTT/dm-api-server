@@ -17,13 +17,16 @@ func init() {
 
 // 用户信息
 type UserInfo struct {
-	Id        uint64    `gorm:"primaryKey;autoIncrement"`
-	WeChatId  string    `gorm:"type:varchar(32);unique"`
-	Phone     string    `gorm:"type:varchar(16);"`
+	Id       uint64 `gorm:"primaryKey;autoIncrement"`
+	WeChatId string `gorm:"type:varchar(32);unique"`
+	Phone    string `gorm:"type:varchar(16);"`
+	// 绑定的宠物列表
+	PIds []uint64 `gorm:"foreignKey:UId"`
+	// 宠物的称呼 aa的bb
+	PetTitle string `gorm:"type:varchar(6);"`
+
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
-
-	Pets []*PetInfo `gorm:"foreignKey:UId"`
 }
 
 func (u *UserInfo) BeforeCreate(tx *gorm.DB) (err error) {

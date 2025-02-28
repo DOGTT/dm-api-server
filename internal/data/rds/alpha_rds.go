@@ -1,6 +1,10 @@
 package rds
 
 import (
+	"database/sql/driver"
+	"encoding/json"
+	"errors"
+
 	"github.com/DOGTT/dm-api-server/internal/conf"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -25,4 +29,24 @@ func New(conf *conf.RDSConfig) (c *RDSClient, err error) {
 	}
 	err = c.db.AutoMigrate(dbModelList...)
 	return
+}
+
+type Uint64Array []uint64
+
+// 实现 driver.Valuer 接口
+func (a Uint64Array) Value() (driver.Value, error) {
+	return json.Marshal(a)
+}
+
+// 实现 sql.Scanner 接口
+func (a *Uint64Array) Scan(value interface{}) error {
+	if value == nil {
+		*a = nil
+		return nil
+	}
+	b, ok := value.([]byte)
+	if !ok {
+		return errors.New("type assertion to []byte failed")
+	}
+	return json.Unmarshal(b, a)
 }
