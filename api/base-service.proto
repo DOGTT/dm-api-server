@@ -22,98 +22,98 @@ service BaseService {
 
     // 微信小程序登录接口
     // @security BearerAuth
-    rpc WeChatLogin(WeChatLoginReq) returns (WeChatLoginResp) {
+    rpc LoginWeChat(LoginWeChatReq) returns (LoginWeChatRes) {
         option (google.api.http) = {
-            post: "/v1/user/wx/login"
+            post: "/v1/user/login/wx"
             body: "*"
         };
     }
     // 微信小程序快速登录注册接口定义
-    rpc WeChatRegisterFast(WeChatRegisterFastReq) returns (WeChatRegisterFastResp) {
+    rpc FastRegisterWeChat(FastRegisterWeChatReq) returns (FastRegisterWeChatRes) {
         option (google.api.http) = {
-            post: "/v1/user/wx/reg/fast"
+            post: "/v1/user/fast_reg/wx"
             body: "*"
         };
     }
 
     // 通用地点搜索
-    rpc LocationCommonSearch(LocationCommonSearchReq) returns (LocationCommonSearchResp) {
+    rpc LocationCommonSearch(LocationCommonSearchReq) returns (LocationCommonSearchRes) {
         option (google.api.http) = {
             get: "/v1/location/search"
         };
     }
 
     // 批量获取对象上传预签名URL
-    rpc MediaPutPresignURLBatchGet(MediaPutPresignURLBatchGetReq) returns (MediaPutPresignURLBatchGetResp) {
+    rpc MediaPutPresignURLBatchGet(MediaPutPresignURLBatchGetReq) returns (MediaPutPresignURLBatchGetRes) {
         option (google.api.http) = {
             get: "/v1/media/put_presign_url/batch"
         };
     }
 
     // 列表查询足迹频道类型
-    rpc FpcTypeList(FpcTypeListReq) returns (FpcTypeListResp) {
+    rpc ChannelTypeList(ChannelTypeListReq) returns (ChannelTypeListRes) {
         option (google.api.http) = {
-            get: "/v1/fpc/type"
+            get: "/v1/channel/type"
         };
     }
 
     // 创建足迹频道
-    rpc FpcCreate(FpcCreateReq) returns (FpcCreateResp) {
+    rpc ChannelCreate(ChannelCreateReq) returns (ChannelCreateRes) {
         option (google.api.http) = {
-            post: "/v1/fpc"
+            post: "/v1/channel"
             body: "*"
         };
     }
 
     // 更新足迹频道
-    rpc FpcUpdate(FpcUpdateReq) returns (FpcUpdateResp) {
+    rpc ChannelUpdate(ChannelUpdateReq) returns (ChannelUpdateRes) {
         option (google.api.http) = {
-            put: "/v1/fpc"
+            put: "/v1/channel"
             body: "*"
         };
     }
     
     // 删除足迹频道
-    rpc FpcDelete(FpcDeleteReq) returns (FpcDeleteResp) {
+    rpc ChannelDelete(ChannelDeleteReq) returns (ChannelDeleteRes) {
         option (google.api.http) = {
-            delete: "/v1/fpc"
+            delete: "/v1/channel"
         };
     }
     
     // 按照范围查询足迹基础信息
-    rpc FpcBaseQueryByBound(FpcBaseQueryByBoundReq) returns (FpcBaseQueryByBoundResp) {
+    rpc ChannelBaseQueryByBound(ChannelBaseQueryByBoundReq) returns (ChannelBaseQueryByBoundRes) {
         option (google.api.http) = {
-            post: "/v1/fpc/base_query_by_bound"
+            post: "/v1/channel/base_query_by_bound"
             body: "*"
         };
     }
     
     // 按照id查询足迹静态完整信息
-    rpc FpcDetailQueryById(FpcDetailQueryByIdReq) returns (FpcDetailQueryByIdResp) {
+    rpc ChannelDetailQueryById(ChannelDetailQueryByIdReq) returns (ChannelDetailQueryByIdRes) {
         option (google.api.http) = {
-            get: "/v1/fpc/detail_query_by_id"
+            get: "/v1/channel/detail_query_by_id"
         };
     }
 
     // 按照id查询足迹频道动态信息
-    rpc FpcFullQueryById(FpcFullQueryByIdReq) returns (FpcFullQueryByIdResp) {
+    rpc ChannelFullQueryById(ChannelFullQueryByIdReq) returns (ChannelFullQueryByIdRes) {
         option (google.api.http) = {
-            get: "/v1/fpc/full_query_by_id"
+            get: "/v1/channel/full_query_by_id"
         };
     }
 
     // 足迹频道互动
-    rpc FpcInteraction(FpcInteractionReq) returns (FpcInteractionResp) {
+    rpc ChannelInteraction(ChannelInteractionReq) returns (ChannelInteractionRes) {
         option (google.api.http) = {
-            post: "/v1/fpc/interaction"
+            post: "/v1/channel/inx"
             body: "*"
         };
     }
     
     // 足迹频道评论
-    rpc FpcComment(FpcCommentReq) returns (FpcCommentResp) {
+    rpc ChannelComment(ChannelCommentReq) returns (ChannelCommentRes) {
         option (google.api.http) = {
-            post: "/v1/fpc/comment"
+            post: "/v1/channel/post"
             body: "*"
         };
     }
@@ -132,18 +132,18 @@ message ErrorMessage {
 
 
 // 登录请求
-message WeChatLoginReq {
+message LoginWeChatReq {
     string wx_code = 1; // 微信小程序登录时获取临时登录凭证code
 }
 
-message WeChatLoginResp {
+message LoginWeChatRes {
     string token = 1;
     user.UserInfo user_info = 2;
 }
 
 
 // 宠物注册信息
-message PetInfoReg {
+message FastRegisterData {
     // 名字
     string name = 1;
     // base64 data
@@ -151,12 +151,12 @@ message PetInfoReg {
 }
 
 // 快速注册请求
-message WeChatRegisterFastReq {
-    string wx_code = 1;
-    user.PetInfoReg pet = 2;
+message FastRegisterWeChatReq {
+    FastRegisterData reg_data = 1;
+    string wx_code = 2;
 }
 
-message WeChatRegisterFastResp {
+message FastRegisterWeChatRes {
     string token = 1;
     user.UserInfo user_info = 2;
 }
@@ -166,7 +166,7 @@ message LocationCommonSearchReq {
     string input = 1;
 }
 
-message LocationCommonSearchResp {
+message LocationCommonSearchRes {
     //TODO
 }
 
@@ -177,116 +177,90 @@ message MediaPutPresignURLBatchGetReq {
     int32 count = 2;
 }
 
-message MediaPutPresignURLBatchGetResp {
+message MediaPutPresignURLBatchGetRes {
     repeated common.MediaInfo media = 1;
 }
 
-message FpcTypeListReq {
+message ChannelTypeListReq {
 
 }
 
-message FpcTypeListResp {
-    repeated fpc.FpcTypeInfo pofp_types = 1;
+message ChannelTypeListRes {
+    repeated channel.ChannelTypeInfo pofp_types = 1;
 }
 
 // 足迹创建
-message FpcCreateReq {
-    fpc.FpcInfo fpc = 1;
+message ChannelCreateReq {
+    channel.ChannelInfo channel = 1;
 }
 
-message FpcCreateResp {
-    fpc.FpcInfo fpc = 1;
+message ChannelCreateRes {
+    channel.ChannelInfo channel = 1;
 }
 
 // 足迹更新
-message FpcUpdateReq {
-    fpc.FpcInfo fpc = 1;
+message ChannelUpdateReq {
+    channel.ChannelInfo channel = 1;
 }
 
-message FpcUpdateResp {
+message ChannelUpdateRes {
 
 }
 
 // 足迹删除
-message FpcDeleteReq {
+message ChannelDeleteReq {
     string uuid = 1;
 }
 
-message FpcDeleteResp {
+message ChannelDeleteRes {
 
 }
 
-message FpcBaseQueryByBoundReq {
+message ChannelBaseQueryByBoundReq {
     // 足迹类型id列表
     repeated int32 type_ids = 1;
     // 坐标范围
     common.BoundCoord bound = 2;
 }
 
-message FpcBaseQueryByBoundResp {
-    repeated fpc.FpcInfo pofps = 1;
+message ChannelBaseQueryByBoundRes {
+    repeated channel.ChannelInfo pofps = 1;
 }
 
-message FpcDetailQueryByIdReq {
+message ChannelDetailQueryByIdReq {
     string uuid = 1;
 }
 
-message FpcDetailQueryByIdResp {
-    fpc.FpcInfo fpc = 1;
-    fpc.FpcDynamicInfo pofp_dynamic_info = 2;
+message ChannelDetailQueryByIdRes {
+    channel.ChannelInfo channel = 1;
+    channel.ChannelDynamicInfo pofp_dynamic_info = 2;
 }
 
-message FpcFullQueryByIdReq {
+message ChannelFullQueryByIdReq {
     string uuid = 1;
 }
 
-message FpcFullQueryByIdResp {
-    fpc.FpcInfo fpc = 1;
-    fpc.FpcDynamicInfo pofp_dynamic_info = 2;
+message ChannelFullQueryByIdRes {
+    channel.ChannelInfo channel = 1;
+    channel.ChannelDynamicInfo pofp_dynamic_info = 2;
 }
 
-// 状态互动类型
-enum StateInxType {
-    DEFAULT = 0;
-    // 喜欢/收藏/关注/想去
-    LIKE = 1;
-    // 标记， 代表曾经来过/ 去过
-    MARK = 2;
-}
-
-// 事件互动类型
-enum EventInxType {
-    DEFAULT = 0;
-    // 到达
-    ARRIVE = 1;
-    // 评论
-    COMMENT = 2;
-    // 加入
-    JOIN = 3;
-    // 攻略
-    GUIDE = 4;
-}
-
-// 互动类型
-enum InteractionType {
-    STATE_INX = 0;
-    EVENT_INX = 1;
-}
-
-message FpcInteractionReq {
+message ChannelInteractionReq {
     string uuid = 1;
     // 互动类型
-    InteractionType ixn_type = 2;
+    common.UserIxnEventType ixn_event = 2;
+
+    common.UserIxnStateType ixn_state = 3;
 }
 
-message FpcInteractionResp {
+message ChannelInteractionRes {
 
 }
 
-message FpcCommentReq {
-    fpc.FpcCommentInfo comment = 1;
+message ChannelCommentReq {
+    channel.PostInfo comment = 1;
 }
 
-message FpcCommentResp {
+message ChannelCommentRes {
 
 }

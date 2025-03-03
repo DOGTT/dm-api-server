@@ -55,24 +55,24 @@ func (s *Service) putGinError(c *gin.Context, err error) {
 }
 
 func (s *Service) BaseServiceWeChatRegisterFast(c *gin.Context) {
-	reqG := &gin_api.WeChatRegisterFastReq{}
+	reqG := &gin_api.FastRegisterWeChatReq{}
 	if err := c.ShouldBind(&reqG); err != nil {
 		s.putGinError(c, EM_CommonFail_BadRequest)
 		return
 	}
-	req := &api.WeChatRegisterFastReq{
+	req := &api.FastRegisterWeChatReq{
 		WxCode: *reqG.WxCode,
 	}
-	if reqG.Pet != nil {
-		req.Pet = &api.PetInfoReg{
-			Name: *reqG.Pet.Name,
+	if reqG.RegData != nil {
+		req.RegData = &api.FastRegisterData{
+			Name: *reqG.RegData.Name,
 		}
-		avatarData, err := base64.StdEncoding.DecodeString(*reqG.Pet.AvatarData)
+		avatarData, err := base64.StdEncoding.DecodeString(*reqG.RegData.AvatarData)
 		if err != nil {
 			s.putGinError(c, EM_CommonFail_BadRequest)
 			return
 		}
-		req.Pet.AvatarData = avatarData
+		req.RegData.AvatarData = avatarData
 	}
 	res, err := s.WeChatRegisterFast(withGinContext(c), req)
 	if err != nil {
@@ -83,7 +83,7 @@ func (s *Service) BaseServiceWeChatRegisterFast(c *gin.Context) {
 }
 
 func (s *Service) BaseServiceWeChatLogin(c *gin.Context) {
-	req := &base_api.WeChatLoginReq{}
+	req := &base_api.LoginWeChatReq{}
 	if err := c.ShouldBind(&req); err != nil {
 		s.putGinError(c, EM_CommonFail_BadRequest)
 		return

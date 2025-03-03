@@ -1,13 +1,13 @@
 syntax = "proto3";
 
-package fpc;
+package channel;
 
 import "common.proto";
 
 option go_package = "github.com/DOGTT/dm-api-server/api/base;api";
 
 // 足迹频道类型
-message FpcTypeInfo {
+message ChannelTypeInfo {
   uint32 id = 1;
   string name = 2;
   int32 coverage_radius = 3;
@@ -16,7 +16,7 @@ message FpcTypeInfo {
   int64 updated_at = 32;
 }
 
-message FpcMeta {
+message ChannelMeta {
   // 足迹频道 ID
   string uuid = 1;
   // 足迹频道类型, 不可更新
@@ -29,7 +29,7 @@ message FpcMeta {
   common.MediaInfo avatar = 6;
   // 简介, 可更新
   string intro = 7;
-  LocationInfo location = 8;
+  common.LocationInfo location = 8;
 
 
 
@@ -37,7 +37,7 @@ message FpcMeta {
   int64 updated_at = 32;
 }
 
-message FpcInfo {
+message ChannelInfo {
 
   // 查看数，只读
   int32 views_cnt = 11;
@@ -51,7 +51,7 @@ message FpcInfo {
   int64 last_mark = 16;
 }
 
-message PofpDynamicInfo {
+message ChannelDynamicInfo {
   string uuid = 1;
   // TODO: add more fields
   // 谁最近来过
@@ -59,7 +59,7 @@ message PofpDynamicInfo {
 }
 
 // 足迹评论
-message PofpCommentInfo {
+message PostInfo {
   string uuid = 1;
   string root_uuid = 2;
   string parent_uuid = 3;
