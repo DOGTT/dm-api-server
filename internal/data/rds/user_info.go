@@ -4,12 +4,9 @@ package rds
 import (
 	"context"
 	"time"
-
-	"github.com/go-playground/validator/v10"
-	"gorm.io/gorm"
 )
 
-var validate = validator.New()
+// var validate = validator.New()
 
 func init() {
 	dbModelList = append(dbModelList, &UserInfo{})
@@ -20,21 +17,22 @@ type UserInfo struct {
 	Id       uint64 `gorm:"primaryKey;autoIncrement"`
 	WeChatId string `gorm:"type:varchar(32);unique"`
 	Phone    string `gorm:"type:varchar(16);"`
-	// 绑定的宠物列表
-	PIds []uint64 `gorm:"foreignKey:UId"`
 	// 宠物的称呼 aa的bb
 	PetTitle string `gorm:"type:varchar(6);"`
+
+	// 绑定的宠物列表
+	Pets []PetInfo `gorm:"many2many:user_pets;"`
 
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
 }
 
-func (u *UserInfo) BeforeCreate(tx *gorm.DB) (err error) {
-	if err := validate.Struct(u); err != nil {
-		return err
-	}
-	return nil
-}
+// func (u *UserInfo) BeforeCreate(tx *gorm.DB) (err error) {
+// 	if err := validate.Struct(u); err != nil {
+// 		return err
+// 	}
+// 	return nil
+// }
 
 func (u *UserInfo) TableName() string {
 	return "user_info"
@@ -46,19 +44,6 @@ func (c *RDSClient) CreateUserInfo(ctx context.Context, userInfo *UserInfo) erro
 		return res.Error
 	}
 	return nil
-}
-
-func (c *RDSClient) CreateUserInfoWithPet(ctx context.Context, userInfo *UserInfo, petInfo *PetInfo) error {
-	return c.db.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Create(&userInfo).Error; err != nil {
-			return err
-		}
-		petInfo.UId = userInfo.Id
-		if err := tx.Create(&petInfo).Error; err != nil {
-			return err
-		}
-		return nil
-	})
 }
 
 func (c *RDSClient) GetUserInfoByID(ctx context.Context, id string) (*UserInfo, error) {

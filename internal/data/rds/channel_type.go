@@ -26,7 +26,7 @@ type ChannelTypeInfo struct {
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
 }
 
-func (c *RDSClient) ListPofpTypeInfo(ctx context.Context) (list []*ChannelTypeInfo, err error) {
+func (c *RDSClient) ListChannelTypeInfo(ctx context.Context) (list []*ChannelTypeInfo, err error) {
 	// 全表查询
 	list = make([]*ChannelTypeInfo, 0)
 	err = c.db.Model(&ChannelTypeInfo{}).Find(&list).Error

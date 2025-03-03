@@ -35,6 +35,8 @@ type PetInfo struct {
 	// 体重
 	Weight int `gorm:"type:smallint;"`
 
+	Users []UserInfo `gorm:"many2many:user_pets;"`
+
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
 }

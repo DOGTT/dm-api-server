@@ -32,9 +32,9 @@ func (s *Service) wxCodeToWxId(ctx context.Context, wxCode string) (wxId string,
 	return
 }
 
-func (s *Service) WeChatLogin(ctx context.Context, req *base_api.WeChatLoginReq) (res *base_api.WeChatLoginResp, err error) {
+func (s *Service) WeChatLogin(ctx context.Context, req *base_api.LoginWeChatReq) (res *base_api.LoginWeChatRes, err error) {
 	log.Ctx(ctx).Debug("wx login get req", zap.Any("req", req))
-	res = &base_api.WeChatLoginResp{}
+	res = &base_api.LoginWeChatRes{}
 	wxId, err := s.wxCodeToWxId(ctx, req.GetWxCode())
 	if err != nil {
 		return
@@ -50,8 +50,8 @@ func (s *Service) WeChatLogin(ctx context.Context, req *base_api.WeChatLoginReq)
 		return
 	}
 	ackPId := uint64(0)
-	if len(userInfo.Pets) > 0 {
-		ackPId = userInfo.Pets[0].Id
+	if len(userInfo.PIds) > 0 {
+		ackPId = userInfo.PIds[0]
 	}
 	res.UserInfo, err = s.convertToUserInfo(ctx, userInfo)
 	if err != nil {
@@ -69,27 +69,27 @@ func (s *Service) WeChatLogin(ctx context.Context, req *base_api.WeChatLoginReq)
 	return
 }
 
-func validRegisterRequest(req *base_api.WeChatRegisterFastReq) error {
+func validRegisterRequest(req *base_api.FastRegisterWeChatReq) error {
 	if req == nil {
 		return EM_CommonFail_BadRequest.PutDesc("req is required")
-	}
-	if req.GetPet() == nil {
-		return EM_CommonFail_BadRequest.PutDesc("pet is required")
 	}
 	if req.GetWxCode() == "" {
 		return EM_CommonFail_BadRequest.PutDesc("wx_code is required")
 	}
+	if req.GetRegData() == nil {
+		return EM_CommonFail_BadRequest.PutDesc("pet is required")
+	}
 	return nil
 }
 
-func (s *Service) WeChatRegisterFast(ctx context.Context, req *base_api.WeChatRegisterFastReq) (res *base_api.WeChatRegisterFastResp, err error) {
+func (s *Service) WeChatRegisterFast(ctx context.Context, req *base_api.FastRegisterWeChatReq) (res *base_api.FastRegisterWeChatRes, err error) {
 	// Implement me
 	log.Ctx(ctx).Debug("grpc impl get req", zap.Any("req", req))
 	if validRegisterRequest(req) != nil {
 		err = EM_CommonFail_BadRequest.PutDesc("pet is required")
 		return
 	}
-	res = &base_api.WeChatRegisterFastResp{}
+	res = &base_api.FastRegisterWeChatRes{}
 	wxId, err := s.wxCodeToWxId(ctx, req.GetWxCode())
 	if err != nil {
 		return
@@ -98,7 +98,7 @@ func (s *Service) WeChatRegisterFast(ctx context.Context, req *base_api.WeChatRe
 		WeChatId: wxId,
 	}
 	pet := &rds.PetInfo{
-		Name:     req.GetPet().GetName(),
+		Name:     req.GetRegData().GetName(),
 		AvatarId: utils.GenShortenUUID(),
 	}
 	// 2. create user
@@ -112,16 +112,16 @@ func (s *Service) WeChatRegisterFast(ctx context.Context, req *base_api.WeChatRe
 		return
 	}
 	// 3.save avatar
-	if req.GetPet().GetAvatarData() != nil {
+	if req.GetRegData().GetAvatarData() != nil {
 		err = s.data.PutObject(ctx, fds.BucketNameAvatar,
-			getAvatarIdFromFDS(pet.AvatarId, pet.Id), req.GetPet().GetAvatarData())
+			getAvatarIdFromFDS(pet.AvatarId, pet.Id), req.GetRegData().GetAvatarData())
 		if err != nil {
 			err = EM_CommonFail_DBError.PutDesc(err.Error())
 			return
 		}
 	}
 	// 3. Query Info
-	user.Pets = []*rds.PetInfo{pet}
+	// user.PIds = []*rds.PetInfo{pet}
 	res.UserInfo, err = s.convertToUserInfo(ctx, user)
 	if err != nil {
 		return
@@ -145,7 +145,7 @@ func getAvatarIdFromFDS(avatarId string, pid uint64) string {
 func (s *Service) convertToUserInfo(ctx context.Context, userInfo *rds.UserInfo) (res *base_api.UserInfo, err error) {
 	res = &base_api.UserInfo{
 		Id:   userInfo.Id,
-		Pets: make([]*base_api.PetInfo, len(userInfo.Pets)),
+		Pets: make([]*base_api.PetInfo, len(userInfo.PIds)),
 	}
 	for i, pet := range userInfo.Pets {
 		res.Pets[i] = &base_api.PetInfo{

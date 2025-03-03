@@ -16,7 +16,8 @@ message ChannelTypeInfo {
   int64 updated_at = 32;
 }
 
-message ChannelMeta {
+// 频道信息
+message ChannelInfo {
   // 足迹频道 ID
   string uuid = 1;
   // 足迹频道类型, 不可更新
@@ -31,13 +32,14 @@ message ChannelMeta {
   string intro = 7;
   common.LocationInfo location = 8;
 
-
+  // 动态状态信息，只读
+  ChannelStats stats = 20;
 
   int64 created_at = 31;
   int64 updated_at = 32;
 }
 
-message ChannelInfo {
+message ChannelStats {
 
   // 查看数，只读
   int32 views_cnt = 11;
@@ -49,14 +51,11 @@ message ChannelInfo {
   int32 comments_cnt = 14;
   int64 last_view = 15;
   int64 last_mark = 16;
-}
-
-message ChannelDynamicInfo {
-  string uuid = 1;
-  // TODO: add more fields
+    // TODO: add more fields
   // 谁最近来过
   // 图片轮播
 }
+
 
 // 足迹评论
 message PostInfo {

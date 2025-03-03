@@ -20,7 +20,7 @@ type ChannelInfo struct {
 	// 类型id
 	TypeId uint16 `gorm:"index"`
 	// - 创建者的 Uid
-	Uid uint64 `gorm:"index"`
+	UId uint64 `gorm:"index"`
 	// - 关键内容
 	Title string `gorm:"type:text;size:50;not null"`
 	// 频道头像
@@ -32,7 +32,14 @@ type ChannelInfo struct {
 	// 位置的关键兴趣点详情
 	PoiDetail PoiDetail `gorm:"type:jsonb"`
 
+	Stats ChannelStats `gorm:"foreignKey:UUID"`
 	// --- 以上是基础静态信息
+	CreatedAt time.Time `gorm:"autoCreateTime"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime"`
+}
+
+type ChannelStats struct {
+	UUID string `gorm:"type:varchar(22);primaryKey;"`
 
 	UserIds Uint64Array `gorm:"type:bigint[]"`
 	PetIds  Uint64Array `gorm:"type:bigint[]"`
@@ -51,7 +58,6 @@ type ChannelInfo struct {
 	LastView time.Time `gorm:"autoCreateTime"`
 	LastMark time.Time `gorm:"autoCreateTime"`
 
-	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
 }
 
@@ -82,17 +88,17 @@ func PointCoordFromGeometry(s string) *base_api.PointCoord {
 	}
 }
 
-func (c *RDSClient) CreatePofpInfo(ctx context.Context, info *ChannelInfo) error {
+func (c *RDSClient) CreateChannelInfo(ctx context.Context, info *ChannelInfo) error {
 	return c.db.WithContext(ctx).Create(info).Error
 }
 
-func (c *RDSClient) UpdatePofpInfo(ctx context.Context, info *ChannelInfo) error {
+func (c *RDSClient) UpdateChannelInfo(ctx context.Context, info *ChannelInfo) error {
 	if info.UUID == "" {
 		return fmt.Errorf("uuid is empty")
 	}
 	updateField := []string{}
-	if info.Content != "" {
-		updateField = append(updateField, "content")
+	if info.Intro != "" {
+		updateField = append(updateField, "intro")
 	}
 	if info.Title != "" {
 		updateField = append(updateField, "title")
@@ -102,11 +108,11 @@ func (c *RDSClient) UpdatePofpInfo(ctx context.Context, info *ChannelInfo) error
 		Updates(info).Error
 }
 
-func (c *RDSClient) DeletePofpInfo(ctx context.Context, uuid string, pid uint64) error {
-	return c.db.WithContext(ctx).Where(&ChannelInfo{UUID: uuid, PId: pid}).Delete(ChannelInfo{}).Error
+func (c *RDSClient) DeleteChannelInfo(ctx context.Context, uuid string) error {
+	return c.db.WithContext(ctx).Where(&ChannelInfo{UUID: uuid}).Delete(ChannelInfo{}).Error
 }
 
-func (c *RDSClient) GetPofpInfo(ctx context.Context, uuid string) (*ChannelInfo, error) {
+func (c *RDSClient) GetChannelInfo(ctx context.Context, uuid string) (*ChannelInfo, error) {
 	var info ChannelInfo
 	err := c.db.WithContext(ctx).Where("uuid = ?", uuid).First(&info).Error
 	if err != nil {
@@ -115,7 +121,7 @@ func (c *RDSClient) GetPofpInfo(ctx context.Context, uuid string) (*ChannelInfo,
 	return &info, nil
 }
 
-func (c *RDSClient) ExistPofpInfo(ctx context.Context, uuid string) error {
+func (c *RDSClient) ExistChannelInfo(ctx context.Context, uuid string) error {
 	var count int64
 	err := c.db.WithContext(ctx).Model(&ChannelInfo{}).Where("uuid = ?", uuid).Count(&count).Error
 	if err != nil {
@@ -127,7 +133,7 @@ func (c *RDSClient) ExistPofpInfo(ctx context.Context, uuid string) error {
 	return nil
 }
 
-func (c *RDSClient) BatchQueryPofpInfoListByBound(ctx context.Context, typeIDs []uint, bc *base_api.BoundCoord) ([]*ChannelInfo, error) {
+func (c *RDSClient) BatchQueryChannelInfoListByBound(ctx context.Context, typeIDs []uint, bc *base_api.BoundCoord) ([]*ChannelInfo, error) {
 
 	var results []*ChannelInfo
 	query := c.db.WithContext(ctx).Model(&ChannelInfo{}).
@@ -142,10 +148,10 @@ func (c *RDSClient) BatchQueryPofpInfoListByBound(ctx context.Context, typeIDs [
 	return results, err
 }
 
-func (c *RDSClient) IncreasePofpViewCount(ctx context.Context, uuid string, t InxType) (int, error) {
+func (c *RDSClient) IncreaseChannelViewCount(ctx context.Context, uuid string) (int, error) {
 	var info ChannelInfo
-	field := InxTypeFieldName[t]
 	// 锁定行
+	field := "views_cnt"
 	if err := c.db.WithContext(ctx).Model(&info).Where("uuid = ?", uuid).
 		Select(field).Clauses(clause.Locking{Strength: "UPDATE"}).First(&info).Error; err != nil {
 		return 0, err
@@ -154,20 +160,9 @@ func (c *RDSClient) IncreasePofpViewCount(ctx context.Context, uuid string, t In
 	// 更新操作
 	info.UUID = uuid
 	resCount := 0
-	switch t {
-	case InxTypeView:
-		info.ViewsCnt++
-		resCount = info.ViewsCnt
-	case InxTypeLike:
-		info.LikesCnt++
-		resCount = info.LikesCnt
-	case InxTypeMark:
-		info.MarksCnt++
-		resCount = info.MarksCnt
-	case InxTypeComment:
-		info.CommentsCnt++
-		resCount = info.CommentsCnt
-	}
+	info.ViewsCnt++
+	resCount = info.ViewsCnt
+
 	if err := c.db.WithContext(ctx).Select(field).Save(&info).Error; err != nil {
 		return 0, err
 	}

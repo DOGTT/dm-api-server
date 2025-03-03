@@ -63,23 +63,23 @@ var (
 	InxTypeFieldName = []string{"views_cnt", "likes_cnt", "marks_cnt", "comments_cnt"}
 )
 
-func (c *RDSClient) CreatePofpIxnRecord(ctx context.Context, d *UserPofpIxnRecord) error {
+func (c *RDSClient) CreateChannelIxnRecord(ctx context.Context, d *UserChannelIxnRecord) error {
 	return c.db.WithContext(ctx).Create(d).Error
 }
 
-func (c *RDSClient) CreatePofpIxnRecordWithCount(ctx context.Context, d *UserPofpIxnRecord) error {
+func (c *RDSClient) CreateChannelIxnRecordWithCount(ctx context.Context, d *UserChannelIxnRecord) error {
 
 	return c.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		var info PofpInfo
+		var info ChannelInfo
 		field := InxTypeFieldName[d.IntType]
-		if err := tx.Model(&PofpInfo{}).Where("uuid = ?", d.PofpUUID).
+		if err := tx.Model(&ChannelInfo{}).Where("uuid = ?", d.ChannelUUID).
 			Select(field).First(&info).Error; err != nil {
 			return err
 		}
 		if err := tx.Create(d).Error; err != nil {
 			return err
 		}
-		info.UUID = d.PofpUUID
+		info.UUID = d.ChannelUUID
 		switch d.IntType {
 		case InxTypeLike:
 			info.LikesCnt++

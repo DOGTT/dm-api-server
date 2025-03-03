@@ -16,9 +16,9 @@ import (
 )
 
 const (
-	BucketNameDefault   = "default"
-	BucketNameAvatar    = "avatar"
-	BucketNamePofpImage = "pofp-image"
+	BucketNameDefault      = "default"
+	BucketNameAvatar       = "avatar"
+	BucketNameChannelImage = "channel"
 
 	PreSignDurationDefault = time.Minute * 10
 )

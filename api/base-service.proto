@@ -186,7 +186,7 @@ message ChannelTypeListReq {
 }
 
 message ChannelTypeListRes {
-    repeated channel.ChannelTypeInfo pofp_types = 1;
+    repeated channel.ChannelTypeInfo channel_types = 1;
 }
 
 // 足迹创建
@@ -224,7 +224,7 @@ message ChannelBaseQueryByBoundReq {
 }
 
 message ChannelBaseQueryByBoundRes {
-    repeated channel.ChannelInfo pofps = 1;
+    repeated channel.ChannelInfo channels = 1;
 }
 
 message ChannelDetailQueryByIdReq {
@@ -233,7 +233,6 @@ message ChannelDetailQueryByIdReq {
 
 message ChannelDetailQueryByIdRes {
     channel.ChannelInfo channel = 1;
-    channel.ChannelDynamicInfo pofp_dynamic_info = 2;
 }
 
 message ChannelFullQueryByIdReq {
@@ -242,7 +241,6 @@ message ChannelFullQueryByIdReq {
 
 message ChannelFullQueryByIdRes {
     channel.ChannelInfo channel = 1;
-    channel.ChannelDynamicInfo pofp_dynamic_info = 2;
 }
 
 message ChannelInteractionReq {

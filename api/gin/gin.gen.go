@@ -38,7 +38,7 @@ type ChannelBaseQueryByBoundReq struct {
 
 // ChannelBaseQueryByBoundRes defines model for ChannelBaseQueryByBoundRes.
 type ChannelBaseQueryByBoundRes struct {
-	Pofps *[]ChannelInfo `json:"pofps,omitempty"`
+	Channels *[]ChannelInfo `json:"channels,omitempty"`
 }
 
 // ChannelCommentReq defines model for ChannelCommentReq.
@@ -52,11 +52,13 @@ type ChannelCommentRes = map[string]interface{}
 
 // ChannelCreateReq 足迹创建
 type ChannelCreateReq struct {
+	// Channel 频道信息
 	Channel *ChannelInfo `json:"channel,omitempty"`
 }
 
 // ChannelCreateRes defines model for ChannelCreateRes.
 type ChannelCreateRes struct {
+	// Channel 频道信息
 	Channel *ChannelInfo `json:"channel,omitempty"`
 }
 
@@ -65,23 +67,56 @@ type ChannelDeleteRes = map[string]interface{}
 
 // ChannelDetailQueryByIdRes defines model for ChannelDetailQueryByIdRes.
 type ChannelDetailQueryByIdRes struct {
-	Channel         *ChannelInfo        `json:"channel,omitempty"`
-	PofpDynamicInfo *ChannelDynamicInfo `json:"pofp_dynamic_info,omitempty"`
-}
-
-// ChannelDynamicInfo defines model for ChannelDynamicInfo.
-type ChannelDynamicInfo struct {
-	Uuid *string `json:"uuid,omitempty"`
+	// Channel 频道信息
+	Channel *ChannelInfo `json:"channel,omitempty"`
 }
 
 // ChannelFullQueryByIdRes defines model for ChannelFullQueryByIdRes.
 type ChannelFullQueryByIdRes struct {
-	Channel         *ChannelInfo        `json:"channel,omitempty"`
-	PofpDynamicInfo *ChannelDynamicInfo `json:"pofp_dynamic_info,omitempty"`
+	// Channel 频道信息
+	Channel *ChannelInfo `json:"channel,omitempty"`
 }
 
-// ChannelInfo defines model for ChannelInfo.
+// ChannelInfo 频道信息
 type ChannelInfo struct {
+	// Avatar 头像
+	Avatar    *MediaInfo `json:"avatar,omitempty"`
+	CreatedAt *string    `json:"created_at,omitempty"`
+
+	// Intro 简介, 可更新
+	Intro    *string       `json:"intro,omitempty"`
+	Location *LocationInfo `json:"location,omitempty"`
+
+	// Stats 动态状态信息，只读
+	Stats *ChannelStats `json:"stats,omitempty"`
+
+	// Title 足迹名称, 可更新
+	Title *string `json:"title,omitempty"`
+
+	// TypeId 足迹频道类型, 不可更新
+	TypeId *uint32 `json:"type_id,omitempty"`
+
+	// Uid 足迹作者, 不可更新
+	Uid       *string `json:"uid,omitempty"`
+	UpdatedAt *string `json:"updated_at,omitempty"`
+
+	// Uuid 足迹频道 ID
+	Uuid *string `json:"uuid,omitempty"`
+}
+
+// ChannelInteractionReq defines model for ChannelInteractionReq.
+type ChannelInteractionReq struct {
+	// IxnEvent 互动类型
+	IxnEvent *int    `json:"ixn_event,omitempty"`
+	IxnState *int    `json:"ixn_state,omitempty"`
+	Uuid     *string `json:"uuid,omitempty"`
+}
+
+// ChannelInteractionRes defines model for ChannelInteractionRes.
+type ChannelInteractionRes = map[string]interface{}
+
+// ChannelStats defines model for ChannelStats.
+type ChannelStats struct {
 	// CommentsCnt 评论数，只读
 	CommentsCnt *int32  `json:"comments_cnt,omitempty"`
 	LastMark    *string `json:"last_mark,omitempty"`
@@ -97,17 +132,6 @@ type ChannelInfo struct {
 	ViewsCnt *int32 `json:"views_cnt,omitempty"`
 }
 
-// ChannelInteractionReq defines model for ChannelInteractionReq.
-type ChannelInteractionReq struct {
-	// IxnEvent 互动类型
-	IxnEvent *int    `json:"ixn_event,omitempty"`
-	IxnState *int    `json:"ixn_state,omitempty"`
-	Uuid     *string `json:"uuid,omitempty"`
-}
-
-// ChannelInteractionRes defines model for ChannelInteractionRes.
-type ChannelInteractionRes = map[string]interface{}
-
 // ChannelTypeInfo 足迹频道类型
 type ChannelTypeInfo struct {
 	CoverageRadius *int32  `json:"coverage_radius,omitempty"`
@@ -120,11 +144,12 @@ type ChannelTypeInfo struct {
 
 // ChannelTypeListRes defines model for ChannelTypeListRes.
 type ChannelTypeListRes struct {
-	PofpTypes *[]ChannelTypeInfo `json:"pofp_types,omitempty"`
+	ChannelTypes *[]ChannelTypeInfo `json:"channel_types,omitempty"`
 }
 
 // ChannelUpdateReq 足迹更新
 type ChannelUpdateReq struct {
+	// Channel 频道信息
 	Channel *ChannelInfo `json:"channel,omitempty"`
 }
 
@@ -155,6 +180,15 @@ type FastRegisterWeChatRes struct {
 
 // LocationCommonSearchRes defines model for LocationCommonSearchRes.
 type LocationCommonSearchRes = map[string]interface{}
+
+// LocationInfo defines model for LocationInfo.
+type LocationInfo struct {
+	// Address POI 地址, 不可更新
+	Address *string `json:"address,omitempty"`
+
+	// LngLat 足迹位置, 不可更新
+	LngLat *PointCoord `json:"lng_lat,omitempty"`
+}
 
 // LoginWeChatReq 登录请求
 type LoginWeChatReq struct {
@@ -2440,37 +2474,40 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"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",
+	"H4sIAAAAAAAC/9RaW28bxxX+K8S0j4SoxEUf9JTIQgqhLqzaNfrQGIvR7hE5MTm7npmVzBoEqCROfJFC",
+	"9WIHjuXaUmNEvUSSESGJpDj+M1ySeupfKHZmubvkzi6XUmghL4akmT1z5vtmvjkX30amXXNsClRwNHMb",
+	"cbMCNSx/nLVdal20bWb5vznMdoAJAnKMgv/vLxksoRn0i1JkoxQYKC3YhAr1daOI+Mo48xtFJOoOoBlk",
+	"L34ApvAtXKxgSqE6izn83gVWn61L/67AzaR3i/6I/wOuVi8voZk/ZS8d22jjehFZwE1GHEFsimaQ93Sj",
+	"8/zT3tpH3pMDFDhmEEuuMziz9+03vdeH3ZfH3j8eEMu7+3lvawcVERFQk7OXbFbDAs0gQsWFt1G4R0IF",
+	"lIGhaNeYMVwfEwaehMFUc+XPoRdZQATG5+mSPZY3F+1aDajQcmGqsdH0c6HWzbOOtJw6iwEWEDijo8i7",
+	"+8Q7PkJFPVxjgZTlbOBGOjE/1UpzUIVwpfRJApNqcGbmrTfh13tu9c0uKCckSD/Z/svJ6t/ar7c6q3sJ",
+	"0vEyFpjl14rfgUWwciQpFV8eeB+1fH9Myb1lYBGjhAtGaNkfJlQwjaPd3Wb7+EGx4LX2Ok8OOo/2I42I",
+	"vq3aJlbzsx29FMzrX2YusFL4fPsMEL0qv9Js9f5Op7navf9tp7mqkP3fD2te69+9vWOpHERUIfX6bax3",
+	"v9ofsc1AZtNsKE6V1hYL7e/X48ZCoXXTldZNt91+tdlr3klYTbjoOlYWya47yv3C/FzSbubxFsCw6VvS",
+	"Si25RQ1YDsR2cNn20V+9+zsKrzhCQN2aFh/fln9kYODlSp3e3+wpN5OpXFf7J1f7sHDD1G24t/dxb/eo",
+	"83A/OpfFPC9wFXNh1DC7oeVUji4TWNGPkhuQ4o73aLPz3+3x3fE9STHpRyW7++Ob9N1PM/nsRXfzwbgm",
+	"M0j+Q90BvSgnr3HyPbaXgeEyGAxbxM0bQo2SXmvAToZCUFwDrQlRgRoYpl21mf7iZ+nCCLAuES6yXkrD",
+	"/3jsgC6kYZyg7prcRkYYFSrjRN/0vht6iXgP+3iVCRfA5rDAmpu3+7x771+db3a8T9YyYwDD0n6/iDn8",
+	"+lcFORi7DIt1AVz3KvSPzZAXG+ve15/nU/v4nv4IFytYaEnwXv/npPlMbay3913n5YeJjTEoh7vK4iKB",
+	"YqOIVm4Zpm1BziOs81lzioV9A6j+0nBgBgmkIsvXaxxY+qHpRz1+pmDTq4CZWUk7OwMRUsJVbFkMuCbN",
+	"W7g8X/A2972nzdEhQpWWjarSgXxhVzwLTgRd/fBkvftqd2jtFDDKhGacoO7jY+/Vw5SzMx7/A0udB/FR",
+	"XJ5YuwzCcFlVFyMce61H165c0lHnuClfeZ889u68SPlK/SEBdP64Sx81zs/JcFktnU9FJCALrlhgwEmZ",
+	"XrtyaRYLs/Ib0BNU86fnfldiWVCeF2UBRMolC7OvBJKLhImKr176R3iRAVjakREBQBmoBSxvEED0a6TG",
+	"BtwBk6QMCSxyRzEjcosVIOWKyGVLy0ekMglKArkK7S5VbSwiu9StLQaRMi3nmahfn4ussFAF75qAkIog",
+	"uxmXdQczoMJISVOKiNl2xmjOTC/HrQxFLJm86Zd2QOQP9/r3LHEpYxn5SCcbskChI+cdDqbLiKjPwRKh",
+	"xP8rn8IOuQH1wixgBuxdV1Tep4V3CC1UAFvA/F/8y1LwR2xG/qxqF6E/aBZzuApsmZhQeHdhHhXRMjCu",
+	"1puemp56y3fedoBih6AZdGFqeuqCfzCwqEg4SstvlWIRpyVLYRrRvvv85PGX8aQDSbNMRQDWoCcDdTW5",
+	"GsM1EMC4fMCJb/GmC6yO+lKgzkAxKJ/rcL5eRAy4Y1Ou+H57enroTGPHqRIVkpQ+4KrCE9nLEUtHdUBJ",
+	"4iACl3+ryMZlfxPx3aLr/jmzuS5tlZXSMWFThU/k7/emC1zM2lb9p95qVOOVW/VXIsx/EARzoTF5qKPi",
+	"7imgdnWpt4zjxkRa5UaTRTpKA88H6Sj/GxfpRjGuDiU/kTPkrTUW60bYItIf/M7ave6dr1TXp/PsRW9v",
+	"O6hdPjvqbjXDPHIUQcNtmslSpeuNnQ9puvbUGemzZP8iIlC9l2VIJY9YceJOnj7uNFe93bXOw4Pc9A31",
+	"TH5OL0Gi2XNG+Jfc6hnAl4Kmega5wR/oHv18oE80vc4IPKG30mUqDq8q8ecANlZ5n6weDfUrzkeKhvoM",
+	"Z2SjT8NoOsIcZmS4FDTIJxsvRR36cwqYotb9GSnol1i06qP+10VSe8IKzCg2+kV4NHlI4vX+U2LSbwaX",
+	"uKx0psJy0vyi+/cdb3O/++FhZ2Oze7CdBYWuiJpPgAn1g9vzUuC04u8pwZUlsZLjCsNRNTTDZX4YKTKA",
+	"7tw7PPm01fvsO6/1yNs77L3can9/v/3D85Ptj7tf/+htrKu6YSr06VW7fARIn2WTaICFUXXHRlFvzrRd",
+	"KvSWUutNk2Q4u6h5Sp5dDqy0hLkwGJRLKxnPrffjbvv1lrff6u488I5aqgOjquiqD9P57IXX+qe3+0X7",
+	"8F4Wzcl2yYTkX99LesNPgL45dBa2qnaZ0HGoCkiS9LxPC2ElK1a3ylbEsL0xIaKGejVvmKGh9s3Y1EQj",
+	"t/vSEZ/RuN74fwAAAP//Ly25GWgqAAA=",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

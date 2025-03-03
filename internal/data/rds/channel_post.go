@@ -35,6 +35,6 @@ type ChannelPostInfo struct {
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
 }
 
-func (c *RDSClient) CreatePofpComment(ctx context.Context, d *ChannelPost) error {
+func (c *RDSClient) CreateChannelComment(ctx context.Context, d *ChannelPost) error {
 	return c.db.WithContext(ctx).Create(d).Error
 }

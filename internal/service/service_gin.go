@@ -54,7 +54,7 @@ func (s *Service) putGinError(c *gin.Context, err error) {
 	c.JSON(httpCode, emAPI)
 }
 
-func (s *Service) BaseServiceWeChatRegisterFast(c *gin.Context) {
+func (s *Service) BaseServiceFastRegisterWeChat(c *gin.Context) {
 	reqG := &gin_api.FastRegisterWeChatReq{}
 	if err := c.ShouldBind(&reqG); err != nil {
 		s.putGinError(c, EM_CommonFail_BadRequest)
@@ -82,7 +82,7 @@ func (s *Service) BaseServiceWeChatRegisterFast(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
-func (s *Service) BaseServiceWeChatLogin(c *gin.Context) {
+func (s *Service) BaseServiceLoginWeChat(c *gin.Context) {
 	req := &base_api.LoginWeChatReq{}
 	if err := c.ShouldBind(&req); err != nil {
 		s.putGinError(c, EM_CommonFail_BadRequest)
@@ -122,9 +122,9 @@ func (s *Service) BaseServiceMediaPutPresignURLBatchGet(c *gin.Context, params g
 	c.JSON(http.StatusOK, res)
 }
 
-func (s *Service) BaseServicePofpTypeList(c *gin.Context) {
-	req := &base_api.PofpTypeListReq{}
-	res, err := s.PofpTypeList(withGinContext(c), req)
+func (s *Service) BaseServiceChannelTypeList(c *gin.Context) {
+	req := &base_api.ChannelTypeListReq{}
+	res, err := s.ChannelTypeList(withGinContext(c), req)
 	if err != nil {
 		s.putGinError(c, err)
 		return
@@ -132,13 +132,13 @@ func (s *Service) BaseServicePofpTypeList(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
-func (s *Service) BaseServicePofpCreate(c *gin.Context) {
-	req := &base_api.PofpCreateReq{}
+func (s *Service) BaseServiceChannelCreate(c *gin.Context) {
+	req := &base_api.ChannelCreateReq{}
 	if err := c.ShouldBind(&req); err != nil {
 		s.putGinError(c, EM_CommonFail_BadRequest)
 		return
 	}
-	res, err := s.PofpCreate(withGinContext(c), req)
+	res, err := s.ChannelCreate(withGinContext(c), req)
 	if err != nil {
 		s.putGinError(c, err)
 		return
@@ -146,13 +146,13 @@ func (s *Service) BaseServicePofpCreate(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
-func (s *Service) BaseServicePofpDelete(c *gin.Context, params gin_api.BaseServicePofpDeleteParams) {
+func (s *Service) BaseServiceChannelDelete(c *gin.Context, params gin_api.BaseServiceChannelDeleteParams) {
 
-	req := &base_api.PofpDeleteReq{
+	req := &base_api.ChannelDeleteReq{
 		Uuid: *params.Uuid,
 	}
 
-	res, err := s.PofpDelete(withGinContext(c), req)
+	res, err := s.ChannelDelete(withGinContext(c), req)
 	if err != nil {
 		s.putGinError(c, err)
 		return
@@ -160,14 +160,14 @@ func (s *Service) BaseServicePofpDelete(c *gin.Context, params gin_api.BaseServi
 	c.JSON(http.StatusOK, res)
 }
 
-func (s *Service) BaseServicePofpUpdate(c *gin.Context) {
-	req := &base_api.PofpUpdateReq{}
+func (s *Service) BaseServiceChannelUpdate(c *gin.Context) {
+	req := &base_api.ChannelUpdateReq{}
 	if err := c.ShouldBind(&req); err != nil {
 		s.putGinError(c, EM_CommonFail_BadRequest)
 		return
 	}
 
-	res, err := s.PofpUpdate(withGinContext(c), req)
+	res, err := s.ChannelUpdate(withGinContext(c), req)
 	if err != nil {
 		s.putGinError(c, err)
 		return
@@ -175,14 +175,14 @@ func (s *Service) BaseServicePofpUpdate(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
-func (s *Service) BaseServicePofpBaseQueryByBound(c *gin.Context) {
-	req := &base_api.PofpBaseQueryByBoundReq{}
+func (s *Service) BaseServiceChannelBaseQueryByBound(c *gin.Context) {
+	req := &base_api.ChannelBaseQueryByBoundReq{}
 	if err := c.ShouldBind(&req); err != nil {
 		s.putGinError(c, EM_CommonFail_BadRequest)
 		return
 	}
 
-	res, err := s.PofpBaseQueryByBound(withGinContext(c), req)
+	res, err := s.ChannelBaseQueryByBound(withGinContext(c), req)
 	if err != nil {
 		s.putGinError(c, err)
 		return
@@ -190,12 +190,12 @@ func (s *Service) BaseServicePofpBaseQueryByBound(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
-func (s *Service) BaseServicePofpDetailQueryById(c *gin.Context, params gin_api.BaseServicePofpDetailQueryByIdParams) {
-	req := &base_api.PofpDetailQueryByIdReq{
+func (s *Service) BaseServiceChannelDetailQueryById(c *gin.Context, params gin_api.BaseServiceChannelDetailQueryByIdParams) {
+	req := &base_api.ChannelDetailQueryByIdReq{
 		Uuid: *params.Uuid,
 	}
 
-	res, err := s.PofpDetailQueryById(withGinContext(c), req)
+	res, err := s.ChannelDetailQueryById(withGinContext(c), req)
 	if err != nil {
 		s.putGinError(c, err)
 		return
@@ -203,12 +203,12 @@ func (s *Service) BaseServicePofpDetailQueryById(c *gin.Context, params gin_api.
 	c.JSON(http.StatusOK, res)
 }
 
-func (s *Service) BaseServicePofpFullQueryById(c *gin.Context, params gin_api.BaseServicePofpFullQueryByIdParams) {
-	req := &base_api.PofpFullQueryByIdReq{
+func (s *Service) BaseServiceChannelFullQueryById(c *gin.Context, params gin_api.BaseServiceChannelFullQueryByIdParams) {
+	req := &base_api.ChannelFullQueryByIdReq{
 		Uuid: *params.Uuid,
 	}
 
-	res, err := s.PofpFullQueryById(withGinContext(c), req)
+	res, err := s.ChannelFullQueryById(withGinContext(c), req)
 	if err != nil {
 		s.putGinError(c, err)
 		return
@@ -216,14 +216,14 @@ func (s *Service) BaseServicePofpFullQueryById(c *gin.Context, params gin_api.Ba
 	c.JSON(http.StatusOK, res)
 }
 
-func (s *Service) BaseServicePofpInteraction(c *gin.Context) {
-	req := &base_api.PofpInteractionReq{}
+func (s *Service) BaseServiceChannelInteraction(c *gin.Context) {
+	req := &base_api.ChannelInteractionReq{}
 	if err := c.ShouldBind(&req); err != nil {
 		s.putGinError(c, EM_CommonFail_BadRequest)
 		return
 	}
 
-	res, err := s.PofpInteraction(withGinContext(c), req)
+	res, err := s.ChannelInteraction(withGinContext(c), req)
 	if err != nil {
 		s.putGinError(c, err)
 		return
@@ -231,14 +231,14 @@ func (s *Service) BaseServicePofpInteraction(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
-func (s *Service) BaseServicePofpComment(c *gin.Context) {
-	req := &base_api.PofpCommentReq{}
+func (s *Service) BaseServiceChannelComment(c *gin.Context) {
+	req := &base_api.ChannelCommentReq{}
 	if err := c.ShouldBind(&req); err != nil {
 		s.putGinError(c, EM_CommonFail_BadRequest.PutDesc(err.Error()))
 		return
 	}
 
-	res, err := s.PofpComment(withGinContext(c), req)
+	res, err := s.ChannelComment(withGinContext(c), req)
 	if err != nil {
 		s.putGinError(c, err)
 		return

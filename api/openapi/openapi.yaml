@@ -277,7 +277,7 @@ components:
         ChannelBaseQueryByBoundRes:
             type: object
             properties:
-                pofps:
+                channels:
                     type: array
                     items:
                         $ref: '#/components/schemas/ChannelInfo'
@@ -308,21 +308,61 @@ components:
             properties:
                 channel:
                     $ref: '#/components/schemas/ChannelInfo'
-                pofp_dynamic_info:
-                    $ref: '#/components/schemas/ChannelDynamicInfo'
-        ChannelDynamicInfo:
-            type: object
-            properties:
-                uuid:
-                    type: string
         ChannelFullQueryByIdRes:
             type: object
             properties:
                 channel:
                     $ref: '#/components/schemas/ChannelInfo'
-                pofp_dynamic_info:
-                    $ref: '#/components/schemas/ChannelDynamicInfo'
         ChannelInfo:
+            type: object
+            properties:
+                uuid:
+                    type: string
+                    description: 足迹频道 ID
+                type_id:
+                    type: integer
+                    description: 足迹频道类型, 不可更新
+                    format: uint32
+                uid:
+                    type: string
+                    description: 足迹作者, 不可更新
+                title:
+                    type: string
+                    description: 足迹名称, 可更新
+                avatar:
+                    allOf:
+                        - $ref: '#/components/schemas/MediaInfo'
+                    description: 头像
+                intro:
+                    type: string
+                    description: 简介, 可更新
+                location:
+                    $ref: '#/components/schemas/LocationInfo'
+                stats:
+                    allOf:
+                        - $ref: '#/components/schemas/ChannelStats'
+                    description: 动态状态信息，只读
+                created_at:
+                    type: string
+                updated_at:
+                    type: string
+            description: 频道信息
+        ChannelInteractionReq:
+            type: object
+            properties:
+                uuid:
+                    type: string
+                ixn_event:
+                    type: integer
+                    description: 互动类型
+                    format: enum
+                ixn_state:
+                    type: integer
+                    format: enum
+        ChannelInteractionRes:
+            type: object
+            properties: {}
+        ChannelStats:
             type: object
             properties:
                 views_cnt:
@@ -345,21 +385,6 @@ components:
                     type: string
                 last_mark:
                     type: string
-        ChannelInteractionReq:
-            type: object
-            properties:
-                uuid:
-                    type: string
-                ixn_event:
-                    type: integer
-                    description: 互动类型
-                    format: enum
-                ixn_state:
-                    type: integer
-                    format: enum
-        ChannelInteractionRes:
-            type: object
-            properties: {}
         ChannelTypeInfo:
             type: object
             properties:
@@ -381,7 +406,7 @@ components:
         ChannelTypeListRes:
             type: object
             properties:
-                pofp_types:
+                channel_types:
                     type: array
                     items:
                         $ref: '#/components/schemas/ChannelTypeInfo'
@@ -423,6 +448,16 @@ components:
         LocationCommonSearchRes:
             type: object
             properties: {}
+        LocationInfo:
+            type: object
+            properties:
+                lng_lat:
+                    allOf:
+                        - $ref: '#/components/schemas/PointCoord'
+                    description: 足迹位置, 不可更新
+                address:
+                    type: string
+                    description: POI 地址, 不可更新
         LoginWeChatReq:
             type: object
             properties:
