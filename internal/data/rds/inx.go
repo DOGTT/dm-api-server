@@ -3,17 +3,15 @@ package rds
 import (
 	"context"
 	"time"
-
-	"gorm.io/gorm"
 )
 
 func init() {
-	dbModelList = append(dbModelList, &PetChannelIxnEvent{})
+	dbModelList = append(dbModelList, &UserPetChannelIxnEvent{})
 	dbModelList = append(dbModelList, &UserChannelIxnState{})
 }
 
-// 爱宠频道互动记录
-type PetChannelIxnEvent struct {
+// 爱宠频道互动事件
+type UserPetChannelIxnEvent struct {
 	UId      uint64           `gorm:"index"`
 	PId      uint64           `gorm:"index"`
 	IxnEvent UserIxnEventType `gorm:"type:int;default:0"`
@@ -63,34 +61,10 @@ var (
 	InxTypeFieldName = []string{"views_cnt", "likes_cnt", "marks_cnt", "comments_cnt"}
 )
 
-func (c *RDSClient) CreateChannelIxnRecord(ctx context.Context, d *UserChannelIxnRecord) error {
+func (c *RDSClient) CreateUserPetChannelIxnEvent(ctx context.Context, d *UserPetChannelIxnEvent) error {
 	return c.db.WithContext(ctx).Create(d).Error
 }
 
-func (c *RDSClient) CreateChannelIxnRecordWithCount(ctx context.Context, d *UserChannelIxnRecord) error {
-
-	return c.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		var info ChannelInfo
-		field := InxTypeFieldName[d.IntType]
-		if err := tx.Model(&ChannelInfo{}).Where("uuid = ?", d.ChannelUUID).
-			Select(field).First(&info).Error; err != nil {
-			return err
-		}
-		if err := tx.Create(d).Error; err != nil {
-			return err
-		}
-		info.UUID = d.ChannelUUID
-		switch d.IntType {
-		case InxTypeLike:
-			info.LikesCnt++
-		case InxTypeMark:
-			info.MarksCnt++
-		case InxTypeComment:
-			info.CommentsCnt++
-		}
-		if err := tx.Select(field).Save(&info).Error; err != nil {
-			return err
-		}
-		return nil
-	})
+func (c *RDSClient) CreateUserChannelIxnState(ctx context.Context, d *UserChannelIxnState) error {
+	return c.db.WithContext(ctx).Create(d).Error
 }

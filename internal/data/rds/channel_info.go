@@ -7,7 +7,6 @@ import (
 
 	base_api "github.com/DOGTT/dm-api-server/api/base"
 	"github.com/lib/pq"
-	"gorm.io/gorm/clause"
 )
 
 func init() {
@@ -146,25 +145,4 @@ func (c *RDSClient) BatchQueryChannelInfoListByBound(ctx context.Context, typeID
 	}
 	err := query.Limit(100).Scan(&results).Error
 	return results, err
-}
-
-func (c *RDSClient) IncreaseChannelViewCount(ctx context.Context, uuid string) (int, error) {
-	var info ChannelInfo
-	// 锁定行
-	field := "views_cnt"
-	if err := c.db.WithContext(ctx).Model(&info).Where("uuid = ?", uuid).
-		Select(field).Clauses(clause.Locking{Strength: "UPDATE"}).First(&info).Error; err != nil {
-		return 0, err
-	}
-
-	// 更新操作
-	info.UUID = uuid
-	resCount := 0
-	info.ViewsCnt++
-	resCount = info.ViewsCnt
-
-	if err := c.db.WithContext(ctx).Select(field).Save(&info).Error; err != nil {
-		return 0, err
-	}
-	return resCount, nil
 }
