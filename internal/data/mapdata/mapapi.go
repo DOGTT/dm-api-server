@@ -71,8 +71,10 @@ func (d *MapApiHandler) MapSearch(ctx context.Context, keyword string) ([]MapSea
 			Lng float64
 			Lat float64
 		}
-		fmt.Sscanf(poi.Location, "%f,%f", &location.Lng, &location.Lat)
-
+		_, err := fmt.Sscanf(poi.Location, "%f,%f", &location.Lng, &location.Lat)
+		if err != nil {
+			return nil, fmt.Errorf("解析地理位置失败: %v", err)
+		}
 		searchResults = append(searchResults, MapSearchResult{
 			ID:       poi.ID,
 			Title:    poi.Name,

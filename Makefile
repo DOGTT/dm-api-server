@@ -29,12 +29,17 @@ endif
 .PHONY: setup
 # setup common utils: protoc
 setup:
+	@echo "install gvm"
+	bash < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)
+	source $HOME/.gvm/scripts/gvm
+	gvm install go1.24
+	
 	@echo "install protoc"
 	curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.14.0/$(PROTOC_ZIP)
 	sudo unzip -o $(PROTOC_ZIP) -d /usr/local bin/protoc
 	sudo unzip -o $(PROTOC_ZIP) -d /usr/local 'include/*'
 	rm -f $(PROTOC_ZIP)
-	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.62.2
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin
 
 .PHONY: init
 # setup go utils

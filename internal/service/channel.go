@@ -138,9 +138,9 @@ func (s *Service) ChannelDetailQueryById(ctx context.Context, req *base_api.Chan
 	}
 	// 异步添加访问信息
 	go func() {
-		if _, err := s.data.IncreaseChannelViewCount(ctx, cInfo.UUID); err != nil {
-			log.Ctx(ctx).Error("increase Channel view count fail", zap.Error(err))
-		}
+		// if _, err := s.data.IncreaseChannelViewCount(ctx, cInfo.UUID); err != nil {
+		// 	log.Ctx(ctx).Error("increase Channel view count fail", zap.Error(err))
+		// }
 	}()
 	return
 }
@@ -182,7 +182,7 @@ func (s *Service) convertToChannelInfo(ctx context.Context, pInfo *rds.ChannelIn
 
 	if res.Avatar != nil {
 		res.Avatar.GetUrl, err = s.data.GenerateGetPresignedURL(ctx,
-			fds.BucketNameChannelImage, res.Avatar.GetUuid(), utils.TokenExpireDuration)
+			fds.BucketNameChannel, res.Avatar.GetUuid(), utils.TokenExpireDuration)
 		if err != nil {
 			err = EM_CommonFail_Internal.PutDesc(err.Error())
 			return
@@ -219,20 +219,20 @@ func (s *Service) ChannelBaseQueryByBound(ctx context.Context, req *base_api.Cha
 }
 
 func (s *Service) ChannelInteraction(ctx context.Context, req *base_api.ChannelInteractionReq) (res *base_api.ChannelInteractionRes, err error) {
-	tc := getClaimFromContext(ctx)
+	// tc := getClaimFromContext(ctx)
 	res = new(base_api.ChannelInteractionRes)
-	err = s.data.CreateChannelIxnRecordWithCount(ctx, &rds.UserChannelIxnRecord{
-		ChannelUUID: req.GetUuid(),
-		IntType:     rds.InxType(req.GetIxnType()),
-		PId:         tc.PID,
-		UId:         tc.UID,
-	})
+	// err = s.data.CreateChannelIxnRecordWithCount(ctx, &rds.UserChannelIxnRecord{
+	// 	ChannelUUID: req.GetUuid(),
+	// 	IntType:     rds.InxType(req.GetIxnType()),
+	// 	PId:         tc.PID,
+	// 	UId:         tc.UID,
+	// })
 	return
 }
 
 func (s *Service) ChannelComment(ctx context.Context, req *base_api.ChannelCommentReq) (res *base_api.ChannelCommentRes, err error) {
 	// TODO
-	tc := getClaimFromContext(ctx)
+	// tc := getClaimFromContext(ctx)
 	// 查询Channel信息，检查是否存在
 	ChannelUUID := req.GetComment().GetRootUuid()
 	if err = s.data.ExistChannelInfo(ctx, ChannelUUID); err != nil {
@@ -240,12 +240,12 @@ func (s *Service) ChannelComment(ctx context.Context, req *base_api.ChannelComme
 	}
 	res = new(base_api.ChannelCommentRes)
 
-	err = s.data.CreateChannelIxnRecordWithCount(ctx, &rds.UserChannelIxnRecord{
-		ChannelUUID: ChannelUUID,
-		IntType:     rds.InxTypeComment,
-		PId:         tc.PID,
-		UId:         tc.UID,
-	})
+	// err = s.data.CreateChannelIxnRecordWithCount(ctx, &rds.UserChannelIxnRecord{
+	// 	ChannelUUID: ChannelUUID,
+	// 	IntType:     rds.InxTypeComment,
+	// 	PId:         tc.PID,
+	// 	UId:         tc.UID,
+	// })
 
 	return
 }

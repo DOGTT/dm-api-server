@@ -49,17 +49,13 @@ func (s *Service) WeChatLogin(ctx context.Context, req *base_api.LoginWeChatReq)
 		err = EM_CommonFail_Internal.PutDesc(err.Error())
 		return
 	}
-	ackPId := uint64(0)
-	if len(userInfo.PIds) > 0 {
-		ackPId = userInfo.PIds[0]
-	}
 	res.UserInfo, err = s.convertToUserInfo(ctx, userInfo)
 	if err != nil {
 		return
 	}
 	token, err := s.kp.GenerateToken(utils.TokenClaims{
-		UID: userInfo.Id,
-		PID: ackPId,
+		UID:  userInfo.Id,
+		PIDs: userInfo.GetPIDs(),
 	})
 	if err != nil {
 		err = EM_CommonFail_Internal.PutDesc(err.Error())
@@ -94,15 +90,16 @@ func (s *Service) WeChatRegisterFast(ctx context.Context, req *base_api.FastRegi
 	if err != nil {
 		return
 	}
-	user := &rds.UserInfo{
-		WeChatId: wxId,
-	}
-	pet := &rds.PetInfo{
+	pet := rds.PetInfo{
 		Name:     req.GetRegData().GetName(),
 		AvatarId: utils.GenShortenUUID(),
 	}
+	user := &rds.UserInfo{
+		WeChatId: wxId,
+		Pets:     []rds.PetInfo{pet},
+	}
 	// 2. create user
-	err = s.data.CreateUserInfoWithPet(ctx, user, pet)
+	err = s.data.CreateUserInfo(ctx, user)
 	if rds.IsDuplicateErr(err) {
 		err = EM_UserFail_AlreadyExist.PutDesc(err.Error())
 		return
@@ -127,8 +124,8 @@ func (s *Service) WeChatRegisterFast(ctx context.Context, req *base_api.FastRegi
 		return
 	}
 	token, err := s.kp.GenerateToken(utils.TokenClaims{
-		UID: user.Id,
-		PID: pet.Id,
+		UID:  user.Id,
+		PIDs: user.GetPIDs(),
 	})
 	if err != nil {
 		err = EM_CommonFail_Internal.PutDesc(err.Error())
@@ -143,9 +140,10 @@ func getAvatarIdFromFDS(avatarId string, pid uint64) string {
 }
 
 func (s *Service) convertToUserInfo(ctx context.Context, userInfo *rds.UserInfo) (res *base_api.UserInfo, err error) {
+	PIDs := userInfo.GetPIDs()
 	res = &base_api.UserInfo{
 		Id:   userInfo.Id,
-		Pets: make([]*base_api.PetInfo, len(userInfo.PIds)),
+		Pets: make([]*base_api.PetInfo, len(PIDs)),
 	}
 	for i, pet := range userInfo.Pets {
 		res.Pets[i] = &base_api.PetInfo{

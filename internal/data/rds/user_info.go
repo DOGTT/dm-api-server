@@ -38,6 +38,14 @@ func (u *UserInfo) TableName() string {
 	return "user_info"
 }
 
+func (u *UserInfo) GetPIDs() []uint64 {
+	res := make([]uint64, 0)
+	for _, v := range u.Pets {
+		res = append(res, v.Id)
+	}
+	return res
+}
+
 func (c *RDSClient) CreateUserInfo(ctx context.Context, userInfo *UserInfo) error {
 	res := c.db.WithContext(ctx).Create(userInfo)
 	if res.Error != nil {
