@@ -3,560 +3,567 @@
 
 openapi: 3.0.3
 info:
-    title: BaseService API
-    description: |-
-        @securityDefinitions.apikey BearerAuth
-         @in header
-         @name Authorization
-    version: 0.0.1
+  title: BaseService API
+  description: |-
+    @securityDefinitions.apikey BearerAuth
+     @in header
+     @name Authorization
+  version: 0.0.1
 paths:
-    /v1/channel:
-        put:
-            tags:
-                - BaseService
-            description: 更新足迹频道
-            operationId: BaseService_ChannelUpdate
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/ChannelUpdateReq'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ChannelUpdateRes'
-        post:
-            tags:
-                - BaseService
-            description: 创建足迹频道
-            operationId: BaseService_ChannelCreate
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/ChannelCreateReq'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ChannelCreateRes'
-        delete:
-            tags:
-                - BaseService
-            description: 删除足迹频道
-            operationId: BaseService_ChannelDelete
-            parameters:
-                - name: uuid
-                  in: query
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ChannelDeleteRes'
-    /v1/channel/base_query_by_bound:
-        post:
-            tags:
-                - BaseService
-            description: 按照范围查询足迹基础信息
-            operationId: BaseService_ChannelBaseQueryByBound
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/ChannelBaseQueryByBoundReq'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ChannelBaseQueryByBoundRes'
-    /v1/channel/detail_query_by_id:
-        get:
-            tags:
-                - BaseService
-            description: 按照id查询足迹静态完整信息
-            operationId: BaseService_ChannelDetailQueryById
-            parameters:
-                - name: uuid
-                  in: query
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ChannelDetailQueryByIdRes'
-    /v1/channel/full_query_by_id:
-        get:
-            tags:
-                - BaseService
-            description: 按照id查询足迹频道动态信息
-            operationId: BaseService_ChannelFullQueryById
-            parameters:
-                - name: uuid
-                  in: query
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ChannelFullQueryByIdRes'
-    /v1/channel/inx:
-        post:
-            tags:
-                - BaseService
-            description: 足迹频道互动
-            operationId: BaseService_ChannelInteraction
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/ChannelInteractionReq'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ChannelInteractionRes'
-    /v1/channel/post:
-        post:
-            tags:
-                - BaseService
-            description: 足迹频道评论
-            operationId: BaseService_ChannelComment
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/ChannelCommentReq'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ChannelCommentRes'
-    /v1/channel/type:
-        get:
-            tags:
-                - BaseService
-            description: 列表查询足迹频道类型
-            operationId: BaseService_ChannelTypeList
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ChannelTypeListRes'
-    /v1/location/search:
-        get:
-            tags:
-                - BaseService
-            description: 通用地点搜索
-            operationId: BaseService_LocationCommonSearch
-            parameters:
-                - name: input
-                  in: query
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/LocationCommonSearchRes'
-    /v1/media/put_presign_url/batch:
-        get:
-            tags:
-                - BaseService
-            description: 批量获取对象上传预签名URL
-            operationId: BaseService_MediaPutPresignURLBatchGet
-            parameters:
-                - name: media_type
-                  in: query
-                  schema:
-                    type: integer
-                    format: enum
-                - name: count
-                  in: query
-                  schema:
-                    type: integer
-                    format: int32
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/MediaPutPresignURLBatchGetRes'
-    /v1/user/fast_reg/wx:
-        post:
-            tags:
-                - BaseService
-            description: 微信小程序快速登录注册接口定义
-            operationId: BaseService_FastRegisterWeChat
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/FastRegisterWeChatReq'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/FastRegisterWeChatRes'
-    /v1/user/login/wx:
-        post:
-            tags:
-                - BaseService
-            description: |-
-                微信小程序登录接口
-                 @security BearerAuth
-            operationId: BaseService_LoginWeChat
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/LoginWeChatReq'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/LoginWeChatRes'
+  /v1/channel:
+    put:
+      tags:
+        - BaseService
+      description: 更新足迹频道
+      operationId: BaseService_ChannelUpdate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChannelUpdateReq'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChannelUpdateRes'
+    post:
+      tags:
+        - BaseService
+      description: 创建足迹频道
+      operationId: BaseService_ChannelCreate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChannelCreateReq'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChannelCreateRes'
+    delete:
+      tags:
+        - BaseService
+      description: 删除足迹频道
+      operationId: BaseService_ChannelDelete
+      parameters:
+        - name: uuid
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChannelDeleteRes'
+  /v1/channel/base_query_by_bound:
+    post:
+      tags:
+        - BaseService
+      description: 按照范围查询足迹基础信息
+      operationId: BaseService_ChannelBaseQueryByBound
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChannelBaseQueryByBoundReq'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChannelBaseQueryByBoundRes'
+  /v1/channel/detail_query_by_id:
+    get:
+      tags:
+        - BaseService
+      description: 按照id查询足迹静态完整信息
+      operationId: BaseService_ChannelDetailQueryById
+      parameters:
+        - name: uuid
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChannelDetailQueryByIdRes'
+  /v1/channel/full_query_by_id:
+    get:
+      tags:
+        - BaseService
+      description: 按照id查询足迹频道动态信息
+      operationId: BaseService_ChannelFullQueryById
+      parameters:
+        - name: uuid
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChannelFullQueryByIdRes'
+  /v1/channel/inx:
+    post:
+      tags:
+        - BaseService
+      description: 足迹频道互动
+      operationId: BaseService_ChannelInteraction
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChannelInteractionReq'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChannelInteractionRes'
+  /v1/channel/post:
+    post:
+      tags:
+        - BaseService
+      description: 足迹频道评论
+      operationId: BaseService_ChannelComment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChannelCommentReq'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChannelCommentRes'
+  /v1/channel/type:
+    get:
+      tags:
+        - BaseService
+      description: 列表查询足迹频道类型
+      operationId: BaseService_ChannelTypeList
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChannelTypeListRes'
+  /v1/location/search:
+    get:
+      tags:
+        - BaseService
+      description: 通用地点搜索
+      operationId: BaseService_LocationCommonSearch
+      parameters:
+        - name: input
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationCommonSearchRes'
+  /v1/media/put_presign_url/batch:
+    get:
+      tags:
+        - BaseService
+      description: 批量获取对象上传预签名URL
+      operationId: BaseService_MediaPutPresignURLBatchGet
+      parameters:
+        - name: media_type
+          in: query
+          schema:
+            type: integer
+            format: enum
+        - name: count
+          in: query
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaPutPresignURLBatchGetRes'
+  /v1/user/fast_reg/wx:
+    post:
+      tags:
+        - BaseService
+      description: 微信小程序快速登录注册接口定义
+      operationId: BaseService_FastRegisterWeChat
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FastRegisterWeChatReq'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FastRegisterWeChatRes'
+  /v1/user/login/wx:
+    post:
+      tags:
+        - BaseService
+      description: |-
+        微信小程序登录接口
+         @security BearerAuth
+      operationId: BaseService_LoginWeChat
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginWeChatReq'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginWeChatRes'
 components:
-    schemas:
-        BoundCoord:
-            type: object
-            properties:
-                sw:
-                    $ref: '#/components/schemas/PointCoord'
-                ne:
-                    $ref: '#/components/schemas/PointCoord'
-        ChannelBaseQueryByBoundReq:
-            type: object
-            properties:
-                type_ids:
-                    type: array
-                    items:
-                        type: integer
-                        format: int32
-                    description: 足迹类型id列表
-                bound:
-                    allOf:
-                        - $ref: '#/components/schemas/BoundCoord'
-                    description: 坐标范围
-        ChannelBaseQueryByBoundRes:
-            type: object
-            properties:
-                channels:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/ChannelInfo'
-        ChannelCommentReq:
-            type: object
-            properties:
-                comment:
-                    $ref: '#/components/schemas/PostInfo'
-        ChannelCommentRes:
-            type: object
-            properties: {}
-        ChannelCreateReq:
-            type: object
-            properties:
-                channel:
-                    $ref: '#/components/schemas/ChannelInfo'
-            description: 足迹创建
-        ChannelCreateRes:
-            type: object
-            properties:
-                channel:
-                    $ref: '#/components/schemas/ChannelInfo'
-        ChannelDeleteRes:
-            type: object
-            properties: {}
-        ChannelDetailQueryByIdRes:
-            type: object
-            properties:
-                channel:
-                    $ref: '#/components/schemas/ChannelInfo'
-        ChannelFullQueryByIdRes:
-            type: object
-            properties:
-                channel:
-                    $ref: '#/components/schemas/ChannelInfo'
-        ChannelInfo:
-            type: object
-            properties:
-                uuid:
-                    type: string
-                    description: 足迹频道 ID
-                type_id:
-                    type: integer
-                    description: 足迹频道类型, 不可更新
-                    format: uint32
-                uid:
-                    type: string
-                    description: 足迹作者, 不可更新
-                title:
-                    type: string
-                    description: 足迹名称, 可更新
-                avatar:
-                    allOf:
-                        - $ref: '#/components/schemas/MediaInfo'
-                    description: 头像
-                intro:
-                    type: string
-                    description: 简介, 可更新
-                location:
-                    $ref: '#/components/schemas/LocationInfo'
-                stats:
-                    allOf:
-                        - $ref: '#/components/schemas/ChannelStats'
-                    description: 动态状态信息，只读
-                created_at:
-                    type: string
-                updated_at:
-                    type: string
-            description: 频道信息
-        ChannelInteractionReq:
-            type: object
-            properties:
-                uuid:
-                    type: string
-                ixn_event:
-                    type: integer
-                    description: 互动类型
-                    format: enum
-                ixn_state:
-                    type: integer
-                    format: enum
-        ChannelInteractionRes:
-            type: object
-            properties: {}
-        ChannelStats:
-            type: object
-            properties:
-                views_cnt:
-                    type: integer
-                    description: 查看数，只读
-                    format: int32
-                likes_cnt:
-                    type: integer
-                    description: 喜欢数，只读
-                    format: int32
-                marks_cnt:
-                    type: integer
-                    description: 标记数，只读
-                    format: int32
-                comments_cnt:
-                    type: integer
-                    description: 评论数，只读
-                    format: int32
-                last_view:
-                    type: string
-                last_mark:
-                    type: string
-        ChannelTypeInfo:
-            type: object
-            properties:
-                id:
-                    type: integer
-                    format: uint32
-                name:
-                    type: string
-                coverage_radius:
-                    type: integer
-                    format: int32
-                theme_color:
-                    type: string
-                created_at:
-                    type: string
-                updated_at:
-                    type: string
-            description: 足迹频道类型
-        ChannelTypeListRes:
-            type: object
-            properties:
-                channel_types:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/ChannelTypeInfo'
-        ChannelUpdateReq:
-            type: object
-            properties:
-                channel:
-                    $ref: '#/components/schemas/ChannelInfo'
-            description: 足迹更新
-        ChannelUpdateRes:
-            type: object
-            properties: {}
-        FastRegisterData:
-            type: object
-            properties:
-                name:
-                    type: string
-                    description: 名字
-                avatar_data:
-                    type: string
-                    description: base64 data
-                    format: bytes
-            description: 宠物注册信息
-        FastRegisterWeChatReq:
-            type: object
-            properties:
-                reg_data:
-                    $ref: '#/components/schemas/FastRegisterData'
-                wx_code:
-                    type: string
-            description: 快速注册请求
-        FastRegisterWeChatRes:
-            type: object
-            properties:
-                token:
-                    type: string
-                user_info:
-                    $ref: '#/components/schemas/UserInfo'
-        LocationCommonSearchRes:
-            type: object
-            properties: {}
-        LocationInfo:
-            type: object
-            properties:
-                lng_lat:
-                    allOf:
-                        - $ref: '#/components/schemas/PointCoord'
-                    description: 足迹位置, 不可更新
-                address:
-                    type: string
-                    description: POI 地址, 不可更新
-        LoginWeChatReq:
-            type: object
-            properties:
-                wx_code:
-                    type: string
-            description: 登录请求
-        LoginWeChatRes:
-            type: object
-            properties:
-                token:
-                    type: string
-                user_info:
-                    $ref: '#/components/schemas/UserInfo'
-        MediaInfo:
-            type: object
-            properties:
-                uuid:
-                    type: string
-                    description: ID, 可写入
-                type:
-                    type: integer
-                    description: 类型
-                    format: enum
-                get_url:
-                    type: string
-                    description: 读取URL
-                put_url:
-                    type: string
-                    description: 写入URL
-        MediaPutPresignURLBatchGetRes:
-            type: object
-            properties:
-                media:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/MediaInfo'
-        PetInfo:
-            type: object
-            properties:
-                id:
-                    type: string
-                status:
-                    type: integer
-                    format: int32
-                name:
-                    type: string
-                gender:
-                    type: integer
-                    format: uint32
-                avatar:
-                    type: string
-                specie:
-                    type: string
-                breed:
-                    type: string
-                weight:
-                    type: integer
-                    format: int32
-                birth_date:
-                    type: string
-                created_at:
-                    type: string
-                updated_at:
-                    type: string
-        PointCoord:
-            type: object
-            properties:
-                lat:
-                    type: number
-                    format: float
-                lng:
-                    type: number
-                    format: float
-        PostInfo:
-            type: object
-            properties:
-                uuid:
-                    type: string
-                root_uuid:
-                    type: string
-                parent_uuid:
-                    type: string
-                content:
-                    type: string
-                created_at:
-                    type: string
-                updated_at:
-                    type: string
-            description: 足迹评论
-        UserInfo:
-            type: object
-            properties:
-                id:
-                    type: string
-                title:
-                    type: string
-                pets:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/PetInfo'
+  schemas:
+    BoundCoord:
+      type: object
+      properties:
+        sw:
+          $ref: '#/components/schemas/PointCoord'
+        ne:
+          $ref: '#/components/schemas/PointCoord'
+    ChannelBaseQueryByBoundReq:
+      type: object
+      properties:
+        type_ids:
+          type: array
+          items:
+            type: integer
+            format: int32
+          description: 足迹类型id列表
+        bound:
+          allOf:
+            - $ref: '#/components/schemas/BoundCoord'
+          description: 坐标范围
+    ChannelBaseQueryByBoundRes:
+      type: object
+      properties:
+        channels:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChannelInfo'
+    ChannelCommentReq:
+      type: object
+      properties:
+        comment:
+          $ref: '#/components/schemas/PostInfo'
+    ChannelCommentRes:
+      type: object
+      properties: {}
+    ChannelCreateReq:
+      type: object
+      properties:
+        channel:
+          $ref: '#/components/schemas/ChannelInfo'
+      description: 足迹创建
+    ChannelCreateRes:
+      type: object
+      properties:
+        channel:
+          $ref: '#/components/schemas/ChannelInfo'
+    ChannelDeleteRes:
+      type: object
+      properties: {}
+    ChannelDetailQueryByIdRes:
+      type: object
+      properties:
+        channel:
+          $ref: '#/components/schemas/ChannelInfo'
+    ChannelFullQueryByIdRes:
+      type: object
+      properties:
+        channel:
+          $ref: '#/components/schemas/ChannelInfo'
+    ChannelInfo:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: 足迹频道 ID
+        type_id:
+          type: integer
+          description: 足迹频道类型, 不可更新
+          format: uint32
+        uid:
+          type: string
+          description: 足迹作者, 不可更新
+        title:
+          type: string
+          description: 足迹名称, 可更新
+        avatar:
+          allOf:
+            - $ref: '#/components/schemas/MediaInfo'
+          description: 头像
+        intro:
+          type: string
+          description: 简介, 可更新
+        location:
+          $ref: '#/components/schemas/LocationInfo'
+        stats:
+          allOf:
+            - $ref: '#/components/schemas/ChannelStats'
+          description: 动态状态信息，只读
+        created_at:
+          type: string
+        updated_at:
+          type: string
+      description: 频道信息
+    ChannelInteractionReq:
+      type: object
+      properties:
+        uuid:
+          type: string
+        ixn_event:
+          type: integer
+          description: 互动类型
+          format: enum
+        ixn_state:
+          type: integer
+          format: enum
+    ChannelInteractionRes:
+      type: object
+      properties: {}
+    ChannelStats:
+      type: object
+      properties:
+        views_cnt:
+          type: integer
+          description: 查看数，只读
+          format: int32
+        likes_cnt:
+          type: integer
+          description: 喜欢数，只读
+          format: int32
+        marks_cnt:
+          type: integer
+          description: 标记数，只读
+          format: int32
+        comments_cnt:
+          type: integer
+          description: 评论数，只读
+          format: int32
+        last_view:
+          type: string
+        last_mark:
+          type: string
+    ChannelTypeInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: uint32
+        name:
+          type: string
+        coverage_radius:
+          type: integer
+          format: int32
+        theme_color:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+      description: 足迹频道类型
+    ChannelTypeListRes:
+      type: object
+      properties:
+        channel_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChannelTypeInfo'
+    ChannelUpdateReq:
+      type: object
+      properties:
+        channel:
+          $ref: '#/components/schemas/ChannelInfo'
+      description: 足迹更新
+    ChannelUpdateRes:
+      type: object
+      properties: {}
+    FastRegisterData:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 名字
+        avatar_data:
+          type: string
+          description: base64 data
+          format: bytes
+      description: 宠物注册信息
+    FastRegisterWeChatReq:
+      type: object
+      properties:
+        reg_data:
+          $ref: '#/components/schemas/FastRegisterData'
+        wx_code:
+          type: string
+      description: 快速注册请求
+    FastRegisterWeChatRes:
+      type: object
+      properties:
+        token:
+          type: string
+        user_info:
+          $ref: '#/components/schemas/UserInfo'
+    LocationCommonSearchRes:
+      type: object
+      properties: {}
+    LocationInfo:
+      type: object
+      properties:
+        lng_lat:
+          allOf:
+            - $ref: '#/components/schemas/PointCoord'
+          description: 足迹位置, 不可更新
+        address:
+          type: string
+          description: POI 地址, 不可更新
+    LoginWeChatReq:
+      type: object
+      properties:
+        wx_code:
+          type: string
+      description: 登录请求
+    LoginWeChatRes:
+      type: object
+      properties:
+        token:
+          type: string
+        user_info:
+          $ref: '#/components/schemas/UserInfo'
+    MediaInfo:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: ID, 可写入
+        type:
+          type: integer
+          description: 类型
+          format: enum
+        get_url:
+          type: string
+          description: 读取URL
+        put_url:
+          type: string
+          description: 写入URL
+    MediaPutPresignURLBatchGetRes:
+      type: object
+      properties:
+        media:
+          type: array
+          items:
+            $ref: '#/components/schemas/MediaInfo'
+    PetInfo:
+      type: object
+      properties:
+        id:
+          type: string
+        status:
+          type: integer
+          format: int32
+        name:
+          type: string
+        gender:
+          type: integer
+          format: uint32
+        avatar:
+          type: string
+        specie:
+          type: string
+        breed:
+          type: string
+        weight:
+          type: integer
+          format: int32
+        birth_date:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+    PointCoord:
+      type: object
+      properties:
+        lat:
+          type: number
+          format: float
+        lng:
+          type: number
+          format: float
+    PostInfo:
+      type: object
+      properties:
+        uuid:
+          type: string
+        root_uuid:
+          type: string
+        parent_uuid:
+          type: string
+        content:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+      description: 足迹评论
+    UserInfo:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        pets:
+          type: array
+          items:
+            $ref: '#/components/schemas/PetInfo'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
 tags:
-    - name: BaseService
+  - name: BaseService
+security:
+  - bearerAuth: []

@@ -16,10 +16,10 @@ import (
 )
 
 const (
-	BucketNameDefault   = "default"
-	BucketNameAvatar    = "avatar"
-	BucketNameChannel   = "channel"
-	BucketNamePostImage = "postImage"
+	BucketNameDefault = "default"
+	BucketNameAvatar  = "avatar"
+	BucketNameChannel = "channel"
+	BucketNamePost    = "post"
 
 	PreSignDurationDefault = time.Minute * 10
 )
@@ -29,11 +29,11 @@ var (
 		BucketNameDefault,
 		BucketNameAvatar,
 		BucketNameChannel,
-		BucketNamePostImage,
+		BucketNamePost,
 	}
 	bucketNameMapForObjectType = map[base_api.MediaType]string{
-		base_api.MediaType_MT_DEFAULT:    BucketNameDefault,
-		base_api.MediaType_MT_POFP_IMAGE: BucketNameChannel,
+		base_api.MediaType_MT_DEFAULT: BucketNameDefault,
+		base_api.MediaType_MT_AVATAR:  BucketNameChannel,
 	}
 )
 

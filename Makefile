@@ -57,9 +57,18 @@ internal:
  	       --go_out=paths=source_relative:./internal \
 	       $(INTERNAL_PROTO_FILES)
 
+.PHONY: check-yq
+check-yq:
+	@if ! command -v yq &> /dev/null; then \
+		echo "Error: yq is not installed. Please install it first."; \
+		echo "On macOS: brew install yq"; \
+		echo "On Ubuntu/Debian: sudo apt install yq"; \
+		exit 1; \
+	fi
+
 .PHONY: api
 # generate api proto
-api:
+api: check-yq
 	@mkdir -p ./api/base
 	@mkdir -p ./api/openapi
 	protoc --proto_path=./api \
@@ -68,6 +77,9 @@ api:
 		   --go-grpc_out=paths=source_relative:./api/base \
 	       --openapi_out=fq_schema_naming=false,naming=proto,default_response=false,paths=source_relative:./api/openapi/ \
 	       $(API_PROTO_FILES)
+	# 自动添加 security 和 securitySchemes
+	@yq eval -i '.components.securitySchemes.bearerAuth = {"type": "http", "scheme": "bearer", "bearerFormat": "JWT"}' ./api/openapi/openapi.yaml
+	@yq eval -i '.security = [{"bearerAuth": []}]' ./api/openapi/openapi.yaml
 	oapi-codegen -package apigin -generate types,spec,client,gin ./api/openapi/openapi.yaml > ./api/gin/gin.gen.go
 
 .PHONY: generate
