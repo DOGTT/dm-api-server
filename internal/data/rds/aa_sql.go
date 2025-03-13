@@ -1,3 +1,4 @@
+// nolint:unused
 package rds
 
 import (
@@ -13,7 +14,6 @@ const (
 	// common field
 	sqlFieldAll    = "*"
 	sqlFieldId     = "id"
-	sqlFieldUuid   = "uuid"
 	sqlFieldTypeId = "type_id"
 	sqlFieldTitle  = "title"
 	sqlFieldIntro  = "intro"
@@ -23,8 +23,7 @@ const (
 
 // equal
 const (
-	sqlEqualId   = "id = ?"
-	sqlEqualUuid = "uuid = ?"
+	sqlEqualId = "id = ?"
 )
 
 // select

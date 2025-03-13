@@ -57,7 +57,7 @@ func (s *Service) ChannelCreate(ctx context.Context, req *base_api.ChannelCreate
 	// TODO: 检查类型，检查坐标是否太近
 	ch := req.GetChannel()
 	ChannelInfo := &rds.ChannelInfo{
-		UUID:     utils.GenShortenUUID(),
+		Id:       utils.GenSnowflakeID(),
 		TypeId:   uint16(ch.GetTypeId()),
 		UId:      tc.UID,
 		Title:    ch.GetTitle(),
@@ -82,7 +82,7 @@ func (s *Service) ChannelDelete(ctx context.Context, req *base_api.ChannelDelete
 	res = &base_api.ChannelDeleteRes{}
 	// tc := getClaimFromContext(ctx)
 	// TODO，权限检查
-	if err = s.data.DeleteChannelInfo(ctx, req.GetUuid()); err != nil {
+	if err = s.data.DeleteChannelInfo(ctx, req.GetChId()); err != nil {
 		return
 	}
 	return
@@ -113,7 +113,7 @@ func (s *Service) ChannelUpdate(ctx context.Context, req *base_api.ChannelUpdate
 	// TODO，权限检查
 	ch := req.GetChannel()
 	ChannelInfo := &rds.ChannelInfo{
-		UUID:     ch.GetUuid(),
+		Id:       ch.GetId(),
 		Title:    ch.GetTitle(),
 		AvatarId: ch.GetAvatar().GetUuid(),
 		Intro:    ch.GetIntro(),
@@ -126,7 +126,7 @@ func (s *Service) ChannelUpdate(ctx context.Context, req *base_api.ChannelUpdate
 
 func (s *Service) ChannelDetailQueryById(ctx context.Context, req *base_api.ChannelDetailQueryByIdReq) (res *base_api.ChannelDetailQueryByIdRes, err error) {
 	var cInfo *rds.ChannelInfo
-	cInfo, err = s.data.GetChannelInfo(ctx, req.GetUuid())
+	cInfo, err = s.data.GetChannelInfo(ctx, req.GetChId())
 	if err != nil {
 		err = EM_CommonFail_Internal.PutDesc(err.Error())
 		return
@@ -147,7 +147,7 @@ func (s *Service) ChannelDetailQueryById(ctx context.Context, req *base_api.Chan
 
 func (s *Service) convertToChannelInfo(ctx context.Context, pInfo *rds.ChannelInfo) (res *base_api.ChannelInfo, err error) {
 	res = &base_api.ChannelInfo{
-		Uuid:   pInfo.UUID,
+		Id:     pInfo.Id,
 		Uid:    pInfo.UId,
 		TypeId: uint32(pInfo.TypeId),
 		Title:  pInfo.Title,

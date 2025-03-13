@@ -87,6 +87,9 @@ type ChannelInfo struct {
 	Avatar    *MediaInfo `json:"avatar,omitempty"`
 	CreatedAt *string    `json:"created_at,omitempty"`
 
+	// Id 足迹频道 ID
+	Id *string `json:"id,omitempty"`
+
 	// Intro 简介, 可更新
 	Intro    *string       `json:"intro,omitempty"`
 	Location *LocationInfo `json:"location,omitempty"`
@@ -103,17 +106,15 @@ type ChannelInfo struct {
 	// Uid 足迹作者, 不可更新
 	Uid       *string `json:"uid,omitempty"`
 	UpdatedAt *string `json:"updated_at,omitempty"`
-
-	// Uuid 足迹频道 ID
-	Uuid *string `json:"uuid,omitempty"`
 }
 
 // ChannelInteractionReq defines model for ChannelInteractionReq.
 type ChannelInteractionReq struct {
+	ChId *string `json:"ch_id,omitempty"`
+
 	// IxnEvent 互动类型
-	IxnEvent *int    `json:"ixn_event,omitempty"`
-	IxnState *int    `json:"ixn_state,omitempty"`
-	Uuid     *string `json:"uuid,omitempty"`
+	IxnEvent *int `json:"ixn_event,omitempty"`
+	IxnState *int `json:"ixn_state,omitempty"`
 }
 
 // ChannelInteractionRes defines model for ChannelInteractionRes.
@@ -248,12 +249,12 @@ type PointCoord struct {
 
 // PostInfo 足迹评论
 type PostInfo struct {
-	Content    *string `json:"content,omitempty"`
-	CreatedAt  *string `json:"created_at,omitempty"`
-	ParentUuid *string `json:"parent_uuid,omitempty"`
-	RootUuid   *string `json:"root_uuid,omitempty"`
-	UpdatedAt  *string `json:"updated_at,omitempty"`
-	Uuid       *string `json:"uuid,omitempty"`
+	Content   *string `json:"content,omitempty"`
+	CreatedAt *string `json:"created_at,omitempty"`
+	Id        *string `json:"id,omitempty"`
+	ParentId  *string `json:"parent_id,omitempty"`
+	RootId    *string `json:"root_id,omitempty"`
+	UpdatedAt *string `json:"updated_at,omitempty"`
 }
 
 // UserInfo defines model for UserInfo.
@@ -265,17 +266,17 @@ type UserInfo struct {
 
 // BaseServiceChannelDeleteParams defines parameters for BaseServiceChannelDelete.
 type BaseServiceChannelDeleteParams struct {
-	Uuid *string `form:"uuid,omitempty" json:"uuid,omitempty"`
+	ChId *string `form:"ch_id,omitempty" json:"ch_id,omitempty"`
 }
 
 // BaseServiceChannelDetailQueryByIdParams defines parameters for BaseServiceChannelDetailQueryById.
 type BaseServiceChannelDetailQueryByIdParams struct {
-	Uuid *string `form:"uuid,omitempty" json:"uuid,omitempty"`
+	ChId *string `form:"ch_id,omitempty" json:"ch_id,omitempty"`
 }
 
 // BaseServiceChannelFullQueryByIdParams defines parameters for BaseServiceChannelFullQueryById.
 type BaseServiceChannelFullQueryByIdParams struct {
-	Uuid *string `form:"uuid,omitempty" json:"uuid,omitempty"`
+	ChId *string `form:"ch_id,omitempty" json:"ch_id,omitempty"`
 }
 
 // BaseServiceLocationCommonSearchParams defines parameters for BaseServiceLocationCommonSearch.
@@ -699,9 +700,9 @@ func NewBaseServiceChannelDeleteRequest(server string, params *BaseServiceChanne
 	if params != nil {
 		queryValues := queryURL.Query()
 
-		if params.Uuid != nil {
+		if params.ChId != nil {
 
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "uuid", runtime.ParamLocationQuery, *params.Uuid); err != nil {
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "ch_id", runtime.ParamLocationQuery, *params.ChId); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -868,9 +869,9 @@ func NewBaseServiceChannelDetailQueryByIdRequest(server string, params *BaseServ
 	if params != nil {
 		queryValues := queryURL.Query()
 
-		if params.Uuid != nil {
+		if params.ChId != nil {
 
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "uuid", runtime.ParamLocationQuery, *params.Uuid); err != nil {
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "ch_id", runtime.ParamLocationQuery, *params.ChId); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -917,9 +918,9 @@ func NewBaseServiceChannelFullQueryByIdRequest(server string, params *BaseServic
 	if params != nil {
 		queryValues := queryURL.Query()
 
-		if params.Uuid != nil {
+		if params.ChId != nil {
 
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "uuid", runtime.ParamLocationQuery, *params.Uuid); err != nil {
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "ch_id", runtime.ParamLocationQuery, *params.ChId); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -2201,11 +2202,11 @@ func (siw *ServerInterfaceWrapper) BaseServiceChannelDelete(c *gin.Context) {
 	// Parameter object where we will unmarshal all parameters from the context
 	var params BaseServiceChannelDeleteParams
 
-	// ------------- Optional query parameter "uuid" -------------
+	// ------------- Optional query parameter "ch_id" -------------
 
-	err = runtime.BindQueryParameter("form", true, false, "uuid", c.Request.URL.Query(), &params.Uuid)
+	err = runtime.BindQueryParameter("form", true, false, "ch_id", c.Request.URL.Query(), &params.ChId)
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter uuid: %w", err), http.StatusBadRequest)
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter ch_id: %w", err), http.StatusBadRequest)
 		return
 	}
 
@@ -2274,11 +2275,11 @@ func (siw *ServerInterfaceWrapper) BaseServiceChannelDetailQueryById(c *gin.Cont
 	// Parameter object where we will unmarshal all parameters from the context
 	var params BaseServiceChannelDetailQueryByIdParams
 
-	// ------------- Optional query parameter "uuid" -------------
+	// ------------- Optional query parameter "ch_id" -------------
 
-	err = runtime.BindQueryParameter("form", true, false, "uuid", c.Request.URL.Query(), &params.Uuid)
+	err = runtime.BindQueryParameter("form", true, false, "ch_id", c.Request.URL.Query(), &params.ChId)
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter uuid: %w", err), http.StatusBadRequest)
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter ch_id: %w", err), http.StatusBadRequest)
 		return
 	}
 
@@ -2302,11 +2303,11 @@ func (siw *ServerInterfaceWrapper) BaseServiceChannelFullQueryById(c *gin.Contex
 	// Parameter object where we will unmarshal all parameters from the context
 	var params BaseServiceChannelFullQueryByIdParams
 
-	// ------------- Optional query parameter "uuid" -------------
+	// ------------- Optional query parameter "ch_id" -------------
 
-	err = runtime.BindQueryParameter("form", true, false, "uuid", c.Request.URL.Query(), &params.Uuid)
+	err = runtime.BindQueryParameter("form", true, false, "ch_id", c.Request.URL.Query(), &params.ChId)
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter uuid: %w", err), http.StatusBadRequest)
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter ch_id: %w", err), http.StatusBadRequest)
 		return
 	}
 
@@ -2504,41 +2505,41 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"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",
-	"AP///ep2298qAAA=",
+	"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",
+	"f+KFPtsqAAA=",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

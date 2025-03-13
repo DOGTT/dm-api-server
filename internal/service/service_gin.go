@@ -149,7 +149,7 @@ func (s *Service) BaseServiceChannelCreate(c *gin.Context) {
 func (s *Service) BaseServiceChannelDelete(c *gin.Context, params gin_api.BaseServiceChannelDeleteParams) {
 
 	req := &base_api.ChannelDeleteReq{
-		Uuid: *params.Uuid,
+		ChId: utils.ConvertToUint64(*params.ChId),
 	}
 
 	res, err := s.ChannelDelete(withGinContext(c), req)
@@ -192,7 +192,7 @@ func (s *Service) BaseServiceChannelBaseQueryByBound(c *gin.Context) {
 
 func (s *Service) BaseServiceChannelDetailQueryById(c *gin.Context, params gin_api.BaseServiceChannelDetailQueryByIdParams) {
 	req := &base_api.ChannelDetailQueryByIdReq{
-		Uuid: *params.Uuid,
+		ChId: utils.ConvertToUint64(*params.ChId),
 	}
 
 	res, err := s.ChannelDetailQueryById(withGinContext(c), req)
@@ -205,7 +205,7 @@ func (s *Service) BaseServiceChannelDetailQueryById(c *gin.Context, params gin_a
 
 func (s *Service) BaseServiceChannelFullQueryById(c *gin.Context, params gin_api.BaseServiceChannelFullQueryByIdParams) {
 	req := &base_api.ChannelFullQueryByIdReq{
-		Uuid: *params.Uuid,
+		ChId: utils.ConvertToUint64(*params.ChId),
 	}
 
 	res, err := s.ChannelFullQueryById(withGinContext(c), req)

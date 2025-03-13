@@ -20,7 +20,7 @@ type ChannelConfig struct {
 }
 
 type ChannelStats struct {
-	UUID string `gorm:"type:varchar(22);primaryKey;"`
+	Id uint64 `gorm:"primaryKey;autoIncrement"`
 
 	// 频道配置
 	Config ChannelConfig `gorm:"type:jsonb"`

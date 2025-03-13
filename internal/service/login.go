@@ -92,7 +92,7 @@ func (s *Service) WeChatRegisterFast(ctx context.Context, req *base_api.FastRegi
 	}
 	pet := rds.PetInfo{
 		Name:     req.GetRegData().GetName(),
-		AvatarId: utils.GenShortenUUID(),
+		AvatarId: utils.GenUUID(),
 	}
 	user := &rds.UserInfo{
 		WeChatId: wxId,

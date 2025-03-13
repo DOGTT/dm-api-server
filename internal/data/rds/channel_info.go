@@ -23,7 +23,7 @@ func init() {
 
 // 足迹频道基本信息
 type ChannelInfo struct {
-	UUID string `gorm:"type:varchar(22);primaryKey;"`
+	Id uint64 `gorm:"primaryKey;autoIncrement"`
 	// 类型id
 	TypeId uint16 `gorm:"index"`
 	// - 创建者的 Uid
@@ -39,7 +39,7 @@ type ChannelInfo struct {
 	// 位置的关键兴趣点详情
 	PoiDetail PoiDetail `gorm:"type:jsonb"`
 	// 关联状态子表
-	Stats ChannelStats `gorm:"foreignKey:UUID"`
+	Stats ChannelStats `gorm:"foreignKey:Id"`
 
 	// --- 基础字段
 	CreatedAt time.Time `gorm:"autoCreateTime"`
@@ -111,8 +111,8 @@ func (c *RDSClient) CreateChannelInfo(ctx context.Context, info *ChannelInfo) er
 }
 
 func (c *RDSClient) UpdateChannelInfo(ctx context.Context, info *ChannelInfo) error {
-	if info.UUID == "" {
-		return fmt.Errorf("uuid is empty")
+	if info.Id == 0 {
+		return fmt.Errorf("Id is empty")
 	}
 	updateField := []string{}
 	if info.Intro != "" {
@@ -121,17 +121,17 @@ func (c *RDSClient) UpdateChannelInfo(ctx context.Context, info *ChannelInfo) er
 	if info.Title != "" {
 		updateField = append(updateField, sqlFieldIntro)
 	}
-	return c.db.WithContext(ctx).Model(&ChannelInfo{}).Where(sqlEqualUuid, info.UUID).
+	return c.db.WithContext(ctx).Model(&ChannelInfo{}).Where(sqlEqualId, info.Id).
 		Select(updateField).
 		Updates(info).Error
 }
 
-func (c *RDSClient) DeleteChannelInfo(ctx context.Context, uuid string) error {
-	return c.db.WithContext(ctx).Where(sqlEqualUuid, uuid).Delete(_channel).Error
+func (c *RDSClient) DeleteChannelInfo(ctx context.Context, Id uint64) error {
+	return c.db.WithContext(ctx).Where(sqlEqualId, Id).Delete(_channel).Error
 }
 
-func (c *RDSClient) GetChannelInfo(ctx context.Context, uuid string) (result *ChannelInfo, err error) {
-	err = c.db.WithContext(ctx).Where(sqlEqualUuid, uuid).First(&result).Error
+func (c *RDSClient) GetChannelInfo(ctx context.Context, Id uint64) (result *ChannelInfo, err error) {
+	err = c.db.WithContext(ctx).Where(sqlEqualId, Id).First(&result).Error
 	if err != nil {
 		return
 	}

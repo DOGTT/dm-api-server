@@ -15,7 +15,7 @@ func init() {
 // 足迹频道帖子
 type ChannelPostInfo struct {
 	// 评论唯一id
-	UUID string `gorm:"type:varchar(22);primaryKey;"`
+	Id uint64 `gorm:"primaryKey;autoIncrement"`
 	// - 创建者UId
 	UId uint64 `gorm:"index"`
 	// 底层足迹id

@@ -53,7 +53,7 @@ paths:
       description: 删除足迹频道
       operationId: BaseService_ChannelDelete
       parameters:
-        - name: uuid
+        - name: ch_id
           in: query
           schema:
             type: string
@@ -90,7 +90,7 @@ paths:
       description: 按照id查询足迹静态完整信息
       operationId: BaseService_ChannelDetailQueryById
       parameters:
-        - name: uuid
+        - name: ch_id
           in: query
           schema:
             type: string
@@ -108,7 +108,7 @@ paths:
       description: 按照id查询足迹频道动态信息
       operationId: BaseService_ChannelFullQueryById
       parameters:
-        - name: uuid
+        - name: ch_id
           in: query
           schema:
             type: string
@@ -316,7 +316,7 @@ components:
     ChannelInfo:
       type: object
       properties:
-        uuid:
+        id:
           type: string
           description: 足迹频道 ID
         type_id:
@@ -350,7 +350,7 @@ components:
     ChannelInteractionReq:
       type: object
       properties:
-        uuid:
+        ch_id:
           type: string
         ixn_event:
           type: integer
@@ -534,11 +534,11 @@ components:
     PostInfo:
       type: object
       properties:
-        uuid:
+        id:
           type: string
-        root_uuid:
+        root_id:
           type: string
-        parent_uuid:
+        parent_id:
           type: string
         content:
           type: string

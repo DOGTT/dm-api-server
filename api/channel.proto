@@ -19,7 +19,7 @@ message ChannelTypeInfo {
 // 频道信息
 message ChannelInfo {
   // 足迹频道 ID
-  string uuid = 1;
+  uint64 id = 1;
   // 足迹频道类型, 不可更新
   uint32 type_id = 2;
   // 足迹作者, 不可更新
@@ -59,9 +59,9 @@ message ChannelStats {
 
 // 足迹评论
 message PostInfo {
-  string uuid = 1;
-  string root_uuid = 2;
-  string parent_uuid = 3;
+  uint64 id = 1;
+  string root_id = 2;
+  string parent_id = 3;
   string content = 4;
 
   int64 created_at = 31;
