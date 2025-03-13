@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/lib/pq"
+	"gorm.io/gorm"
 )
 
 func init() {
@@ -31,8 +32,11 @@ type ChannelPostInfo struct {
 	// -- 动态信息
 	Likes int `gorm:"default:0"`
 
+	// --- 基础字段
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
+	// 软删除字段
+	DeletedAt gorm.DeletedAt `gorm:"index"`
 }
 
 func (c *RDSClient) CreateChannelComment(ctx context.Context, d *ChannelPostInfo) error {

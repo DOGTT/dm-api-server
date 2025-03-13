@@ -12,22 +12,22 @@ func init() {
 
 // 爱宠频道互动事件
 type UserPetChannelIxnEvent struct {
-	UId      uint64           `gorm:"index"`
-	PId      uint64           `gorm:"index"`
-	IxnEvent UserIxnEventType `gorm:"type:int;default:0"`
-
-	ChannelUUID string `gorm:"index"`
+	UId         uint64           `gorm:"index"`
+	PId         uint64           `gorm:"index"`
+	ChannelUUID string           `gorm:"index"`
+	IxnEvent    UserIxnEventType `gorm:"type:int;default:0"`
 
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 }
 
 // 用户频道互动状态
 type UserChannelIxnState struct {
-	UId uint64 `gorm:"index"`
+	UId         uint64 `gorm:"index"`
+	ChannelUUID string `gorm:"index"`
 	//
-	IxnState    UserIxnStateType `gorm:"type:int;default:0"`
-	ChannelUUID string           `gorm:"index"`
-	CreatedAt   time.Time        `gorm:"autoCreateTime"`
+	IxnState UserIxnStateType `gorm:"type:int;default:0"`
+
+	CreatedAt time.Time `gorm:"autoCreateTime"`
 }
 
 // 用户帖子互动状态

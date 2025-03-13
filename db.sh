@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# 定义 SQL 初始化脚本目录
+SQL_INIT_DIR="./migration"
+
 # 定义启动函数
 start_services() {
   echo "Starting PostGIS container..."
@@ -24,8 +27,35 @@ start_services() {
 #     -e "PGADMIN_DEFAULT_PASSWORD=admin" \
 #     -d dpage/pgadmin4
 
+ # 等待 PostGIS 容器启动
+  echo "Waiting for PostGIS to be ready..."
+  sleep 10
+
+  # 执行 SQL 初始化脚本
+  execute_sql_init_scripts
   echo "All services started successfully!"
 }
+
+# 定义执行 SQL 初始化脚本的函数
+execute_sql_init_scripts() {
+  if [[ -d "$SQL_INIT_DIR" ]]; then
+    echo "Executing SQL initialization scripts from $SQL_INIT_DIR..."
+    for script in $(ls $SQL_INIT_DIR/*.sql | sort); do
+      echo "Running script: $script"
+      docker exec -i postgis psql -U dev -d dev_db < $script
+      if [[ $? -eq 0 ]]; then
+        echo "Script $script executed successfully."
+      else
+        echo "Failed to execute script $script."
+        exit 1
+      fi
+    done
+    echo "All SQL initialization scripts executed successfully."
+  else
+    echo "SQL initialization script directory $SQL_INIT_DIR not found."
+  fi
+}
+
 
 # 定义停止函数
 stop_services() {

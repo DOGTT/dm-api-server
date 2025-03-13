@@ -61,7 +61,7 @@ func (s *Service) ChannelCreate(ctx context.Context, req *base_api.ChannelCreate
 		TypeId:   uint16(ch.GetTypeId()),
 		UId:      tc.UID,
 		Title:    ch.GetTitle(),
-		LngLat:   rds.PointCoordToGeometry(ch.GetLocation().GetLngLat()),
+		LngLat:   utils.PointCoordToGeometry(ch.GetLocation().GetLngLat()),
 		AvatarId: ch.GetAvatar().GetUuid(),
 		Intro:    ch.GetIntro(),
 		PoiDetail: rds.PoiDetail{
@@ -156,7 +156,7 @@ func (s *Service) convertToChannelInfo(ctx context.Context, pInfo *rds.ChannelIn
 		},
 		Intro: pInfo.Intro,
 		Location: &base_api.LocationInfo{
-			LngLat:  rds.PointCoordFromGeometry(pInfo.LngLat),
+			LngLat:  utils.PointCoordFromGeometry(pInfo.LngLat),
 			Address: pInfo.PoiDetail.Address,
 		},
 	}
@@ -199,8 +199,10 @@ func (s *Service) ChannelFullQueryById(ctx context.Context, req *base_api.Channe
 func (s *Service) ChannelBaseQueryByBound(ctx context.Context, req *base_api.ChannelBaseQueryByBoundReq) (res *base_api.ChannelBaseQueryByBoundRes, err error) {
 	var pofoList []*rds.ChannelInfo
 	log.Ctx(ctx).Debug("query request", zap.String("req", spew.Sdump(req)))
-	pofoList, err = s.data.BatchQueryChannelInfoListByBound(ctx,
-		utils.ConvertToUintSlice(req.GetTypeIds()), req.GetBound())
+	pofoList, err = s.data.ListChannelInfo(ctx, &rds.ChannelFilter{
+		TypeIDs:    req.GetTypeIds(),
+		BoundCoord: req.GetBound(),
+	})
 	if err != nil {
 		err = EM_CommonFail_Internal.PutDesc(err.Error())
 		return
@@ -234,10 +236,10 @@ func (s *Service) ChannelComment(ctx context.Context, req *base_api.ChannelComme
 	// TODO
 	// tc := getClaimFromContext(ctx)
 	// 查询Channel信息，检查是否存在
-	ChannelUUID := req.GetComment().GetRootUuid()
-	if err = s.data.ExistChannelInfo(ctx, ChannelUUID); err != nil {
-		return
-	}
+	// ChannelUUID := req.GetComment().GetRootUuid()
+	// if err = s.data.ExistChannelInfo(ctx, ChannelUUID); err != nil {
+	// 	return
+	// }
 	res = new(base_api.ChannelCommentRes)
 
 	// err = s.data.CreateChannelIxnRecordWithCount(ctx, &rds.UserChannelIxnRecord{
