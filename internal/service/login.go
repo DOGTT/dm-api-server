@@ -2,16 +2,14 @@ package service
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
-	base_api "github.com/DOGTT/dm-api-server/api/base"
+	api "github.com/DOGTT/dm-api-server/api/base"
 	"github.com/DOGTT/dm-api-server/internal/data/fds"
 	"github.com/DOGTT/dm-api-server/internal/data/rds"
 	"github.com/DOGTT/dm-api-server/internal/utils"
-	log "github.com/uptrace/opentelemetry-go-extra/otelzap"
+	"github.com/uptrace/opentelemetry-go-extra/otelzap"
 	"go.uber.org/zap"
-	"gorm.io/gorm"
 )
 
 func (s *Service) wxCodeToWxId(ctx context.Context, wxCode string) (wxId string, err error) {
@@ -32,16 +30,17 @@ func (s *Service) wxCodeToWxId(ctx context.Context, wxCode string) (wxId string,
 	return
 }
 
-func (s *Service) WeChatLogin(ctx context.Context, req *base_api.LoginWeChatReq) (res *base_api.LoginWeChatRes, err error) {
-	log.Ctx(ctx).Debug("wx login get req", zap.Any("req", req))
-	res = &base_api.LoginWeChatRes{}
+func (s *Service) WeChatLogin(ctx context.Context, req *api.LoginWeChatReq) (res *api.LoginWeChatRes, err error) {
+	log := otelzap.Ctx(ctx)
+	log.Debug("wx login get req", zap.Any("req", req))
+	res = &api.LoginWeChatRes{}
 	wxId, err := s.wxCodeToWxId(ctx, req.GetWxCode())
 	if err != nil {
 		return
 	}
 	// query user info
 	userInfo, err := s.data.GetUserInfoByWeChatID(ctx, wxId)
-	if errors.Is(err, gorm.ErrRecordNotFound) {
+	if rds.IsNotFound(err) {
 		err = EM_AuthFail_NotFound.PutDesc(err.Error())
 		return
 	}
@@ -65,7 +64,7 @@ func (s *Service) WeChatLogin(ctx context.Context, req *base_api.LoginWeChatReq)
 	return
 }
 
-func validRegisterRequest(req *base_api.FastRegisterWeChatReq) error {
+func validRegisterRequest(req *api.FastRegisterWeChatReq) error {
 	if req == nil {
 		return EM_CommonFail_BadRequest.PutDesc("req is required")
 	}
@@ -78,14 +77,15 @@ func validRegisterRequest(req *base_api.FastRegisterWeChatReq) error {
 	return nil
 }
 
-func (s *Service) WeChatRegisterFast(ctx context.Context, req *base_api.FastRegisterWeChatReq) (res *base_api.FastRegisterWeChatRes, err error) {
+func (s *Service) WeChatRegisterFast(ctx context.Context, req *api.FastRegisterWeChatReq) (res *api.FastRegisterWeChatRes, err error) {
+	log := otelzap.Ctx(ctx)
 	// Implement me
-	log.Ctx(ctx).Debug("grpc impl get req", zap.Any("req", req))
+	log.Debug("grpc impl get req", zap.Any("req", req))
 	if validRegisterRequest(req) != nil {
 		err = EM_CommonFail_BadRequest.PutDesc("pet is required")
 		return
 	}
-	res = &base_api.FastRegisterWeChatRes{}
+	res = &api.FastRegisterWeChatRes{}
 	wxId, err := s.wxCodeToWxId(ctx, req.GetWxCode())
 	if err != nil {
 		return
@@ -139,14 +139,14 @@ func getAvatarIdFromFDS(avatarId string, pid uint64) string {
 	return fmt.Sprintf("%d_%s", pid, avatarId)
 }
 
-func (s *Service) convertToUserInfo(ctx context.Context, userInfo *rds.UserInfo) (res *base_api.UserInfo, err error) {
+func (s *Service) convertToUserInfo(ctx context.Context, userInfo *rds.UserInfo) (res *api.UserInfo, err error) {
 	PIDs := userInfo.GetPIDs()
-	res = &base_api.UserInfo{
+	res = &api.UserInfo{
 		Id:   userInfo.Id,
-		Pets: make([]*base_api.PetInfo, len(PIDs)),
+		Pets: make([]*api.PetInfo, len(PIDs)),
 	}
 	for i, pet := range userInfo.Pets {
-		res.Pets[i] = &base_api.PetInfo{
+		res.Pets[i] = &api.PetInfo{
 			Id:        pet.Id,
 			Name:      pet.Name,
 			Gender:    uint32(pet.Gender),

@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 
-	base_api "github.com/DOGTT/dm-api-server/api/base"
+	api "github.com/DOGTT/dm-api-server/api/base"
 	"github.com/DOGTT/dm-api-server/internal/data/fds"
 	"github.com/DOGTT/dm-api-server/internal/data/rds"
 	"github.com/DOGTT/dm-api-server/internal/utils"
@@ -12,7 +12,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func validChannelCreateRequest(req *base_api.ChannelCreateReq) error {
+func validChannelCreateRequest(req *api.ChannelCreateReq) error {
 	if req == nil {
 		return EM_CommonFail_BadRequest.PutDesc("req is required")
 	}
@@ -27,15 +27,15 @@ func validChannelCreateRequest(req *base_api.ChannelCreateReq) error {
 	return nil
 }
 
-func (s *Service) ChannelTypeList(ctx context.Context, req *base_api.ChannelTypeListReq) (res *base_api.ChannelTypeListRes, err error) {
-	res = &base_api.ChannelTypeListRes{}
+func (s *Service) ChannelTypeList(ctx context.Context, req *api.ChannelTypeListReq) (res *api.ChannelTypeListRes, err error) {
+	res = &api.ChannelTypeListRes{}
 	data, err := s.data.ListChannelTypeInfo(ctx)
 	if err != nil {
 		return
 	}
-	res.ChannelTypes = make([]*base_api.ChannelTypeInfo, len(data))
+	res.ChannelTypes = make([]*api.ChannelTypeInfo, len(data))
 	for i, v := range data {
-		res.ChannelTypes[i] = &base_api.ChannelTypeInfo{
+		res.ChannelTypes[i] = &api.ChannelTypeInfo{
 			Id:             uint32(v.Id),
 			Name:           v.Name,
 			CoverageRadius: int32(v.CoverageRadius),
@@ -47,12 +47,12 @@ func (s *Service) ChannelTypeList(ctx context.Context, req *base_api.ChannelType
 	return
 }
 
-func (s *Service) ChannelCreate(ctx context.Context, req *base_api.ChannelCreateReq) (res *base_api.ChannelCreateRes, err error) {
+func (s *Service) ChannelCreate(ctx context.Context, req *api.ChannelCreateReq) (res *api.ChannelCreateRes, err error) {
 	// valid
 	if err = validChannelCreateRequest(req); err != nil {
 		return
 	}
-	res = &base_api.ChannelCreateRes{}
+	res = &api.ChannelCreateRes{}
 	tc := getClaimFromContext(ctx)
 	// TODO: 检查类型，检查坐标是否太近
 	ch := req.GetChannel()
@@ -78,8 +78,8 @@ func (s *Service) ChannelCreate(ctx context.Context, req *base_api.ChannelCreate
 	return
 }
 
-func (s *Service) ChannelDelete(ctx context.Context, req *base_api.ChannelDeleteReq) (res *base_api.ChannelDeleteRes, err error) {
-	res = &base_api.ChannelDeleteRes{}
+func (s *Service) ChannelDelete(ctx context.Context, req *api.ChannelDeleteReq) (res *api.ChannelDeleteRes, err error) {
+	res = &api.ChannelDeleteRes{}
 	// tc := getClaimFromContext(ctx)
 	// TODO，权限检查
 	if err = s.data.DeleteChannelInfo(ctx, req.GetChId()); err != nil {
@@ -88,7 +88,7 @@ func (s *Service) ChannelDelete(ctx context.Context, req *base_api.ChannelDelete
 	return
 }
 
-func validChannelUpdateRequest(req *base_api.ChannelUpdateReq) error {
+func validChannelUpdateRequest(req *api.ChannelUpdateReq) error {
 	if req == nil {
 		return EM_CommonFail_BadRequest.PutDesc("req is required")
 	}
@@ -103,13 +103,13 @@ func validChannelUpdateRequest(req *base_api.ChannelUpdateReq) error {
 	return nil
 }
 
-func (s *Service) ChannelUpdate(ctx context.Context, req *base_api.ChannelUpdateReq) (res *base_api.ChannelUpdateRes, err error) {
+func (s *Service) ChannelUpdate(ctx context.Context, req *api.ChannelUpdateReq) (res *api.ChannelUpdateRes, err error) {
 	// valid
 	if err = validChannelUpdateRequest(req); err != nil {
 		return
 	}
 	log.Ctx(ctx).Debug("update request", zap.String("req", spew.Sdump(req)))
-	res = &base_api.ChannelUpdateRes{}
+	res = &api.ChannelUpdateRes{}
 	// TODO，权限检查
 	ch := req.GetChannel()
 	ChannelInfo := &rds.ChannelInfo{
@@ -124,14 +124,14 @@ func (s *Service) ChannelUpdate(ctx context.Context, req *base_api.ChannelUpdate
 	return
 }
 
-func (s *Service) ChannelDetailQueryById(ctx context.Context, req *base_api.ChannelDetailQueryByIdReq) (res *base_api.ChannelDetailQueryByIdRes, err error) {
+func (s *Service) ChannelDetailQueryById(ctx context.Context, req *api.ChannelDetailQueryByIdReq) (res *api.ChannelDetailQueryByIdRes, err error) {
 	var cInfo *rds.ChannelInfo
 	cInfo, err = s.data.GetChannelInfo(ctx, req.GetChId())
 	if err != nil {
 		err = EM_CommonFail_Internal.PutDesc(err.Error())
 		return
 	}
-	res = &base_api.ChannelDetailQueryByIdRes{}
+	res = &api.ChannelDetailQueryByIdRes{}
 	res.Channel, err = s.convertToChannelInfo(ctx, cInfo)
 	if err != nil {
 		return
@@ -145,17 +145,17 @@ func (s *Service) ChannelDetailQueryById(ctx context.Context, req *base_api.Chan
 	return
 }
 
-func (s *Service) convertToChannelInfo(ctx context.Context, pInfo *rds.ChannelInfo) (res *base_api.ChannelInfo, err error) {
-	res = &base_api.ChannelInfo{
+func (s *Service) convertToChannelInfo(ctx context.Context, pInfo *rds.ChannelInfo) (res *api.ChannelInfo, err error) {
+	res = &api.ChannelInfo{
 		Id:     pInfo.Id,
 		Uid:    pInfo.UId,
 		TypeId: uint32(pInfo.TypeId),
 		Title:  pInfo.Title,
-		Avatar: &base_api.MediaInfo{
+		Avatar: &api.MediaInfo{
 			Uuid: pInfo.AvatarId,
 		},
 		Intro: pInfo.Intro,
-		Location: &base_api.LocationInfo{
+		Location: &api.LocationInfo{
 			LngLat:  utils.PointCoordFromGeometry(pInfo.LngLat),
 			Address: pInfo.PoiDetail.Address,
 		},
@@ -167,7 +167,7 @@ func (s *Service) convertToChannelInfo(ctx context.Context, pInfo *rds.ChannelIn
 		res.UpdatedAt = pInfo.UpdatedAt.UnixMilli()
 	}
 	// set stats
-	res.Stats = &base_api.ChannelStats{
+	res.Stats = &api.ChannelStats{
 		ViewsCnt:    int32(pInfo.Stats.ViewsCnt),
 		LikesCnt:    int32(pInfo.Stats.LikesCnt),
 		MarksCnt:    int32(pInfo.Stats.MarksCnt),
@@ -191,12 +191,12 @@ func (s *Service) convertToChannelInfo(ctx context.Context, pInfo *rds.ChannelIn
 	return
 }
 
-func (s *Service) ChannelFullQueryById(ctx context.Context, req *base_api.ChannelFullQueryByIdReq) (res *base_api.ChannelFullQueryByIdRes, err error) {
+func (s *Service) ChannelFullQueryById(ctx context.Context, req *api.ChannelFullQueryByIdReq) (res *api.ChannelFullQueryByIdRes, err error) {
 	// TODO
 	return
 }
 
-func (s *Service) ChannelBaseQueryByBound(ctx context.Context, req *base_api.ChannelBaseQueryByBoundReq) (res *base_api.ChannelBaseQueryByBoundRes, err error) {
+func (s *Service) ChannelBaseQueryByBound(ctx context.Context, req *api.ChannelBaseQueryByBoundReq) (res *api.ChannelBaseQueryByBoundRes, err error) {
 	var pofoList []*rds.ChannelInfo
 	log.Ctx(ctx).Debug("query request", zap.String("req", spew.Sdump(req)))
 	pofoList, err = s.data.ListChannelInfo(ctx, &rds.ChannelFilter{
@@ -208,8 +208,8 @@ func (s *Service) ChannelBaseQueryByBound(ctx context.Context, req *base_api.Cha
 		return
 	}
 	log.Ctx(ctx).Debug("query result", zap.String("pofoList", spew.Sdump(pofoList)))
-	res = &base_api.ChannelBaseQueryByBoundRes{
-		Channels: make([]*base_api.ChannelInfo, len(pofoList)),
+	res = &api.ChannelBaseQueryByBoundRes{
+		Channels: make([]*api.ChannelInfo, len(pofoList)),
 	}
 	for i, pofo := range pofoList {
 		res.Channels[i], err = s.convertToChannelInfo(ctx, pofo)
@@ -220,9 +220,9 @@ func (s *Service) ChannelBaseQueryByBound(ctx context.Context, req *base_api.Cha
 	return
 }
 
-func (s *Service) ChannelInteraction(ctx context.Context, req *base_api.ChannelInteractionReq) (res *base_api.ChannelInteractionRes, err error) {
+func (s *Service) ChannelInteraction(ctx context.Context, req *api.ChannelInteractionReq) (res *api.ChannelInteractionRes, err error) {
 	// tc := getClaimFromContext(ctx)
-	res = new(base_api.ChannelInteractionRes)
+	res = new(api.ChannelInteractionRes)
 	// err = s.data.CreateChannelIxnRecordWithCount(ctx, &rds.UserChannelIxnRecord{
 	// 	ChannelUUID: req.GetUuid(),
 	// 	IntType:     rds.InxType(req.GetIxnType()),
@@ -232,7 +232,7 @@ func (s *Service) ChannelInteraction(ctx context.Context, req *base_api.ChannelI
 	return
 }
 
-func (s *Service) ChannelComment(ctx context.Context, req *base_api.ChannelCommentReq) (res *base_api.ChannelCommentRes, err error) {
+func (s *Service) ChannelComment(ctx context.Context, req *api.ChannelCommentReq) (res *api.ChannelCommentRes, err error) {
 	// TODO
 	// tc := getClaimFromContext(ctx)
 	// 查询Channel信息，检查是否存在
@@ -240,7 +240,7 @@ func (s *Service) ChannelComment(ctx context.Context, req *base_api.ChannelComme
 	// if err = s.data.ExistChannelInfo(ctx, ChannelUUID); err != nil {
 	// 	return
 	// }
-	res = new(base_api.ChannelCommentRes)
+	res = new(api.ChannelCommentRes)
 
 	// err = s.data.CreateChannelIxnRecordWithCount(ctx, &rds.UserChannelIxnRecord{
 	// 	ChannelUUID: ChannelUUID,

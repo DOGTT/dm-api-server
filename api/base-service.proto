@@ -44,9 +44,9 @@ service BaseService {
     }
 
     // 批量获取对象上传预签名URL
-    rpc MediaPutPresignURLBatchGet(MediaPutPresignURLBatchGetReq) returns (MediaPutPresignURLBatchGetRes) {
+    rpc MediaPutURLBatchGet(MediaPutURLBatchGetReq) returns (MediaPutURLBatchGetRes) {
         option (google.api.http) = {
-            get: "/v1/media/put_presign_url/batch"
+            get: "/v1/media/put_url/batch"
         };
     }
 
@@ -172,12 +172,12 @@ message LocationCommonSearchRes {
 
 
 // 批量获取对象上传预签名URL请求
-message MediaPutPresignURLBatchGetReq {
+message MediaPutURLBatchGetReq {
     common.MediaType media_type  = 1;
     int32 count = 2;
 }
 
-message MediaPutPresignURLBatchGetRes {
+message MediaPutURLBatchGetRes {
     repeated common.MediaInfo media = 1;
 }
 

@@ -7,7 +7,6 @@ import (
 	"net/http"
 
 	api "github.com/DOGTT/dm-api-server/api/base"
-	base_api "github.com/DOGTT/dm-api-server/api/base"
 	gin_api "github.com/DOGTT/dm-api-server/api/gin"
 	"github.com/DOGTT/dm-api-server/internal/utils"
 	"github.com/gin-gonic/gin"
@@ -83,7 +82,7 @@ func (s *Service) BaseServiceFastRegisterWeChat(c *gin.Context) {
 }
 
 func (s *Service) BaseServiceLoginWeChat(c *gin.Context) {
-	req := &base_api.LoginWeChatReq{}
+	req := &api.LoginWeChatReq{}
 	if err := c.ShouldBind(&req); err != nil {
 		s.putGinError(c, EM_CommonFail_BadRequest)
 		return
@@ -97,7 +96,7 @@ func (s *Service) BaseServiceLoginWeChat(c *gin.Context) {
 }
 
 func (s *Service) BaseServiceLocationCommonSearch(c *gin.Context, params gin_api.BaseServiceLocationCommonSearchParams) {
-	req := &base_api.LocationCommonSearchReq{}
+	req := &api.LocationCommonSearchReq{}
 	if params.Input != nil {
 		req.Input = *params.Input
 	}
@@ -110,8 +109,8 @@ func (s *Service) BaseServiceLocationCommonSearch(c *gin.Context, params gin_api
 }
 
 func (s *Service) BaseServiceMediaPutPresignURLBatchGet(c *gin.Context, params gin_api.BaseServiceMediaPutPresignURLBatchGetParams) {
-	req := &base_api.MediaPutPresignURLBatchGetReq{
-		MediaType: base_api.MediaType(*params.MediaType),
+	req := &api.MediaPutPresignURLBatchGetReq{
+		MediaType: api.MediaType(*params.MediaType),
 		Count:     *params.Count,
 	}
 	res, err := s.MediaPutPresignURLBatchGet(withGinContext(c), req)
@@ -123,7 +122,7 @@ func (s *Service) BaseServiceMediaPutPresignURLBatchGet(c *gin.Context, params g
 }
 
 func (s *Service) BaseServiceChannelTypeList(c *gin.Context) {
-	req := &base_api.ChannelTypeListReq{}
+	req := &api.ChannelTypeListReq{}
 	res, err := s.ChannelTypeList(withGinContext(c), req)
 	if err != nil {
 		s.putGinError(c, err)
@@ -133,7 +132,7 @@ func (s *Service) BaseServiceChannelTypeList(c *gin.Context) {
 }
 
 func (s *Service) BaseServiceChannelCreate(c *gin.Context) {
-	req := &base_api.ChannelCreateReq{}
+	req := &api.ChannelCreateReq{}
 	if err := c.ShouldBind(&req); err != nil {
 		s.putGinError(c, EM_CommonFail_BadRequest)
 		return
@@ -147,11 +146,9 @@ func (s *Service) BaseServiceChannelCreate(c *gin.Context) {
 }
 
 func (s *Service) BaseServiceChannelDelete(c *gin.Context, params gin_api.BaseServiceChannelDeleteParams) {
-
-	req := &base_api.ChannelDeleteReq{
+	req := &api.ChannelDeleteReq{
 		ChId: utils.ConvertToUint64(*params.ChId),
 	}
-
 	res, err := s.ChannelDelete(withGinContext(c), req)
 	if err != nil {
 		s.putGinError(c, err)
@@ -161,12 +158,11 @@ func (s *Service) BaseServiceChannelDelete(c *gin.Context, params gin_api.BaseSe
 }
 
 func (s *Service) BaseServiceChannelUpdate(c *gin.Context) {
-	req := &base_api.ChannelUpdateReq{}
+	req := &api.ChannelUpdateReq{}
 	if err := c.ShouldBind(&req); err != nil {
 		s.putGinError(c, EM_CommonFail_BadRequest)
 		return
 	}
-
 	res, err := s.ChannelUpdate(withGinContext(c), req)
 	if err != nil {
 		s.putGinError(c, err)
@@ -176,12 +172,11 @@ func (s *Service) BaseServiceChannelUpdate(c *gin.Context) {
 }
 
 func (s *Service) BaseServiceChannelBaseQueryByBound(c *gin.Context) {
-	req := &base_api.ChannelBaseQueryByBoundReq{}
+	req := &api.ChannelBaseQueryByBoundReq{}
 	if err := c.ShouldBind(&req); err != nil {
 		s.putGinError(c, EM_CommonFail_BadRequest)
 		return
 	}
-
 	res, err := s.ChannelBaseQueryByBound(withGinContext(c), req)
 	if err != nil {
 		s.putGinError(c, err)
@@ -191,10 +186,9 @@ func (s *Service) BaseServiceChannelBaseQueryByBound(c *gin.Context) {
 }
 
 func (s *Service) BaseServiceChannelDetailQueryById(c *gin.Context, params gin_api.BaseServiceChannelDetailQueryByIdParams) {
-	req := &base_api.ChannelDetailQueryByIdReq{
+	req := &api.ChannelDetailQueryByIdReq{
 		ChId: utils.ConvertToUint64(*params.ChId),
 	}
-
 	res, err := s.ChannelDetailQueryById(withGinContext(c), req)
 	if err != nil {
 		s.putGinError(c, err)
@@ -204,10 +198,9 @@ func (s *Service) BaseServiceChannelDetailQueryById(c *gin.Context, params gin_a
 }
 
 func (s *Service) BaseServiceChannelFullQueryById(c *gin.Context, params gin_api.BaseServiceChannelFullQueryByIdParams) {
-	req := &base_api.ChannelFullQueryByIdReq{
+	req := &api.ChannelFullQueryByIdReq{
 		ChId: utils.ConvertToUint64(*params.ChId),
 	}
-
 	res, err := s.ChannelFullQueryById(withGinContext(c), req)
 	if err != nil {
 		s.putGinError(c, err)
@@ -217,12 +210,11 @@ func (s *Service) BaseServiceChannelFullQueryById(c *gin.Context, params gin_api
 }
 
 func (s *Service) BaseServiceChannelInteraction(c *gin.Context) {
-	req := &base_api.ChannelInteractionReq{}
+	req := &api.ChannelInteractionReq{}
 	if err := c.ShouldBind(&req); err != nil {
 		s.putGinError(c, EM_CommonFail_BadRequest)
 		return
 	}
-
 	res, err := s.ChannelInteraction(withGinContext(c), req)
 	if err != nil {
 		s.putGinError(c, err)
@@ -232,12 +224,11 @@ func (s *Service) BaseServiceChannelInteraction(c *gin.Context) {
 }
 
 func (s *Service) BaseServiceChannelComment(c *gin.Context) {
-	req := &base_api.ChannelCommentReq{}
+	req := &api.ChannelCommentReq{}
 	if err := c.ShouldBind(&req); err != nil {
 		s.putGinError(c, EM_CommonFail_BadRequest.PutDesc(err.Error()))
 		return
 	}
-
 	res, err := s.ChannelComment(withGinContext(c), req)
 	if err != nil {
 		s.putGinError(c, err)

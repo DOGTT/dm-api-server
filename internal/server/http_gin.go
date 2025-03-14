@@ -66,6 +66,8 @@ func NewGinHandler(c *conf.Server, svc *service.Service) http.Handler {
 	swagger.Servers = nil
 	r := gin.Default()
 
+	// 未来可以使用github.com/bytedance/sonic，增强json处理性能。
+
 	// 配置 CORS
 	if c.HTTP.EnableCORS {
 		r.Use(cors.New(cors.Config{
