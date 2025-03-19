@@ -2,6 +2,9 @@ package rds
 
 import (
 	"context"
+	"database/sql/driver"
+	"encoding/json"
+	"errors"
 	"fmt"
 	"time"
 
@@ -52,6 +55,24 @@ type PoiDetail struct {
 	// - 附属坐标信息
 	PoiId   string `json:"poi_id"`
 	Address string `json:"address"`
+}
+
+// Implement the Scanner interface for PoiDetail
+func (p *PoiDetail) Scan(value interface{}) error {
+	if value == nil {
+		return nil
+	}
+	bytes, ok := value.([]byte)
+	if !ok {
+		return errors.New("type assertion to []byte failed")
+	}
+
+	return json.Unmarshal(bytes, p)
+}
+
+// Implement the Valuer interface for PoiDetail
+func (p PoiDetail) Value() (driver.Value, error) {
+	return json.Marshal(p)
 }
 
 type ChannelFilter struct {
