@@ -53,8 +53,7 @@ func (s *Service) WeChatLogin(ctx context.Context, req *api.LoginWeChatReq) (res
 		return
 	}
 	token, err := s.kp.GenerateToken(utils.TokenClaims{
-		UID:  userInfo.Id,
-		PIDs: userInfo.GetPIDs(),
+		UID: userInfo.Id,
 	})
 	if err != nil {
 		err = EM_CommonFail_Internal.PutDesc(err.Error())
@@ -124,8 +123,7 @@ func (s *Service) WeChatRegisterFast(ctx context.Context, req *api.FastRegisterW
 		return
 	}
 	token, err := s.kp.GenerateToken(utils.TokenClaims{
-		UID:  user.Id,
-		PIDs: user.GetPIDs(),
+		UID: user.Id,
 	})
 	if err != nil {
 		err = EM_CommonFail_Internal.PutDesc(err.Error())
