@@ -2,32 +2,53 @@ syntax = "proto3";
 
 package common;
 
-
-option go_package="github.com/DOGTT/dm-api-server/api/base;api";
-
+option go_package = "github.com/DOGTT/dm-api-server/api/base;api";
 
 message PointCoord {
-    float lat = 1;
-    float lng = 2;
+  float lat = 1;
+  float lng = 2;
 }
 
 message BoundCoord {
-    PointCoord sw = 1;
-    PointCoord ne = 2;
+  PointCoord sw = 1;
+  PointCoord ne = 2;
+}
+
+message LocationInfo {
+  // 足迹位置, 不可更新
+  common.PointCoord lng_lat = 1;
+  // POI 地址, 不可更新
+  string address = 2;
 }
 
 enum MediaType {
-    MT_DEFAULT = 0;
-    MT_POFP_IMAGE = 1;
+  MT_DEFAULT = 0;
+  MT_AVATAR = 1;
 }
 
 message MediaInfo {
-    // ID, 可写入
-    string uuid = 1;
-    // 类型
-    MediaType type = 2;
-    // 读取URL
-    string get_url = 3;
-    // 写入URL
-    string put_url = 4;
+  // ID, 可写入
+  string uuid = 1;
+  // 类型
+  MediaType type = 2;
+  // 读取URL
+  string get_url = 3;
+  // 写入URL
+  string put_url = 4;
+}
+
+
+
+// 状态互动类型
+enum UserIxnStateType {
+    STATE_DEFAULT = 0;
+    STAR = 1;
+    JOIN = 2;
+}
+
+// 事件互动类型
+enum UserIxnEventType {
+    EVENT_DEFAULT = 0;
+    // 到达
+    LAND = 1;
 }

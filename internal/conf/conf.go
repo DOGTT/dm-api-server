@@ -35,7 +35,7 @@ type HTTPServer struct {
 func GetAddrSplit(addr string) (ip string, portStr string) {
 
 	s := strings.Split(addr, ":")
-	if s == nil || len(s) < 2 {
+	if len(s) < 2 {
 		return
 	}
 	return s[0], s[1]

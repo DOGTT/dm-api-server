@@ -1,0 +1,54 @@
+{
+    "channel": {
+        "type_id": 1,
+        "title": "青少年宫旁草地",
+        "avatar": {
+            "uuid": "1233421321",
+            "type": 1
+        },
+        "intro": "每天晚上超多狗狗",
+        "location": {
+            "lng_lat": {
+                "lat": 22.545864325965013,
+                "lng": 113.88149142389454
+            },
+            "address": "宝安青少年宫"
+        }
+    }
+}
+{
+    "channel": {
+        "type_id": 2,
+        "title": "宠爱友好餐厅",
+        "avatar": {
+            "uuid": "1233421321",
+            "type": 1
+        },
+        "intro": "每天晚上超多狗狗",
+        "location": {
+            "lng_lat": {
+                "lat": 22.55100078551942,
+                "lng": 113.8775019419171
+            },
+            "address": ""
+        }
+    }
+}
+{
+    "channel": {
+        "type_id": 3,
+        "title": "宠爱友好餐厅",
+        "avatar": {
+            "uuid": "1233421321",
+            "type": 1
+        },
+        "intro": "每天晚上超多狗狗",
+        "location": {
+            "lng_lat": {
+                "lat": 22.56034688402926,
+                "lng": 113.88894457650508
+            },
+            "address": ""
+        }
+    }
+}

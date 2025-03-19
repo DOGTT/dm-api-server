@@ -4,32 +4,11 @@ package user;
 
 option go_package="github.com/DOGTT/dm-api-server/api/base;api";
 
+import "pet.proto";
 
 
 message UserInfo {
     uint64 id = 1;
-    repeated PetInfo pets = 2;
+    string title = 2;
+    repeated pet.PetInfo pets = 3;
 }   
-
-
-message PetInfo {
-    uint64 id = 1;
-    string name = 3;
-    uint32 gender = 4; // 性别，使用 uint32 表示
-    string avatar = 5;
-    string specie = 6;
-    string breed = 7;
-    int32 weight = 8; // 使用 int32 表示重量
-    string birth_date = 9;
-
-    int64 created_at = 21;
-    int64 updated_at = 22;
-}
-
-// 宠物注册信息
-message PetInfoReg {
-    // 名字
-    string name = 1;
-    // base64 data
-    bytes avatar_data = 2;
-}

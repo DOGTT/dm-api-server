@@ -19,19 +19,19 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	BaseService_WeChatLogin_FullMethodName                = "/base_service.v1.BaseService/WeChatLogin"
-	BaseService_WeChatRegisterFast_FullMethodName         = "/base_service.v1.BaseService/WeChatRegisterFast"
+	BaseService_LoginWeChat_FullMethodName                = "/base_service.v1.BaseService/LoginWeChat"
+	BaseService_FastRegisterWeChat_FullMethodName         = "/base_service.v1.BaseService/FastRegisterWeChat"
 	BaseService_LocationCommonSearch_FullMethodName       = "/base_service.v1.BaseService/LocationCommonSearch"
 	BaseService_MediaPutPresignURLBatchGet_FullMethodName = "/base_service.v1.BaseService/MediaPutPresignURLBatchGet"
-	BaseService_PofpTypeList_FullMethodName               = "/base_service.v1.BaseService/PofpTypeList"
-	BaseService_PofpCreate_FullMethodName                 = "/base_service.v1.BaseService/PofpCreate"
-	BaseService_PofpUpdate_FullMethodName                 = "/base_service.v1.BaseService/PofpUpdate"
-	BaseService_PofpDelete_FullMethodName                 = "/base_service.v1.BaseService/PofpDelete"
-	BaseService_PofpBaseQueryByBound_FullMethodName       = "/base_service.v1.BaseService/PofpBaseQueryByBound"
-	BaseService_PofpDetailQueryById_FullMethodName        = "/base_service.v1.BaseService/PofpDetailQueryById"
-	BaseService_PofpFullQueryById_FullMethodName          = "/base_service.v1.BaseService/PofpFullQueryById"
-	BaseService_PofpInteraction_FullMethodName            = "/base_service.v1.BaseService/PofpInteraction"
-	BaseService_PofpComment_FullMethodName                = "/base_service.v1.BaseService/PofpComment"
+	BaseService_ChannelTypeList_FullMethodName            = "/base_service.v1.BaseService/ChannelTypeList"
+	BaseService_ChannelCreate_FullMethodName              = "/base_service.v1.BaseService/ChannelCreate"
+	BaseService_ChannelUpdate_FullMethodName              = "/base_service.v1.BaseService/ChannelUpdate"
+	BaseService_ChannelDelete_FullMethodName              = "/base_service.v1.BaseService/ChannelDelete"
+	BaseService_ChannelBaseQueryByBound_FullMethodName    = "/base_service.v1.BaseService/ChannelBaseQueryByBound"
+	BaseService_ChannelDetailQueryById_FullMethodName     = "/base_service.v1.BaseService/ChannelDetailQueryById"
+	BaseService_ChannelFullQueryById_FullMethodName       = "/base_service.v1.BaseService/ChannelFullQueryById"
+	BaseService_ChannelInteraction_FullMethodName         = "/base_service.v1.BaseService/ChannelInteraction"
+	BaseService_ChannelComment_FullMethodName             = "/base_service.v1.BaseService/ChannelComment"
 )
 
 // BaseServiceClient is the client API for BaseService service.
@@ -44,31 +44,31 @@ const (
 type BaseServiceClient interface {
 	// 微信小程序登录接口
 	// @security BearerAuth
-	WeChatLogin(ctx context.Context, in *WeChatLoginReq, opts ...grpc.CallOption) (*WeChatLoginResp, error)
+	LoginWeChat(ctx context.Context, in *LoginWeChatReq, opts ...grpc.CallOption) (*LoginWeChatRes, error)
 	// 微信小程序快速登录注册接口定义
-	WeChatRegisterFast(ctx context.Context, in *WeChatRegisterFastReq, opts ...grpc.CallOption) (*WeChatRegisterFastResp, error)
+	FastRegisterWeChat(ctx context.Context, in *FastRegisterWeChatReq, opts ...grpc.CallOption) (*FastRegisterWeChatRes, error)
 	// 通用地点搜索
-	LocationCommonSearch(ctx context.Context, in *LocationCommonSearchReq, opts ...grpc.CallOption) (*LocationCommonSearchResp, error)
+	LocationCommonSearch(ctx context.Context, in *LocationCommonSearchReq, opts ...grpc.CallOption) (*LocationCommonSearchRes, error)
 	// 批量获取对象上传预签名URL
-	MediaPutPresignURLBatchGet(ctx context.Context, in *MediaPutPresignURLBatchGetReq, opts ...grpc.CallOption) (*MediaPutPresignURLBatchGetResp, error)
-	// 列表查询足迹点类型
-	PofpTypeList(ctx context.Context, in *PofpTypeListReq, opts ...grpc.CallOption) (*PofpTypeListResp, error)
-	// 创建足迹点
-	PofpCreate(ctx context.Context, in *PofpCreateReq, opts ...grpc.CallOption) (*PofpCreateResp, error)
-	// 更新足迹点
-	PofpUpdate(ctx context.Context, in *PofpUpdateReq, opts ...grpc.CallOption) (*PofpUpdateResp, error)
-	// 删除足迹点
-	PofpDelete(ctx context.Context, in *PofpDeleteReq, opts ...grpc.CallOption) (*PofpDeleteResp, error)
+	MediaPutPresignURLBatchGet(ctx context.Context, in *MediaPutPresignURLBatchGetReq, opts ...grpc.CallOption) (*MediaPutPresignURLBatchGetRes, error)
+	// 列表查询足迹频道类型
+	ChannelTypeList(ctx context.Context, in *ChannelTypeListReq, opts ...grpc.CallOption) (*ChannelTypeListRes, error)
+	// 创建足迹频道
+	ChannelCreate(ctx context.Context, in *ChannelCreateReq, opts ...grpc.CallOption) (*ChannelCreateRes, error)
+	// 更新足迹频道
+	ChannelUpdate(ctx context.Context, in *ChannelUpdateReq, opts ...grpc.CallOption) (*ChannelUpdateRes, error)
+	// 删除足迹频道
+	ChannelDelete(ctx context.Context, in *ChannelDeleteReq, opts ...grpc.CallOption) (*ChannelDeleteRes, error)
 	// 按照范围查询足迹基础信息
-	PofpBaseQueryByBound(ctx context.Context, in *PofpBaseQueryByBoundReq, opts ...grpc.CallOption) (*PofpBaseQueryByBoundResp, error)
-	// 按照id查询足迹简要信息
-	PofpDetailQueryById(ctx context.Context, in *PofpDetailQueryByIdReq, opts ...grpc.CallOption) (*PofpDetailQueryByIdResp, error)
-	// 按照id查询足迹页完整信息
-	PofpFullQueryById(ctx context.Context, in *PofpFullQueryByIdReq, opts ...grpc.CallOption) (*PofpFullQueryByIdResp, error)
-	// 足迹点互动
-	PofpInteraction(ctx context.Context, in *PofpInteractionReq, opts ...grpc.CallOption) (*PofpInteractionResp, error)
-	// 足迹点评论
-	PofpComment(ctx context.Context, in *PofpCommentReq, opts ...grpc.CallOption) (*PofpCommentResp, error)
+	ChannelBaseQueryByBound(ctx context.Context, in *ChannelBaseQueryByBoundReq, opts ...grpc.CallOption) (*ChannelBaseQueryByBoundRes, error)
+	// 按照id查询足迹静态完整信息
+	ChannelDetailQueryById(ctx context.Context, in *ChannelDetailQueryByIdReq, opts ...grpc.CallOption) (*ChannelDetailQueryByIdRes, error)
+	// 按照id查询足迹频道动态信息
+	ChannelFullQueryById(ctx context.Context, in *ChannelFullQueryByIdReq, opts ...grpc.CallOption) (*ChannelFullQueryByIdRes, error)
+	// 足迹频道互动
+	ChannelInteraction(ctx context.Context, in *ChannelInteractionReq, opts ...grpc.CallOption) (*ChannelInteractionRes, error)
+	// 足迹频道评论
+	ChannelComment(ctx context.Context, in *ChannelCommentReq, opts ...grpc.CallOption) (*ChannelCommentRes, error)
 }
 
 type baseServiceClient struct {
@@ -79,29 +79,29 @@ func NewBaseServiceClient(cc grpc.ClientConnInterface) BaseServiceClient {
 	return &baseServiceClient{cc}
 }
 
-func (c *baseServiceClient) WeChatLogin(ctx context.Context, in *WeChatLoginReq, opts ...grpc.CallOption) (*WeChatLoginResp, error) {
+func (c *baseServiceClient) LoginWeChat(ctx context.Context, in *LoginWeChatReq, opts ...grpc.CallOption) (*LoginWeChatRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(WeChatLoginResp)
-	err := c.cc.Invoke(ctx, BaseService_WeChatLogin_FullMethodName, in, out, cOpts...)
+	out := new(LoginWeChatRes)
+	err := c.cc.Invoke(ctx, BaseService_LoginWeChat_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *baseServiceClient) WeChatRegisterFast(ctx context.Context, in *WeChatRegisterFastReq, opts ...grpc.CallOption) (*WeChatRegisterFastResp, error) {
+func (c *baseServiceClient) FastRegisterWeChat(ctx context.Context, in *FastRegisterWeChatReq, opts ...grpc.CallOption) (*FastRegisterWeChatRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(WeChatRegisterFastResp)
-	err := c.cc.Invoke(ctx, BaseService_WeChatRegisterFast_FullMethodName, in, out, cOpts...)
+	out := new(FastRegisterWeChatRes)
+	err := c.cc.Invoke(ctx, BaseService_FastRegisterWeChat_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *baseServiceClient) LocationCommonSearch(ctx context.Context, in *LocationCommonSearchReq, opts ...grpc.CallOption) (*LocationCommonSearchResp, error) {
+func (c *baseServiceClient) LocationCommonSearch(ctx context.Context, in *LocationCommonSearchReq, opts ...grpc.CallOption) (*LocationCommonSearchRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(LocationCommonSearchResp)
+	out := new(LocationCommonSearchRes)
 	err := c.cc.Invoke(ctx, BaseService_LocationCommonSearch_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -109,9 +109,9 @@ func (c *baseServiceClient) LocationCommonSearch(ctx context.Context, in *Locati
 	return out, nil
 }
 
-func (c *baseServiceClient) MediaPutPresignURLBatchGet(ctx context.Context, in *MediaPutPresignURLBatchGetReq, opts ...grpc.CallOption) (*MediaPutPresignURLBatchGetResp, error) {
+func (c *baseServiceClient) MediaPutPresignURLBatchGet(ctx context.Context, in *MediaPutPresignURLBatchGetReq, opts ...grpc.CallOption) (*MediaPutPresignURLBatchGetRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(MediaPutPresignURLBatchGetResp)
+	out := new(MediaPutPresignURLBatchGetRes)
 	err := c.cc.Invoke(ctx, BaseService_MediaPutPresignURLBatchGet_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -119,90 +119,90 @@ func (c *baseServiceClient) MediaPutPresignURLBatchGet(ctx context.Context, in *
 	return out, nil
 }
 
-func (c *baseServiceClient) PofpTypeList(ctx context.Context, in *PofpTypeListReq, opts ...grpc.CallOption) (*PofpTypeListResp, error) {
+func (c *baseServiceClient) ChannelTypeList(ctx context.Context, in *ChannelTypeListReq, opts ...grpc.CallOption) (*ChannelTypeListRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(PofpTypeListResp)
-	err := c.cc.Invoke(ctx, BaseService_PofpTypeList_FullMethodName, in, out, cOpts...)
+	out := new(ChannelTypeListRes)
+	err := c.cc.Invoke(ctx, BaseService_ChannelTypeList_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *baseServiceClient) PofpCreate(ctx context.Context, in *PofpCreateReq, opts ...grpc.CallOption) (*PofpCreateResp, error) {
+func (c *baseServiceClient) ChannelCreate(ctx context.Context, in *ChannelCreateReq, opts ...grpc.CallOption) (*ChannelCreateRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(PofpCreateResp)
-	err := c.cc.Invoke(ctx, BaseService_PofpCreate_FullMethodName, in, out, cOpts...)
+	out := new(ChannelCreateRes)
+	err := c.cc.Invoke(ctx, BaseService_ChannelCreate_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *baseServiceClient) PofpUpdate(ctx context.Context, in *PofpUpdateReq, opts ...grpc.CallOption) (*PofpUpdateResp, error) {
+func (c *baseServiceClient) ChannelUpdate(ctx context.Context, in *ChannelUpdateReq, opts ...grpc.CallOption) (*ChannelUpdateRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(PofpUpdateResp)
-	err := c.cc.Invoke(ctx, BaseService_PofpUpdate_FullMethodName, in, out, cOpts...)
+	out := new(ChannelUpdateRes)
+	err := c.cc.Invoke(ctx, BaseService_ChannelUpdate_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *baseServiceClient) PofpDelete(ctx context.Context, in *PofpDeleteReq, opts ...grpc.CallOption) (*PofpDeleteResp, error) {
+func (c *baseServiceClient) ChannelDelete(ctx context.Context, in *ChannelDeleteReq, opts ...grpc.CallOption) (*ChannelDeleteRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(PofpDeleteResp)
-	err := c.cc.Invoke(ctx, BaseService_PofpDelete_FullMethodName, in, out, cOpts...)
+	out := new(ChannelDeleteRes)
+	err := c.cc.Invoke(ctx, BaseService_ChannelDelete_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *baseServiceClient) PofpBaseQueryByBound(ctx context.Context, in *PofpBaseQueryByBoundReq, opts ...grpc.CallOption) (*PofpBaseQueryByBoundResp, error) {
+func (c *baseServiceClient) ChannelBaseQueryByBound(ctx context.Context, in *ChannelBaseQueryByBoundReq, opts ...grpc.CallOption) (*ChannelBaseQueryByBoundRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(PofpBaseQueryByBoundResp)
-	err := c.cc.Invoke(ctx, BaseService_PofpBaseQueryByBound_FullMethodName, in, out, cOpts...)
+	out := new(ChannelBaseQueryByBoundRes)
+	err := c.cc.Invoke(ctx, BaseService_ChannelBaseQueryByBound_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *baseServiceClient) PofpDetailQueryById(ctx context.Context, in *PofpDetailQueryByIdReq, opts ...grpc.CallOption) (*PofpDetailQueryByIdResp, error) {
+func (c *baseServiceClient) ChannelDetailQueryById(ctx context.Context, in *ChannelDetailQueryByIdReq, opts ...grpc.CallOption) (*ChannelDetailQueryByIdRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(PofpDetailQueryByIdResp)
-	err := c.cc.Invoke(ctx, BaseService_PofpDetailQueryById_FullMethodName, in, out, cOpts...)
+	out := new(ChannelDetailQueryByIdRes)
+	err := c.cc.Invoke(ctx, BaseService_ChannelDetailQueryById_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *baseServiceClient) PofpFullQueryById(ctx context.Context, in *PofpFullQueryByIdReq, opts ...grpc.CallOption) (*PofpFullQueryByIdResp, error) {
+func (c *baseServiceClient) ChannelFullQueryById(ctx context.Context, in *ChannelFullQueryByIdReq, opts ...grpc.CallOption) (*ChannelFullQueryByIdRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(PofpFullQueryByIdResp)
-	err := c.cc.Invoke(ctx, BaseService_PofpFullQueryById_FullMethodName, in, out, cOpts...)
+	out := new(ChannelFullQueryByIdRes)
+	err := c.cc.Invoke(ctx, BaseService_ChannelFullQueryById_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *baseServiceClient) PofpInteraction(ctx context.Context, in *PofpInteractionReq, opts ...grpc.CallOption) (*PofpInteractionResp, error) {
+func (c *baseServiceClient) ChannelInteraction(ctx context.Context, in *ChannelInteractionReq, opts ...grpc.CallOption) (*ChannelInteractionRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(PofpInteractionResp)
-	err := c.cc.Invoke(ctx, BaseService_PofpInteraction_FullMethodName, in, out, cOpts...)
+	out := new(ChannelInteractionRes)
+	err := c.cc.Invoke(ctx, BaseService_ChannelInteraction_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *baseServiceClient) PofpComment(ctx context.Context, in *PofpCommentReq, opts ...grpc.CallOption) (*PofpCommentResp, error) {
+func (c *baseServiceClient) ChannelComment(ctx context.Context, in *ChannelCommentReq, opts ...grpc.CallOption) (*ChannelCommentRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(PofpCommentResp)
-	err := c.cc.Invoke(ctx, BaseService_PofpComment_FullMethodName, in, out, cOpts...)
+	out := new(ChannelCommentRes)
+	err := c.cc.Invoke(ctx, BaseService_ChannelComment_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -219,31 +219,31 @@ func (c *baseServiceClient) PofpComment(ctx context.Context, in *PofpCommentReq,
 type BaseServiceServer interface {
 	// 微信小程序登录接口
 	// @security BearerAuth
-	WeChatLogin(context.Context, *WeChatLoginReq) (*WeChatLoginResp, error)
+	LoginWeChat(context.Context, *LoginWeChatReq) (*LoginWeChatRes, error)
 	// 微信小程序快速登录注册接口定义
-	WeChatRegisterFast(context.Context, *WeChatRegisterFastReq) (*WeChatRegisterFastResp, error)
+	FastRegisterWeChat(context.Context, *FastRegisterWeChatReq) (*FastRegisterWeChatRes, error)
 	// 通用地点搜索
-	LocationCommonSearch(context.Context, *LocationCommonSearchReq) (*LocationCommonSearchResp, error)
+	LocationCommonSearch(context.Context, *LocationCommonSearchReq) (*LocationCommonSearchRes, error)
 	// 批量获取对象上传预签名URL
-	MediaPutPresignURLBatchGet(context.Context, *MediaPutPresignURLBatchGetReq) (*MediaPutPresignURLBatchGetResp, error)
-	// 列表查询足迹点类型
-	PofpTypeList(context.Context, *PofpTypeListReq) (*PofpTypeListResp, error)
-	// 创建足迹点
-	PofpCreate(context.Context, *PofpCreateReq) (*PofpCreateResp, error)
-	// 更新足迹点
-	PofpUpdate(context.Context, *PofpUpdateReq) (*PofpUpdateResp, error)
-	// 删除足迹点
-	PofpDelete(context.Context, *PofpDeleteReq) (*PofpDeleteResp, error)
+	MediaPutPresignURLBatchGet(context.Context, *MediaPutPresignURLBatchGetReq) (*MediaPutPresignURLBatchGetRes, error)
+	// 列表查询足迹频道类型
+	ChannelTypeList(context.Context, *ChannelTypeListReq) (*ChannelTypeListRes, error)
+	// 创建足迹频道
+	ChannelCreate(context.Context, *ChannelCreateReq) (*ChannelCreateRes, error)
+	// 更新足迹频道
+	ChannelUpdate(context.Context, *ChannelUpdateReq) (*ChannelUpdateRes, error)
+	// 删除足迹频道
+	ChannelDelete(context.Context, *ChannelDeleteReq) (*ChannelDeleteRes, error)
 	// 按照范围查询足迹基础信息
-	PofpBaseQueryByBound(context.Context, *PofpBaseQueryByBoundReq) (*PofpBaseQueryByBoundResp, error)
-	// 按照id查询足迹简要信息
-	PofpDetailQueryById(context.Context, *PofpDetailQueryByIdReq) (*PofpDetailQueryByIdResp, error)
-	// 按照id查询足迹页完整信息
-	PofpFullQueryById(context.Context, *PofpFullQueryByIdReq) (*PofpFullQueryByIdResp, error)
-	// 足迹点互动
-	PofpInteraction(context.Context, *PofpInteractionReq) (*PofpInteractionResp, error)
-	// 足迹点评论
-	PofpComment(context.Context, *PofpCommentReq) (*PofpCommentResp, error)
+	ChannelBaseQueryByBound(context.Context, *ChannelBaseQueryByBoundReq) (*ChannelBaseQueryByBoundRes, error)
+	// 按照id查询足迹静态完整信息
+	ChannelDetailQueryById(context.Context, *ChannelDetailQueryByIdReq) (*ChannelDetailQueryByIdRes, error)
+	// 按照id查询足迹频道动态信息
+	ChannelFullQueryById(context.Context, *ChannelFullQueryByIdReq) (*ChannelFullQueryByIdRes, error)
+	// 足迹频道互动
+	ChannelInteraction(context.Context, *ChannelInteractionReq) (*ChannelInteractionRes, error)
+	// 足迹频道评论
+	ChannelComment(context.Context, *ChannelCommentReq) (*ChannelCommentRes, error)
 	mustEmbedUnimplementedBaseServiceServer()
 }
 
@@ -254,44 +254,44 @@ type BaseServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedBaseServiceServer struct{}
 
-func (UnimplementedBaseServiceServer) WeChatLogin(context.Context, *WeChatLoginReq) (*WeChatLoginResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method WeChatLogin not implemented")
+func (UnimplementedBaseServiceServer) LoginWeChat(context.Context, *LoginWeChatReq) (*LoginWeChatRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LoginWeChat not implemented")
 }
-func (UnimplementedBaseServiceServer) WeChatRegisterFast(context.Context, *WeChatRegisterFastReq) (*WeChatRegisterFastResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method WeChatRegisterFast not implemented")
+func (UnimplementedBaseServiceServer) FastRegisterWeChat(context.Context, *FastRegisterWeChatReq) (*FastRegisterWeChatRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FastRegisterWeChat not implemented")
 }
-func (UnimplementedBaseServiceServer) LocationCommonSearch(context.Context, *LocationCommonSearchReq) (*LocationCommonSearchResp, error) {
+func (UnimplementedBaseServiceServer) LocationCommonSearch(context.Context, *LocationCommonSearchReq) (*LocationCommonSearchRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LocationCommonSearch not implemented")
 }
-func (UnimplementedBaseServiceServer) MediaPutPresignURLBatchGet(context.Context, *MediaPutPresignURLBatchGetReq) (*MediaPutPresignURLBatchGetResp, error) {
+func (UnimplementedBaseServiceServer) MediaPutPresignURLBatchGet(context.Context, *MediaPutPresignURLBatchGetReq) (*MediaPutPresignURLBatchGetRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MediaPutPresignURLBatchGet not implemented")
 }
-func (UnimplementedBaseServiceServer) PofpTypeList(context.Context, *PofpTypeListReq) (*PofpTypeListResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PofpTypeList not implemented")
+func (UnimplementedBaseServiceServer) ChannelTypeList(context.Context, *ChannelTypeListReq) (*ChannelTypeListRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChannelTypeList not implemented")
 }
-func (UnimplementedBaseServiceServer) PofpCreate(context.Context, *PofpCreateReq) (*PofpCreateResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PofpCreate not implemented")
+func (UnimplementedBaseServiceServer) ChannelCreate(context.Context, *ChannelCreateReq) (*ChannelCreateRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChannelCreate not implemented")
 }
-func (UnimplementedBaseServiceServer) PofpUpdate(context.Context, *PofpUpdateReq) (*PofpUpdateResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PofpUpdate not implemented")
+func (UnimplementedBaseServiceServer) ChannelUpdate(context.Context, *ChannelUpdateReq) (*ChannelUpdateRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChannelUpdate not implemented")
 }
-func (UnimplementedBaseServiceServer) PofpDelete(context.Context, *PofpDeleteReq) (*PofpDeleteResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PofpDelete not implemented")
+func (UnimplementedBaseServiceServer) ChannelDelete(context.Context, *ChannelDeleteReq) (*ChannelDeleteRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChannelDelete not implemented")
 }
-func (UnimplementedBaseServiceServer) PofpBaseQueryByBound(context.Context, *PofpBaseQueryByBoundReq) (*PofpBaseQueryByBoundResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PofpBaseQueryByBound not implemented")
+func (UnimplementedBaseServiceServer) ChannelBaseQueryByBound(context.Context, *ChannelBaseQueryByBoundReq) (*ChannelBaseQueryByBoundRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChannelBaseQueryByBound not implemented")
 }
-func (UnimplementedBaseServiceServer) PofpDetailQueryById(context.Context, *PofpDetailQueryByIdReq) (*PofpDetailQueryByIdResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PofpDetailQueryById not implemented")
+func (UnimplementedBaseServiceServer) ChannelDetailQueryById(context.Context, *ChannelDetailQueryByIdReq) (*ChannelDetailQueryByIdRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChannelDetailQueryById not implemented")
 }
-func (UnimplementedBaseServiceServer) PofpFullQueryById(context.Context, *PofpFullQueryByIdReq) (*PofpFullQueryByIdResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PofpFullQueryById not implemented")
+func (UnimplementedBaseServiceServer) ChannelFullQueryById(context.Context, *ChannelFullQueryByIdReq) (*ChannelFullQueryByIdRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChannelFullQueryById not implemented")
 }
-func (UnimplementedBaseServiceServer) PofpInteraction(context.Context, *PofpInteractionReq) (*PofpInteractionResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PofpInteraction not implemented")
+func (UnimplementedBaseServiceServer) ChannelInteraction(context.Context, *ChannelInteractionReq) (*ChannelInteractionRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChannelInteraction not implemented")
 }
-func (UnimplementedBaseServiceServer) PofpComment(context.Context, *PofpCommentReq) (*PofpCommentResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PofpComment not implemented")
+func (UnimplementedBaseServiceServer) ChannelComment(context.Context, *ChannelCommentReq) (*ChannelCommentRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChannelComment not implemented")
 }
 func (UnimplementedBaseServiceServer) mustEmbedUnimplementedBaseServiceServer() {}
 func (UnimplementedBaseServiceServer) testEmbeddedByValue()                     {}
@@ -314,38 +314,38 @@ func RegisterBaseServiceServer(s grpc.ServiceRegistrar, srv BaseServiceServer) {
 	s.RegisterService(&BaseService_ServiceDesc, srv)
 }
 
-func _BaseService_WeChatLogin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(WeChatLoginReq)
+func _BaseService_LoginWeChat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginWeChatReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BaseServiceServer).WeChatLogin(ctx, in)
+		return srv.(BaseServiceServer).LoginWeChat(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BaseService_WeChatLogin_FullMethodName,
+		FullMethod: BaseService_LoginWeChat_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).WeChatLogin(ctx, req.(*WeChatLoginReq))
+		return srv.(BaseServiceServer).LoginWeChat(ctx, req.(*LoginWeChatReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BaseService_WeChatRegisterFast_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(WeChatRegisterFastReq)
+func _BaseService_FastRegisterWeChat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FastRegisterWeChatReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BaseServiceServer).WeChatRegisterFast(ctx, in)
+		return srv.(BaseServiceServer).FastRegisterWeChat(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BaseService_WeChatRegisterFast_FullMethodName,
+		FullMethod: BaseService_FastRegisterWeChat_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).WeChatRegisterFast(ctx, req.(*WeChatRegisterFastReq))
+		return srv.(BaseServiceServer).FastRegisterWeChat(ctx, req.(*FastRegisterWeChatReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -386,164 +386,164 @@ func _BaseService_MediaPutPresignURLBatchGet_Handler(srv interface{}, ctx contex
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BaseService_PofpTypeList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PofpTypeListReq)
+func _BaseService_ChannelTypeList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChannelTypeListReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BaseServiceServer).PofpTypeList(ctx, in)
+		return srv.(BaseServiceServer).ChannelTypeList(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BaseService_PofpTypeList_FullMethodName,
+		FullMethod: BaseService_ChannelTypeList_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).PofpTypeList(ctx, req.(*PofpTypeListReq))
+		return srv.(BaseServiceServer).ChannelTypeList(ctx, req.(*ChannelTypeListReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BaseService_PofpCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PofpCreateReq)
+func _BaseService_ChannelCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChannelCreateReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BaseServiceServer).PofpCreate(ctx, in)
+		return srv.(BaseServiceServer).ChannelCreate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BaseService_PofpCreate_FullMethodName,
+		FullMethod: BaseService_ChannelCreate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).PofpCreate(ctx, req.(*PofpCreateReq))
+		return srv.(BaseServiceServer).ChannelCreate(ctx, req.(*ChannelCreateReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BaseService_PofpUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PofpUpdateReq)
+func _BaseService_ChannelUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChannelUpdateReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BaseServiceServer).PofpUpdate(ctx, in)
+		return srv.(BaseServiceServer).ChannelUpdate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BaseService_PofpUpdate_FullMethodName,
+		FullMethod: BaseService_ChannelUpdate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).PofpUpdate(ctx, req.(*PofpUpdateReq))
+		return srv.(BaseServiceServer).ChannelUpdate(ctx, req.(*ChannelUpdateReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BaseService_PofpDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PofpDeleteReq)
+func _BaseService_ChannelDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChannelDeleteReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BaseServiceServer).PofpDelete(ctx, in)
+		return srv.(BaseServiceServer).ChannelDelete(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BaseService_PofpDelete_FullMethodName,
+		FullMethod: BaseService_ChannelDelete_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).PofpDelete(ctx, req.(*PofpDeleteReq))
+		return srv.(BaseServiceServer).ChannelDelete(ctx, req.(*ChannelDeleteReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BaseService_PofpBaseQueryByBound_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PofpBaseQueryByBoundReq)
+func _BaseService_ChannelBaseQueryByBound_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChannelBaseQueryByBoundReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BaseServiceServer).PofpBaseQueryByBound(ctx, in)
+		return srv.(BaseServiceServer).ChannelBaseQueryByBound(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BaseService_PofpBaseQueryByBound_FullMethodName,
+		FullMethod: BaseService_ChannelBaseQueryByBound_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).PofpBaseQueryByBound(ctx, req.(*PofpBaseQueryByBoundReq))
+		return srv.(BaseServiceServer).ChannelBaseQueryByBound(ctx, req.(*ChannelBaseQueryByBoundReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BaseService_PofpDetailQueryById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PofpDetailQueryByIdReq)
+func _BaseService_ChannelDetailQueryById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChannelDetailQueryByIdReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BaseServiceServer).PofpDetailQueryById(ctx, in)
+		return srv.(BaseServiceServer).ChannelDetailQueryById(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BaseService_PofpDetailQueryById_FullMethodName,
+		FullMethod: BaseService_ChannelDetailQueryById_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).PofpDetailQueryById(ctx, req.(*PofpDetailQueryByIdReq))
+		return srv.(BaseServiceServer).ChannelDetailQueryById(ctx, req.(*ChannelDetailQueryByIdReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BaseService_PofpFullQueryById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PofpFullQueryByIdReq)
+func _BaseService_ChannelFullQueryById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChannelFullQueryByIdReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BaseServiceServer).PofpFullQueryById(ctx, in)
+		return srv.(BaseServiceServer).ChannelFullQueryById(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BaseService_PofpFullQueryById_FullMethodName,
+		FullMethod: BaseService_ChannelFullQueryById_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).PofpFullQueryById(ctx, req.(*PofpFullQueryByIdReq))
+		return srv.(BaseServiceServer).ChannelFullQueryById(ctx, req.(*ChannelFullQueryByIdReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BaseService_PofpInteraction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PofpInteractionReq)
+func _BaseService_ChannelInteraction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChannelInteractionReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BaseServiceServer).PofpInteraction(ctx, in)
+		return srv.(BaseServiceServer).ChannelInteraction(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BaseService_PofpInteraction_FullMethodName,
+		FullMethod: BaseService_ChannelInteraction_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).PofpInteraction(ctx, req.(*PofpInteractionReq))
+		return srv.(BaseServiceServer).ChannelInteraction(ctx, req.(*ChannelInteractionReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BaseService_PofpComment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PofpCommentReq)
+func _BaseService_ChannelComment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChannelCommentReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BaseServiceServer).PofpComment(ctx, in)
+		return srv.(BaseServiceServer).ChannelComment(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BaseService_PofpComment_FullMethodName,
+		FullMethod: BaseService_ChannelComment_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).PofpComment(ctx, req.(*PofpCommentReq))
+		return srv.(BaseServiceServer).ChannelComment(ctx, req.(*ChannelCommentReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -556,12 +556,12 @@ var BaseService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*BaseServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "WeChatLogin",
-			Handler:    _BaseService_WeChatLogin_Handler,
+			MethodName: "LoginWeChat",
+			Handler:    _BaseService_LoginWeChat_Handler,
 		},
 		{
-			MethodName: "WeChatRegisterFast",
-			Handler:    _BaseService_WeChatRegisterFast_Handler,
+			MethodName: "FastRegisterWeChat",
+			Handler:    _BaseService_FastRegisterWeChat_Handler,
 		},
 		{
 			MethodName: "LocationCommonSearch",
@@ -572,40 +572,40 @@ var BaseService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _BaseService_MediaPutPresignURLBatchGet_Handler,
 		},
 		{
-			MethodName: "PofpTypeList",
-			Handler:    _BaseService_PofpTypeList_Handler,
+			MethodName: "ChannelTypeList",
+			Handler:    _BaseService_ChannelTypeList_Handler,
 		},
 		{
-			MethodName: "PofpCreate",
-			Handler:    _BaseService_PofpCreate_Handler,
+			MethodName: "ChannelCreate",
+			Handler:    _BaseService_ChannelCreate_Handler,
 		},
 		{
-			MethodName: "PofpUpdate",
-			Handler:    _BaseService_PofpUpdate_Handler,
+			MethodName: "ChannelUpdate",
+			Handler:    _BaseService_ChannelUpdate_Handler,
 		},
 		{
-			MethodName: "PofpDelete",
-			Handler:    _BaseService_PofpDelete_Handler,
+			MethodName: "ChannelDelete",
+			Handler:    _BaseService_ChannelDelete_Handler,
 		},
 		{
-			MethodName: "PofpBaseQueryByBound",
-			Handler:    _BaseService_PofpBaseQueryByBound_Handler,
+			MethodName: "ChannelBaseQueryByBound",
+			Handler:    _BaseService_ChannelBaseQueryByBound_Handler,
 		},
 		{
-			MethodName: "PofpDetailQueryById",
-			Handler:    _BaseService_PofpDetailQueryById_Handler,
+			MethodName: "ChannelDetailQueryById",
+			Handler:    _BaseService_ChannelDetailQueryById_Handler,
 		},
 		{
-			MethodName: "PofpFullQueryById",
-			Handler:    _BaseService_PofpFullQueryById_Handler,
+			MethodName: "ChannelFullQueryById",
+			Handler:    _BaseService_ChannelFullQueryById_Handler,
 		},
 		{
-			MethodName: "PofpInteraction",
-			Handler:    _BaseService_PofpInteraction_Handler,
+			MethodName: "ChannelInteraction",
+			Handler:    _BaseService_ChannelInteraction_Handler,
 		},
 		{
-			MethodName: "PofpComment",
-			Handler:    _BaseService_PofpComment_Handler,
+			MethodName: "ChannelComment",
+			Handler:    _BaseService_ChannelComment_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

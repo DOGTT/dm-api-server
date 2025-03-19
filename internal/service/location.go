@@ -7,8 +7,8 @@ import (
 	base_api "github.com/DOGTT/dm-api-server/api/base"
 )
 
-func (s *Service) LocationCommonSearch(ctx context.Context, req *base_api.LocationCommonSearchReq) (res *base_api.LocationCommonSearchResp, err error) {
-	res = &base_api.LocationCommonSearchResp{}
+func (s *Service) LocationCommonSearch(ctx context.Context, req *base_api.LocationCommonSearchReq) (res *base_api.LocationCommonSearchRes, err error) {
+	res = &base_api.LocationCommonSearchRes{}
 	// 调用地图查询
 	searchRes, err := s.data.MapSearch(ctx, req.GetInput())
 	if err != nil {

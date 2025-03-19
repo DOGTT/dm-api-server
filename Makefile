@@ -29,12 +29,17 @@ endif
 .PHONY: setup
 # setup common utils: protoc
 setup:
+	@echo "install gvm"
+	bash < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)
+	source $HOME/.gvm/scripts/gvm
+	gvm install go1.24
+	
 	@echo "install protoc"
 	curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.14.0/$(PROTOC_ZIP)
 	sudo unzip -o $(PROTOC_ZIP) -d /usr/local bin/protoc
 	sudo unzip -o $(PROTOC_ZIP) -d /usr/local 'include/*'
 	rm -f $(PROTOC_ZIP)
-	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.62.2
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin
 
 .PHONY: init
 # setup go utils
@@ -52,9 +57,18 @@ internal:
  	       --go_out=paths=source_relative:./internal \
 	       $(INTERNAL_PROTO_FILES)
 
+.PHONY: check-yq
+check-yq:
+	@if ! command -v yq &> /dev/null; then \
+		echo "Error: yq is not installed. Please install it first."; \
+		echo "On macOS: brew install yq"; \
+		echo "On Ubuntu/Debian: sudo apt install yq"; \
+		exit 1; \
+	fi
+
 .PHONY: api
 # generate api proto
-api:
+api: check-yq
 	@mkdir -p ./api/base
 	@mkdir -p ./api/openapi
 	protoc --proto_path=./api \
@@ -63,6 +77,9 @@ api:
 		   --go-grpc_out=paths=source_relative:./api/base \
 	       --openapi_out=fq_schema_naming=false,naming=proto,default_response=false,paths=source_relative:./api/openapi/ \
 	       $(API_PROTO_FILES)
+	# 自动添加 security 和 securitySchemes
+	@yq eval -i '.components.securitySchemes.bearerAuth = {"type": "http", "scheme": "bearer", "bearerFormat": "JWT"}' ./api/openapi/openapi.yaml
+	@yq eval -i '.security = [{"bearerAuth": []}]' ./api/openapi/openapi.yaml
 	oapi-codegen -package apigin -generate types,spec,client,gin ./api/openapi/openapi.yaml > ./api/gin/gin.gen.go
 
 .PHONY: generate
@@ -104,18 +121,18 @@ build:
 UNAME=$(shell uname)
 # package docker image
 package:
-	docker build --build-arg APP_NAME=$(NAME) -f Dockerfile -t registry.xxxxx.com/xxxxx-studio/$(NAME):$(IMAGE_VERSION) .
+	docker build --build-arg APP_NAME=$(NAME) -f Dockerfile -t ghcr.io/dogtt/$(NAME):$(IMAGE_VERSION) .
 
 .PHONY: docker
 UNAME=$(shell uname)
 # build docker image
 docker:
-	docker build --build-arg APP_NAME=$(NAME) -f Dockerfile -t registry.xxxxx.com/xxxxx-studio/$(NAME):$(IMAGE_VERSION) ./
+	docker build --build-arg APP_NAME=$(NAME) -f Dockerfile -t ghcr.io/dogtt/$(NAME):$(IMAGE_VERSION) ./
 
 .PHONY: push-image
 # push docker image to repo
 push-image: docker
-	docker push registry.xxxxx.com/xxxxx-studio/$(NAME):$(IMAGE_VERSION)
+	docker push ghcr.io/dogtt/$(NAME):$(IMAGE_VERSION)
 
 .PHONY: release-chart
 # release helm chart

@@ -11,6 +11,10 @@ import (
 
 var ()
 
+func IsNotFound(err error) bool {
+	return errors.Is(err, gorm.ErrRecordNotFound)
+}
+
 func IsDuplicateErr(err error) bool {
 	if err == nil {
 		return false

@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+package channel;
+
+import "common.proto";
+
+option go_package = "github.com/DOGTT/dm-api-server/api/base;api";
+
+// 足迹频道类型
+message ChannelTypeInfo {
+  uint32 id = 1;
+  string name = 2;
+  int32 coverage_radius = 3;
+  string theme_color = 4;
+  int64 created_at = 31;
+  int64 updated_at = 32;
+}
+
+// 频道信息
+message ChannelInfo {
+  // 足迹频道 ID
+  uint64 id = 1;
+  // 足迹频道类型, 不可更新
+  uint32 type_id = 2;
+  // 足迹作者, 不可更新
+  uint64 uid = 3;
+  // 足迹名称, 可更新
+  string title = 4;
+  // 头像
+  common.MediaInfo avatar = 6;
+  // 简介, 可更新
+  string intro = 7;
+  common.LocationInfo location = 8;
+
+  // 动态状态信息，只读
+  ChannelStats stats = 20;
+
+  int64 created_at = 31;
+  int64 updated_at = 32;
+}
+
+message ChannelStats {
+
+  // 查看数，只读
+  int32 views_cnt = 11;
+  // 喜欢数，只读
+  int32 likes_cnt = 12;
+  // 标记数，只读
+  int32 marks_cnt = 13;
+  // 评论数，只读
+  int32 comments_cnt = 14;
+  int64 last_view = 15;
+  int64 last_mark = 16;
+    // TODO: add more fields
+  // 谁最近来过
+  // 图片轮播
+}
+
+
+// 足迹评论
+message PostInfo {
+  uint64 id = 1;
+  string root_id = 2;
+  string parent_id = 3;
+  string content = 4;
+
+  int64 created_at = 31;
+  int64 updated_at = 32;
+}
