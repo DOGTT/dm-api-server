@@ -5,7 +5,7 @@ package pet;
 option go_package="github.com/DOGTT/dm-api-server/api/base;api";
 
 message PetInfo {
-    uint64 id = 1;
+    string id = 1;
     int32 status = 2;
     string name = 3;
     uint32 gender = 4; // 性别，使用 uint32 表示

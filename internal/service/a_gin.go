@@ -108,8 +108,8 @@ func (s *Service) BaseServiceLocationCommonSearch(c *gin.Context, params gin_api
 	c.JSON(http.StatusOK, res)
 }
 
-func (s *Service) BaseServiceMediaPutPresignURLBatchGet(c *gin.Context, params gin_api.BaseServiceMediaPutPresignURLBatchGetParams) {
-	req := &api.MediaPutPresignURLBatchGetReq{
+func (s *Service) BaseServiceMediaPutURLBatchGet(c *gin.Context, params gin_api.BaseServiceMediaPutURLBatchGetParams) {
+	req := &api.MediaPutURLBatchGetReq{
 		MediaType: api.MediaType(*params.MediaType),
 		Count:     *params.Count,
 	}
@@ -147,7 +147,7 @@ func (s *Service) BaseServiceChannelCreate(c *gin.Context) {
 
 func (s *Service) BaseServiceChannelDelete(c *gin.Context, params gin_api.BaseServiceChannelDeleteParams) {
 	req := &api.ChannelDeleteReq{
-		ChId: utils.ConvertToUint64(*params.ChId),
+		ChId: *params.ChId,
 	}
 	res, err := s.ChannelDelete(withGinContext(c), req)
 	if err != nil {
@@ -187,7 +187,7 @@ func (s *Service) BaseServiceChannelBaseQueryByBound(c *gin.Context) {
 
 func (s *Service) BaseServiceChannelDetailQueryById(c *gin.Context, params gin_api.BaseServiceChannelDetailQueryByIdParams) {
 	req := &api.ChannelDetailQueryByIdReq{
-		ChId: utils.ConvertToUint64(*params.ChId),
+		ChId: *params.ChId,
 	}
 	res, err := s.ChannelDetailQueryById(withGinContext(c), req)
 	if err != nil {
@@ -199,7 +199,7 @@ func (s *Service) BaseServiceChannelDetailQueryById(c *gin.Context, params gin_a
 
 func (s *Service) BaseServiceChannelFullQueryById(c *gin.Context, params gin_api.BaseServiceChannelFullQueryByIdParams) {
 	req := &api.ChannelFullQueryByIdReq{
-		ChId: utils.ConvertToUint64(*params.ChId),
+		ChId: *params.ChId,
 	}
 	res, err := s.ChannelFullQueryById(withGinContext(c), req)
 	if err != nil {

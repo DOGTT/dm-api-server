@@ -28,7 +28,7 @@ func init() {
 type ChannelInfo struct {
 	Id uint64 `gorm:"primaryKey;autoIncrement"`
 	// 类型id
-	TypeId uint16 `gorm:"index"`
+	TypeId uint32 `gorm:"index"`
 	// - 创建者的 Uid
 	UId uint64 `gorm:"index"`
 	// - 关键内容

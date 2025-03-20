@@ -209,7 +209,7 @@ message ChannelUpdateRes {
 
 // 足迹删除
 message ChannelDeleteReq {
-    uint64 ch_id = 1;
+    string ch_id = 1;
 }
 
 message ChannelDeleteRes {
@@ -228,7 +228,7 @@ message ChannelBaseQueryByBoundRes {
 }
 
 message ChannelDetailQueryByIdReq {
-    uint64 ch_id = 1;
+    string ch_id = 1;
 }
 
 message ChannelDetailQueryByIdRes {
@@ -236,7 +236,7 @@ message ChannelDetailQueryByIdRes {
 }
 
 message ChannelFullQueryByIdReq {
-    uint64 ch_id = 1;
+    string ch_id = 1;
 }
 
 message ChannelFullQueryByIdRes {
@@ -244,7 +244,7 @@ message ChannelFullQueryByIdRes {
 }
 
 message ChannelInteractionReq {
-    uint64 ch_id = 1;
+    string ch_id = 1;
     // 互动类型
     common.UserIxnEventType ixn_event = 2;
 

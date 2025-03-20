@@ -140,12 +140,12 @@ func getAvatarIdFromFDS(avatarId string, pid uint64) string {
 func (s *Service) convertToUserInfo(ctx context.Context, userInfo *rds.UserInfo) (res *api.UserInfo, err error) {
 	PIDs := userInfo.GetPIDs()
 	res = &api.UserInfo{
-		Id:   userInfo.Id,
+		Id:   utils.Uint64ToStr(userInfo.Id),
 		Pets: make([]*api.PetInfo, len(PIDs)),
 	}
 	for i, pet := range userInfo.Pets {
 		res.Pets[i] = &api.PetInfo{
-			Id:        pet.Id,
+			Id:        utils.Uint64ToStr(pet.Id),
 			Name:      pet.Name,
 			Gender:    uint32(pet.Gender),
 			BirthDate: pet.BirthDate,

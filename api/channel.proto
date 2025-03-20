@@ -8,7 +8,7 @@ option go_package = "github.com/DOGTT/dm-api-server/api/base;api";
 
 // 足迹频道类型
 message ChannelTypeInfo {
-  uint32 id = 1;
+  string id = 1;
   string name = 2;
   int32 coverage_radius = 3;
   string theme_color = 4;
@@ -19,11 +19,11 @@ message ChannelTypeInfo {
 // 频道信息
 message ChannelInfo {
   // 足迹频道 ID
-  uint64 id = 1;
+  string id = 1;
   // 足迹频道类型, 不可更新
   uint32 type_id = 2;
   // 足迹作者, 不可更新
-  uint64 uid = 3;
+  string uid = 3;
   // 足迹名称, 可更新
   string title = 4;
   // 头像
@@ -59,7 +59,7 @@ message ChannelStats {
 
 // 足迹评论
 message PostInfo {
-  uint64 id = 1;
+  string id = 1;
   string root_id = 2;
   string parent_id = 3;
   string content = 4;

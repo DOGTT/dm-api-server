@@ -36,7 +36,7 @@ func (s *Service) ChannelTypeList(ctx context.Context, req *api.ChannelTypeListR
 	res.ChannelTypes = make([]*api.ChannelTypeInfo, len(data))
 	for i, v := range data {
 		res.ChannelTypes[i] = &api.ChannelTypeInfo{
-			Id:             uint32(v.Id),
+			Id:             utils.Uint64ToStr(v.Id),
 			Name:           v.Name,
 			CoverageRadius: int32(v.CoverageRadius),
 			ThemeColor:     v.ThemeColor,
@@ -58,7 +58,7 @@ func (s *Service) ChannelCreate(ctx context.Context, req *api.ChannelCreateReq) 
 	ch := req.GetChannel()
 	ChannelInfo := &rds.ChannelInfo{
 		Id:       utils.GenSnowflakeID(),
-		TypeId:   uint16(ch.GetTypeId()),
+		TypeId:   ch.GetTypeId(),
 		UId:      tc.UID,
 		Title:    ch.GetTitle(),
 		LngLat:   utils.PointCoordToGeometry(ch.GetLocation().GetLngLat()),
@@ -82,7 +82,7 @@ func (s *Service) ChannelDelete(ctx context.Context, req *api.ChannelDeleteReq) 
 	res = &api.ChannelDeleteRes{}
 	// tc := getClaimFromContext(ctx)
 	// TODO，权限检查
-	if err = s.data.DeleteChannelInfo(ctx, req.GetChId()); err != nil {
+	if err = s.data.DeleteChannelInfo(ctx, utils.StrToUint64(req.GetChId())); err != nil {
 		return
 	}
 	return
@@ -113,7 +113,7 @@ func (s *Service) ChannelUpdate(ctx context.Context, req *api.ChannelUpdateReq) 
 	// TODO，权限检查
 	ch := req.GetChannel()
 	ChannelInfo := &rds.ChannelInfo{
-		Id:       ch.GetId(),
+		Id:       utils.StrToUint64(ch.GetId()),
 		Title:    ch.GetTitle(),
 		AvatarId: ch.GetAvatar().GetUuid(),
 		Intro:    ch.GetIntro(),
@@ -126,7 +126,7 @@ func (s *Service) ChannelUpdate(ctx context.Context, req *api.ChannelUpdateReq) 
 
 func (s *Service) ChannelDetailQueryById(ctx context.Context, req *api.ChannelDetailQueryByIdReq) (res *api.ChannelDetailQueryByIdRes, err error) {
 	var cInfo *rds.ChannelInfo
-	cInfo, err = s.data.GetChannelInfo(ctx, req.GetChId())
+	cInfo, err = s.data.GetChannelInfo(ctx, utils.StrToUint64(req.GetChId()))
 	if err != nil {
 		err = EM_CommonFail_Internal.PutDesc(err.Error())
 		return
@@ -147,9 +147,9 @@ func (s *Service) ChannelDetailQueryById(ctx context.Context, req *api.ChannelDe
 
 func (s *Service) convertToChannelInfo(ctx context.Context, pInfo *rds.ChannelInfo) (res *api.ChannelInfo, err error) {
 	res = &api.ChannelInfo{
-		Id:     pInfo.Id,
-		Uid:    pInfo.UId,
-		TypeId: uint32(pInfo.TypeId),
+		Id:     utils.Uint64ToStr(pInfo.Id),
+		Uid:    utils.Uint64ToStr(pInfo.UId),
+		TypeId: pInfo.TypeId,
 		Title:  pInfo.Title,
 		Avatar: &api.MediaInfo{
 			Uuid: pInfo.AvatarId,

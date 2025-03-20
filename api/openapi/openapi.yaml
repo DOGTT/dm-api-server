@@ -188,12 +188,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LocationCommonSearchRes'
-  /v1/media/put_presign_url/batch:
+  /v1/media/put_url/batch:
     get:
       tags:
         - BaseService
       description: 批量获取对象上传预签名URL
-      operationId: BaseService_MediaPutPresignURLBatchGet
+      operationId: BaseService_MediaPutURLBatchGet
       parameters:
         - name: media_type
           in: query
@@ -211,7 +211,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MediaPutPresignURLBatchGetRes'
+                $ref: '#/components/schemas/MediaPutURLBatchGetRes'
   /v1/user/fast_reg/wx:
     post:
       tags:
@@ -389,8 +389,7 @@ components:
       type: object
       properties:
         id:
-          type: integer
-          format: uint32
+          type: string
         name:
           type: string
         coverage_radius:
@@ -487,7 +486,7 @@ components:
         put_url:
           type: string
           description: 写入URL
-    MediaPutPresignURLBatchGetRes:
+    MediaPutURLBatchGetRes:
       type: object
       properties:
         media:

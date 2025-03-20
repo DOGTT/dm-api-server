@@ -8,12 +8,12 @@ import (
 	"github.com/DOGTT/dm-api-server/internal/utils"
 )
 
-func (s *Service) MediaPutPresignURLBatchGet(ctx context.Context, req *base_api.MediaPutPresignURLBatchGetReq) (res *base_api.MediaPutPresignURLBatchGetRes, err error) {
+func (s *Service) MediaPutPresignURLBatchGet(ctx context.Context, req *base_api.MediaPutURLBatchGetReq) (res *base_api.MediaPutURLBatchGetRes, err error) {
 
 	var (
 		n = int(req.GetCount())
 	)
-	res = &base_api.MediaPutPresignURLBatchGetRes{
+	res = &base_api.MediaPutURLBatchGetRes{
 		Media: make([]*base_api.MediaInfo, 0, n),
 	}
 	for i := 0; i < n; i++ {

@@ -141,7 +141,7 @@ type ChannelStats struct {
 type ChannelTypeInfo struct {
 	CoverageRadius *int32  `json:"coverage_radius,omitempty"`
 	CreatedAt      *string `json:"created_at,omitempty"`
-	Id             *uint32 `json:"id,omitempty"`
+	Id             *string `json:"id,omitempty"`
 	Name           *string `json:"name,omitempty"`
 	ThemeColor     *string `json:"theme_color,omitempty"`
 	UpdatedAt      *string `json:"updated_at,omitempty"`
@@ -221,8 +221,8 @@ type MediaInfo struct {
 	Uuid *string `json:"uuid,omitempty"`
 }
 
-// MediaPutPresignURLBatchGetRes defines model for MediaPutPresignURLBatchGetRes.
-type MediaPutPresignURLBatchGetRes struct {
+// MediaPutURLBatchGetRes defines model for MediaPutURLBatchGetRes.
+type MediaPutURLBatchGetRes struct {
 	Media *[]MediaInfo `json:"media,omitempty"`
 }
 
@@ -284,8 +284,8 @@ type BaseServiceLocationCommonSearchParams struct {
 	Input *string `form:"input,omitempty" json:"input,omitempty"`
 }
 
-// BaseServiceMediaPutPresignURLBatchGetParams defines parameters for BaseServiceMediaPutPresignURLBatchGet.
-type BaseServiceMediaPutPresignURLBatchGetParams struct {
+// BaseServiceMediaPutURLBatchGetParams defines parameters for BaseServiceMediaPutURLBatchGet.
+type BaseServiceMediaPutURLBatchGetParams struct {
 	MediaType *int   `form:"media_type,omitempty" json:"media_type,omitempty"`
 	Count     *int32 `form:"count,omitempty" json:"count,omitempty"`
 }
@@ -424,8 +424,8 @@ type ClientInterface interface {
 	// BaseServiceLocationCommonSearch request
 	BaseServiceLocationCommonSearch(ctx context.Context, params *BaseServiceLocationCommonSearchParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// BaseServiceMediaPutPresignURLBatchGet request
-	BaseServiceMediaPutPresignURLBatchGet(ctx context.Context, params *BaseServiceMediaPutPresignURLBatchGetParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// BaseServiceMediaPutURLBatchGet request
+	BaseServiceMediaPutURLBatchGet(ctx context.Context, params *BaseServiceMediaPutURLBatchGetParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// BaseServiceFastRegisterWeChatWithBody request with any body
 	BaseServiceFastRegisterWeChatWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -618,8 +618,8 @@ func (c *Client) BaseServiceLocationCommonSearch(ctx context.Context, params *Ba
 	return c.Client.Do(req)
 }
 
-func (c *Client) BaseServiceMediaPutPresignURLBatchGet(ctx context.Context, params *BaseServiceMediaPutPresignURLBatchGetParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServiceMediaPutPresignURLBatchGetRequest(c.Server, params)
+func (c *Client) BaseServiceMediaPutURLBatchGet(ctx context.Context, params *BaseServiceMediaPutURLBatchGetParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServiceMediaPutURLBatchGetRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -1101,8 +1101,8 @@ func NewBaseServiceLocationCommonSearchRequest(server string, params *BaseServic
 	return req, nil
 }
 
-// NewBaseServiceMediaPutPresignURLBatchGetRequest generates requests for BaseServiceMediaPutPresignURLBatchGet
-func NewBaseServiceMediaPutPresignURLBatchGetRequest(server string, params *BaseServiceMediaPutPresignURLBatchGetParams) (*http.Request, error) {
+// NewBaseServiceMediaPutURLBatchGetRequest generates requests for BaseServiceMediaPutURLBatchGet
+func NewBaseServiceMediaPutURLBatchGetRequest(server string, params *BaseServiceMediaPutURLBatchGetParams) (*http.Request, error) {
 	var err error
 
 	serverURL, err := url.Parse(server)
@@ -1110,7 +1110,7 @@ func NewBaseServiceMediaPutPresignURLBatchGetRequest(server string, params *Base
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/v1/media/put_presign_url/batch")
+	operationPath := fmt.Sprintf("/v1/media/put_url/batch")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1329,8 +1329,8 @@ type ClientWithResponsesInterface interface {
 	// BaseServiceLocationCommonSearchWithResponse request
 	BaseServiceLocationCommonSearchWithResponse(ctx context.Context, params *BaseServiceLocationCommonSearchParams, reqEditors ...RequestEditorFn) (*BaseServiceLocationCommonSearchResponse, error)
 
-	// BaseServiceMediaPutPresignURLBatchGetWithResponse request
-	BaseServiceMediaPutPresignURLBatchGetWithResponse(ctx context.Context, params *BaseServiceMediaPutPresignURLBatchGetParams, reqEditors ...RequestEditorFn) (*BaseServiceMediaPutPresignURLBatchGetResponse, error)
+	// BaseServiceMediaPutURLBatchGetWithResponse request
+	BaseServiceMediaPutURLBatchGetWithResponse(ctx context.Context, params *BaseServiceMediaPutURLBatchGetParams, reqEditors ...RequestEditorFn) (*BaseServiceMediaPutURLBatchGetResponse, error)
 
 	// BaseServiceFastRegisterWeChatWithBodyWithResponse request with any body
 	BaseServiceFastRegisterWeChatWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceFastRegisterWeChatResponse, error)
@@ -1563,14 +1563,14 @@ func (r BaseServiceLocationCommonSearchResponse) StatusCode() int {
 	return 0
 }
 
-type BaseServiceMediaPutPresignURLBatchGetResponse struct {
+type BaseServiceMediaPutURLBatchGetResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *MediaPutPresignURLBatchGetRes
+	JSON200      *MediaPutURLBatchGetRes
 }
 
 // Status returns HTTPResponse.Status
-func (r BaseServiceMediaPutPresignURLBatchGetResponse) Status() string {
+func (r BaseServiceMediaPutURLBatchGetResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -1578,7 +1578,7 @@ func (r BaseServiceMediaPutPresignURLBatchGetResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r BaseServiceMediaPutPresignURLBatchGetResponse) StatusCode() int {
+func (r BaseServiceMediaPutURLBatchGetResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -1759,13 +1759,13 @@ func (c *ClientWithResponses) BaseServiceLocationCommonSearchWithResponse(ctx co
 	return ParseBaseServiceLocationCommonSearchResponse(rsp)
 }
 
-// BaseServiceMediaPutPresignURLBatchGetWithResponse request returning *BaseServiceMediaPutPresignURLBatchGetResponse
-func (c *ClientWithResponses) BaseServiceMediaPutPresignURLBatchGetWithResponse(ctx context.Context, params *BaseServiceMediaPutPresignURLBatchGetParams, reqEditors ...RequestEditorFn) (*BaseServiceMediaPutPresignURLBatchGetResponse, error) {
-	rsp, err := c.BaseServiceMediaPutPresignURLBatchGet(ctx, params, reqEditors...)
+// BaseServiceMediaPutURLBatchGetWithResponse request returning *BaseServiceMediaPutURLBatchGetResponse
+func (c *ClientWithResponses) BaseServiceMediaPutURLBatchGetWithResponse(ctx context.Context, params *BaseServiceMediaPutURLBatchGetParams, reqEditors ...RequestEditorFn) (*BaseServiceMediaPutURLBatchGetResponse, error) {
+	rsp, err := c.BaseServiceMediaPutURLBatchGet(ctx, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseBaseServiceMediaPutPresignURLBatchGetResponse(rsp)
+	return ParseBaseServiceMediaPutURLBatchGetResponse(rsp)
 }
 
 // BaseServiceFastRegisterWeChatWithBodyWithResponse request with arbitrary body returning *BaseServiceFastRegisterWeChatResponse
@@ -2062,22 +2062,22 @@ func ParseBaseServiceLocationCommonSearchResponse(rsp *http.Response) (*BaseServ
 	return response, nil
 }
 
-// ParseBaseServiceMediaPutPresignURLBatchGetResponse parses an HTTP response from a BaseServiceMediaPutPresignURLBatchGetWithResponse call
-func ParseBaseServiceMediaPutPresignURLBatchGetResponse(rsp *http.Response) (*BaseServiceMediaPutPresignURLBatchGetResponse, error) {
+// ParseBaseServiceMediaPutURLBatchGetResponse parses an HTTP response from a BaseServiceMediaPutURLBatchGetWithResponse call
+func ParseBaseServiceMediaPutURLBatchGetResponse(rsp *http.Response) (*BaseServiceMediaPutURLBatchGetResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &BaseServiceMediaPutPresignURLBatchGetResponse{
+	response := &BaseServiceMediaPutURLBatchGetResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest MediaPutPresignURLBatchGetRes
+		var dest MediaPutURLBatchGetRes
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -2173,8 +2173,8 @@ type ServerInterface interface {
 	// (GET /v1/location/search)
 	BaseServiceLocationCommonSearch(c *gin.Context, params BaseServiceLocationCommonSearchParams)
 
-	// (GET /v1/media/put_presign_url/batch)
-	BaseServiceMediaPutPresignURLBatchGet(c *gin.Context, params BaseServiceMediaPutPresignURLBatchGetParams)
+	// (GET /v1/media/put_url/batch)
+	BaseServiceMediaPutURLBatchGet(c *gin.Context, params BaseServiceMediaPutURLBatchGetParams)
 
 	// (POST /v1/user/fast_reg/wx)
 	BaseServiceFastRegisterWeChat(c *gin.Context)
@@ -2394,15 +2394,15 @@ func (siw *ServerInterfaceWrapper) BaseServiceLocationCommonSearch(c *gin.Contex
 	siw.Handler.BaseServiceLocationCommonSearch(c, params)
 }
 
-// BaseServiceMediaPutPresignURLBatchGet operation middleware
-func (siw *ServerInterfaceWrapper) BaseServiceMediaPutPresignURLBatchGet(c *gin.Context) {
+// BaseServiceMediaPutURLBatchGet operation middleware
+func (siw *ServerInterfaceWrapper) BaseServiceMediaPutURLBatchGet(c *gin.Context) {
 
 	var err error
 
 	c.Set(BearerAuthScopes, []string{})
 
 	// Parameter object where we will unmarshal all parameters from the context
-	var params BaseServiceMediaPutPresignURLBatchGetParams
+	var params BaseServiceMediaPutURLBatchGetParams
 
 	// ------------- Optional query parameter "media_type" -------------
 
@@ -2427,7 +2427,7 @@ func (siw *ServerInterfaceWrapper) BaseServiceMediaPutPresignURLBatchGet(c *gin.
 		}
 	}
 
-	siw.Handler.BaseServiceMediaPutPresignURLBatchGet(c, params)
+	siw.Handler.BaseServiceMediaPutURLBatchGet(c, params)
 }
 
 // BaseServiceFastRegisterWeChat operation middleware
@@ -2497,7 +2497,7 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	router.POST(options.BaseURL+"/v1/channel/post", wrapper.BaseServiceChannelComment)
 	router.GET(options.BaseURL+"/v1/channel/type", wrapper.BaseServiceChannelTypeList)
 	router.GET(options.BaseURL+"/v1/location/search", wrapper.BaseServiceLocationCommonSearch)
-	router.GET(options.BaseURL+"/v1/media/put_presign_url/batch", wrapper.BaseServiceMediaPutPresignURLBatchGet)
+	router.GET(options.BaseURL+"/v1/media/put_url/batch", wrapper.BaseServiceMediaPutURLBatchGet)
 	router.POST(options.BaseURL+"/v1/user/fast_reg/wx", wrapper.BaseServiceFastRegisterWeChat)
 	router.POST(options.BaseURL+"/v1/user/login/wx", wrapper.BaseServiceLoginWeChat)
 }
@@ -2505,41 +2505,40 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"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",
-	"f+KFPtsqAAA=",
+	"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",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

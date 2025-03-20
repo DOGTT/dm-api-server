@@ -46,7 +46,6 @@ func init() {
 }
 
 func main() {
-
 	flag.Parse()
 	if printVersion {
 		printFullVersionInfo()

@@ -19,19 +19,19 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	BaseService_LoginWeChat_FullMethodName                = "/base_service.v1.BaseService/LoginWeChat"
-	BaseService_FastRegisterWeChat_FullMethodName         = "/base_service.v1.BaseService/FastRegisterWeChat"
-	BaseService_LocationCommonSearch_FullMethodName       = "/base_service.v1.BaseService/LocationCommonSearch"
-	BaseService_MediaPutPresignURLBatchGet_FullMethodName = "/base_service.v1.BaseService/MediaPutPresignURLBatchGet"
-	BaseService_ChannelTypeList_FullMethodName            = "/base_service.v1.BaseService/ChannelTypeList"
-	BaseService_ChannelCreate_FullMethodName              = "/base_service.v1.BaseService/ChannelCreate"
-	BaseService_ChannelUpdate_FullMethodName              = "/base_service.v1.BaseService/ChannelUpdate"
-	BaseService_ChannelDelete_FullMethodName              = "/base_service.v1.BaseService/ChannelDelete"
-	BaseService_ChannelBaseQueryByBound_FullMethodName    = "/base_service.v1.BaseService/ChannelBaseQueryByBound"
-	BaseService_ChannelDetailQueryById_FullMethodName     = "/base_service.v1.BaseService/ChannelDetailQueryById"
-	BaseService_ChannelFullQueryById_FullMethodName       = "/base_service.v1.BaseService/ChannelFullQueryById"
-	BaseService_ChannelInteraction_FullMethodName         = "/base_service.v1.BaseService/ChannelInteraction"
-	BaseService_ChannelComment_FullMethodName             = "/base_service.v1.BaseService/ChannelComment"
+	BaseService_LoginWeChat_FullMethodName             = "/base_service.v1.BaseService/LoginWeChat"
+	BaseService_FastRegisterWeChat_FullMethodName      = "/base_service.v1.BaseService/FastRegisterWeChat"
+	BaseService_LocationCommonSearch_FullMethodName    = "/base_service.v1.BaseService/LocationCommonSearch"
+	BaseService_MediaPutURLBatchGet_FullMethodName     = "/base_service.v1.BaseService/MediaPutURLBatchGet"
+	BaseService_ChannelTypeList_FullMethodName         = "/base_service.v1.BaseService/ChannelTypeList"
+	BaseService_ChannelCreate_FullMethodName           = "/base_service.v1.BaseService/ChannelCreate"
+	BaseService_ChannelUpdate_FullMethodName           = "/base_service.v1.BaseService/ChannelUpdate"
+	BaseService_ChannelDelete_FullMethodName           = "/base_service.v1.BaseService/ChannelDelete"
+	BaseService_ChannelBaseQueryByBound_FullMethodName = "/base_service.v1.BaseService/ChannelBaseQueryByBound"
+	BaseService_ChannelDetailQueryById_FullMethodName  = "/base_service.v1.BaseService/ChannelDetailQueryById"
+	BaseService_ChannelFullQueryById_FullMethodName    = "/base_service.v1.BaseService/ChannelFullQueryById"
+	BaseService_ChannelInteraction_FullMethodName      = "/base_service.v1.BaseService/ChannelInteraction"
+	BaseService_ChannelComment_FullMethodName          = "/base_service.v1.BaseService/ChannelComment"
 )
 
 // BaseServiceClient is the client API for BaseService service.
@@ -50,7 +50,7 @@ type BaseServiceClient interface {
 	// 通用地点搜索
 	LocationCommonSearch(ctx context.Context, in *LocationCommonSearchReq, opts ...grpc.CallOption) (*LocationCommonSearchRes, error)
 	// 批量获取对象上传预签名URL
-	MediaPutPresignURLBatchGet(ctx context.Context, in *MediaPutPresignURLBatchGetReq, opts ...grpc.CallOption) (*MediaPutPresignURLBatchGetRes, error)
+	MediaPutURLBatchGet(ctx context.Context, in *MediaPutURLBatchGetReq, opts ...grpc.CallOption) (*MediaPutURLBatchGetRes, error)
 	// 列表查询足迹频道类型
 	ChannelTypeList(ctx context.Context, in *ChannelTypeListReq, opts ...grpc.CallOption) (*ChannelTypeListRes, error)
 	// 创建足迹频道
@@ -109,10 +109,10 @@ func (c *baseServiceClient) LocationCommonSearch(ctx context.Context, in *Locati
 	return out, nil
 }
 
-func (c *baseServiceClient) MediaPutPresignURLBatchGet(ctx context.Context, in *MediaPutPresignURLBatchGetReq, opts ...grpc.CallOption) (*MediaPutPresignURLBatchGetRes, error) {
+func (c *baseServiceClient) MediaPutURLBatchGet(ctx context.Context, in *MediaPutURLBatchGetReq, opts ...grpc.CallOption) (*MediaPutURLBatchGetRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(MediaPutPresignURLBatchGetRes)
-	err := c.cc.Invoke(ctx, BaseService_MediaPutPresignURLBatchGet_FullMethodName, in, out, cOpts...)
+	out := new(MediaPutURLBatchGetRes)
+	err := c.cc.Invoke(ctx, BaseService_MediaPutURLBatchGet_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -225,7 +225,7 @@ type BaseServiceServer interface {
 	// 通用地点搜索
 	LocationCommonSearch(context.Context, *LocationCommonSearchReq) (*LocationCommonSearchRes, error)
 	// 批量获取对象上传预签名URL
-	MediaPutPresignURLBatchGet(context.Context, *MediaPutPresignURLBatchGetReq) (*MediaPutPresignURLBatchGetRes, error)
+	MediaPutURLBatchGet(context.Context, *MediaPutURLBatchGetReq) (*MediaPutURLBatchGetRes, error)
 	// 列表查询足迹频道类型
 	ChannelTypeList(context.Context, *ChannelTypeListReq) (*ChannelTypeListRes, error)
 	// 创建足迹频道
@@ -263,8 +263,8 @@ func (UnimplementedBaseServiceServer) FastRegisterWeChat(context.Context, *FastR
 func (UnimplementedBaseServiceServer) LocationCommonSearch(context.Context, *LocationCommonSearchReq) (*LocationCommonSearchRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LocationCommonSearch not implemented")
 }
-func (UnimplementedBaseServiceServer) MediaPutPresignURLBatchGet(context.Context, *MediaPutPresignURLBatchGetReq) (*MediaPutPresignURLBatchGetRes, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method MediaPutPresignURLBatchGet not implemented")
+func (UnimplementedBaseServiceServer) MediaPutURLBatchGet(context.Context, *MediaPutURLBatchGetReq) (*MediaPutURLBatchGetRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MediaPutURLBatchGet not implemented")
 }
 func (UnimplementedBaseServiceServer) ChannelTypeList(context.Context, *ChannelTypeListReq) (*ChannelTypeListRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChannelTypeList not implemented")
@@ -368,20 +368,20 @@ func _BaseService_LocationCommonSearch_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BaseService_MediaPutPresignURLBatchGet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MediaPutPresignURLBatchGetReq)
+func _BaseService_MediaPutURLBatchGet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MediaPutURLBatchGetReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BaseServiceServer).MediaPutPresignURLBatchGet(ctx, in)
+		return srv.(BaseServiceServer).MediaPutURLBatchGet(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BaseService_MediaPutPresignURLBatchGet_FullMethodName,
+		FullMethod: BaseService_MediaPutURLBatchGet_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).MediaPutPresignURLBatchGet(ctx, req.(*MediaPutPresignURLBatchGetReq))
+		return srv.(BaseServiceServer).MediaPutURLBatchGet(ctx, req.(*MediaPutURLBatchGetReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -568,8 +568,8 @@ var BaseService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _BaseService_LocationCommonSearch_Handler,
 		},
 		{
-			MethodName: "MediaPutPresignURLBatchGet",
-			Handler:    _BaseService_MediaPutPresignURLBatchGet_Handler,
+			MethodName: "MediaPutURLBatchGet",
+			Handler:    _BaseService_MediaPutURLBatchGet_Handler,
 		},
 		{
 			MethodName: "ChannelTypeList",

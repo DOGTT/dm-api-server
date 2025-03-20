@@ -32,10 +32,14 @@ func ConvertToUintSlice[T int | int8 | int16 | int32 | int64](input []T) []uint 
 	return result
 }
 
-func ConvertToUint64(s string) uint64 {
-	num, err := strconv.ParseUint(s, 10, 64)
+func StrToUint64(in string) uint64 {
+	num, err := strconv.ParseUint(in, 10, 64)
 	if err != nil {
 		zap.L().Warn("parse int error", zap.Error(err))
 	}
 	return num
+}
+
+func Uint64ToStr(in uint64) string {
+	return strconv.FormatUint(in, 10)
 }
