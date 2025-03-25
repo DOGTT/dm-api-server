@@ -8,6 +8,8 @@ import (
 	"fmt"
 	"time"
 
+	"gorm.io/gorm/clause"
+
 	api "github.com/DOGTT/dm-api-server/api/base"
 	"gorm.io/gorm"
 )
@@ -58,7 +60,7 @@ type PoiDetail struct {
 }
 
 // Implement the Scanner interface for PoiDetail
-func (p *PoiDetail) Scan(value interface{}) error {
+func (p *PoiDetail) Scan(value any) error {
 	if value == nil {
 		return nil
 	}
@@ -66,7 +68,6 @@ func (p *PoiDetail) Scan(value interface{}) error {
 	if !ok {
 		return errors.New("type assertion to []byte failed")
 	}
-
 	return json.Unmarshal(bytes, p)
 }
 
@@ -79,7 +80,7 @@ type ChannelFilter struct {
 	TypeIDs    []int32
 	BoundCoord *api.BoundCoord
 
-	IsDeleted int
+	OrderByUpdateDesc bool
 
 	Offset          uint32
 	Limit           uint32
@@ -95,6 +96,9 @@ func (f *ChannelFilter) check() error {
 	if f.Limit == 0 {
 		f.Limit = limitDefault
 	}
+	if f.OrderByUpdateDesc {
+		f.orderDescColumn = append(f.orderDescColumn, sqlFieldUpdatedAt)
+	}
 	return nil
 }
 
@@ -108,16 +112,15 @@ func (f *ChannelFilter) generate(db *gorm.DB) error {
 	}
 	if f.BoundCoord != nil {
 		db = db.Where(sqlWhereLngLatContain,
-			f.BoundCoord.Sw.Lng, f.BoundCoord.Sw.Lat, f.BoundCoord.Ne.Lng, f.BoundCoord.Ne.Lat)
+			f.BoundCoord.Sw.Lng, f.BoundCoord.Sw.Lat,
+			f.BoundCoord.Ne.Lng, f.BoundCoord.Ne.Lat)
 	}
-
 	if f.Offset != 0 {
 		db = db.Offset(int(f.Offset))
 	}
 	if f.Limit != 0 {
 		db = db.Limit(int(f.Limit))
 	}
-
 	for _, col := range f.orderAscColumn {
 		db = db.Order(sqlOrderAsc(col))
 	}
@@ -128,21 +131,27 @@ func (f *ChannelFilter) generate(db *gorm.DB) error {
 }
 
 func (c *RDSClient) CreateChannelInfo(ctx context.Context, info *ChannelInfo) error {
-	return c.db.WithContext(ctx).Create(info).Error
+	return c.db.WithContext(ctx).
+		Preload(clause.Associations).
+		Create(info).Error
 }
 
 func (c *RDSClient) UpdateChannelInfo(ctx context.Context, info *ChannelInfo) error {
 	if info.Id == 0 {
-		return fmt.Errorf("Id is empty")
+		return fmt.Errorf("id is empty")
 	}
 	updateField := []string{}
-	if info.Intro != "" {
-		updateField = append(updateField, sqlFieldTitle)
-	}
 	if info.Title != "" {
 		updateField = append(updateField, sqlFieldIntro)
 	}
-	return c.db.WithContext(ctx).Model(&ChannelInfo{}).Where(sqlEqualId, info.Id).
+	if info.Intro != "" {
+		updateField = append(updateField, sqlFieldTitle)
+	}
+	if info.AvatarId != "" {
+		updateField = append(updateField, sqlFieldAvatarId)
+	}
+	return c.db.WithContext(ctx).Model(_channel).
+		Where(sqlEqualId, info.Id).
 		Select(updateField).
 		Updates(info).Error
 }
@@ -152,10 +161,36 @@ func (c *RDSClient) DeleteChannelInfo(ctx context.Context, Id uint64) error {
 }
 
 func (c *RDSClient) GetChannelInfo(ctx context.Context, Id uint64) (result *ChannelInfo, err error) {
-	err = c.db.WithContext(ctx).Where(sqlEqualId, Id).First(&result).Error
+	err = c.db.WithContext(ctx).
+		Preload(clause.Associations).
+		Where(sqlEqualId, Id).
+		First(&result).Error
 	if err != nil {
 		return
 	}
+	return
+}
+
+func (c *RDSClient) GetChannelFullInfo(ctx context.Context, Id uint64) (result *ChannelInfo, err error) {
+	err = c.db.WithContext(ctx).
+		Preload(clause.Associations).
+		Where(sqlEqualId, Id).
+		First(&result).Error
+	if err != nil {
+		return
+	}
+	return
+}
+
+func (c *RDSClient) GetChannelCreaterId(ctx context.Context, Id uint64) (uid uint64, err error) {
+	result := &ChannelInfo{}
+	err = c.db.WithContext(ctx).
+		Select(sqlFieldUId).
+		Where(sqlEqualId, Id).First(&result).Error
+	if err != nil {
+		return
+	}
+	uid = result.UId
 	return
 }
 

@@ -23,7 +23,9 @@ message LocationInfo {
 
 enum MediaType {
   MT_DEFAULT = 0;
-  MT_AVATAR = 1;
+  USER_AVA = 1;
+  CHANNEL_AVA = 2;
+  POST_IMG = 3;
 }
 
 message MediaInfo {

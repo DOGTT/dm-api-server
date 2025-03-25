@@ -12,6 +12,7 @@ var (
 	EM_CommonFail_ParamsInvalid = &ErrMsg{HttpStatus: http.StatusBadRequest, Code: "CommonFail.ParamsInvalid"}
 	EM_CommonFail_AuthFail      = &ErrMsg{HttpStatus: http.StatusUnauthorized, Code: "CommonFail.AuthFail"}
 	EM_CommonFail_BadRequest    = &ErrMsg{HttpStatus: http.StatusBadRequest, Code: "CommonFail.BadRequest"}
+	EM_CommonFail_Forbidden     = &ErrMsg{HttpStatus: http.StatusForbidden, Code: "CommonFail.Forbidden"}
 	EM_CommonFail_Internal      = &ErrMsg{HttpStatus: http.StatusInternalServerError, Code: "CommonFail.Internal"}
 	EM_CommonFail_DBError       = &ErrMsg{HttpStatus: http.StatusInternalServerError, Code: "CommonFail.DBError"}
 

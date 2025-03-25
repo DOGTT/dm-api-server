@@ -83,24 +83,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ChannelBaseQueryByBoundRes'
-  /v1/channel/detail_query_by_id:
-    get:
-      tags:
-        - BaseService
-      description: 按照id查询足迹静态完整信息
-      operationId: BaseService_ChannelDetailQueryById
-      parameters:
-        - name: ch_id
-          in: query
-          schema:
-            type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ChannelDetailQueryByIdRes'
   /v1/channel/full_query_by_id:
     get:
       tags:
@@ -124,12 +106,12 @@ paths:
       tags:
         - BaseService
       description: 足迹频道互动
-      operationId: BaseService_ChannelInteraction
+      operationId: BaseService_ChannelInx
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ChannelInteractionReq'
+              $ref: '#/components/schemas/ChannelInxReq'
         required: true
       responses:
         "200":
@@ -137,7 +119,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ChannelInteractionRes'
+                $ref: '#/components/schemas/ChannelInxRes'
   /v1/channel/post:
     post:
       tags:
@@ -303,11 +285,6 @@ components:
     ChannelDeleteRes:
       type: object
       properties: {}
-    ChannelDetailQueryByIdRes:
-      type: object
-      properties:
-        channel:
-          $ref: '#/components/schemas/ChannelInfo'
     ChannelFullQueryByIdRes:
       type: object
       properties:
@@ -347,7 +324,7 @@ components:
         updated_at:
           type: string
       description: 频道信息
-    ChannelInteractionReq:
+    ChannelInxReq:
       type: object
       properties:
         ch_id:
@@ -359,7 +336,7 @@ components:
         ixn_state:
           type: integer
           format: enum
-    ChannelInteractionRes:
+    ChannelInxRes:
       type: object
       properties: {}
     ChannelStats:
@@ -367,24 +344,27 @@ components:
       properties:
         views_cnt:
           type: integer
-          description: 查看数，只读
+          description: 查看数
           format: int32
-        likes_cnt:
+        stars_cnt:
           type: integer
-          description: 喜欢数，只读
+          description: 收藏数
           format: int32
-        marks_cnt:
+        pet_marks_cnt:
           type: integer
-          description: 标记数，只读
+          description: 到访宠物数量
           format: int32
-        comments_cnt:
+        posts_cnt:
           type: integer
-          description: 评论数，只读
+          description: 帖子数量
           format: int32
         last_view:
           type: string
-        last_mark:
+        last_pet_mark:
           type: string
+        last_inx:
+          type: string
+      description: 频道状态, 只读
     ChannelTypeInfo:
       type: object
       properties:
@@ -507,7 +487,7 @@ components:
           type: integer
           format: uint32
         avatar:
-          type: string
+          $ref: '#/components/schemas/MediaInfo'
         specie:
           type: string
         breed:

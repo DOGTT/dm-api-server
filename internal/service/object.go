@@ -22,7 +22,9 @@ func (s *Service) MediaPutPresignURLBatchGet(ctx context.Context, req *base_api.
 			Uuid: utils.GenUUID(),
 		}
 		res.Media[i].PutUrl, err = s.data.GeneratePutPresignedURL(ctx,
-			fds.GetBucketName(req.GetMediaType()), res.Media[i].Uuid, fds.PreSignDurationDefault)
+			fds.GetBucketName(req.GetMediaType()),
+			res.Media[i].Uuid,
+			fds.PreSignDurationDefault)
 		if err != nil {
 			err = EM_CommonFail_Internal.PutDesc(err.Error())
 			return nil, err

@@ -39,21 +39,21 @@ message ChannelInfo {
   int64 updated_at = 32;
 }
 
-message ChannelStats {
 
-  // 查看数，只读
+// 频道状态, 只读
+message ChannelStats {
+  // 查看数
   int32 views_cnt = 11;
-  // 喜欢数，只读
-  int32 likes_cnt = 12;
-  // 标记数，只读
-  int32 marks_cnt = 13;
-  // 评论数，只读
-  int32 comments_cnt = 14;
+  // 收藏数
+  int32 stars_cnt = 12;
+  // 到访宠物数量
+  int32 pet_marks_cnt = 13;
+  // 帖子数量
+  int32 posts_cnt = 14;
   int64 last_view = 15;
-  int64 last_mark = 16;
-    // TODO: add more fields
+  int64 last_pet_mark = 16;
+  int64 last_inx = 17;
   // 谁最近来过
-  // 图片轮播
 }
 
 

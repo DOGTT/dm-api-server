@@ -28,9 +28,8 @@ const (
 	BaseService_ChannelUpdate_FullMethodName           = "/base_service.v1.BaseService/ChannelUpdate"
 	BaseService_ChannelDelete_FullMethodName           = "/base_service.v1.BaseService/ChannelDelete"
 	BaseService_ChannelBaseQueryByBound_FullMethodName = "/base_service.v1.BaseService/ChannelBaseQueryByBound"
-	BaseService_ChannelDetailQueryById_FullMethodName  = "/base_service.v1.BaseService/ChannelDetailQueryById"
 	BaseService_ChannelFullQueryById_FullMethodName    = "/base_service.v1.BaseService/ChannelFullQueryById"
-	BaseService_ChannelInteraction_FullMethodName      = "/base_service.v1.BaseService/ChannelInteraction"
+	BaseService_ChannelInx_FullMethodName              = "/base_service.v1.BaseService/ChannelInx"
 	BaseService_ChannelComment_FullMethodName          = "/base_service.v1.BaseService/ChannelComment"
 )
 
@@ -61,12 +60,10 @@ type BaseServiceClient interface {
 	ChannelDelete(ctx context.Context, in *ChannelDeleteReq, opts ...grpc.CallOption) (*ChannelDeleteRes, error)
 	// 按照范围查询足迹基础信息
 	ChannelBaseQueryByBound(ctx context.Context, in *ChannelBaseQueryByBoundReq, opts ...grpc.CallOption) (*ChannelBaseQueryByBoundRes, error)
-	// 按照id查询足迹静态完整信息
-	ChannelDetailQueryById(ctx context.Context, in *ChannelDetailQueryByIdReq, opts ...grpc.CallOption) (*ChannelDetailQueryByIdRes, error)
 	// 按照id查询足迹频道动态信息
 	ChannelFullQueryById(ctx context.Context, in *ChannelFullQueryByIdReq, opts ...grpc.CallOption) (*ChannelFullQueryByIdRes, error)
 	// 足迹频道互动
-	ChannelInteraction(ctx context.Context, in *ChannelInteractionReq, opts ...grpc.CallOption) (*ChannelInteractionRes, error)
+	ChannelInx(ctx context.Context, in *ChannelInxReq, opts ...grpc.CallOption) (*ChannelInxRes, error)
 	// 足迹频道评论
 	ChannelComment(ctx context.Context, in *ChannelCommentReq, opts ...grpc.CallOption) (*ChannelCommentRes, error)
 }
@@ -169,16 +166,6 @@ func (c *baseServiceClient) ChannelBaseQueryByBound(ctx context.Context, in *Cha
 	return out, nil
 }
 
-func (c *baseServiceClient) ChannelDetailQueryById(ctx context.Context, in *ChannelDetailQueryByIdReq, opts ...grpc.CallOption) (*ChannelDetailQueryByIdRes, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ChannelDetailQueryByIdRes)
-	err := c.cc.Invoke(ctx, BaseService_ChannelDetailQueryById_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *baseServiceClient) ChannelFullQueryById(ctx context.Context, in *ChannelFullQueryByIdReq, opts ...grpc.CallOption) (*ChannelFullQueryByIdRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ChannelFullQueryByIdRes)
@@ -189,10 +176,10 @@ func (c *baseServiceClient) ChannelFullQueryById(ctx context.Context, in *Channe
 	return out, nil
 }
 
-func (c *baseServiceClient) ChannelInteraction(ctx context.Context, in *ChannelInteractionReq, opts ...grpc.CallOption) (*ChannelInteractionRes, error) {
+func (c *baseServiceClient) ChannelInx(ctx context.Context, in *ChannelInxReq, opts ...grpc.CallOption) (*ChannelInxRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ChannelInteractionRes)
-	err := c.cc.Invoke(ctx, BaseService_ChannelInteraction_FullMethodName, in, out, cOpts...)
+	out := new(ChannelInxRes)
+	err := c.cc.Invoke(ctx, BaseService_ChannelInx_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -236,12 +223,10 @@ type BaseServiceServer interface {
 	ChannelDelete(context.Context, *ChannelDeleteReq) (*ChannelDeleteRes, error)
 	// 按照范围查询足迹基础信息
 	ChannelBaseQueryByBound(context.Context, *ChannelBaseQueryByBoundReq) (*ChannelBaseQueryByBoundRes, error)
-	// 按照id查询足迹静态完整信息
-	ChannelDetailQueryById(context.Context, *ChannelDetailQueryByIdReq) (*ChannelDetailQueryByIdRes, error)
 	// 按照id查询足迹频道动态信息
 	ChannelFullQueryById(context.Context, *ChannelFullQueryByIdReq) (*ChannelFullQueryByIdRes, error)
 	// 足迹频道互动
-	ChannelInteraction(context.Context, *ChannelInteractionReq) (*ChannelInteractionRes, error)
+	ChannelInx(context.Context, *ChannelInxReq) (*ChannelInxRes, error)
 	// 足迹频道评论
 	ChannelComment(context.Context, *ChannelCommentReq) (*ChannelCommentRes, error)
 	mustEmbedUnimplementedBaseServiceServer()
@@ -281,14 +266,11 @@ func (UnimplementedBaseServiceServer) ChannelDelete(context.Context, *ChannelDel
 func (UnimplementedBaseServiceServer) ChannelBaseQueryByBound(context.Context, *ChannelBaseQueryByBoundReq) (*ChannelBaseQueryByBoundRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChannelBaseQueryByBound not implemented")
 }
-func (UnimplementedBaseServiceServer) ChannelDetailQueryById(context.Context, *ChannelDetailQueryByIdReq) (*ChannelDetailQueryByIdRes, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ChannelDetailQueryById not implemented")
-}
 func (UnimplementedBaseServiceServer) ChannelFullQueryById(context.Context, *ChannelFullQueryByIdReq) (*ChannelFullQueryByIdRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChannelFullQueryById not implemented")
 }
-func (UnimplementedBaseServiceServer) ChannelInteraction(context.Context, *ChannelInteractionReq) (*ChannelInteractionRes, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ChannelInteraction not implemented")
+func (UnimplementedBaseServiceServer) ChannelInx(context.Context, *ChannelInxReq) (*ChannelInxRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChannelInx not implemented")
 }
 func (UnimplementedBaseServiceServer) ChannelComment(context.Context, *ChannelCommentReq) (*ChannelCommentRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChannelComment not implemented")
@@ -476,24 +458,6 @@ func _BaseService_ChannelBaseQueryByBound_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BaseService_ChannelDetailQueryById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChannelDetailQueryByIdReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(BaseServiceServer).ChannelDetailQueryById(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: BaseService_ChannelDetailQueryById_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).ChannelDetailQueryById(ctx, req.(*ChannelDetailQueryByIdReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _BaseService_ChannelFullQueryById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ChannelFullQueryByIdReq)
 	if err := dec(in); err != nil {
@@ -512,20 +476,20 @@ func _BaseService_ChannelFullQueryById_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BaseService_ChannelInteraction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChannelInteractionReq)
+func _BaseService_ChannelInx_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChannelInxReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BaseServiceServer).ChannelInteraction(ctx, in)
+		return srv.(BaseServiceServer).ChannelInx(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BaseService_ChannelInteraction_FullMethodName,
+		FullMethod: BaseService_ChannelInx_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).ChannelInteraction(ctx, req.(*ChannelInteractionReq))
+		return srv.(BaseServiceServer).ChannelInx(ctx, req.(*ChannelInxReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -592,16 +556,12 @@ var BaseService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _BaseService_ChannelBaseQueryByBound_Handler,
 		},
 		{
-			MethodName: "ChannelDetailQueryById",
-			Handler:    _BaseService_ChannelDetailQueryById_Handler,
-		},
-		{
 			MethodName: "ChannelFullQueryById",
 			Handler:    _BaseService_ChannelFullQueryById_Handler,
 		},
 		{
-			MethodName: "ChannelInteraction",
-			Handler:    _BaseService_ChannelInteraction_Handler,
+			MethodName: "ChannelInx",
+			Handler:    _BaseService_ChannelInx_Handler,
 		},
 		{
 			MethodName: "ChannelComment",

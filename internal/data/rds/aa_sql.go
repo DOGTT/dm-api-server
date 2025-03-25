@@ -12,11 +12,16 @@ const limitDefault = 100
 // field
 const (
 	// common field
-	sqlFieldAll    = "*"
-	sqlFieldId     = "id"
-	sqlFieldTypeId = "type_id"
-	sqlFieldTitle  = "title"
-	sqlFieldIntro  = "intro"
+	sqlFieldAll       = "*"
+	sqlFieldId        = "id"
+	sqlFieldUId       = "uid"
+	sqlFieldTypeId    = "type_id"
+	sqlFieldName      = "name"
+	sqlFieldTitle     = "title"
+	sqlFieldAvatarId  = "avatar_id"
+	sqlFieldIntro     = "intro"
+	sqlFieldCreatedAt = "created_at"
+	sqlFieldUpdatedAt = "updated_at"
 
 	// spec
 )

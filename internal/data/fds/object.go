@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	api "github.com/DOGTT/dm-api-server/api/base"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/s3"
 )
@@ -19,6 +20,11 @@ func (c *FDSClient) PutObject(ctx context.Context, bucket string, fileID string,
 		ContentType: aws.String(contentType),
 	})
 	return err
+}
+
+// GenerateGetPresignedURL 生成预签名 URL
+func (c *FDSClient) GenerateGetPresignedURLByMediaInfo(ctx context.Context, in *api.MediaInfo) (string, error) {
+	return c.GenerateGetPresignedURL(ctx, GetBucketName(in.GetType()), in.GetUuid(), PreSignDurationDefault)
 }
 
 // GenerateGetPresignedURL 生成预签名 URL

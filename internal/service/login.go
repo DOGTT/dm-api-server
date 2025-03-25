@@ -53,7 +53,7 @@ func (s *Service) WeChatLogin(ctx context.Context, req *api.LoginWeChatReq) (res
 		return
 	}
 	token, err := s.kp.GenerateToken(utils.TokenClaims{
-		UID: userInfo.Id,
+		UId: userInfo.Id,
 	})
 	if err != nil {
 		err = EM_CommonFail_Internal.PutDesc(err.Error())
@@ -109,21 +109,21 @@ func (s *Service) WeChatRegisterFast(ctx context.Context, req *api.FastRegisterW
 	}
 	// 3.save avatar
 	if req.GetRegData().GetAvatarData() != nil {
-		err = s.data.PutObject(ctx, fds.BucketNameAvatar,
-			getAvatarIdFromFDS(pet.AvatarId, pet.Id), req.GetRegData().GetAvatarData())
+		err = s.data.PutObject(ctx,
+			fds.GetBucketName(api.MediaType_USER_AVA),
+			pet.AvatarId, req.GetRegData().GetAvatarData())
 		if err != nil {
 			err = EM_CommonFail_DBError.PutDesc(err.Error())
 			return
 		}
 	}
 	// 3. Query Info
-	// user.PIds = []*rds.PetInfo{pet}
 	res.UserInfo, err = s.convertToUserInfo(ctx, user)
 	if err != nil {
 		return
 	}
 	token, err := s.kp.GenerateToken(utils.TokenClaims{
-		UID: user.Id,
+		UId: user.Id,
 	})
 	if err != nil {
 		err = EM_CommonFail_Internal.PutDesc(err.Error())
@@ -131,10 +131,6 @@ func (s *Service) WeChatRegisterFast(ctx context.Context, req *api.FastRegisterW
 	}
 	res.Token = token
 	return
-}
-
-func getAvatarIdFromFDS(avatarId string, pid uint64) string {
-	return fmt.Sprintf("%d_%s", pid, avatarId)
 }
 
 func (s *Service) convertToUserInfo(ctx context.Context, userInfo *rds.UserInfo) (res *api.UserInfo, err error) {
@@ -154,12 +150,16 @@ func (s *Service) convertToUserInfo(ctx context.Context, userInfo *rds.UserInfo)
 			UpdatedAt: pet.UpdatedAt.UnixMilli(),
 		}
 		if pet.AvatarId != "" {
-			res.Pets[i].Avatar, err = s.data.GenerateGetPresignedURL(ctx,
-				fds.BucketNameAvatar, getAvatarIdFromFDS(pet.AvatarId, pet.Id), fds.PreSignDurationDefault)
+			media := &api.MediaInfo{
+				Uuid: pet.AvatarId,
+				Type: api.MediaType_USER_AVA,
+			}
+			media.GetUrl, err = s.data.GenerateGetPresignedURLByMediaInfo(ctx, media)
 			if err != nil {
 				err = EM_CommonFail_Internal.PutDesc(err.Error())
 				return
 			}
+			res.Pets[i].Avatar = media
 		}
 	}
 	return

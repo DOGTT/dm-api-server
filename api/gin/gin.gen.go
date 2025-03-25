@@ -69,12 +69,6 @@ type ChannelCreateRes struct {
 // ChannelDeleteRes defines model for ChannelDeleteRes.
 type ChannelDeleteRes = map[string]interface{}
 
-// ChannelDetailQueryByIdRes defines model for ChannelDetailQueryByIdRes.
-type ChannelDetailQueryByIdRes struct {
-	// Channel 频道信息
-	Channel *ChannelInfo `json:"channel,omitempty"`
-}
-
 // ChannelFullQueryByIdRes defines model for ChannelFullQueryByIdRes.
 type ChannelFullQueryByIdRes struct {
 	// Channel 频道信息
@@ -108,8 +102,8 @@ type ChannelInfo struct {
 	UpdatedAt *string `json:"updated_at,omitempty"`
 }
 
-// ChannelInteractionReq defines model for ChannelInteractionReq.
-type ChannelInteractionReq struct {
+// ChannelInxReq defines model for ChannelInxReq.
+type ChannelInxReq struct {
 	ChId *string `json:"ch_id,omitempty"`
 
 	// IxnEvent 互动类型
@@ -117,23 +111,25 @@ type ChannelInteractionReq struct {
 	IxnState *int `json:"ixn_state,omitempty"`
 }
 
-// ChannelInteractionRes defines model for ChannelInteractionRes.
-type ChannelInteractionRes = map[string]interface{}
+// ChannelInxRes defines model for ChannelInxRes.
+type ChannelInxRes = map[string]interface{}
 
-// ChannelStats defines model for ChannelStats.
+// ChannelStats 频道状态, 只读
 type ChannelStats struct {
-	// CommentsCnt 评论数，只读
-	CommentsCnt *int32  `json:"comments_cnt,omitempty"`
-	LastMark    *string `json:"last_mark,omitempty"`
+	LastInx     *string `json:"last_inx,omitempty"`
+	LastPetMark *string `json:"last_pet_mark,omitempty"`
 	LastView    *string `json:"last_view,omitempty"`
 
-	// LikesCnt 喜欢数，只读
-	LikesCnt *int32 `json:"likes_cnt,omitempty"`
+	// PetMarksCnt 到访宠物数量
+	PetMarksCnt *int32 `json:"pet_marks_cnt,omitempty"`
 
-	// MarksCnt 标记数，只读
-	MarksCnt *int32 `json:"marks_cnt,omitempty"`
+	// PostsCnt 帖子数量
+	PostsCnt *int32 `json:"posts_cnt,omitempty"`
 
-	// ViewsCnt 查看数，只读
+	// StarsCnt 收藏数
+	StarsCnt *int32 `json:"stars_cnt,omitempty"`
+
+	// ViewsCnt 查看数
 	ViewsCnt *int32 `json:"views_cnt,omitempty"`
 }
 
@@ -228,17 +224,17 @@ type MediaPutURLBatchGetRes struct {
 
 // PetInfo defines model for PetInfo.
 type PetInfo struct {
-	Avatar    *string `json:"avatar,omitempty"`
-	BirthDate *string `json:"birth_date,omitempty"`
-	Breed     *string `json:"breed,omitempty"`
-	CreatedAt *string `json:"created_at,omitempty"`
-	Gender    *uint32 `json:"gender,omitempty"`
-	Id        *string `json:"id,omitempty"`
-	Name      *string `json:"name,omitempty"`
-	Specie    *string `json:"specie,omitempty"`
-	Status    *int32  `json:"status,omitempty"`
-	UpdatedAt *string `json:"updated_at,omitempty"`
-	Weight    *int32  `json:"weight,omitempty"`
+	Avatar    *MediaInfo `json:"avatar,omitempty"`
+	BirthDate *string    `json:"birth_date,omitempty"`
+	Breed     *string    `json:"breed,omitempty"`
+	CreatedAt *string    `json:"created_at,omitempty"`
+	Gender    *uint32    `json:"gender,omitempty"`
+	Id        *string    `json:"id,omitempty"`
+	Name      *string    `json:"name,omitempty"`
+	Specie    *string    `json:"specie,omitempty"`
+	Status    *int32     `json:"status,omitempty"`
+	UpdatedAt *string    `json:"updated_at,omitempty"`
+	Weight    *int32     `json:"weight,omitempty"`
 }
 
 // PointCoord defines model for PointCoord.
@@ -269,11 +265,6 @@ type BaseServiceChannelDeleteParams struct {
 	ChId *string `form:"ch_id,omitempty" json:"ch_id,omitempty"`
 }
 
-// BaseServiceChannelDetailQueryByIdParams defines parameters for BaseServiceChannelDetailQueryById.
-type BaseServiceChannelDetailQueryByIdParams struct {
-	ChId *string `form:"ch_id,omitempty" json:"ch_id,omitempty"`
-}
-
 // BaseServiceChannelFullQueryByIdParams defines parameters for BaseServiceChannelFullQueryById.
 type BaseServiceChannelFullQueryByIdParams struct {
 	ChId *string `form:"ch_id,omitempty" json:"ch_id,omitempty"`
@@ -299,8 +290,8 @@ type BaseServiceChannelUpdateJSONRequestBody = ChannelUpdateReq
 // BaseServiceChannelBaseQueryByBoundJSONRequestBody defines body for BaseServiceChannelBaseQueryByBound for application/json ContentType.
 type BaseServiceChannelBaseQueryByBoundJSONRequestBody = ChannelBaseQueryByBoundReq
 
-// BaseServiceChannelInteractionJSONRequestBody defines body for BaseServiceChannelInteraction for application/json ContentType.
-type BaseServiceChannelInteractionJSONRequestBody = ChannelInteractionReq
+// BaseServiceChannelInxJSONRequestBody defines body for BaseServiceChannelInx for application/json ContentType.
+type BaseServiceChannelInxJSONRequestBody = ChannelInxReq
 
 // BaseServiceChannelCommentJSONRequestBody defines body for BaseServiceChannelComment for application/json ContentType.
 type BaseServiceChannelCommentJSONRequestBody = ChannelCommentReq
@@ -402,16 +393,13 @@ type ClientInterface interface {
 
 	BaseServiceChannelBaseQueryByBound(ctx context.Context, body BaseServiceChannelBaseQueryByBoundJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// BaseServiceChannelDetailQueryById request
-	BaseServiceChannelDetailQueryById(ctx context.Context, params *BaseServiceChannelDetailQueryByIdParams, reqEditors ...RequestEditorFn) (*http.Response, error)
-
 	// BaseServiceChannelFullQueryById request
 	BaseServiceChannelFullQueryById(ctx context.Context, params *BaseServiceChannelFullQueryByIdParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// BaseServiceChannelInteractionWithBody request with any body
-	BaseServiceChannelInteractionWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// BaseServiceChannelInxWithBody request with any body
+	BaseServiceChannelInxWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	BaseServiceChannelInteraction(ctx context.Context, body BaseServiceChannelInteractionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	BaseServiceChannelInx(ctx context.Context, body BaseServiceChannelInxJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// BaseServiceChannelCommentWithBody request with any body
 	BaseServiceChannelCommentWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -522,18 +510,6 @@ func (c *Client) BaseServiceChannelBaseQueryByBound(ctx context.Context, body Ba
 	return c.Client.Do(req)
 }
 
-func (c *Client) BaseServiceChannelDetailQueryById(ctx context.Context, params *BaseServiceChannelDetailQueryByIdParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServiceChannelDetailQueryByIdRequest(c.Server, params)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
 func (c *Client) BaseServiceChannelFullQueryById(ctx context.Context, params *BaseServiceChannelFullQueryByIdParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewBaseServiceChannelFullQueryByIdRequest(c.Server, params)
 	if err != nil {
@@ -546,8 +522,8 @@ func (c *Client) BaseServiceChannelFullQueryById(ctx context.Context, params *Ba
 	return c.Client.Do(req)
 }
 
-func (c *Client) BaseServiceChannelInteractionWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServiceChannelInteractionRequestWithBody(c.Server, contentType, body)
+func (c *Client) BaseServiceChannelInxWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServiceChannelInxRequestWithBody(c.Server, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -558,8 +534,8 @@ func (c *Client) BaseServiceChannelInteractionWithBody(ctx context.Context, cont
 	return c.Client.Do(req)
 }
 
-func (c *Client) BaseServiceChannelInteraction(ctx context.Context, body BaseServiceChannelInteractionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServiceChannelInteractionRequest(c.Server, body)
+func (c *Client) BaseServiceChannelInx(ctx context.Context, body BaseServiceChannelInxJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServiceChannelInxRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -847,55 +823,6 @@ func NewBaseServiceChannelBaseQueryByBoundRequestWithBody(server string, content
 	return req, nil
 }
 
-// NewBaseServiceChannelDetailQueryByIdRequest generates requests for BaseServiceChannelDetailQueryById
-func NewBaseServiceChannelDetailQueryByIdRequest(server string, params *BaseServiceChannelDetailQueryByIdParams) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/v1/channel/detail_query_by_id")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	if params != nil {
-		queryValues := queryURL.Query()
-
-		if params.ChId != nil {
-
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "ch_id", runtime.ParamLocationQuery, *params.ChId); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
-		queryURL.RawQuery = queryValues.Encode()
-	}
-
-	req, err := http.NewRequest("GET", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
-}
-
 // NewBaseServiceChannelFullQueryByIdRequest generates requests for BaseServiceChannelFullQueryById
 func NewBaseServiceChannelFullQueryByIdRequest(server string, params *BaseServiceChannelFullQueryByIdParams) (*http.Request, error) {
 	var err error
@@ -945,19 +872,19 @@ func NewBaseServiceChannelFullQueryByIdRequest(server string, params *BaseServic
 	return req, nil
 }
 
-// NewBaseServiceChannelInteractionRequest calls the generic BaseServiceChannelInteraction builder with application/json body
-func NewBaseServiceChannelInteractionRequest(server string, body BaseServiceChannelInteractionJSONRequestBody) (*http.Request, error) {
+// NewBaseServiceChannelInxRequest calls the generic BaseServiceChannelInx builder with application/json body
+func NewBaseServiceChannelInxRequest(server string, body BaseServiceChannelInxJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewBaseServiceChannelInteractionRequestWithBody(server, "application/json", bodyReader)
+	return NewBaseServiceChannelInxRequestWithBody(server, "application/json", bodyReader)
 }
 
-// NewBaseServiceChannelInteractionRequestWithBody generates requests for BaseServiceChannelInteraction with any type of body
-func NewBaseServiceChannelInteractionRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+// NewBaseServiceChannelInxRequestWithBody generates requests for BaseServiceChannelInx with any type of body
+func NewBaseServiceChannelInxRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	serverURL, err := url.Parse(server)
@@ -1307,16 +1234,13 @@ type ClientWithResponsesInterface interface {
 
 	BaseServiceChannelBaseQueryByBoundWithResponse(ctx context.Context, body BaseServiceChannelBaseQueryByBoundJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceChannelBaseQueryByBoundResponse, error)
 
-	// BaseServiceChannelDetailQueryByIdWithResponse request
-	BaseServiceChannelDetailQueryByIdWithResponse(ctx context.Context, params *BaseServiceChannelDetailQueryByIdParams, reqEditors ...RequestEditorFn) (*BaseServiceChannelDetailQueryByIdResponse, error)
-
 	// BaseServiceChannelFullQueryByIdWithResponse request
 	BaseServiceChannelFullQueryByIdWithResponse(ctx context.Context, params *BaseServiceChannelFullQueryByIdParams, reqEditors ...RequestEditorFn) (*BaseServiceChannelFullQueryByIdResponse, error)
 
-	// BaseServiceChannelInteractionWithBodyWithResponse request with any body
-	BaseServiceChannelInteractionWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceChannelInteractionResponse, error)
+	// BaseServiceChannelInxWithBodyWithResponse request with any body
+	BaseServiceChannelInxWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceChannelInxResponse, error)
 
-	BaseServiceChannelInteractionWithResponse(ctx context.Context, body BaseServiceChannelInteractionJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceChannelInteractionResponse, error)
+	BaseServiceChannelInxWithResponse(ctx context.Context, body BaseServiceChannelInxJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceChannelInxResponse, error)
 
 	// BaseServiceChannelCommentWithBodyWithResponse request with any body
 	BaseServiceChannelCommentWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceChannelCommentResponse, error)
@@ -1431,28 +1355,6 @@ func (r BaseServiceChannelBaseQueryByBoundResponse) StatusCode() int {
 	return 0
 }
 
-type BaseServiceChannelDetailQueryByIdResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *ChannelDetailQueryByIdRes
-}
-
-// Status returns HTTPResponse.Status
-func (r BaseServiceChannelDetailQueryByIdResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r BaseServiceChannelDetailQueryByIdResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
 type BaseServiceChannelFullQueryByIdResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -1475,14 +1377,14 @@ func (r BaseServiceChannelFullQueryByIdResponse) StatusCode() int {
 	return 0
 }
 
-type BaseServiceChannelInteractionResponse struct {
+type BaseServiceChannelInxResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *ChannelInteractionRes
+	JSON200      *ChannelInxRes
 }
 
 // Status returns HTTPResponse.Status
-func (r BaseServiceChannelInteractionResponse) Status() string {
+func (r BaseServiceChannelInxResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -1490,7 +1392,7 @@ func (r BaseServiceChannelInteractionResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r BaseServiceChannelInteractionResponse) StatusCode() int {
+func (r BaseServiceChannelInxResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -1689,15 +1591,6 @@ func (c *ClientWithResponses) BaseServiceChannelBaseQueryByBoundWithResponse(ctx
 	return ParseBaseServiceChannelBaseQueryByBoundResponse(rsp)
 }
 
-// BaseServiceChannelDetailQueryByIdWithResponse request returning *BaseServiceChannelDetailQueryByIdResponse
-func (c *ClientWithResponses) BaseServiceChannelDetailQueryByIdWithResponse(ctx context.Context, params *BaseServiceChannelDetailQueryByIdParams, reqEditors ...RequestEditorFn) (*BaseServiceChannelDetailQueryByIdResponse, error) {
-	rsp, err := c.BaseServiceChannelDetailQueryById(ctx, params, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseBaseServiceChannelDetailQueryByIdResponse(rsp)
-}
-
 // BaseServiceChannelFullQueryByIdWithResponse request returning *BaseServiceChannelFullQueryByIdResponse
 func (c *ClientWithResponses) BaseServiceChannelFullQueryByIdWithResponse(ctx context.Context, params *BaseServiceChannelFullQueryByIdParams, reqEditors ...RequestEditorFn) (*BaseServiceChannelFullQueryByIdResponse, error) {
 	rsp, err := c.BaseServiceChannelFullQueryById(ctx, params, reqEditors...)
@@ -1707,21 +1600,21 @@ func (c *ClientWithResponses) BaseServiceChannelFullQueryByIdWithResponse(ctx co
 	return ParseBaseServiceChannelFullQueryByIdResponse(rsp)
 }
 
-// BaseServiceChannelInteractionWithBodyWithResponse request with arbitrary body returning *BaseServiceChannelInteractionResponse
-func (c *ClientWithResponses) BaseServiceChannelInteractionWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceChannelInteractionResponse, error) {
-	rsp, err := c.BaseServiceChannelInteractionWithBody(ctx, contentType, body, reqEditors...)
+// BaseServiceChannelInxWithBodyWithResponse request with arbitrary body returning *BaseServiceChannelInxResponse
+func (c *ClientWithResponses) BaseServiceChannelInxWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceChannelInxResponse, error) {
+	rsp, err := c.BaseServiceChannelInxWithBody(ctx, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseBaseServiceChannelInteractionResponse(rsp)
+	return ParseBaseServiceChannelInxResponse(rsp)
 }
 
-func (c *ClientWithResponses) BaseServiceChannelInteractionWithResponse(ctx context.Context, body BaseServiceChannelInteractionJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceChannelInteractionResponse, error) {
-	rsp, err := c.BaseServiceChannelInteraction(ctx, body, reqEditors...)
+func (c *ClientWithResponses) BaseServiceChannelInxWithResponse(ctx context.Context, body BaseServiceChannelInxJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceChannelInxResponse, error) {
+	rsp, err := c.BaseServiceChannelInx(ctx, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseBaseServiceChannelInteractionResponse(rsp)
+	return ParseBaseServiceChannelInxResponse(rsp)
 }
 
 // BaseServiceChannelCommentWithBodyWithResponse request with arbitrary body returning *BaseServiceChannelCommentResponse
@@ -1906,32 +1799,6 @@ func ParseBaseServiceChannelBaseQueryByBoundResponse(rsp *http.Response) (*BaseS
 	return response, nil
 }
 
-// ParseBaseServiceChannelDetailQueryByIdResponse parses an HTTP response from a BaseServiceChannelDetailQueryByIdWithResponse call
-func ParseBaseServiceChannelDetailQueryByIdResponse(rsp *http.Response) (*BaseServiceChannelDetailQueryByIdResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &BaseServiceChannelDetailQueryByIdResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest ChannelDetailQueryByIdRes
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	}
-
-	return response, nil
-}
-
 // ParseBaseServiceChannelFullQueryByIdResponse parses an HTTP response from a BaseServiceChannelFullQueryByIdWithResponse call
 func ParseBaseServiceChannelFullQueryByIdResponse(rsp *http.Response) (*BaseServiceChannelFullQueryByIdResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -1958,22 +1825,22 @@ func ParseBaseServiceChannelFullQueryByIdResponse(rsp *http.Response) (*BaseServ
 	return response, nil
 }
 
-// ParseBaseServiceChannelInteractionResponse parses an HTTP response from a BaseServiceChannelInteractionWithResponse call
-func ParseBaseServiceChannelInteractionResponse(rsp *http.Response) (*BaseServiceChannelInteractionResponse, error) {
+// ParseBaseServiceChannelInxResponse parses an HTTP response from a BaseServiceChannelInxWithResponse call
+func ParseBaseServiceChannelInxResponse(rsp *http.Response) (*BaseServiceChannelInxResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &BaseServiceChannelInteractionResponse{
+	response := &BaseServiceChannelInxResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest ChannelInteractionRes
+		var dest ChannelInxRes
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -2155,14 +2022,11 @@ type ServerInterface interface {
 	// (POST /v1/channel/base_query_by_bound)
 	BaseServiceChannelBaseQueryByBound(c *gin.Context)
 
-	// (GET /v1/channel/detail_query_by_id)
-	BaseServiceChannelDetailQueryById(c *gin.Context, params BaseServiceChannelDetailQueryByIdParams)
-
 	// (GET /v1/channel/full_query_by_id)
 	BaseServiceChannelFullQueryById(c *gin.Context, params BaseServiceChannelFullQueryByIdParams)
 
 	// (POST /v1/channel/inx)
-	BaseServiceChannelInteraction(c *gin.Context)
+	BaseServiceChannelInx(c *gin.Context)
 
 	// (POST /v1/channel/post)
 	BaseServiceChannelComment(c *gin.Context)
@@ -2265,34 +2129,6 @@ func (siw *ServerInterfaceWrapper) BaseServiceChannelBaseQueryByBound(c *gin.Con
 	siw.Handler.BaseServiceChannelBaseQueryByBound(c)
 }
 
-// BaseServiceChannelDetailQueryById operation middleware
-func (siw *ServerInterfaceWrapper) BaseServiceChannelDetailQueryById(c *gin.Context) {
-
-	var err error
-
-	c.Set(BearerAuthScopes, []string{})
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params BaseServiceChannelDetailQueryByIdParams
-
-	// ------------- Optional query parameter "ch_id" -------------
-
-	err = runtime.BindQueryParameter("form", true, false, "ch_id", c.Request.URL.Query(), &params.ChId)
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter ch_id: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.BaseServiceChannelDetailQueryById(c, params)
-}
-
 // BaseServiceChannelFullQueryById operation middleware
 func (siw *ServerInterfaceWrapper) BaseServiceChannelFullQueryById(c *gin.Context) {
 
@@ -2321,8 +2157,8 @@ func (siw *ServerInterfaceWrapper) BaseServiceChannelFullQueryById(c *gin.Contex
 	siw.Handler.BaseServiceChannelFullQueryById(c, params)
 }
 
-// BaseServiceChannelInteraction operation middleware
-func (siw *ServerInterfaceWrapper) BaseServiceChannelInteraction(c *gin.Context) {
+// BaseServiceChannelInx operation middleware
+func (siw *ServerInterfaceWrapper) BaseServiceChannelInx(c *gin.Context) {
 
 	c.Set(BearerAuthScopes, []string{})
 
@@ -2333,7 +2169,7 @@ func (siw *ServerInterfaceWrapper) BaseServiceChannelInteraction(c *gin.Context)
 		}
 	}
 
-	siw.Handler.BaseServiceChannelInteraction(c)
+	siw.Handler.BaseServiceChannelInx(c)
 }
 
 // BaseServiceChannelComment operation middleware
@@ -2491,9 +2327,8 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	router.POST(options.BaseURL+"/v1/channel", wrapper.BaseServiceChannelCreate)
 	router.PUT(options.BaseURL+"/v1/channel", wrapper.BaseServiceChannelUpdate)
 	router.POST(options.BaseURL+"/v1/channel/base_query_by_bound", wrapper.BaseServiceChannelBaseQueryByBound)
-	router.GET(options.BaseURL+"/v1/channel/detail_query_by_id", wrapper.BaseServiceChannelDetailQueryById)
 	router.GET(options.BaseURL+"/v1/channel/full_query_by_id", wrapper.BaseServiceChannelFullQueryById)
-	router.POST(options.BaseURL+"/v1/channel/inx", wrapper.BaseServiceChannelInteraction)
+	router.POST(options.BaseURL+"/v1/channel/inx", wrapper.BaseServiceChannelInx)
 	router.POST(options.BaseURL+"/v1/channel/post", wrapper.BaseServiceChannelComment)
 	router.GET(options.BaseURL+"/v1/channel/type", wrapper.BaseServiceChannelTypeList)
 	router.GET(options.BaseURL+"/v1/location/search", wrapper.BaseServiceLocationCommonSearch)
@@ -2505,40 +2340,40 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"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",
+	"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",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

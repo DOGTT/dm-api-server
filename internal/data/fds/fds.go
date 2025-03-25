@@ -2,52 +2,39 @@ package fds
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
-	base_api "github.com/DOGTT/dm-api-server/api/base"
+	api "github.com/DOGTT/dm-api-server/api/base"
 	"github.com/DOGTT/dm-api-server/internal/conf"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
-	log "github.com/uptrace/opentelemetry-go-extra/otelzap"
-	"go.uber.org/zap"
 )
 
 const (
-	BucketNameDefault = "default"
-	BucketNameAvatar  = "avatar"
-	BucketNameChannel = "channel"
-	BucketNamePost    = "post"
-
 	PreSignDurationDefault = time.Minute * 10
 )
 
 var (
-	bucketInitList = []string{
-		BucketNameDefault,
-		BucketNameAvatar,
-		BucketNameChannel,
-		BucketNamePost,
-	}
-	bucketNameMapForObjectType = map[base_api.MediaType]string{
-		base_api.MediaType_MT_DEFAULT: BucketNameDefault,
-		base_api.MediaType_MT_AVATAR:  BucketNameChannel,
-	}
+	bucketInitList = []string{}
 )
 
 func init() {
+	for _, name := range api.MediaType_name {
+		bucketInitList = append(bucketInitList, toBucketName(name))
+	}
 }
 
-func GetBucketName(objectType base_api.MediaType) string {
-	name := bucketNameMapForObjectType[objectType]
-	if name == "" {
-		log.L().Warn("objectType not found in bucketNameMapForObjectType",
-			zap.String("objectType", objectType.String()))
-		return BucketNameDefault
-	}
-	return name
+func toBucketName(in string) string {
+	out := strings.Replace(in, "_", ".", -1)
+	return strings.ToLower(out)
+}
+
+func GetBucketName(objectType api.MediaType) string {
+	return bucketInitList[objectType]
 }
 
 // 文件型数据

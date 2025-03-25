@@ -185,18 +185,6 @@ func (s *Service) BaseServiceChannelBaseQueryByBound(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
-func (s *Service) BaseServiceChannelDetailQueryById(c *gin.Context, params gin_api.BaseServiceChannelDetailQueryByIdParams) {
-	req := &api.ChannelDetailQueryByIdReq{
-		ChId: *params.ChId,
-	}
-	res, err := s.ChannelDetailQueryById(withGinContext(c), req)
-	if err != nil {
-		s.putGinError(c, err)
-		return
-	}
-	c.JSON(http.StatusOK, res)
-}
-
 func (s *Service) BaseServiceChannelFullQueryById(c *gin.Context, params gin_api.BaseServiceChannelFullQueryByIdParams) {
 	req := &api.ChannelFullQueryByIdReq{
 		ChId: *params.ChId,
@@ -209,13 +197,13 @@ func (s *Service) BaseServiceChannelFullQueryById(c *gin.Context, params gin_api
 	c.JSON(http.StatusOK, res)
 }
 
-func (s *Service) BaseServiceChannelInteraction(c *gin.Context) {
-	req := &api.ChannelInteractionReq{}
+func (s *Service) BaseServiceChannelInx(c *gin.Context) {
+	req := &api.ChannelInxReq{}
 	if err := c.ShouldBind(&req); err != nil {
 		s.putGinError(c, EM_CommonFail_BadRequest)
 		return
 	}
-	res, err := s.ChannelInteraction(withGinContext(c), req)
+	res, err := s.ChannelInx(withGinContext(c), req)
 	if err != nil {
 		s.putGinError(c, err)
 		return

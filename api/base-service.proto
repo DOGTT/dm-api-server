@@ -88,13 +88,6 @@ service BaseService {
         };
     }
     
-    // 按照id查询足迹静态完整信息
-    rpc ChannelDetailQueryById(ChannelDetailQueryByIdReq) returns (ChannelDetailQueryByIdRes) {
-        option (google.api.http) = {
-            get: "/v1/channel/detail_query_by_id"
-        };
-    }
-
     // 按照id查询足迹频道动态信息
     rpc ChannelFullQueryById(ChannelFullQueryByIdReq) returns (ChannelFullQueryByIdRes) {
         option (google.api.http) = {
@@ -103,7 +96,7 @@ service BaseService {
     }
 
     // 足迹频道互动
-    rpc ChannelInteraction(ChannelInteractionReq) returns (ChannelInteractionRes) {
+    rpc ChannelInx(ChannelInxReq) returns (ChannelInxRes) {
         option (google.api.http) = {
             post: "/v1/channel/inx"
             body: "*"
@@ -243,7 +236,7 @@ message ChannelFullQueryByIdRes {
     channel.ChannelInfo channel = 1;
 }
 
-message ChannelInteractionReq {
+message ChannelInxReq {
     string ch_id = 1;
     // 互动类型
     common.UserIxnEventType ixn_event = 2;
@@ -251,7 +244,7 @@ message ChannelInteractionReq {
     common.UserIxnStateType ixn_state = 3;
 }
 
-message ChannelInteractionRes {
+message ChannelInxRes {
 
 }
 

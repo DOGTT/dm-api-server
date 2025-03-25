@@ -42,13 +42,13 @@ func LoadKeyPair(privateKeyPath, publicKeyPath string) (*KeyPair, error) {
 }
 
 type TokenClaims struct {
-	UID uint64 `json:"uid"` // 用户 ID
+	UId uint64 `json:"uid"` // 用户 ID
 }
 
 // GenerateToken 生成 RS256 JWT Token
 func (kp *KeyPair) GenerateToken(tc TokenClaims) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodRS256, jwt.MapClaims{
-		"uid": tc.UID,
+		"uid": tc.UId,
 		"exp": time.Now().Add(TokenExpireDuration).Unix(), // 设置过期时间 24 小时
 		"iat": time.Now().Unix(),                          // 签发时间
 	})
@@ -73,7 +73,7 @@ func (kp *KeyPair) ParseToken(tokenString string) (TokenClaims, error) {
 		if !ok {
 			return tc, errors.New("invalid token claims")
 		}
-		tc.UID = (uint64)(uid)
+		tc.UId = (uint64)(uid)
 	}
 	return tc, nil
 }
