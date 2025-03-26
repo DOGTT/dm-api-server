@@ -12,22 +12,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type ContextKey string
-
-const (
-	TOKEN_CLAIM_KEY ContextKey = "Token-Claim"
-)
-
 func withGinContext(c *gin.Context) context.Context {
-	ctx := context.WithValue(c, ContextKey("Server-Origin"), "gin-server")
+	ctx := context.WithValue(c, utils.ContextKey("Server-Origin"), "gin-server")
 	for key, value := range c.Keys {
-		ctx = context.WithValue(ctx, ContextKey(key), value)
+		ctx = context.WithValue(ctx, utils.ContextKey(key), value)
 	}
 	return ctx
-}
-
-func getClaimFromContext(ctx context.Context) *utils.TokenClaims {
-	return ctx.Value(TOKEN_CLAIM_KEY).(*utils.TokenClaims)
 }
 
 func (s *Service) putGinError(c *gin.Context, err error) {
@@ -147,7 +137,7 @@ func (s *Service) BaseServiceChannelCreate(c *gin.Context) {
 
 func (s *Service) BaseServiceChannelDelete(c *gin.Context, params gin_api.BaseServiceChannelDeleteParams) {
 	req := &api.ChannelDeleteReq{
-		ChId: *params.ChId,
+		ChanId: *params.ChanId,
 	}
 	res, err := s.ChannelDelete(withGinContext(c), req)
 	if err != nil {
@@ -187,7 +177,7 @@ func (s *Service) BaseServiceChannelBaseQueryByBound(c *gin.Context) {
 
 func (s *Service) BaseServiceChannelFullQueryById(c *gin.Context, params gin_api.BaseServiceChannelFullQueryByIdParams) {
 	req := &api.ChannelFullQueryByIdReq{
-		ChId: *params.ChId,
+		ChanId: *params.ChanId,
 	}
 	res, err := s.ChannelFullQueryById(withGinContext(c), req)
 	if err != nil {
@@ -211,13 +201,68 @@ func (s *Service) BaseServiceChannelInx(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
-func (s *Service) BaseServiceChannelComment(c *gin.Context) {
-	req := &api.ChannelCommentReq{}
-	if err := c.ShouldBind(&req); err != nil {
-		s.putGinError(c, EM_CommonFail_BadRequest.PutDesc(err.Error()))
+func (s *Service) BaseServiceChannelPostDelete(c *gin.Context, params gin_api.BaseServiceChannelPostDeleteParams) {
+	req := &api.ChannelPostDeleteReq{
+		ChanId: *params.ChanId,
+		PostId: *params.PostId,
+	}
+	res, err := s.ChannelPostDelete(withGinContext(c), req)
+	if err != nil {
+		s.putGinError(c, err)
 		return
 	}
-	res, err := s.ChannelComment(withGinContext(c), req)
+	c.JSON(http.StatusOK, res)
+}
+
+func (s *Service) BaseServiceChannelPostCreate(c *gin.Context) {
+	req := &api.ChannelPostCreateReq{}
+	if err := c.ShouldBind(&req); err != nil {
+		s.putGinError(c, EM_CommonFail_BadRequest)
+		return
+	}
+	res, err := s.ChannelPostCreate(withGinContext(c), req)
+	if err != nil {
+		s.putGinError(c, err)
+		return
+	}
+	c.JSON(http.StatusOK, res)
+}
+
+func (s *Service) BaseServiceChannelPostUpdate(c *gin.Context) {
+	req := &api.ChannelPostUpdateReq{}
+	if err := c.ShouldBind(&req); err != nil {
+		s.putGinError(c, EM_CommonFail_BadRequest)
+		return
+	}
+	res, err := s.ChannelPostUpdate(withGinContext(c), req)
+	if err != nil {
+		s.putGinError(c, err)
+		return
+	}
+	c.JSON(http.StatusOK, res)
+}
+
+func (s *Service) BaseServiceChannelPostInx(c *gin.Context) {
+	req := &api.ChannelPostInxReq{}
+	if err := c.ShouldBind(&req); err != nil {
+		s.putGinError(c, EM_CommonFail_BadRequest)
+		return
+	}
+	res, err := s.ChannelPostInx(withGinContext(c), req)
+	if err != nil {
+		s.putGinError(c, err)
+		return
+	}
+	c.JSON(http.StatusOK, res)
+}
+
+func (s *Service) BaseServiceChannelPostLoad(c *gin.Context) {
+	req := &api.ChannelPostLoadReq{}
+	if err := c.ShouldBind(&req); err != nil {
+		s.putGinError(c, EM_CommonFail_BadRequest)
+		return
+	}
+	res, err := s.ChannelPostLoad(withGinContext(c), req)
 	if err != nil {
 		s.putGinError(c, err)
 		return

@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package post;
+
+import "common.proto";
+
+option go_package = "github.com/DOGTT/dm-api-server/api/base;api";
+
+// 频道帖子或者评论
+message PostInfo {
+	// 评论id
+  string id = 1;
+  // 足迹作者, 不可更新
+  string uid = 2;
+	// 根id, 频道id
+  string root_id = 3;
+	// 上级帖子id
+  string parent_id = 4;
+	// 正文内容
+  string content = 5;
+
+  int64 created_at = 31;
+  int64 updated_at = 32;
+}

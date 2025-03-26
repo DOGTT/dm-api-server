@@ -6,10 +6,11 @@ import (
 	base_api "github.com/DOGTT/dm-api-server/api/base"
 	"github.com/DOGTT/dm-api-server/internal/data/fds"
 	"github.com/DOGTT/dm-api-server/internal/utils"
+	"github.com/DOGTT/dm-api-server/internal/utils/log"
 )
 
 func (s *Service) MediaPutPresignURLBatchGet(ctx context.Context, req *base_api.MediaPutURLBatchGetReq) (res *base_api.MediaPutURLBatchGetRes, err error) {
-
+	log.D(ctx, "request in", "req", req)
 	var (
 		n = int(req.GetCount())
 	)

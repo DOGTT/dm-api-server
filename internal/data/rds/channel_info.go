@@ -19,11 +19,11 @@ const (
 )
 
 var (
-	_channel = &ChannelInfo{}
+	channelModel = &ChannelInfo{}
 )
 
 func init() {
-	dbModelList = append(dbModelList, _channel)
+	dbModelList = append(dbModelList, channelModel)
 }
 
 // 足迹频道基本信息
@@ -43,7 +43,9 @@ type ChannelInfo struct {
 	LngLat string `gorm:"type:geometry(Point,4326);not null"`
 	// 位置的关键兴趣点详情
 	PoiDetail PoiDetail `gorm:"type:jsonb"`
-	// 关联状态子表
+	// 配置和状态子表
+	Set ChannelSet `gorm:"foreignKey:Id"`
+	// 互动统计子表
 	Stats ChannelStats `gorm:"foreignKey:Id"`
 
 	// --- 基础字段
@@ -150,20 +152,20 @@ func (c *RDSClient) UpdateChannelInfo(ctx context.Context, info *ChannelInfo) er
 	if info.AvatarId != "" {
 		updateField = append(updateField, sqlFieldAvatarId)
 	}
-	return c.db.WithContext(ctx).Model(_channel).
+	return c.db.WithContext(ctx).Model(channelModel).
 		Where(sqlEqualId, info.Id).
 		Select(updateField).
 		Updates(info).Error
 }
 
-func (c *RDSClient) DeleteChannelInfo(ctx context.Context, Id uint64) error {
-	return c.db.WithContext(ctx).Where(sqlEqualId, Id).Delete(_channel).Error
+func (c *RDSClient) DeleteChannelInfo(ctx context.Context, id uint64) error {
+	return c.db.WithContext(ctx).Where(sqlEqualId, id).Delete(channelModel).Error
 }
 
-func (c *RDSClient) GetChannelInfo(ctx context.Context, Id uint64) (result *ChannelInfo, err error) {
+func (c *RDSClient) GetChannelInfo(ctx context.Context, id uint64) (result *ChannelInfo, err error) {
 	err = c.db.WithContext(ctx).
 		Preload(clause.Associations).
-		Where(sqlEqualId, Id).
+		Where(sqlEqualId, id).
 		First(&result).Error
 	if err != nil {
 		return
@@ -182,11 +184,11 @@ func (c *RDSClient) GetChannelFullInfo(ctx context.Context, Id uint64) (result *
 	return
 }
 
-func (c *RDSClient) GetChannelCreaterId(ctx context.Context, Id uint64) (uid uint64, err error) {
+func (c *RDSClient) GetChannelCreaterId(ctx context.Context, id uint64) (uid uint64, err error) {
 	result := &ChannelInfo{}
 	err = c.db.WithContext(ctx).
 		Select(sqlFieldUId).
-		Where(sqlEqualId, Id).First(&result).Error
+		Where(sqlEqualId, id).First(&result).Error
 	if err != nil {
 		return
 	}
@@ -195,7 +197,7 @@ func (c *RDSClient) GetChannelCreaterId(ctx context.Context, Id uint64) (uid uin
 }
 
 func (c *RDSClient) CountChannelInfo(ctx context.Context, f *ChannelFilter) (count int64, err error) {
-	dbIns := c.db.WithContext(ctx).Model(_channel)
+	dbIns := c.db.WithContext(ctx).Model(channelModel)
 	if err = f.generate(dbIns); err != nil {
 		return
 	}
@@ -205,7 +207,7 @@ func (c *RDSClient) CountChannelInfo(ctx context.Context, f *ChannelFilter) (cou
 
 func (c *RDSClient) ListChannelInfo(ctx context.Context, f *ChannelFilter) (results []*ChannelInfo, err error) {
 
-	dbIns := c.db.WithContext(ctx).Model(_channel)
+	dbIns := c.db.WithContext(ctx).Model(channelModel)
 	dbIns.Select([]string{sqlFieldAll, sqlSelectLngLat})
 	if err = f.generate(dbIns); err != nil {
 		return

@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+	"slices"
 	"time"
 
 	"net/http"
@@ -9,6 +10,7 @@ import (
 
 	"github.com/DOGTT/dm-api-server/internal/conf"
 	"github.com/DOGTT/dm-api-server/internal/service"
+	"github.com/DOGTT/dm-api-server/internal/utils"
 	"github.com/gin-contrib/cors"
 	"github.com/slok/go-http-metrics/middleware"
 	swaggerfiles "github.com/swaggo/files"
@@ -28,11 +30,9 @@ import (
 func AuthMiddleware(whitelist []string, svc *service.Service) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// 检查请求路径是否在白名单中
-		for _, path := range whitelist {
-			if c.Request.URL.Path == path {
-				c.Next() // 如果在白名单中，继续处理请求
-				return
-			}
+		if slices.Contains(whitelist, c.Request.URL.Path) {
+			c.Next() // 如果在白名单中，继续处理请求
+			return
 		}
 
 		// 从请求中获取 Authorization 标头
@@ -47,7 +47,7 @@ func AuthMiddleware(whitelist []string, svc *service.Service) gin.HandlerFunc {
 			c.Abort() // 中止请求
 			return
 		} else {
-			c.Set(string(service.TOKEN_CLAIM_KEY), tc)
+			c.Set(string(utils.CtxKeyToken), tc)
 		}
 
 		// 鉴权通过，继续处理请求

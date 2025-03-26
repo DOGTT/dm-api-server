@@ -4,6 +4,8 @@ package rds
 import (
 	"context"
 	"time"
+
+	"gorm.io/gorm/clause"
 )
 
 // var validate = validator.New()
@@ -34,10 +36,6 @@ type UserInfo struct {
 // 	return nil
 // }
 
-func (u *UserInfo) TableName() string {
-	return "user_info"
-}
-
 func (u *UserInfo) GetPIDs() []uint64 {
 	res := make([]uint64, 0)
 	for _, v := range u.Pets {
@@ -54,9 +52,12 @@ func (c *RDSClient) CreateUserInfo(ctx context.Context, userInfo *UserInfo) erro
 	return nil
 }
 
-func (c *RDSClient) GetUserInfoByID(ctx context.Context, id string) (*UserInfo, error) {
+func (c *RDSClient) GetUserInfoByID(ctx context.Context, id uint64) (*UserInfo, error) {
 	var userInfo UserInfo
-	res := c.db.WithContext(ctx).Where("id = ?", id).First(&userInfo)
+	res := c.db.WithContext(ctx).
+		Preload(clause.Associations).
+		Where(sqlEqualId, id).
+		First(&userInfo)
 	if res.Error != nil {
 		return nil, res.Error
 	}
@@ -65,7 +66,10 @@ func (c *RDSClient) GetUserInfoByID(ctx context.Context, id string) (*UserInfo, 
 
 func (c *RDSClient) GetUserInfoByWeChatID(ctx context.Context, wxID string) (*UserInfo, error) {
 	var userInfo UserInfo
-	res := c.db.WithContext(ctx).Preload("Pets").Where("we_chat_id = ?", wxID).First(&userInfo)
+	res := c.db.WithContext(ctx).
+		Preload(clause.Associations).
+		Where(sqlEqual(sqlFieldWeChatId), wxID).
+		First(&userInfo)
 	if res.Error != nil {
 		return nil, res.Error
 	}

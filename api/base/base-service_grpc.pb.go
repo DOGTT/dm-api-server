@@ -30,7 +30,11 @@ const (
 	BaseService_ChannelBaseQueryByBound_FullMethodName = "/base_service.v1.BaseService/ChannelBaseQueryByBound"
 	BaseService_ChannelFullQueryById_FullMethodName    = "/base_service.v1.BaseService/ChannelFullQueryById"
 	BaseService_ChannelInx_FullMethodName              = "/base_service.v1.BaseService/ChannelInx"
-	BaseService_ChannelComment_FullMethodName          = "/base_service.v1.BaseService/ChannelComment"
+	BaseService_ChannelPostCreate_FullMethodName       = "/base_service.v1.BaseService/ChannelPostCreate"
+	BaseService_ChannelPostUpdate_FullMethodName       = "/base_service.v1.BaseService/ChannelPostUpdate"
+	BaseService_ChannelPostDelete_FullMethodName       = "/base_service.v1.BaseService/ChannelPostDelete"
+	BaseService_ChannelPostLoad_FullMethodName         = "/base_service.v1.BaseService/ChannelPostLoad"
+	BaseService_ChannelPostInx_FullMethodName          = "/base_service.v1.BaseService/ChannelPostInx"
 )
 
 // BaseServiceClient is the client API for BaseService service.
@@ -64,8 +68,16 @@ type BaseServiceClient interface {
 	ChannelFullQueryById(ctx context.Context, in *ChannelFullQueryByIdReq, opts ...grpc.CallOption) (*ChannelFullQueryByIdRes, error)
 	// 足迹频道互动
 	ChannelInx(ctx context.Context, in *ChannelInxReq, opts ...grpc.CallOption) (*ChannelInxRes, error)
-	// 足迹频道评论
-	ChannelComment(ctx context.Context, in *ChannelCommentReq, opts ...grpc.CallOption) (*ChannelCommentRes, error)
+	// 频道帖子创建
+	ChannelPostCreate(ctx context.Context, in *ChannelPostCreateReq, opts ...grpc.CallOption) (*ChannelPostCreateRes, error)
+	// 频道帖子更新
+	ChannelPostUpdate(ctx context.Context, in *ChannelPostUpdateReq, opts ...grpc.CallOption) (*ChannelPostUpdateRes, error)
+	// 频道帖子删除
+	ChannelPostDelete(ctx context.Context, in *ChannelPostDeleteReq, opts ...grpc.CallOption) (*ChannelPostDeleteRes, error)
+	// 频道帖子加载
+	ChannelPostLoad(ctx context.Context, in *ChannelPostLoadReq, opts ...grpc.CallOption) (*ChannelPostLoadRes, error)
+	// 频道帖子互动
+	ChannelPostInx(ctx context.Context, in *ChannelPostInxReq, opts ...grpc.CallOption) (*ChannelPostInxRes, error)
 }
 
 type baseServiceClient struct {
@@ -186,10 +198,50 @@ func (c *baseServiceClient) ChannelInx(ctx context.Context, in *ChannelInxReq, o
 	return out, nil
 }
 
-func (c *baseServiceClient) ChannelComment(ctx context.Context, in *ChannelCommentReq, opts ...grpc.CallOption) (*ChannelCommentRes, error) {
+func (c *baseServiceClient) ChannelPostCreate(ctx context.Context, in *ChannelPostCreateReq, opts ...grpc.CallOption) (*ChannelPostCreateRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ChannelCommentRes)
-	err := c.cc.Invoke(ctx, BaseService_ChannelComment_FullMethodName, in, out, cOpts...)
+	out := new(ChannelPostCreateRes)
+	err := c.cc.Invoke(ctx, BaseService_ChannelPostCreate_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *baseServiceClient) ChannelPostUpdate(ctx context.Context, in *ChannelPostUpdateReq, opts ...grpc.CallOption) (*ChannelPostUpdateRes, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ChannelPostUpdateRes)
+	err := c.cc.Invoke(ctx, BaseService_ChannelPostUpdate_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *baseServiceClient) ChannelPostDelete(ctx context.Context, in *ChannelPostDeleteReq, opts ...grpc.CallOption) (*ChannelPostDeleteRes, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ChannelPostDeleteRes)
+	err := c.cc.Invoke(ctx, BaseService_ChannelPostDelete_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *baseServiceClient) ChannelPostLoad(ctx context.Context, in *ChannelPostLoadReq, opts ...grpc.CallOption) (*ChannelPostLoadRes, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ChannelPostLoadRes)
+	err := c.cc.Invoke(ctx, BaseService_ChannelPostLoad_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *baseServiceClient) ChannelPostInx(ctx context.Context, in *ChannelPostInxReq, opts ...grpc.CallOption) (*ChannelPostInxRes, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ChannelPostInxRes)
+	err := c.cc.Invoke(ctx, BaseService_ChannelPostInx_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -227,8 +279,16 @@ type BaseServiceServer interface {
 	ChannelFullQueryById(context.Context, *ChannelFullQueryByIdReq) (*ChannelFullQueryByIdRes, error)
 	// 足迹频道互动
 	ChannelInx(context.Context, *ChannelInxReq) (*ChannelInxRes, error)
-	// 足迹频道评论
-	ChannelComment(context.Context, *ChannelCommentReq) (*ChannelCommentRes, error)
+	// 频道帖子创建
+	ChannelPostCreate(context.Context, *ChannelPostCreateReq) (*ChannelPostCreateRes, error)
+	// 频道帖子更新
+	ChannelPostUpdate(context.Context, *ChannelPostUpdateReq) (*ChannelPostUpdateRes, error)
+	// 频道帖子删除
+	ChannelPostDelete(context.Context, *ChannelPostDeleteReq) (*ChannelPostDeleteRes, error)
+	// 频道帖子加载
+	ChannelPostLoad(context.Context, *ChannelPostLoadReq) (*ChannelPostLoadRes, error)
+	// 频道帖子互动
+	ChannelPostInx(context.Context, *ChannelPostInxReq) (*ChannelPostInxRes, error)
 	mustEmbedUnimplementedBaseServiceServer()
 }
 
@@ -272,8 +332,20 @@ func (UnimplementedBaseServiceServer) ChannelFullQueryById(context.Context, *Cha
 func (UnimplementedBaseServiceServer) ChannelInx(context.Context, *ChannelInxReq) (*ChannelInxRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChannelInx not implemented")
 }
-func (UnimplementedBaseServiceServer) ChannelComment(context.Context, *ChannelCommentReq) (*ChannelCommentRes, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ChannelComment not implemented")
+func (UnimplementedBaseServiceServer) ChannelPostCreate(context.Context, *ChannelPostCreateReq) (*ChannelPostCreateRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChannelPostCreate not implemented")
+}
+func (UnimplementedBaseServiceServer) ChannelPostUpdate(context.Context, *ChannelPostUpdateReq) (*ChannelPostUpdateRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChannelPostUpdate not implemented")
+}
+func (UnimplementedBaseServiceServer) ChannelPostDelete(context.Context, *ChannelPostDeleteReq) (*ChannelPostDeleteRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChannelPostDelete not implemented")
+}
+func (UnimplementedBaseServiceServer) ChannelPostLoad(context.Context, *ChannelPostLoadReq) (*ChannelPostLoadRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChannelPostLoad not implemented")
+}
+func (UnimplementedBaseServiceServer) ChannelPostInx(context.Context, *ChannelPostInxReq) (*ChannelPostInxRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChannelPostInx not implemented")
 }
 func (UnimplementedBaseServiceServer) mustEmbedUnimplementedBaseServiceServer() {}
 func (UnimplementedBaseServiceServer) testEmbeddedByValue()                     {}
@@ -494,20 +566,92 @@ func _BaseService_ChannelInx_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BaseService_ChannelComment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChannelCommentReq)
+func _BaseService_ChannelPostCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChannelPostCreateReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BaseServiceServer).ChannelComment(ctx, in)
+		return srv.(BaseServiceServer).ChannelPostCreate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BaseService_ChannelComment_FullMethodName,
+		FullMethod: BaseService_ChannelPostCreate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).ChannelComment(ctx, req.(*ChannelCommentReq))
+		return srv.(BaseServiceServer).ChannelPostCreate(ctx, req.(*ChannelPostCreateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BaseService_ChannelPostUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChannelPostUpdateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BaseServiceServer).ChannelPostUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BaseService_ChannelPostUpdate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BaseServiceServer).ChannelPostUpdate(ctx, req.(*ChannelPostUpdateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BaseService_ChannelPostDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChannelPostDeleteReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BaseServiceServer).ChannelPostDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BaseService_ChannelPostDelete_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BaseServiceServer).ChannelPostDelete(ctx, req.(*ChannelPostDeleteReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BaseService_ChannelPostLoad_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChannelPostLoadReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BaseServiceServer).ChannelPostLoad(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BaseService_ChannelPostLoad_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BaseServiceServer).ChannelPostLoad(ctx, req.(*ChannelPostLoadReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BaseService_ChannelPostInx_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChannelPostInxReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BaseServiceServer).ChannelPostInx(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BaseService_ChannelPostInx_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BaseServiceServer).ChannelPostInx(ctx, req.(*ChannelPostInxReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -564,8 +708,24 @@ var BaseService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _BaseService_ChannelInx_Handler,
 		},
 		{
-			MethodName: "ChannelComment",
-			Handler:    _BaseService_ChannelComment_Handler,
+			MethodName: "ChannelPostCreate",
+			Handler:    _BaseService_ChannelPostCreate_Handler,
+		},
+		{
+			MethodName: "ChannelPostUpdate",
+			Handler:    _BaseService_ChannelPostUpdate_Handler,
+		},
+		{
+			MethodName: "ChannelPostDelete",
+			Handler:    _BaseService_ChannelPostDelete_Handler,
+		},
+		{
+			MethodName: "ChannelPostLoad",
+			Handler:    _BaseService_ChannelPostLoad_Handler,
+		},
+		{
+			MethodName: "ChannelPostInx",
+			Handler:    _BaseService_ChannelPostInx_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

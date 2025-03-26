@@ -38,19 +38,3 @@ message MediaInfo {
   // 写入URL
   string put_url = 4;
 }
-
-
-
-// 状态互动类型
-enum UserIxnStateType {
-    STATE_DEFAULT = 0;
-    STAR = 1;
-    JOIN = 2;
-}
-
-// 事件互动类型
-enum UserIxnEventType {
-    EVENT_DEFAULT = 0;
-    // 到达
-    LAND = 1;
-}

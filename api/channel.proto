@@ -27,10 +27,10 @@ message ChannelInfo {
   // 足迹名称, 可更新
   string title = 4;
   // 头像
-  common.MediaInfo avatar = 6;
+  common.MediaInfo avatar = 5;
   // 简介, 可更新
-  string intro = 7;
-  common.LocationInfo location = 8;
+  string intro = 6;
+  common.LocationInfo location = 7;
 
   // 动态状态信息，只读
   ChannelStats stats = 20;
@@ -42,28 +42,33 @@ message ChannelInfo {
 
 // 频道状态, 只读
 message ChannelStats {
-  // 查看数
-  int32 views_cnt = 11;
   // 收藏数
-  int32 stars_cnt = 12;
-  // 到访宠物数量
-  int32 pet_marks_cnt = 13;
+  int32 stars_cnt = 1;
+  int64 last_star_at = 2;
   // 帖子数量
-  int32 posts_cnt = 14;
-  int64 last_view = 15;
-  int64 last_pet_mark = 16;
-  int64 last_inx = 17;
-  // 谁最近来过
+  int32 posts_cnt = 3;
+  int64 last_post_at = 4;
+  // 宠物到访次数
+  int32 pee_cnt = 5;
+  int64 last_pee_at = 6;
+  // 查看数
+  int32 views_cnt = 7;
+
+  int64 updated_at = 32;
 }
 
+// 状态互动类型
+enum ChannelIxnState {
+  STATE_DEFAULT = 0;
+  // 关注/收藏, 关注后可以发言
+  STAR = 1;
+  // 加入, 加入后可以逐渐无限制发言, 有一定条件
+  LAND = 3;
+}
 
-// 足迹评论
-message PostInfo {
-  string id = 1;
-  string root_id = 2;
-  string parent_id = 3;
-  string content = 4;
-
-  int64 created_at = 31;
-  int64 updated_at = 32;
+// 事件互动类型
+enum ChannelIxnEvent {
+  EVENT_DEFAULT = 0;
+  // 到达，类似于打卡
+  PEE = 1;
 }

@@ -9,21 +9,22 @@ import (
 
 const limitDefault = 100
 
-// field
+// common field define
 const (
-	// common field
-	sqlFieldAll       = "*"
-	sqlFieldId        = "id"
-	sqlFieldUId       = "uid"
-	sqlFieldTypeId    = "type_id"
-	sqlFieldName      = "name"
-	sqlFieldTitle     = "title"
-	sqlFieldAvatarId  = "avatar_id"
-	sqlFieldIntro     = "intro"
+	sqlFieldAll = "*"
+
+	sqlFieldId       = "id"
+	sqlFieldUId      = "uid"
+	sqlFieldName     = "name"
+	sqlFieldTitle    = "title"
+	sqlFieldIntro    = "intro"
+	sqlFieldContent  = "content"
+	sqlFieldTypeId   = "type_id"
+	sqlFieldAvatarId = "avatar_id"
+	sqlFieldWeChatId = "we_chat_id"
+
 	sqlFieldCreatedAt = "created_at"
 	sqlFieldUpdatedAt = "updated_at"
-
-	// spec
 )
 
 // equal

@@ -3,11 +3,14 @@ syntax = "proto3";
 package base_service.v1;
 option go_package="github.com/DOGTT/dm-api-server/api/base;api";
 
+import "google/api/annotations.proto";
+
 import "common.proto";
-import "channel.proto";
 import "pet.proto";
 import "user.proto";
-import "google/api/annotations.proto";
+import "channel.proto";
+import "post.proto";
+
 
 // 通用业务服务接口定义.
 /**
@@ -103,18 +106,44 @@ service BaseService {
         };
     }
     
-    // 足迹频道评论
-    rpc ChannelComment(ChannelCommentReq) returns (ChannelCommentRes) {
+    // 频道帖子创建
+    rpc ChannelPostCreate(ChannelPostCreateReq) returns (ChannelPostCreateRes) {
         option (google.api.http) = {
             post: "/v1/channel/post"
             body: "*"
         };
     }
 
-    // 评论加载
+    // 频道帖子更新
+    rpc ChannelPostUpdate(ChannelPostUpdateReq) returns (ChannelPostUpdateRes) {
+        option (google.api.http) = {
+            put: "/v1/channel/post"
+            body: "*"
+        };
+    }
 
+    // 频道帖子删除
+    rpc ChannelPostDelete(ChannelPostDeleteReq) returns (ChannelPostDeleteRes) {
+        option (google.api.http) = {
+            delete: "/v1/channel/post"
+        };
+    }
 
-    // 最新评论查询
+    // 频道帖子加载
+    rpc ChannelPostLoad(ChannelPostLoadReq) returns (ChannelPostLoadRes) {
+        option (google.api.http) = {
+            post: "/v1/channel/post/load"
+            body: "*"
+        };
+    }
+
+    // 频道帖子互动
+    rpc ChannelPostInx(ChannelPostInxReq) returns (ChannelPostInxRes) {
+        option (google.api.http) = {
+            post: "/v1/channel/post/inx"
+            body: "*"
+        };
+    }
 }
 
 // 通用错误消息结构
@@ -202,7 +231,7 @@ message ChannelUpdateRes {
 
 // 足迹删除
 message ChannelDeleteReq {
-    string ch_id = 1;
+    string chan_id = 1;
 }
 
 message ChannelDeleteRes {
@@ -221,7 +250,7 @@ message ChannelBaseQueryByBoundRes {
 }
 
 message ChannelDetailQueryByIdReq {
-    string ch_id = 1;
+    string chan_id = 1;
 }
 
 message ChannelDetailQueryByIdRes {
@@ -229,7 +258,7 @@ message ChannelDetailQueryByIdRes {
 }
 
 message ChannelFullQueryByIdReq {
-    string ch_id = 1;
+    string chan_id = 1;
 }
 
 message ChannelFullQueryByIdRes {
@@ -237,21 +266,59 @@ message ChannelFullQueryByIdRes {
 }
 
 message ChannelInxReq {
-    string ch_id = 1;
-    // 互动类型
-    common.UserIxnEventType ixn_event = 2;
-
-    common.UserIxnStateType ixn_state = 3;
+    string chan_id = 1;
+    // 互动状态
+    channel.ChannelIxnState ixn_state = 2;
+    // 是否撤销状态
+    bool is_state_undo = 3;
+    // 互动事件
+    channel.ChannelIxnEvent ixn_event = 4;
 }
 
 message ChannelInxRes {
 
 }
 
-message ChannelCommentReq {
-    channel.PostInfo comment = 1;
+message ChannelPostCreateReq {
+    post.PostInfo post = 1;
 }
 
-message ChannelCommentRes {
+message ChannelPostCreateRes {
+    post.PostInfo post = 1;
+}
+
+message ChannelPostUpdateReq {
+    post.PostInfo post = 1;
+}
+
+message ChannelPostUpdateRes {
+
+}
+
+message ChannelPostDeleteReq {
+    string chan_id = 1;
+    string post_id = 2;
+}
+
+message ChannelPostDeleteRes {
+
+}
+
+message ChannelPostLoadReq {
+    string chan_id = 1;
+    // 从传空加载最新100条
+    string last_post_id = 2;
+}
+
+message ChannelPostLoadRes {
+    repeated post.PostInfo posts = 1;
+}
+
+message ChannelPostInxReq {
+    string chan_id = 1;
+    string post_id = 2;
+}
+
+message ChannelPostInxRes {
 
 }

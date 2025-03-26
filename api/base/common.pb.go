@@ -73,104 +73,6 @@ func (MediaType) EnumDescriptor() ([]byte, []int) {
 	return file_common_proto_rawDescGZIP(), []int{0}
 }
 
-// 状态互动类型
-type UserIxnStateType int32
-
-const (
-	UserIxnStateType_STATE_DEFAULT UserIxnStateType = 0
-	UserIxnStateType_STAR          UserIxnStateType = 1
-	UserIxnStateType_JOIN          UserIxnStateType = 2
-)
-
-// Enum value maps for UserIxnStateType.
-var (
-	UserIxnStateType_name = map[int32]string{
-		0: "STATE_DEFAULT",
-		1: "STAR",
-		2: "JOIN",
-	}
-	UserIxnStateType_value = map[string]int32{
-		"STATE_DEFAULT": 0,
-		"STAR":          1,
-		"JOIN":          2,
-	}
-)
-
-func (x UserIxnStateType) Enum() *UserIxnStateType {
-	p := new(UserIxnStateType)
-	*p = x
-	return p
-}
-
-func (x UserIxnStateType) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (UserIxnStateType) Descriptor() protoreflect.EnumDescriptor {
-	return file_common_proto_enumTypes[1].Descriptor()
-}
-
-func (UserIxnStateType) Type() protoreflect.EnumType {
-	return &file_common_proto_enumTypes[1]
-}
-
-func (x UserIxnStateType) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use UserIxnStateType.Descriptor instead.
-func (UserIxnStateType) EnumDescriptor() ([]byte, []int) {
-	return file_common_proto_rawDescGZIP(), []int{1}
-}
-
-// 事件互动类型
-type UserIxnEventType int32
-
-const (
-	UserIxnEventType_EVENT_DEFAULT UserIxnEventType = 0
-	// 到达
-	UserIxnEventType_LAND UserIxnEventType = 1
-)
-
-// Enum value maps for UserIxnEventType.
-var (
-	UserIxnEventType_name = map[int32]string{
-		0: "EVENT_DEFAULT",
-		1: "LAND",
-	}
-	UserIxnEventType_value = map[string]int32{
-		"EVENT_DEFAULT": 0,
-		"LAND":          1,
-	}
-)
-
-func (x UserIxnEventType) Enum() *UserIxnEventType {
-	p := new(UserIxnEventType)
-	*p = x
-	return p
-}
-
-func (x UserIxnEventType) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (UserIxnEventType) Descriptor() protoreflect.EnumDescriptor {
-	return file_common_proto_enumTypes[2].Descriptor()
-}
-
-func (UserIxnEventType) Type() protoreflect.EnumType {
-	return &file_common_proto_enumTypes[2]
-}
-
-func (x UserIxnEventType) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use UserIxnEventType.Descriptor instead.
-func (UserIxnEventType) EnumDescriptor() ([]byte, []int) {
-	return file_common_proto_rawDescGZIP(), []int{2}
-}
-
 type PointCoord struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Lat           float32                `protobuf:"fixed32,1,opt,name=lat,proto3" json:"lat,omitempty"`
@@ -431,17 +333,10 @@ var file_common_proto_rawDesc = string([]byte{
 	0x4d, 0x54, 0x5f, 0x44, 0x45, 0x46, 0x41, 0x55, 0x4c, 0x54, 0x10, 0x00, 0x12, 0x0c, 0x0a, 0x08,
 	0x55, 0x53, 0x45, 0x52, 0x5f, 0x41, 0x56, 0x41, 0x10, 0x01, 0x12, 0x0f, 0x0a, 0x0b, 0x43, 0x48,
 	0x41, 0x4e, 0x4e, 0x45, 0x4c, 0x5f, 0x41, 0x56, 0x41, 0x10, 0x02, 0x12, 0x0c, 0x0a, 0x08, 0x50,
-	0x4f, 0x53, 0x54, 0x5f, 0x49, 0x4d, 0x47, 0x10, 0x03, 0x2a, 0x39, 0x0a, 0x10, 0x55, 0x73, 0x65,
-	0x72, 0x49, 0x78, 0x6e, 0x53, 0x74, 0x61, 0x74, 0x65, 0x54, 0x79, 0x70, 0x65, 0x12, 0x11, 0x0a,
-	0x0d, 0x53, 0x54, 0x41, 0x54, 0x45, 0x5f, 0x44, 0x45, 0x46, 0x41, 0x55, 0x4c, 0x54, 0x10, 0x00,
-	0x12, 0x08, 0x0a, 0x04, 0x53, 0x54, 0x41, 0x52, 0x10, 0x01, 0x12, 0x08, 0x0a, 0x04, 0x4a, 0x4f,
-	0x49, 0x4e, 0x10, 0x02, 0x2a, 0x2f, 0x0a, 0x10, 0x55, 0x73, 0x65, 0x72, 0x49, 0x78, 0x6e, 0x45,
-	0x76, 0x65, 0x6e, 0x74, 0x54, 0x79, 0x70, 0x65, 0x12, 0x11, 0x0a, 0x0d, 0x45, 0x56, 0x45, 0x4e,
-	0x54, 0x5f, 0x44, 0x45, 0x46, 0x41, 0x55, 0x4c, 0x54, 0x10, 0x00, 0x12, 0x08, 0x0a, 0x04, 0x4c,
-	0x41, 0x4e, 0x44, 0x10, 0x01, 0x42, 0x2d, 0x5a, 0x2b, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e,
-	0x63, 0x6f, 0x6d, 0x2f, 0x44, 0x4f, 0x47, 0x54, 0x54, 0x2f, 0x64, 0x6d, 0x2d, 0x61, 0x70, 0x69,
-	0x2d, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x62, 0x61, 0x73, 0x65,
-	0x3b, 0x61, 0x70, 0x69, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x4f, 0x53, 0x54, 0x5f, 0x49, 0x4d, 0x47, 0x10, 0x03, 0x42, 0x2d, 0x5a, 0x2b, 0x67, 0x69, 0x74,
+	0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x44, 0x4f, 0x47, 0x54, 0x54, 0x2f, 0x64, 0x6d,
+	0x2d, 0x61, 0x70, 0x69, 0x2d, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x2f, 0x61, 0x70, 0x69, 0x2f,
+	0x62, 0x61, 0x73, 0x65, 0x3b, 0x61, 0x70, 0x69, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 })
 
 var (
@@ -456,21 +351,19 @@ func file_common_proto_rawDescGZIP() []byte {
 	return file_common_proto_rawDescData
 }
 
-var file_common_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
+var file_common_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_common_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_common_proto_goTypes = []any{
-	(MediaType)(0),        // 0: common.MediaType
-	(UserIxnStateType)(0), // 1: common.UserIxnStateType
-	(UserIxnEventType)(0), // 2: common.UserIxnEventType
-	(*PointCoord)(nil),    // 3: common.PointCoord
-	(*BoundCoord)(nil),    // 4: common.BoundCoord
-	(*LocationInfo)(nil),  // 5: common.LocationInfo
-	(*MediaInfo)(nil),     // 6: common.MediaInfo
+	(MediaType)(0),       // 0: common.MediaType
+	(*PointCoord)(nil),   // 1: common.PointCoord
+	(*BoundCoord)(nil),   // 2: common.BoundCoord
+	(*LocationInfo)(nil), // 3: common.LocationInfo
+	(*MediaInfo)(nil),    // 4: common.MediaInfo
 }
 var file_common_proto_depIdxs = []int32{
-	3, // 0: common.BoundCoord.sw:type_name -> common.PointCoord
-	3, // 1: common.BoundCoord.ne:type_name -> common.PointCoord
-	3, // 2: common.LocationInfo.lng_lat:type_name -> common.PointCoord
+	1, // 0: common.BoundCoord.sw:type_name -> common.PointCoord
+	1, // 1: common.BoundCoord.ne:type_name -> common.PointCoord
+	1, // 2: common.LocationInfo.lng_lat:type_name -> common.PointCoord
 	0, // 3: common.MediaInfo.type:type_name -> common.MediaType
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
@@ -489,7 +382,7 @@ func file_common_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_common_proto_rawDesc), len(file_common_proto_rawDesc)),
-			NumEnums:      3,
+			NumEnums:      1,
 			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,

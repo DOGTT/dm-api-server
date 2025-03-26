@@ -8,31 +8,11 @@ import (
 	"github.com/DOGTT/dm-api-server/internal/data/fds"
 	"github.com/DOGTT/dm-api-server/internal/data/rds"
 	"github.com/DOGTT/dm-api-server/internal/utils"
-	"github.com/uptrace/opentelemetry-go-extra/otelzap"
-	"go.uber.org/zap"
+	"github.com/DOGTT/dm-api-server/internal/utils/log"
 )
 
-func (s *Service) wxCodeToWxId(ctx context.Context, wxCode string) (wxId string, err error) {
-	// testID
-	if wxCode != "" && wxCode == s.conf.TestWxCode {
-		return wxCode, nil
-	}
-
-	resAuth, err := s.miniAppHandle.GetAuth().Code2SessionContext(ctx, wxCode)
-	if err != nil {
-		err = EM_AuthFail_WX.PutDesc(err.Error())
-		return
-	}
-	if resAuth.ErrCode != 0 {
-		err = EM_AuthFail_WX.PutDesc(fmt.Sprintf("auth_code:%d", resAuth.ErrCode))
-	}
-	wxId = resAuth.UnionID
-	return
-}
-
 func (s *Service) WeChatLogin(ctx context.Context, req *api.LoginWeChatReq) (res *api.LoginWeChatRes, err error) {
-	log := otelzap.Ctx(ctx)
-	log.Debug("wx login get req", zap.Any("req", req))
+	log.D(ctx, "request in", "req", req)
 	res = &api.LoginWeChatRes{}
 	wxId, err := s.wxCodeToWxId(ctx, req.GetWxCode())
 	if err != nil {
@@ -63,23 +43,8 @@ func (s *Service) WeChatLogin(ctx context.Context, req *api.LoginWeChatReq) (res
 	return
 }
 
-func validRegisterRequest(req *api.FastRegisterWeChatReq) error {
-	if req == nil {
-		return EM_CommonFail_BadRequest.PutDesc("req is required")
-	}
-	if req.GetWxCode() == "" {
-		return EM_CommonFail_BadRequest.PutDesc("wx_code is required")
-	}
-	if req.GetRegData() == nil {
-		return EM_CommonFail_BadRequest.PutDesc("pet is required")
-	}
-	return nil
-}
-
 func (s *Service) WeChatRegisterFast(ctx context.Context, req *api.FastRegisterWeChatReq) (res *api.FastRegisterWeChatRes, err error) {
-	log := otelzap.Ctx(ctx)
-	// Implement me
-	log.Debug("grpc impl get req", zap.Any("req", req))
+	log.D(ctx, "request in", "req", req)
 	if validRegisterRequest(req) != nil {
 		err = EM_CommonFail_BadRequest.PutDesc("pet is required")
 		return
@@ -133,6 +98,21 @@ func (s *Service) WeChatRegisterFast(ctx context.Context, req *api.FastRegisterW
 	return
 }
 
+func (s *Service) wxCodeToWxId(ctx context.Context, wxCode string) (wxId string, err error) {
+	if wxCode != "" && wxCode == s.conf.TestWxCode {
+		return wxCode, nil
+	}
+	resAuth, err := s.miniAppHandle.GetAuth().Code2SessionContext(ctx, wxCode)
+	if err != nil {
+		err = EM_AuthFail_WX.PutDesc(err.Error())
+		return
+	}
+	if resAuth.ErrCode != 0 {
+		err = EM_AuthFail_WX.PutDesc(fmt.Sprintf("auth_code:%d", resAuth.ErrCode))
+	}
+	wxId = resAuth.UnionID
+	return
+}
 func (s *Service) convertToUserInfo(ctx context.Context, userInfo *rds.UserInfo) (res *api.UserInfo, err error) {
 	PIDs := userInfo.GetPIDs()
 	res = &api.UserInfo{
@@ -163,4 +143,17 @@ func (s *Service) convertToUserInfo(ctx context.Context, userInfo *rds.UserInfo)
 		}
 	}
 	return
+}
+
+func validRegisterRequest(req *api.FastRegisterWeChatReq) error {
+	if req == nil {
+		return EM_CommonFail_BadRequest.PutDesc("req is required")
+	}
+	if req.GetWxCode() == "" {
+		return EM_CommonFail_BadRequest.PutDesc("wx_code is required")
+	}
+	if req.GetRegData() == nil {
+		return EM_CommonFail_BadRequest.PutDesc("pet is required")
+	}
+	return nil
 }

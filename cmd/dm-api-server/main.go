@@ -109,7 +109,6 @@ func setLogger(conf *zap.Config) {
 	if err != nil {
 		panic(fmt.Sprintf("log_build:%v", err))
 	}
-
 	// set global logger
 	zap.ReplaceGlobals(loggerG)
 	_ = otelzap.ReplaceGlobals(otelzap.New(loggerG))

@@ -6,33 +6,31 @@ import (
 	api "github.com/DOGTT/dm-api-server/api/base"
 	"github.com/DOGTT/dm-api-server/internal/data/rds"
 	"github.com/DOGTT/dm-api-server/internal/utils"
-	"github.com/davecgh/go-spew/spew"
-	log "github.com/uptrace/opentelemetry-go-extra/otelzap"
-	"go.uber.org/zap"
+	"github.com/DOGTT/dm-api-server/internal/utils/log"
 )
 
 func (s *Service) ChannelFullQueryById(ctx context.Context, req *api.ChannelFullQueryByIdReq) (res *api.ChannelFullQueryByIdRes, err error) {
-	log := log.Ctx(ctx)
-	log.Debug("query request", zap.String("req", spew.Sdump(req)))
+	log.D(ctx, "request in", "req", req)
 	res = new(api.ChannelFullQueryByIdRes)
-	channel, err := s.data.GetChannelFullInfo(ctx, utils.StrToUint64(req.GetChId()))
+	channel, err := s.data.GetChannelFullInfo(ctx, utils.StrToUint64(req.GetChanId()))
 	if err != nil {
 		err = EM_CommonFail_Internal.PutDesc(err.Error())
-		log.Error("get query error", zap.Error(err))
+		log.E(ctx, "data get channel error", err)
 		return
 	}
+	// 添加访问记录
+	s.asyncIncreaseChannelViews(ctx, channel.Id)
 	res.Channel, err = s.convertToChannelInfo(ctx, channel)
 	if err != nil {
 		err = EM_CommonFail_Internal.PutDesc(err.Error())
-		log.Error("convert error", zap.Error(err))
+		log.E(ctx, "convert error", err)
 		return
 	}
 	return
 }
 
 func (s *Service) ChannelBaseQueryByBound(ctx context.Context, req *api.ChannelBaseQueryByBoundReq) (res *api.ChannelBaseQueryByBoundRes, err error) {
-	log := log.Ctx(ctx)
-	log.Debug("base query request", zap.String("req", spew.Sdump(req)))
+	log.D(ctx, "request in", "req", req)
 	channels, err := s.data.ListChannelInfo(ctx,
 		&rds.ChannelFilter{
 			TypeIDs:    req.GetTypeIds(),
@@ -40,10 +38,10 @@ func (s *Service) ChannelBaseQueryByBound(ctx context.Context, req *api.ChannelB
 		})
 	if err != nil {
 		err = EM_CommonFail_Internal.PutDesc(err.Error())
-		log.Error("list query error", zap.Error(err))
+		log.E(ctx, "list query error", err)
 		return
 	}
-	log.Debug("query result", zap.String("channels", spew.Sdump(channels)))
+	log.D(ctx, "query result", "channels", channels)
 	res = &api.ChannelBaseQueryByBoundRes{
 		Channels: make([]*api.ChannelInfo, len(channels)),
 	}
@@ -59,54 +57,68 @@ func (s *Service) ChannelBaseQueryByBound(ctx context.Context, req *api.ChannelB
 }
 
 func (s *Service) ChannelInx(ctx context.Context, req *api.ChannelInxReq) (res *api.ChannelInxRes, err error) {
-	log := log.Ctx(ctx)
-	log.Debug("query request", zap.String("req", spew.Sdump(req)))
+	log.D(ctx, "request in", "req", req)
 	res = new(api.ChannelInxRes)
-	// err = s.data.CreateChannelIxnRecordWithCount(ctx, &rds.UserChannelIxnRecord{
-	// 	ChannelUUID: req.GetUuid(),
-	// 	IntType:     rds.InxType(req.GetIxnType()),
-	// 	PId:         tc.PID,
-	// 	UId:         tc.UID,
-	// })
-	return
-}
-
-func (s *Service) ChannelComment(ctx context.Context, req *api.ChannelCommentReq) (res *api.ChannelCommentRes, err error) {
-	// TODO
-	// tc := getClaimFromContext(ctx)
+	tc := utils.GetClaimFromContext(ctx)
+	chanId := utils.StrToUint64(req.GetChanId())
+	_, err = s.data.GetChannelCreaterId(ctx, chanId)
 	// 查询Channel信息，检查是否存在
-	// ChannelUUID := req.GetComment().GetRootUuid()
-	// if err = s.data.ExistChannelInfo(ctx, ChannelUUID); err != nil {
-	// 	return
-	// }
-	res = new(api.ChannelCommentRes)
-
-	// err = s.data.CreateChannelIxnRecordWithCount(ctx, &rds.UserChannelIxnRecord{
-	// 	ChannelUUID: ChannelUUID,
-	// 	IntType:     rds.InxTypeComment,
-	// 	PId:         tc.PID,
-	// 	UId:         tc.UID,
-	// })
-
+	if err != nil {
+		log.E(ctx, "channel not exist", err)
+		err = EM_CommonFail_DBError.PutDesc(err.Error())
+		return
+	}
+	// 状态互动基于用户
+	if req.GetIxnState() != 0 {
+		dbIn := &rds.UserChannelIxnState{
+			UId:       tc.UId,
+			ChannelId: chanId,
+			IxnState:  req.GetIxnState(),
+		}
+		if req.GetIsStateUndo() {
+			err = s.data.DeleteUserChannelIxnState(ctx, dbIn)
+		} else {
+			err = s.data.CreateUserChannelIxnState(ctx, dbIn)
+		}
+		if err != nil {
+			log.E(ctx, "create user channel ixn state error", err)
+			err = EM_CommonFail_DBError.PutDesc(err.Error())
+			return
+		}
+	}
+	// 事件互动基于用户和爱宠
+	if req.GetIxnState() != 0 {
+		// 加载爱宠id
+		var userInfo *rds.UserInfo
+		userInfo, err = s.data.GetUserInfoByID(ctx, tc.UId)
+		if err != nil {
+			log.E(ctx, "user load error", err)
+			err = EM_CommonFail_DBError.PutDesc(err.Error())
+		}
+		pids := userInfo.GetPIDs()
+		events := make([]*rds.UserPetChannelIxnEvent, len(pids))
+		for i, pid := range userInfo.GetPIDs() {
+			events[i] = &rds.UserPetChannelIxnEvent{
+				UId:       tc.UId,
+				PId:       pid,
+				ChannelId: chanId,
+				IxnEvent:  req.GetIxnEvent(),
+			}
+		}
+		err = s.data.BatchCreateUserPetChannelIxnEvent(ctx, events)
+		if err != nil {
+			log.E(ctx, "create user channel ixn event error", err)
+			err = EM_CommonFail_DBError.PutDesc(err.Error())
+			return
+		}
+	}
+	// 更新统计信息
+	s.asyncUpdateChannelStatsByInx(ctx, chanId, req)
 	return
-}
-
-func validChannelCreateRequest(req *api.ChannelCreateReq) error {
-	if req == nil {
-		return EM_CommonFail_BadRequest.PutDesc("req is required")
-	}
-	if req.GetChannel() == nil {
-		return EM_CommonFail_BadRequest.PutDesc("channel is required")
-	}
-	c := req.GetChannel()
-	if c.GetTitle() == "" {
-		return EM_CommonFail_BadRequest.PutDesc("title is required")
-	}
-	// ..
-	return nil
 }
 
 func (s *Service) ChannelTypeList(ctx context.Context, req *api.ChannelTypeListReq) (res *api.ChannelTypeListRes, err error) {
+	log.D(ctx, "request in", "req", req)
 	res = &api.ChannelTypeListRes{}
 	data, err := s.data.ListChannelTypeInfo(ctx)
 	if err != nil {
@@ -127,16 +139,16 @@ func (s *Service) ChannelTypeList(ctx context.Context, req *api.ChannelTypeListR
 }
 
 func (s *Service) ChannelCreate(ctx context.Context, req *api.ChannelCreateReq) (res *api.ChannelCreateRes, err error) {
-	log := log.Ctx(ctx)
+	log.D(ctx, "request in", "req", req)
 	// valid
 	if err = validChannelCreateRequest(req); err != nil {
 		return
 	}
 	res = &api.ChannelCreateRes{}
-	tc := getClaimFromContext(ctx)
+	tc := utils.GetClaimFromContext(ctx)
 	// TODO: 检查类型，检查坐标是否太近
 	ch := req.GetChannel()
-	ChannelInfo := &rds.ChannelInfo{
+	channel := &rds.ChannelInfo{
 		Id:       utils.GenSnowflakeID(),
 		TypeId:   ch.GetTypeId(),
 		UId:      tc.UId,
@@ -148,54 +160,44 @@ func (s *Service) ChannelCreate(ctx context.Context, req *api.ChannelCreateReq) 
 			Address: ch.GetLocation().GetAddress(),
 		},
 		Stats: rds.ChannelStats{},
+		Set:   rds.ChannelSet{},
 	}
-	if err = s.data.CreateChannelInfo(ctx, ChannelInfo); err != nil {
+	if err = s.data.CreateChannelInfo(ctx, channel); err != nil {
+		log.E(ctx, "create channel error", err)
+		err = EM_CommonFail_DBError.PutDesc(err.Error())
 		return
 	}
-	res.Channel, err = s.convertToChannelInfo(ctx, ChannelInfo)
+	res.Channel, err = s.convertToChannelInfo(ctx, channel)
 	if err != nil {
-		log.Error("convert channel info error", zap.Error(err))
+		log.E(ctx, "convert channel info error", err)
 		return
 	}
 	return
 }
 
 func (s *Service) ChannelDelete(ctx context.Context, req *api.ChannelDeleteReq) (res *api.ChannelDeleteRes, err error) {
-	log := log.Ctx(ctx)
+	log.D(ctx, "request in", "req", req)
 	res = &api.ChannelDeleteRes{}
 	var (
-		chanId = utils.StrToUint64(req.GetChId())
-		tc     = getClaimFromContext(ctx)
+		chanId = utils.StrToUint64(req.GetChanId())
+		tc     = utils.GetClaimFromContext(ctx)
 	)
 	if err = s.validChannelPermission(ctx, tc, chanId); err != nil {
-		log.Error("valid channel permission error", zap.Error(err))
 		return
 	}
-	if err = s.data.DeleteChannelInfo(ctx, utils.StrToUint64(req.GetChId())); err != nil {
-		log.Error("delete channel error", zap.Error(err))
+	if err = s.data.DeleteChannelInfo(ctx, chanId); err != nil {
+		log.E(ctx, "delete channel error", err)
+		err = EM_CommonFail_DBError.PutDesc(err.Error())
 		return
 	}
 	return
 }
 
-func (s *Service) validChannelUpdateRequest(req *api.ChannelUpdateReq) error {
-	if req == nil {
-		return EM_CommonFail_BadRequest.PutDesc("req is required")
-	}
-	if req.GetChannel() == nil {
-		return EM_CommonFail_BadRequest.PutDesc("channel is required")
-	}
-	po := req.GetChannel()
-	if po.GetTitle() == "" {
-		return EM_CommonFail_BadRequest.PutDesc("title is required")
-	}
-	// ..
-	return nil
-}
-
 func (s *Service) validChannelPermission(ctx context.Context, tc *utils.TokenClaims, channalId uint64) error {
 	uid, err := s.data.GetChannelCreaterId(ctx, channalId)
 	if err != nil {
+		log.E(ctx, "get channel creater id error", err)
+		err = EM_CommonFail_DBError.PutDesc(err.Error())
 		return err
 	}
 	if uid != tc.UId {
@@ -205,30 +207,27 @@ func (s *Service) validChannelPermission(ctx context.Context, tc *utils.TokenCla
 }
 
 func (s *Service) ChannelUpdate(ctx context.Context, req *api.ChannelUpdateReq) (res *api.ChannelUpdateRes, err error) {
-	log := log.Ctx(ctx)
-	log.Debug("update request", zap.String("req", spew.Sdump(req)))
-	// valid
-	if err = s.validChannelUpdateRequest(req); err != nil {
-		log.Debug("valid error", zap.Error(err))
+	log.D(ctx, "request in", "req", req)
+	if err = validChannelUpdateRequest(req); err != nil {
 		return
 	}
 	res = new(api.ChannelUpdateRes)
 	var (
 		ch     = req.GetChannel()
 		chanId = utils.StrToUint64(ch.GetId())
-		tc     = getClaimFromContext(ctx)
+		tc     = utils.GetClaimFromContext(ctx)
 	)
 	if err = s.validChannelPermission(ctx, tc, chanId); err != nil {
-		log.Error("valid channel permission error", zap.Error(err))
 		return
 	}
 	if err = s.data.UpdateChannelInfo(ctx, &rds.ChannelInfo{
-		Id:       utils.StrToUint64(ch.GetId()),
+		Id:       chanId,
 		Title:    ch.GetTitle(),
 		AvatarId: ch.GetAvatar().GetUuid(),
 		Intro:    ch.GetIntro(),
 	}); err != nil {
-		log.Error("update channel info error", zap.Error(err))
+		log.E(ctx, "update channel info error", err)
+		err = EM_CommonFail_DBError.PutDesc(err.Error())
 		return
 	}
 	return
@@ -236,13 +235,14 @@ func (s *Service) ChannelUpdate(ctx context.Context, req *api.ChannelUpdateReq) 
 
 func (s *Service) convertToChannelStats(ctx context.Context, stat *rds.ChannelStats) *api.ChannelStats {
 	return &api.ChannelStats{
-		ViewsCnt:    int32(stat.ViewsCnt),
-		StarsCnt:    int32(stat.StarsCnt),
-		PetMarksCnt: int32(stat.PetMarksCnt),
-		PostsCnt:    int32(stat.PostsCnt),
-		LastView:    stat.LastView.UnixMilli(),
-		LastPetMark: stat.LastPetMark.UnixMilli(),
-		LastInx:     stat.LastInx.UnixMilli(),
+		ViewsCnt:   int32(stat.ViewsCnt),
+		StarsCnt:   int32(stat.StarsCnt),
+		PeeCnt:     int32(stat.PeeCnt),
+		PostsCnt:   int32(stat.PostsCnt),
+		LastStarAt: stat.LastStarAt.UnixMilli(),
+		LastPostAt: stat.LastPostAt.UnixMilli(),
+		LastPeeAt:  stat.LastPeeAt.UnixMilli(),
+		UpdatedAt:  stat.UpdatedAt.UnixMilli(),
 	}
 }
 
@@ -278,4 +278,78 @@ func (s *Service) convertToChannelInfo(ctx context.Context, in *rds.ChannelInfo)
 		}
 	}
 	return
+}
+
+func (s *Service) asyncUpdateChannelStatsByInx(ctx context.Context, channelId uint64, inxReq *api.ChannelInxReq) {
+	go func() {
+		var (
+			err         error
+			event       = inxReq.GetIxnEvent()
+			status      = inxReq.GetIxnState()
+			rdsStatItem rds.ChannelStatsType
+		)
+		if event != api.ChannelIxnEvent_EVENT_DEFAULT {
+			switch event {
+			case api.ChannelIxnEvent_PEE:
+				rdsStatItem = rds.ChannelStatsPee
+			}
+			err = s.data.ChannelStatsIncrease(ctx, channelId, rdsStatItem)
+			if err != nil {
+				log.E(ctx, "event stats increase error", err, "inx_req", inxReq)
+			}
+		}
+		if status != api.ChannelIxnState_STATE_DEFAULT {
+			switch status {
+			case api.ChannelIxnState_STAR:
+				rdsStatItem = rds.ChannelStatsStar
+			}
+			if inxReq.GetIsStateUndo() {
+				err = s.data.ChannelStatsDecrease(ctx, channelId, rdsStatItem)
+			} else {
+				err = s.data.ChannelStatsIncrease(ctx, channelId, rdsStatItem)
+			}
+			if err != nil {
+				log.E(ctx, "status stats change error", err, "inx_req", inxReq, "is_undo", inxReq.GetIsStateUndo())
+			}
+		}
+	}()
+}
+
+func (s *Service) asyncIncreaseChannelViews(ctx context.Context, channelId uint64) {
+	go func() {
+		err := s.data.ChannelStatsIncrease(ctx, channelId, rds.ChannelStatsView)
+		if err != nil {
+			log.E(ctx, "view stats increase error", err)
+		}
+	}()
+}
+
+func validChannelCreateRequest(req *api.ChannelCreateReq) error {
+	if req == nil {
+		return EM_CommonFail_BadRequest.PutDesc("req is required")
+	}
+	if req.GetChannel() == nil {
+		return EM_CommonFail_BadRequest.PutDesc("channel is required")
+	}
+	c := req.GetChannel()
+	if c.GetTitle() == "" {
+		return EM_CommonFail_BadRequest.PutDesc("title is required")
+	}
+	// ..
+	return nil
+}
+
+func validChannelUpdateRequest(req *api.ChannelUpdateReq) error {
+	if req == nil {
+		return EM_CommonFail_BadRequest.PutDesc("req is required")
+	}
+	if req.GetChannel() == nil {
+		return EM_CommonFail_BadRequest.PutDesc("channel is required")
+	}
+	ch := req.GetChannel()
+	if ch.GetTitle() == "" {
+		return EM_CommonFail_BadRequest.PutDesc("title is required")
+	}
+	// ..
+	return nil
 }

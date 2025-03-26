@@ -53,7 +53,7 @@ paths:
       description: 删除足迹频道
       operationId: BaseService_ChannelDelete
       parameters:
-        - name: ch_id
+        - name: chan_id
           in: query
           schema:
             type: string
@@ -90,7 +90,7 @@ paths:
       description: 按照id查询足迹频道动态信息
       operationId: BaseService_ChannelFullQueryById
       parameters:
-        - name: ch_id
+        - name: chan_id
           in: query
           schema:
             type: string
@@ -121,16 +121,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/ChannelInxRes'
   /v1/channel/post:
-    post:
+    put:
       tags:
         - BaseService
-      description: 足迹频道评论
-      operationId: BaseService_ChannelComment
+      description: 频道帖子更新
+      operationId: BaseService_ChannelPostUpdate
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ChannelCommentReq'
+              $ref: '#/components/schemas/ChannelPostUpdateReq'
         required: true
       responses:
         "200":
@@ -138,7 +138,84 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ChannelCommentRes'
+                $ref: '#/components/schemas/ChannelPostUpdateRes'
+    post:
+      tags:
+        - BaseService
+      description: 频道帖子创建
+      operationId: BaseService_ChannelPostCreate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChannelPostCreateReq'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChannelPostCreateRes'
+    delete:
+      tags:
+        - BaseService
+      description: 频道帖子删除
+      operationId: BaseService_ChannelPostDelete
+      parameters:
+        - name: chan_id
+          in: query
+          schema:
+            type: string
+        - name: post_id
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChannelPostDeleteRes'
+  /v1/channel/post/inx:
+    post:
+      tags:
+        - BaseService
+      description: 频道帖子互动
+      operationId: BaseService_ChannelPostInx
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChannelPostInxReq'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChannelPostInxRes'
+  /v1/channel/post/load:
+    post:
+      tags:
+        - BaseService
+      description: 频道帖子加载
+      operationId: BaseService_ChannelPostLoad
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChannelPostLoadReq'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChannelPostLoadRes'
   /v1/channel/type:
     get:
       tags:
@@ -263,14 +340,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ChannelInfo'
-    ChannelCommentReq:
-      type: object
-      properties:
-        comment:
-          $ref: '#/components/schemas/PostInfo'
-    ChannelCommentRes:
-      type: object
-      properties: {}
     ChannelCreateReq:
       type: object
       properties:
@@ -327,42 +396,94 @@ components:
     ChannelInxReq:
       type: object
       properties:
-        ch_id:
+        chan_id:
           type: string
-        ixn_event:
-          type: integer
-          description: 互动类型
-          format: enum
         ixn_state:
           type: integer
+          description: 互动状态
+          format: enum
+        is_state_undo:
+          type: boolean
+          description: 是否撤销状态
+        ixn_event:
+          type: integer
+          description: 互动事件
           format: enum
     ChannelInxRes:
+      type: object
+      properties: {}
+    ChannelPostCreateReq:
+      type: object
+      properties:
+        post:
+          $ref: '#/components/schemas/PostInfo'
+    ChannelPostCreateRes:
+      type: object
+      properties:
+        post:
+          $ref: '#/components/schemas/PostInfo'
+    ChannelPostDeleteRes:
+      type: object
+      properties: {}
+    ChannelPostInxReq:
+      type: object
+      properties:
+        chan_id:
+          type: string
+        post_id:
+          type: string
+    ChannelPostInxRes:
+      type: object
+      properties: {}
+    ChannelPostLoadReq:
+      type: object
+      properties:
+        chan_id:
+          type: string
+        last_post_id:
+          type: string
+          description: 从传空加载最新100条
+    ChannelPostLoadRes:
+      type: object
+      properties:
+        posts:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostInfo'
+    ChannelPostUpdateReq:
+      type: object
+      properties:
+        post:
+          $ref: '#/components/schemas/PostInfo'
+    ChannelPostUpdateRes:
       type: object
       properties: {}
     ChannelStats:
       type: object
       properties:
-        views_cnt:
-          type: integer
-          description: 查看数
-          format: int32
         stars_cnt:
           type: integer
           description: 收藏数
           format: int32
-        pet_marks_cnt:
-          type: integer
-          description: 到访宠物数量
-          format: int32
+        last_star_at:
+          type: string
         posts_cnt:
           type: integer
           description: 帖子数量
           format: int32
-        last_view:
+        last_post_at:
           type: string
-        last_pet_mark:
+        pee_cnt:
+          type: integer
+          description: 宠物到访次数
+          format: int32
+        last_pee_at:
           type: string
-        last_inx:
+        views_cnt:
+          type: integer
+          description: 查看数
+          format: int32
+        updated_at:
           type: string
       description: 频道状态, 只读
     ChannelTypeInfo:
@@ -515,17 +636,24 @@ components:
       properties:
         id:
           type: string
+          description: 评论id
+        uid:
+          type: string
+          description: 足迹作者, 不可更新
         root_id:
           type: string
+          description: 根id, 频道id
         parent_id:
           type: string
+          description: 上级帖子id
         content:
           type: string
+          description: 正文内容
         created_at:
           type: string
         updated_at:
           type: string
-      description: 足迹评论
+      description: 频道帖子或者评论
     UserInfo:
       type: object
       properties:
