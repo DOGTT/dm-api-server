@@ -11,11 +11,36 @@ import (
 
 func (s *Service) ChannelPostLoad(ctx context.Context, req *api.ChannelPostLoadReq) (res *api.ChannelPostLoadRes, err error) {
 	log.D(ctx, "request in", "req", req)
-	// var (
-	// 	tc     = utils.GetClaimFromContext(ctx)
-	// 	chanId = utils.StrToUint64(req.GetChanId())
-	// )
 	res = new(api.ChannelPostLoadRes)
+	var (
+		// tc        = utils.GetClaimFromContext(ctx)
+		chanId    = utils.StrToUint64(req.GetChanId())
+		loadLimit = uint32(100)
+		filter    = &rds.PostFilter{
+			RootId: chanId,
+			Limit:  loadLimit,
+		}
+	)
+	if req.GetLastPostId() != "" {
+		filter.IdFrom = utils.StrToUint64(req.GetLastPostId())
+	} else {
+		// 倒序查询最新的数量
+		filter.OrderByIdDesc = true
+	}
+	posts, err := s.data.ListPostInfo(ctx, filter)
+	if err != nil {
+		log.E(ctx, "list post info error", err)
+		err = EM_CommonFail_DBError.PutDesc(err.Error())
+		return
+	}
+	res.Posts = make([]*api.PostInfo, len(posts))
+	for i := range posts {
+		res.Posts[i], err = s.convertToPostInfo(ctx, posts[i])
+		if err != nil {
+			log.E(ctx, "convert post info error", err)
+			return
+		}
+	}
 	return
 }
 
@@ -81,7 +106,7 @@ func (s *Service) convertToPostInfo(ctx context.Context, in *rds.PostInfo) (res 
 }
 
 func (s *Service) validPostPermission(ctx context.Context, tc *utils.TokenClaims, postId uint64) error {
-	uid, err := s.data.GetPostCreaterId(ctx, postId)
+	uid, err := s.data.GetPostCreatorId(ctx, postId)
 	if err != nil {
 		log.E(ctx, "get post creater id error", err)
 		err = EM_CommonFail_DBError.PutDesc(err.Error())

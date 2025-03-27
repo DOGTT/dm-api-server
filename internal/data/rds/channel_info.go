@@ -184,7 +184,7 @@ func (c *RDSClient) GetChannelFullInfo(ctx context.Context, Id uint64) (result *
 	return
 }
 
-func (c *RDSClient) GetChannelCreaterId(ctx context.Context, id uint64) (uid uint64, err error) {
+func (c *RDSClient) GetChannelCreatorId(ctx context.Context, id uint64) (uid uint64, err error) {
 	result := &ChannelInfo{}
 	err = c.db.WithContext(ctx).
 		Select(sqlFieldUId).

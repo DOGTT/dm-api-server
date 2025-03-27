@@ -61,7 +61,7 @@ func (s *Service) ChannelInx(ctx context.Context, req *api.ChannelInxReq) (res *
 	res = new(api.ChannelInxRes)
 	tc := utils.GetClaimFromContext(ctx)
 	chanId := utils.StrToUint64(req.GetChanId())
-	_, err = s.data.GetChannelCreaterId(ctx, chanId)
+	_, err = s.data.GetChannelCreatorId(ctx, chanId)
 	// 查询Channel信息，检查是否存在
 	if err != nil {
 		log.E(ctx, "channel not exist", err)
@@ -194,7 +194,7 @@ func (s *Service) ChannelDelete(ctx context.Context, req *api.ChannelDeleteReq) 
 }
 
 func (s *Service) validChannelPermission(ctx context.Context, tc *utils.TokenClaims, channalId uint64) error {
-	uid, err := s.data.GetChannelCreaterId(ctx, channalId)
+	uid, err := s.data.GetChannelCreatorId(ctx, channalId)
 	if err != nil {
 		log.E(ctx, "get channel creater id error", err)
 		err = EM_CommonFail_DBError.PutDesc(err.Error())

@@ -2,7 +2,6 @@ package rds
 
 import (
 	"errors"
-	"fmt"
 	"strings"
 
 	"github.com/lib/pq"
@@ -22,7 +21,6 @@ func IsDuplicateErr(err error) bool {
 	pgErr := new(pq.Error)
 	if errors.As(err, &pgErr) &&
 		pgErr.Code == "23505" {
-		fmt.Printf("Error bbb: %v\n", pgErr)
 		return true
 	}
 	if errors.Is(err, gorm.ErrDuplicatedKey) {

@@ -10,7 +10,7 @@ import (
 )
 
 const (
-// postMaxPageSize = 1000
+	postMaxPageSize = 1000
 )
 
 var (
@@ -83,7 +83,67 @@ func (c *RDSClient) GetPostInfo(ctx context.Context, id uint64) (result *PostInf
 	return
 }
 
-func (c *RDSClient) GetPostCreaterId(ctx context.Context, id uint64) (uid uint64, err error) {
+type PostFilter struct {
+	IdFrom        uint64
+	OrderByIdDesc bool
+	RootId        uint64
+
+	Offset          uint32
+	Limit           uint32
+	orderAscColumn  []string
+	orderDescColumn []string
+}
+
+func (f *PostFilter) check() error {
+	// 限制单次查询最大条数
+	if f.Limit > postMaxPageSize {
+		return fmt.Errorf("invalid limit: %d", f.Limit)
+	}
+	if f.Limit == 0 {
+		f.Limit = limitDefault
+	}
+	if f.OrderByIdDesc {
+		f.orderDescColumn = append(f.orderDescColumn, sqlFieldId)
+	} else {
+		f.orderAscColumn = append(f.orderAscColumn, sqlFieldId)
+	}
+	return nil
+}
+
+// 生成查询条件，必须按照索引的顺序排列
+func (f *PostFilter) generate(db *gorm.DB) error {
+	if err := f.check(); err != nil {
+		return err
+	}
+	if f.IdFrom != 0 {
+		db = db.Where(sqlMore(sqlFieldId), f.IdFrom)
+	}
+	if f.Offset != 0 {
+		db = db.Offset(int(f.Offset))
+	}
+	if f.Limit != 0 {
+		db = db.Limit(int(f.Limit))
+	}
+	for _, col := range f.orderAscColumn {
+		db = db.Order(sqlOrderAsc(col))
+	}
+	for _, col := range f.orderDescColumn {
+		db = db.Order(sqlOrderDesc(col))
+	}
+	return nil
+}
+
+func (c *RDSClient) ListPostInfo(ctx context.Context, f *PostFilter) (results []*PostInfo, err error) {
+
+	dbIns := c.db.WithContext(ctx).Model(postModel)
+	if err = f.generate(dbIns); err != nil {
+		return
+	}
+	err = dbIns.Scan(&results).Error
+	return
+}
+
+func (c *RDSClient) GetPostCreatorId(ctx context.Context, id uint64) (uid uint64, err error) {
 	result := &PostInfo{}
 	err = c.db.WithContext(ctx).
 		Select(sqlFieldUId).
