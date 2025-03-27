@@ -73,6 +73,53 @@ func (MediaType) EnumDescriptor() ([]byte, []int) {
 	return file_common_proto_rawDescGZIP(), []int{0}
 }
 
+// 互动撤销
+type InxUndoType int32
+
+const (
+	InxUndoType_IU_DEFAULT InxUndoType = 0
+	InxUndoType_UNDO       InxUndoType = 1
+)
+
+// Enum value maps for InxUndoType.
+var (
+	InxUndoType_name = map[int32]string{
+		0: "IU_DEFAULT",
+		1: "UNDO",
+	}
+	InxUndoType_value = map[string]int32{
+		"IU_DEFAULT": 0,
+		"UNDO":       1,
+	}
+)
+
+func (x InxUndoType) Enum() *InxUndoType {
+	p := new(InxUndoType)
+	*p = x
+	return p
+}
+
+func (x InxUndoType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (InxUndoType) Descriptor() protoreflect.EnumDescriptor {
+	return file_common_proto_enumTypes[1].Descriptor()
+}
+
+func (InxUndoType) Type() protoreflect.EnumType {
+	return &file_common_proto_enumTypes[1]
+}
+
+func (x InxUndoType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use InxUndoType.Descriptor instead.
+func (InxUndoType) EnumDescriptor() ([]byte, []int) {
+	return file_common_proto_rawDescGZIP(), []int{1}
+}
+
 type PointCoord struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Lat           float32                `protobuf:"fixed32,1,opt,name=lat,proto3" json:"lat,omitempty"`
@@ -333,10 +380,13 @@ var file_common_proto_rawDesc = string([]byte{
 	0x4d, 0x54, 0x5f, 0x44, 0x45, 0x46, 0x41, 0x55, 0x4c, 0x54, 0x10, 0x00, 0x12, 0x0c, 0x0a, 0x08,
 	0x55, 0x53, 0x45, 0x52, 0x5f, 0x41, 0x56, 0x41, 0x10, 0x01, 0x12, 0x0f, 0x0a, 0x0b, 0x43, 0x48,
 	0x41, 0x4e, 0x4e, 0x45, 0x4c, 0x5f, 0x41, 0x56, 0x41, 0x10, 0x02, 0x12, 0x0c, 0x0a, 0x08, 0x50,
-	0x4f, 0x53, 0x54, 0x5f, 0x49, 0x4d, 0x47, 0x10, 0x03, 0x42, 0x2d, 0x5a, 0x2b, 0x67, 0x69, 0x74,
-	0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x44, 0x4f, 0x47, 0x54, 0x54, 0x2f, 0x64, 0x6d,
-	0x2d, 0x61, 0x70, 0x69, 0x2d, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x2f, 0x61, 0x70, 0x69, 0x2f,
-	0x62, 0x61, 0x73, 0x65, 0x3b, 0x61, 0x70, 0x69, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x4f, 0x53, 0x54, 0x5f, 0x49, 0x4d, 0x47, 0x10, 0x03, 0x2a, 0x27, 0x0a, 0x0b, 0x49, 0x6e, 0x78,
+	0x55, 0x6e, 0x64, 0x6f, 0x54, 0x79, 0x70, 0x65, 0x12, 0x0e, 0x0a, 0x0a, 0x49, 0x55, 0x5f, 0x44,
+	0x45, 0x46, 0x41, 0x55, 0x4c, 0x54, 0x10, 0x00, 0x12, 0x08, 0x0a, 0x04, 0x55, 0x4e, 0x44, 0x4f,
+	0x10, 0x01, 0x42, 0x2d, 0x5a, 0x2b, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d,
+	0x2f, 0x44, 0x4f, 0x47, 0x54, 0x54, 0x2f, 0x64, 0x6d, 0x2d, 0x61, 0x70, 0x69, 0x2d, 0x73, 0x65,
+	0x72, 0x76, 0x65, 0x72, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x62, 0x61, 0x73, 0x65, 0x3b, 0x61, 0x70,
+	0x69, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 })
 
 var (
@@ -351,19 +401,20 @@ func file_common_proto_rawDescGZIP() []byte {
 	return file_common_proto_rawDescData
 }
 
-var file_common_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_common_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
 var file_common_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_common_proto_goTypes = []any{
 	(MediaType)(0),       // 0: common.MediaType
-	(*PointCoord)(nil),   // 1: common.PointCoord
-	(*BoundCoord)(nil),   // 2: common.BoundCoord
-	(*LocationInfo)(nil), // 3: common.LocationInfo
-	(*MediaInfo)(nil),    // 4: common.MediaInfo
+	(InxUndoType)(0),     // 1: common.InxUndoType
+	(*PointCoord)(nil),   // 2: common.PointCoord
+	(*BoundCoord)(nil),   // 3: common.BoundCoord
+	(*LocationInfo)(nil), // 4: common.LocationInfo
+	(*MediaInfo)(nil),    // 5: common.MediaInfo
 }
 var file_common_proto_depIdxs = []int32{
-	1, // 0: common.BoundCoord.sw:type_name -> common.PointCoord
-	1, // 1: common.BoundCoord.ne:type_name -> common.PointCoord
-	1, // 2: common.LocationInfo.lng_lat:type_name -> common.PointCoord
+	2, // 0: common.BoundCoord.sw:type_name -> common.PointCoord
+	2, // 1: common.BoundCoord.ne:type_name -> common.PointCoord
+	2, // 2: common.LocationInfo.lng_lat:type_name -> common.PointCoord
 	0, // 3: common.MediaInfo.type:type_name -> common.MediaType
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
@@ -382,7 +433,7 @@ func file_common_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_common_proto_rawDesc), len(file_common_proto_rawDesc)),
-			NumEnums:      1,
+			NumEnums:      2,
 			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,

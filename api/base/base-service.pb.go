@@ -1121,7 +1121,7 @@ type ChannelInxReq struct {
 	// 互动状态
 	IxnState ChannelIxnState `protobuf:"varint,2,opt,name=ixn_state,json=ixnState,proto3,enum=channel.ChannelIxnState" json:"ixn_state,omitempty"`
 	// 是否撤销状态
-	IsStateUndo bool `protobuf:"varint,3,opt,name=is_state_undo,json=isStateUndo,proto3" json:"is_state_undo,omitempty"`
+	StateUndo InxUndoType `protobuf:"varint,3,opt,name=state_undo,json=stateUndo,proto3,enum=common.InxUndoType" json:"state_undo,omitempty"`
 	// 互动事件
 	IxnEvent      ChannelIxnEvent `protobuf:"varint,4,opt,name=ixn_event,json=ixnEvent,proto3,enum=channel.ChannelIxnEvent" json:"ixn_event,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -1172,11 +1172,11 @@ func (x *ChannelInxReq) GetIxnState() ChannelIxnState {
 	return ChannelIxnState_STATE_DEFAULT
 }
 
-func (x *ChannelInxReq) GetIsStateUndo() bool {
+func (x *ChannelInxReq) GetStateUndo() InxUndoType {
 	if x != nil {
-		return x.IsStateUndo
+		return x.StateUndo
 	}
-	return false
+	return InxUndoType_IU_DEFAULT
 }
 
 func (x *ChannelInxReq) GetIxnEvent() ChannelIxnEvent {
@@ -1770,14 +1770,15 @@ var file_base_service_proto_rawDesc = string([]byte{
 	0x65, 0x73, 0x12, 0x2e, 0x0a, 0x07, 0x63, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x18, 0x01, 0x20,
 	0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x63, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x2e, 0x43, 0x68,
 	0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x07, 0x63, 0x68, 0x61, 0x6e, 0x6e,
-	0x65, 0x6c, 0x22, 0xba, 0x01, 0x0a, 0x0d, 0x43, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x49, 0x6e,
+	0x65, 0x6c, 0x22, 0xca, 0x01, 0x0a, 0x0d, 0x43, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x49, 0x6e,
 	0x78, 0x52, 0x65, 0x71, 0x12, 0x17, 0x0a, 0x07, 0x63, 0x68, 0x61, 0x6e, 0x5f, 0x69, 0x64, 0x18,
 	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x63, 0x68, 0x61, 0x6e, 0x49, 0x64, 0x12, 0x35, 0x0a,
 	0x09, 0x69, 0x78, 0x6e, 0x5f, 0x73, 0x74, 0x61, 0x74, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0e,
 	0x32, 0x18, 0x2e, 0x63, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x2e, 0x43, 0x68, 0x61, 0x6e, 0x6e,
 	0x65, 0x6c, 0x49, 0x78, 0x6e, 0x53, 0x74, 0x61, 0x74, 0x65, 0x52, 0x08, 0x69, 0x78, 0x6e, 0x53,
-	0x74, 0x61, 0x74, 0x65, 0x12, 0x22, 0x0a, 0x0d, 0x69, 0x73, 0x5f, 0x73, 0x74, 0x61, 0x74, 0x65,
-	0x5f, 0x75, 0x6e, 0x64, 0x6f, 0x18, 0x03, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0b, 0x69, 0x73, 0x53,
+	0x74, 0x61, 0x74, 0x65, 0x12, 0x32, 0x0a, 0x0a, 0x73, 0x74, 0x61, 0x74, 0x65, 0x5f, 0x75, 0x6e,
+	0x64, 0x6f, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x13, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f,
+	0x6e, 0x2e, 0x49, 0x6e, 0x78, 0x55, 0x6e, 0x64, 0x6f, 0x54, 0x79, 0x70, 0x65, 0x52, 0x09, 0x73,
 	0x74, 0x61, 0x74, 0x65, 0x55, 0x6e, 0x64, 0x6f, 0x12, 0x35, 0x0a, 0x09, 0x69, 0x78, 0x6e, 0x5f,
 	0x65, 0x76, 0x65, 0x6e, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x18, 0x2e, 0x63, 0x68,
 	0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x2e, 0x43, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x49, 0x78, 0x6e,
@@ -2007,8 +2008,9 @@ var file_base_service_proto_goTypes = []any{
 	(*ChannelInfo)(nil),                // 40: channel.ChannelInfo
 	(*BoundCoord)(nil),                 // 41: common.BoundCoord
 	(ChannelIxnState)(0),               // 42: channel.ChannelIxnState
-	(ChannelIxnEvent)(0),               // 43: channel.ChannelIxnEvent
-	(*PostInfo)(nil),                   // 44: post.PostInfo
+	(InxUndoType)(0),                   // 43: common.InxUndoType
+	(ChannelIxnEvent)(0),               // 44: channel.ChannelIxnEvent
+	(*PostInfo)(nil),                   // 45: post.PostInfo
 }
 var file_base_service_proto_depIdxs = []int32{
 	36, // 0: base_service.v1.LoginWeChatRes.user_info:type_name -> user.UserInfo
@@ -2025,48 +2027,49 @@ var file_base_service_proto_depIdxs = []int32{
 	40, // 11: base_service.v1.ChannelDetailQueryByIdRes.channel:type_name -> channel.ChannelInfo
 	40, // 12: base_service.v1.ChannelFullQueryByIdRes.channel:type_name -> channel.ChannelInfo
 	42, // 13: base_service.v1.ChannelInxReq.ixn_state:type_name -> channel.ChannelIxnState
-	43, // 14: base_service.v1.ChannelInxReq.ixn_event:type_name -> channel.ChannelIxnEvent
-	44, // 15: base_service.v1.ChannelPostCreateReq.post:type_name -> post.PostInfo
-	44, // 16: base_service.v1.ChannelPostCreateRes.post:type_name -> post.PostInfo
-	44, // 17: base_service.v1.ChannelPostUpdateReq.post:type_name -> post.PostInfo
-	44, // 18: base_service.v1.ChannelPostLoadRes.posts:type_name -> post.PostInfo
-	1,  // 19: base_service.v1.BaseService.LoginWeChat:input_type -> base_service.v1.LoginWeChatReq
-	4,  // 20: base_service.v1.BaseService.FastRegisterWeChat:input_type -> base_service.v1.FastRegisterWeChatReq
-	6,  // 21: base_service.v1.BaseService.LocationCommonSearch:input_type -> base_service.v1.LocationCommonSearchReq
-	8,  // 22: base_service.v1.BaseService.MediaPutURLBatchGet:input_type -> base_service.v1.MediaPutURLBatchGetReq
-	10, // 23: base_service.v1.BaseService.ChannelTypeList:input_type -> base_service.v1.ChannelTypeListReq
-	12, // 24: base_service.v1.BaseService.ChannelCreate:input_type -> base_service.v1.ChannelCreateReq
-	14, // 25: base_service.v1.BaseService.ChannelUpdate:input_type -> base_service.v1.ChannelUpdateReq
-	16, // 26: base_service.v1.BaseService.ChannelDelete:input_type -> base_service.v1.ChannelDeleteReq
-	18, // 27: base_service.v1.BaseService.ChannelBaseQueryByBound:input_type -> base_service.v1.ChannelBaseQueryByBoundReq
-	22, // 28: base_service.v1.BaseService.ChannelFullQueryById:input_type -> base_service.v1.ChannelFullQueryByIdReq
-	24, // 29: base_service.v1.BaseService.ChannelInx:input_type -> base_service.v1.ChannelInxReq
-	26, // 30: base_service.v1.BaseService.ChannelPostCreate:input_type -> base_service.v1.ChannelPostCreateReq
-	28, // 31: base_service.v1.BaseService.ChannelPostUpdate:input_type -> base_service.v1.ChannelPostUpdateReq
-	30, // 32: base_service.v1.BaseService.ChannelPostDelete:input_type -> base_service.v1.ChannelPostDeleteReq
-	32, // 33: base_service.v1.BaseService.ChannelPostLoad:input_type -> base_service.v1.ChannelPostLoadReq
-	34, // 34: base_service.v1.BaseService.ChannelPostInx:input_type -> base_service.v1.ChannelPostInxReq
-	2,  // 35: base_service.v1.BaseService.LoginWeChat:output_type -> base_service.v1.LoginWeChatRes
-	5,  // 36: base_service.v1.BaseService.FastRegisterWeChat:output_type -> base_service.v1.FastRegisterWeChatRes
-	7,  // 37: base_service.v1.BaseService.LocationCommonSearch:output_type -> base_service.v1.LocationCommonSearchRes
-	9,  // 38: base_service.v1.BaseService.MediaPutURLBatchGet:output_type -> base_service.v1.MediaPutURLBatchGetRes
-	11, // 39: base_service.v1.BaseService.ChannelTypeList:output_type -> base_service.v1.ChannelTypeListRes
-	13, // 40: base_service.v1.BaseService.ChannelCreate:output_type -> base_service.v1.ChannelCreateRes
-	15, // 41: base_service.v1.BaseService.ChannelUpdate:output_type -> base_service.v1.ChannelUpdateRes
-	17, // 42: base_service.v1.BaseService.ChannelDelete:output_type -> base_service.v1.ChannelDeleteRes
-	19, // 43: base_service.v1.BaseService.ChannelBaseQueryByBound:output_type -> base_service.v1.ChannelBaseQueryByBoundRes
-	23, // 44: base_service.v1.BaseService.ChannelFullQueryById:output_type -> base_service.v1.ChannelFullQueryByIdRes
-	25, // 45: base_service.v1.BaseService.ChannelInx:output_type -> base_service.v1.ChannelInxRes
-	27, // 46: base_service.v1.BaseService.ChannelPostCreate:output_type -> base_service.v1.ChannelPostCreateRes
-	29, // 47: base_service.v1.BaseService.ChannelPostUpdate:output_type -> base_service.v1.ChannelPostUpdateRes
-	31, // 48: base_service.v1.BaseService.ChannelPostDelete:output_type -> base_service.v1.ChannelPostDeleteRes
-	33, // 49: base_service.v1.BaseService.ChannelPostLoad:output_type -> base_service.v1.ChannelPostLoadRes
-	35, // 50: base_service.v1.BaseService.ChannelPostInx:output_type -> base_service.v1.ChannelPostInxRes
-	35, // [35:51] is the sub-list for method output_type
-	19, // [19:35] is the sub-list for method input_type
-	19, // [19:19] is the sub-list for extension type_name
-	19, // [19:19] is the sub-list for extension extendee
-	0,  // [0:19] is the sub-list for field type_name
+	43, // 14: base_service.v1.ChannelInxReq.state_undo:type_name -> common.InxUndoType
+	44, // 15: base_service.v1.ChannelInxReq.ixn_event:type_name -> channel.ChannelIxnEvent
+	45, // 16: base_service.v1.ChannelPostCreateReq.post:type_name -> post.PostInfo
+	45, // 17: base_service.v1.ChannelPostCreateRes.post:type_name -> post.PostInfo
+	45, // 18: base_service.v1.ChannelPostUpdateReq.post:type_name -> post.PostInfo
+	45, // 19: base_service.v1.ChannelPostLoadRes.posts:type_name -> post.PostInfo
+	1,  // 20: base_service.v1.BaseService.LoginWeChat:input_type -> base_service.v1.LoginWeChatReq
+	4,  // 21: base_service.v1.BaseService.FastRegisterWeChat:input_type -> base_service.v1.FastRegisterWeChatReq
+	6,  // 22: base_service.v1.BaseService.LocationCommonSearch:input_type -> base_service.v1.LocationCommonSearchReq
+	8,  // 23: base_service.v1.BaseService.MediaPutURLBatchGet:input_type -> base_service.v1.MediaPutURLBatchGetReq
+	10, // 24: base_service.v1.BaseService.ChannelTypeList:input_type -> base_service.v1.ChannelTypeListReq
+	12, // 25: base_service.v1.BaseService.ChannelCreate:input_type -> base_service.v1.ChannelCreateReq
+	14, // 26: base_service.v1.BaseService.ChannelUpdate:input_type -> base_service.v1.ChannelUpdateReq
+	16, // 27: base_service.v1.BaseService.ChannelDelete:input_type -> base_service.v1.ChannelDeleteReq
+	18, // 28: base_service.v1.BaseService.ChannelBaseQueryByBound:input_type -> base_service.v1.ChannelBaseQueryByBoundReq
+	22, // 29: base_service.v1.BaseService.ChannelFullQueryById:input_type -> base_service.v1.ChannelFullQueryByIdReq
+	24, // 30: base_service.v1.BaseService.ChannelInx:input_type -> base_service.v1.ChannelInxReq
+	26, // 31: base_service.v1.BaseService.ChannelPostCreate:input_type -> base_service.v1.ChannelPostCreateReq
+	28, // 32: base_service.v1.BaseService.ChannelPostUpdate:input_type -> base_service.v1.ChannelPostUpdateReq
+	30, // 33: base_service.v1.BaseService.ChannelPostDelete:input_type -> base_service.v1.ChannelPostDeleteReq
+	32, // 34: base_service.v1.BaseService.ChannelPostLoad:input_type -> base_service.v1.ChannelPostLoadReq
+	34, // 35: base_service.v1.BaseService.ChannelPostInx:input_type -> base_service.v1.ChannelPostInxReq
+	2,  // 36: base_service.v1.BaseService.LoginWeChat:output_type -> base_service.v1.LoginWeChatRes
+	5,  // 37: base_service.v1.BaseService.FastRegisterWeChat:output_type -> base_service.v1.FastRegisterWeChatRes
+	7,  // 38: base_service.v1.BaseService.LocationCommonSearch:output_type -> base_service.v1.LocationCommonSearchRes
+	9,  // 39: base_service.v1.BaseService.MediaPutURLBatchGet:output_type -> base_service.v1.MediaPutURLBatchGetRes
+	11, // 40: base_service.v1.BaseService.ChannelTypeList:output_type -> base_service.v1.ChannelTypeListRes
+	13, // 41: base_service.v1.BaseService.ChannelCreate:output_type -> base_service.v1.ChannelCreateRes
+	15, // 42: base_service.v1.BaseService.ChannelUpdate:output_type -> base_service.v1.ChannelUpdateRes
+	17, // 43: base_service.v1.BaseService.ChannelDelete:output_type -> base_service.v1.ChannelDeleteRes
+	19, // 44: base_service.v1.BaseService.ChannelBaseQueryByBound:output_type -> base_service.v1.ChannelBaseQueryByBoundRes
+	23, // 45: base_service.v1.BaseService.ChannelFullQueryById:output_type -> base_service.v1.ChannelFullQueryByIdRes
+	25, // 46: base_service.v1.BaseService.ChannelInx:output_type -> base_service.v1.ChannelInxRes
+	27, // 47: base_service.v1.BaseService.ChannelPostCreate:output_type -> base_service.v1.ChannelPostCreateRes
+	29, // 48: base_service.v1.BaseService.ChannelPostUpdate:output_type -> base_service.v1.ChannelPostUpdateRes
+	31, // 49: base_service.v1.BaseService.ChannelPostDelete:output_type -> base_service.v1.ChannelPostDeleteRes
+	33, // 50: base_service.v1.BaseService.ChannelPostLoad:output_type -> base_service.v1.ChannelPostLoadRes
+	35, // 51: base_service.v1.BaseService.ChannelPostInx:output_type -> base_service.v1.ChannelPostInxRes
+	36, // [36:52] is the sub-list for method output_type
+	20, // [20:36] is the sub-list for method input_type
+	20, // [20:20] is the sub-list for extension type_name
+	20, // [20:20] is the sub-list for extension extendee
+	0,  // [0:20] is the sub-list for field type_name
 }
 
 func init() { file_base_service_proto_init() }

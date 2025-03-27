@@ -44,9 +44,9 @@ type ChannelInfo struct {
 	// 位置的关键兴趣点详情
 	PoiDetail PoiDetail `gorm:"type:jsonb"`
 	// 配置和状态子表
-	Set ChannelSet `gorm:"foreignKey:Id"`
+	Set ChannelSet `gorm:"foreignKey:Id;constraint:OnDelete:CASCADE"`
 	// 互动统计子表
-	Stats ChannelStats `gorm:"foreignKey:Id"`
+	Stats ChannelStats `gorm:"foreignKey:Id;constraint:OnDelete:CASCADE"`
 
 	// --- 基础字段
 	CreatedAt time.Time `gorm:"autoCreateTime"`
@@ -152,14 +152,27 @@ func (c *RDSClient) UpdateChannelInfo(ctx context.Context, info *ChannelInfo) er
 	if info.AvatarId != "" {
 		updateField = append(updateField, sqlFieldAvatarId)
 	}
-	return c.db.WithContext(ctx).Model(channelModel).
+	res := c.db.WithContext(ctx).Model(channelModel).
 		Where(sqlEqualId, info.Id).
 		Select(updateField).
-		Updates(info).Error
+		Updates(info)
+	if res.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+	return res.Error
 }
 
 func (c *RDSClient) DeleteChannelInfo(ctx context.Context, id uint64) error {
-	return c.db.WithContext(ctx).Where(sqlEqualId, id).Delete(channelModel).Error
+	channelModel := &ChannelInfo{
+		Id: id,
+	}
+	res := c.db.WithContext(ctx).
+		Select(clause.Associations).
+		Delete(channelModel)
+	if res.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+	return res.Error
 }
 
 func (c *RDSClient) GetChannelInfo(ctx context.Context, id uint64) (result *ChannelInfo, err error) {
@@ -176,8 +189,8 @@ func (c *RDSClient) GetChannelInfo(ctx context.Context, id uint64) (result *Chan
 func (c *RDSClient) GetChannelFullInfo(ctx context.Context, Id uint64) (result *ChannelInfo, err error) {
 	err = c.db.WithContext(ctx).
 		Preload(clause.Associations).
-		Where(sqlEqualId, Id).
-		First(&result).Error
+		Select([]string{sqlFieldAll, sqlSelectLngLat}).
+		First(&result, Id).Error
 	if err != nil {
 		return
 	}
@@ -188,7 +201,7 @@ func (c *RDSClient) GetChannelCreatorId(ctx context.Context, id uint64) (uid uin
 	result := &ChannelInfo{}
 	err = c.db.WithContext(ctx).
 		Select(sqlFieldUId).
-		Where(sqlEqualId, id).First(&result).Error
+		First(&result, id).Error
 	if err != nil {
 		return
 	}
@@ -206,7 +219,6 @@ func (c *RDSClient) CountChannelInfo(ctx context.Context, f *ChannelFilter) (cou
 }
 
 func (c *RDSClient) ListChannelInfo(ctx context.Context, f *ChannelFilter) (results []*ChannelInfo, err error) {
-
 	dbIns := c.db.WithContext(ctx).Model(channelModel)
 	dbIns.Select([]string{sqlFieldAll, sqlSelectLngLat})
 	if err = f.generate(dbIns); err != nil {

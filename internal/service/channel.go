@@ -14,7 +14,7 @@ func (s *Service) ChannelFullQueryById(ctx context.Context, req *api.ChannelFull
 	res = new(api.ChannelFullQueryByIdRes)
 	channel, err := s.data.GetChannelFullInfo(ctx, utils.StrToUint64(req.GetChanId()))
 	if err != nil {
-		err = EM_CommonFail_Internal.PutDesc(err.Error())
+		err = putDescByDBErr(err)
 		log.E(ctx, "data get channel error", err)
 		return
 	}
@@ -65,7 +65,7 @@ func (s *Service) ChannelInx(ctx context.Context, req *api.ChannelInxReq) (res *
 	// 查询Channel信息，检查是否存在
 	if err != nil {
 		log.E(ctx, "channel not exist", err)
-		err = EM_CommonFail_DBError.PutDesc(err.Error())
+		err = putDescByDBErr(err)
 		return
 	}
 	// 状态互动基于用户
@@ -75,30 +75,30 @@ func (s *Service) ChannelInx(ctx context.Context, req *api.ChannelInxReq) (res *
 			ChannelId: chanId,
 			IxnState:  req.GetIxnState(),
 		}
-		if req.GetIsStateUndo() {
+		if req.GetStateUndo() == api.InxUndoType_UNDO {
 			err = s.data.DeleteUserChannelIxnState(ctx, dbIn)
 		} else {
 			err = s.data.CreateUserChannelIxnState(ctx, dbIn)
 		}
 		if err != nil {
-			log.E(ctx, "create user channel ixn state error", err)
-			err = EM_CommonFail_DBError.PutDesc(err.Error())
+			log.E(ctx, "mod user channel ixn state error", err)
+			err = putDescByDBErr(err)
 			return
 		}
 	}
 	// 事件互动基于用户和爱宠
-	if req.GetIxnState() != 0 {
+	if req.GetIxnEvent() != 0 {
 		// 加载爱宠id
 		var userInfo *rds.UserInfo
 		userInfo, err = s.data.GetUserInfoByID(ctx, tc.UId)
 		if err != nil {
 			log.E(ctx, "user load error", err)
-			err = EM_CommonFail_DBError.PutDesc(err.Error())
+			err = putDescByDBErr(err)
 		}
 		pids := userInfo.GetPIDs()
-		events := make([]*rds.UserPetChannelIxnEvent, len(pids))
+		events := make([]*rds.UserChannelIxnEvent, len(pids))
 		for i, pid := range userInfo.GetPIDs() {
-			events[i] = &rds.UserPetChannelIxnEvent{
+			events[i] = &rds.UserChannelIxnEvent{
 				UId:       tc.UId,
 				PId:       pid,
 				ChannelId: chanId,
@@ -108,7 +108,7 @@ func (s *Service) ChannelInx(ctx context.Context, req *api.ChannelInxReq) (res *
 		err = s.data.BatchCreateUserPetChannelIxnEvent(ctx, events)
 		if err != nil {
 			log.E(ctx, "create user channel ixn event error", err)
-			err = EM_CommonFail_DBError.PutDesc(err.Error())
+			err = putDescByDBErr(err)
 			return
 		}
 	}
@@ -148,8 +148,9 @@ func (s *Service) ChannelCreate(ctx context.Context, req *api.ChannelCreateReq) 
 	tc := utils.GetClaimFromContext(ctx)
 	// TODO: 检查类型，检查坐标是否太近
 	ch := req.GetChannel()
+	chanId := utils.GenSnowflakeId()
 	channel := &rds.ChannelInfo{
-		Id:       utils.GenSnowflakeID(),
+		Id:       chanId,
 		TypeId:   ch.GetTypeId(),
 		UId:      tc.UId,
 		Title:    ch.GetTitle(),
@@ -159,12 +160,16 @@ func (s *Service) ChannelCreate(ctx context.Context, req *api.ChannelCreateReq) 
 		PoiDetail: rds.PoiDetail{
 			Address: ch.GetLocation().GetAddress(),
 		},
-		Stats: rds.ChannelStats{},
-		Set:   rds.ChannelSet{},
+		Stats: rds.ChannelStats{
+			Id: chanId,
+		},
+		Set: rds.ChannelSet{
+			Id: chanId,
+		},
 	}
 	if err = s.data.CreateChannelInfo(ctx, channel); err != nil {
 		log.E(ctx, "create channel error", err)
-		err = EM_CommonFail_DBError.PutDesc(err.Error())
+		err = putDescByDBErr(err)
 		return
 	}
 	res.Channel, err = s.convertToChannelInfo(ctx, channel)
@@ -187,7 +192,7 @@ func (s *Service) ChannelDelete(ctx context.Context, req *api.ChannelDeleteReq) 
 	}
 	if err = s.data.DeleteChannelInfo(ctx, chanId); err != nil {
 		log.E(ctx, "delete channel error", err)
-		err = EM_CommonFail_DBError.PutDesc(err.Error())
+		err = putDescByDBErr(err)
 		return
 	}
 	return
@@ -197,7 +202,7 @@ func (s *Service) validChannelPermission(ctx context.Context, tc *utils.TokenCla
 	uid, err := s.data.GetChannelCreatorId(ctx, channalId)
 	if err != nil {
 		log.E(ctx, "get channel creater id error", err)
-		err = EM_CommonFail_DBError.PutDesc(err.Error())
+		err = putDescByDBErr(err)
 		return err
 	}
 	if uid != tc.UId {
@@ -227,23 +232,32 @@ func (s *Service) ChannelUpdate(ctx context.Context, req *api.ChannelUpdateReq) 
 		Intro:    ch.GetIntro(),
 	}); err != nil {
 		log.E(ctx, "update channel info error", err)
-		err = EM_CommonFail_DBError.PutDesc(err.Error())
+		err = putDescByDBErr(err)
 		return
 	}
 	return
 }
 
 func (s *Service) convertToChannelStats(ctx context.Context, stat *rds.ChannelStats) *api.ChannelStats {
-	return &api.ChannelStats{
-		ViewsCnt:   int32(stat.ViewsCnt),
-		StarsCnt:   int32(stat.StarsCnt),
-		PeeCnt:     int32(stat.PeeCnt),
-		PostsCnt:   int32(stat.PostsCnt),
-		LastStarAt: stat.LastStarAt.UnixMilli(),
-		LastPostAt: stat.LastPostAt.UnixMilli(),
-		LastPeeAt:  stat.LastPeeAt.UnixMilli(),
-		UpdatedAt:  stat.UpdatedAt.UnixMilli(),
+	statsApi := &api.ChannelStats{
+		ViewsCnt: int32(stat.ViewsCnt),
+		StarsCnt: int32(stat.StarsCnt),
+		PeeCnt:   int32(stat.PeeCnt),
+		PostsCnt: int32(stat.PostsCnt),
 	}
+	if !stat.LastStarAt.IsZero() {
+		statsApi.LastStarAt = stat.LastStarAt.UnixMilli()
+	}
+	if !stat.LastPostAt.IsZero() {
+		statsApi.LastPostAt = stat.LastPostAt.UnixMilli()
+	}
+	if !stat.LastPeeAt.IsZero() {
+		statsApi.LastPeeAt = stat.LastPeeAt.UnixMilli()
+	}
+	if !stat.UpdatedAt.IsZero() {
+		statsApi.UpdatedAt = stat.UpdatedAt.UnixMilli()
+	}
+	return statsApi
 }
 
 func (s *Service) convertToChannelInfo(ctx context.Context, in *rds.ChannelInfo) (res *api.ChannelInfo, err error) {
@@ -303,13 +317,14 @@ func (s *Service) asyncUpdateChannelStatsByInx(ctx context.Context, channelId ui
 			case api.ChannelIxnState_STAR:
 				rdsStatItem = rds.ChannelStatsStar
 			}
-			if inxReq.GetIsStateUndo() {
+			if inxReq.GetStateUndo() == api.InxUndoType_UNDO {
 				err = s.data.ChannelStatsDecrease(ctx, channelId, rdsStatItem)
 			} else {
 				err = s.data.ChannelStatsIncrease(ctx, channelId, rdsStatItem)
 			}
 			if err != nil {
-				log.E(ctx, "status stats change error", err, "inx_req", inxReq, "is_undo", inxReq.GetIsStateUndo())
+				log.E(ctx, "status stats change error", err,
+					"inx_req", inxReq, "is_undo", inxReq.GetStateUndo().String())
 			}
 		}
 	}()

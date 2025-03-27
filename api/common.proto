@@ -38,3 +38,9 @@ message MediaInfo {
   // 写入URL
   string put_url = 4;
 }
+
+// 互动撤销
+enum InxUndoType {
+  IU_DEFAULT = 0;
+  UNDO = 1;
+}

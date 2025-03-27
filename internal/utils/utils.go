@@ -49,3 +49,11 @@ func Uint64ToStr(in uint64) string {
 	}
 	return strconv.FormatUint(in, 10)
 }
+
+func CopyFromPtr(in *string) string {
+	if in == nil {
+		return ""
+	} else {
+		return *in
+	}
+}

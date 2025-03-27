@@ -62,9 +62,13 @@ func (c *RDSClient) ChannelStatsIncrease(ctx context.Context, chanId uint64, st 
 	if timeField := channelStatsFieldTimeList[st]; timeField != "" {
 		updateField[timeField] = time.Now()
 	}
-	return c.db.WithContext(ctx).Model(channelStatsModel).
+	res := c.db.WithContext(ctx).Model(channelStatsModel).
 		Where(sqlEqualId, chanId).
-		Updates(updateField).Error
+		Updates(updateField)
+	if res.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+	return res.Error
 }
 
 func (c *RDSClient) ChannelStatsDecrease(ctx context.Context, chanId uint64, st ChannelStatsType) error {
@@ -74,7 +78,11 @@ func (c *RDSClient) ChannelStatsDecrease(ctx context.Context, chanId uint64, st 
 	if timeField := channelStatsFieldTimeList[st]; timeField != "" {
 		updateField[timeField] = time.Now()
 	}
-	return c.db.WithContext(ctx).Model(channelStatsModel).
+	res := c.db.WithContext(ctx).Model(channelStatsModel).
 		Where(sqlEqualId, chanId).
-		Updates(updateField).Error
+		Updates(updateField)
+	if res.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+	return res.Error
 }

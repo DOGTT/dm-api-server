@@ -203,8 +203,8 @@ func (s *Service) BaseServiceChannelInx(c *gin.Context) {
 
 func (s *Service) BaseServiceChannelPostDelete(c *gin.Context, params gin_api.BaseServiceChannelPostDeleteParams) {
 	req := &api.ChannelPostDeleteReq{
-		ChanId: *params.ChanId,
-		PostId: *params.PostId,
+		ChanId: utils.CopyFromPtr(params.ChanId),
+		PostId: utils.CopyFromPtr(params.PostId),
 	}
 	res, err := s.ChannelPostDelete(withGinContext(c), req)
 	if err != nil {

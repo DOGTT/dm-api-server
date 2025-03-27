@@ -113,6 +113,6 @@ func NewSnowflakeWithIP() (*Snowflake, error) {
 	return NewSnowflake(machineID)
 }
 
-func GenSnowflakeID() uint64 {
+func GenSnowflakeId() uint64 {
 	return globalSnowflakeIns.Generate()
 }

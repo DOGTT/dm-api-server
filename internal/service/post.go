@@ -30,7 +30,7 @@ func (s *Service) ChannelPostLoad(ctx context.Context, req *api.ChannelPostLoadR
 	posts, err := s.data.ListPostInfo(ctx, filter)
 	if err != nil {
 		log.E(ctx, "list post info error", err)
-		err = EM_CommonFail_DBError.PutDesc(err.Error())
+		err = putDescByDBErr(err)
 		return
 	}
 	res.Posts = make([]*api.PostInfo, len(posts))
@@ -67,7 +67,7 @@ func (s *Service) ChannelPostCreate(ctx context.Context, req *api.ChannelPostCre
 		tc      = utils.GetClaimFromContext(ctx)
 		postReq = req.GetPost()
 		post    = &rds.PostInfo{
-			Id:       utils.GenSnowflakeID(),
+			Id:       utils.GenSnowflakeId(),
 			UId:      tc.UId,
 			RootId:   utils.StrToUint64(postReq.GetRootId()),
 			ParentId: utils.StrToUint64(postReq.GetParentId()),
@@ -76,7 +76,7 @@ func (s *Service) ChannelPostCreate(ctx context.Context, req *api.ChannelPostCre
 	)
 	if err = s.data.CreatePostInfo(ctx, post); err != nil {
 		log.E(ctx, "create post info error", err)
-		err = EM_CommonFail_DBError.PutDesc(err.Error())
+		err = putDescByDBErr(err)
 		return
 	}
 	res.Post, err = s.convertToPostInfo(ctx, post)
@@ -109,7 +109,7 @@ func (s *Service) validPostPermission(ctx context.Context, tc *utils.TokenClaims
 	uid, err := s.data.GetPostCreatorId(ctx, postId)
 	if err != nil {
 		log.E(ctx, "get post creater id error", err)
-		err = EM_CommonFail_DBError.PutDesc(err.Error())
+		err = putDescByDBErr(err)
 		return err
 	}
 	if uid != tc.UId {
@@ -131,7 +131,7 @@ func (s *Service) ChannelPostDelete(ctx context.Context, req *api.ChannelPostDel
 	}
 	if err = s.data.DeletePostInfo(ctx, postId); err != nil {
 		log.E(ctx, "delete post error", err)
-		err = EM_CommonFail_DBError.PutDesc(err.Error())
+		err = putDescByDBErr(err)
 		return
 	}
 	s.asyncUpdateChannelStatsByPost(ctx, chanId, true)
@@ -167,7 +167,7 @@ func (s *Service) ChannelPostUpdate(ctx context.Context, req *api.ChannelPostUpd
 		postId = utils.StrToUint64(post.GetId())
 		tc     = utils.GetClaimFromContext(ctx)
 	)
-	if err = s.validChannelPermission(ctx, tc, postId); err != nil {
+	if err = s.validPostPermission(ctx, tc, postId); err != nil {
 		return
 	}
 	if err = s.data.UpdatePostInfo(ctx, &rds.PostInfo{
@@ -175,7 +175,7 @@ func (s *Service) ChannelPostUpdate(ctx context.Context, req *api.ChannelPostUpd
 		Content: post.GetContent(),
 	}); err != nil {
 		log.E(ctx, "update post info error", err)
-		err = EM_CommonFail_DBError.PutDesc(err.Error())
+		err = putDescByDBErr(err)
 		return
 	}
 	return

@@ -25,7 +25,7 @@ func (s *Service) WeChatLogin(ctx context.Context, req *api.LoginWeChatReq) (res
 		return
 	}
 	if err != nil {
-		err = EM_CommonFail_Internal.PutDesc(err.Error())
+		err = putDescByDBErr(err)
 		return
 	}
 	res.UserInfo, err = s.convertToUserInfo(ctx, userInfo)
@@ -69,7 +69,7 @@ func (s *Service) WeChatRegisterFast(ctx context.Context, req *api.FastRegisterW
 		return
 	}
 	if err != nil {
-		err = EM_CommonFail_DBError.PutDesc(err.Error())
+		err = putDescByDBErr(err)
 		return
 	}
 	// 3.save avatar
@@ -78,7 +78,7 @@ func (s *Service) WeChatRegisterFast(ctx context.Context, req *api.FastRegisterW
 			fds.GetBucketName(api.MediaType_USER_AVA),
 			pet.AvatarId, req.GetRegData().GetAvatarData())
 		if err != nil {
-			err = EM_CommonFail_DBError.PutDesc(err.Error())
+			err = putDescByDBErr(err)
 			return
 		}
 	}

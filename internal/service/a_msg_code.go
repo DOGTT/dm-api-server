@@ -3,6 +3,8 @@ package service
 import (
 	"fmt"
 	"net/http"
+
+	"github.com/DOGTT/dm-api-server/internal/data/rds"
 )
 
 // Error Msg
@@ -31,6 +33,16 @@ type ErrMsg struct {
 func (e *ErrMsg) PutDesc(desc string) *ErrMsg {
 	n := *e
 	n.Desc = desc
+	return &n
+}
+
+func putDescByDBErr(err error) *ErrMsg {
+	n := *EM_CommonFail_DBError
+	if rds.IsNotFound(err) {
+		n.Desc = "db not found"
+	} else if rds.IsDuplicateErr(err) {
+		n.Desc = "db already exist"
+	}
 	return &n
 }
 

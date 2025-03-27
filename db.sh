@@ -28,12 +28,12 @@ start_services() {
 #     -d dpage/pgadmin4
 
  # 等待 PostGIS 容器启动
-  echo "Waiting for PostGIS to be ready..."
-  sleep 10
+  # echo "Waiting for PostGIS to be ready..."
+  # sleep 10
 
-  # 执行 SQL 初始化脚本
-  execute_sql_init_scripts
-  echo "All services started successfully!"
+  # # 执行 SQL 初始化脚本
+  # execute_sql_init_scripts
+  # echo "All services started successfully!"
 }
 
 # 定义执行 SQL 初始化脚本的函数
@@ -79,6 +79,8 @@ if [[ "$1" == "start" ]]; then
   start_services
 elif [[ "$1" == "stop" ]]; then
   stop_services
+elif [[ "$1" == "init" ]]; then
+  execute_sql_init_scripts
 else
   echo "Usage: $0 {start|stop}"
   exit 1

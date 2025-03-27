@@ -270,7 +270,7 @@ message ChannelInxReq {
     // 互动状态
     channel.ChannelIxnState ixn_state = 2;
     // 是否撤销状态
-    bool is_state_undo = 3;
+    common.InxUndoType state_undo = 3;
     // 互动事件
     channel.ChannelIxnEvent ixn_event = 4;
 }

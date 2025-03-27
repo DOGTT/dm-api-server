@@ -5,15 +5,16 @@ import (
 	"time"
 
 	api "github.com/DOGTT/dm-api-server/api/base"
+	"gorm.io/gorm"
 )
 
 func init() {
-	dbModelList = append(dbModelList, &UserPetChannelIxnEvent{})
+	dbModelList = append(dbModelList, &UserChannelIxnEvent{})
 	dbModelList = append(dbModelList, &UserChannelIxnState{})
 }
 
 // 爱宠频道互动事件
-type UserPetChannelIxnEvent struct {
+type UserChannelIxnEvent struct {
 	UId       uint64              `gorm:"index"`
 	PId       uint64              `gorm:"index"`
 	ChannelId uint64              `gorm:"index"`
@@ -24,16 +25,16 @@ type UserPetChannelIxnEvent struct {
 
 // 用户频道互动状态
 type UserChannelIxnState struct {
-	UId       uint64 `gorm:"index"`
-	ChannelId uint64 `gorm:"index"`
+	UId       uint64 `gorm:"index:ix_user_channel_inx,unique"`
+	ChannelId uint64 `gorm:"index:ix_user_channel_inx,unique"`
 	//
-	IxnState api.ChannelIxnState `gorm:"type:int;default:0;index"`
+	IxnState api.ChannelIxnState `gorm:"type:int;default:0;index:ix_user_channel_inx,unique"`
 
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 }
 
-func (c *RDSClient) BatchCreateUserPetChannelIxnEvent(ctx context.Context, d []*UserPetChannelIxnEvent) error {
-	return c.db.WithContext(ctx).Create(d).Error
+func (c *RDSClient) BatchCreateUserPetChannelIxnEvent(ctx context.Context, d []*UserChannelIxnEvent) error {
+	return c.db.WithContext(ctx).CreateInBatches(d, 10).Error
 }
 
 func (c *RDSClient) CreateUserChannelIxnState(ctx context.Context, d *UserChannelIxnState) error {
@@ -41,5 +42,9 @@ func (c *RDSClient) CreateUserChannelIxnState(ctx context.Context, d *UserChanne
 }
 
 func (c *RDSClient) DeleteUserChannelIxnState(ctx context.Context, d *UserChannelIxnState) error {
-	return c.db.WithContext(ctx).Delete(d).Error
+	res := c.db.WithContext(ctx).Where(d).Delete(d)
+	if res.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+	return res.Error
 }

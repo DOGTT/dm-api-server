@@ -1,6 +1,9 @@
 package rds
 
 import (
+	"database/sql/driver"
+	"encoding/json"
+	"errors"
 	"time"
 
 	"github.com/lib/pq"
@@ -8,7 +11,7 @@ import (
 )
 
 var (
-	channelSetModel = &ChannelStats{}
+	channelSetModel = &ChannelSet{}
 )
 
 func init() {
@@ -18,6 +21,23 @@ func init() {
 // 频道配置 TODO
 type ChannelConfig struct {
 	MaxUserCount int `json:"max_user_count"`
+}
+
+// Implement the Scanner interface for ChannelConfig
+func (p *ChannelConfig) Scan(value any) error {
+	if value == nil {
+		return nil
+	}
+	bytes, ok := value.([]byte)
+	if !ok {
+		return errors.New("type assertion to []byte failed")
+	}
+	return json.Unmarshal(bytes, p)
+}
+
+// Implement the Valuer interface for ChannelConfig
+func (p ChannelConfig) Value() (driver.Value, error) {
+	return json.Marshal(p)
 }
 
 type ChannelSet struct {

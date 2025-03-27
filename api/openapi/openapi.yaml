@@ -402,9 +402,10 @@ components:
           type: integer
           description: 互动状态
           format: enum
-        is_state_undo:
-          type: boolean
+        state_undo:
+          type: integer
           description: 是否撤销状态
+          format: enum
         ixn_event:
           type: integer
           description: 互动事件

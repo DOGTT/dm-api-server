@@ -29,6 +29,5 @@ func IsDuplicateErr(err error) bool {
 	if strings.Contains(err.Error(), "duplicate key") {
 		return true
 	}
-	// fmt.Printf("Error type: %T\n", err) // 打印错误类型
 	return false
 }
