@@ -73,7 +73,7 @@ func ValidateUsername(username string) (string, error) {
 	username = strings.TrimSpace(username)
 
 	// 检查长度
-	if utf8.RuneCountInString(username) < 3 {
+	if utf8.RuneCountInString(username) < 1 {
 		return "", errors.New("用户名太短，至少需要1个字符")
 	}
 	if utf8.RuneCountInString(username) > 20 {
@@ -81,8 +81,8 @@ func ValidateUsername(username string) (string, error) {
 	}
 
 	// 检查非法字符
-	if matched, _ := regexp.MatchString(`^[a-zA-Z0-9_-]+$`, username); !matched {
-		return "", errors.New("用户名只能包含字母、数字、下划线和连字符")
+	if matched, _ := regexp.MatchString("^[\u4e00-\u9fa5a-zA-Z0-9_-]+$", username); !matched {
+		return "", errors.New("用户名只能包含中英文、数字、下划线和连字符")
 	}
 
 	// 检查保留用户名

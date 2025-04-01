@@ -23,8 +23,11 @@ func (c *FDSClient) PutObject(ctx context.Context, bucket string, fileID string,
 }
 
 // GenerateGetPresignedURL 生成预签名 URL
-func (c *FDSClient) GenerateGetPresignedURLByMediaInfo(ctx context.Context, in *api.MediaInfo) (string, error) {
-	return c.GenerateGetPresignedURL(ctx, GetBucketName(in.GetType()), in.GetUuid(), PreSignDurationDefault)
+func (c *FDSClient) GenerateGetPresignedURLByMediaInfo(ctx context.Context, in *api.MediaInfo, expires time.Duration) (string, error) {
+	if expires == 0 {
+		expires = PreSignDurationDefault
+	}
+	return c.GenerateGetPresignedURL(ctx, GetBucketName(in.GetType()), in.GetUuid(), expires)
 }
 
 // GenerateGetPresignedURL 生成预签名 URL

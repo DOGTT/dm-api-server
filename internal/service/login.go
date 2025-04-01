@@ -92,7 +92,10 @@ func (s *Service) dbCreateUserAndPet(ctx context.Context, up *rds.UserPet) (err 
 	return err
 }
 func (s *Service) WeChatRegisterFast(ctx context.Context, req *api.FastRegisterWeChatReq) (res *api.FastRegisterWeChatRes, err error) {
-	log.D(ctx, "request in", "req", req)
+	log.D(ctx, "request in", "req", map[string]any{
+		"avatar_len": len(req.GetRegData().GetPetAvatarData()),
+		"wx_code":    req.GetWxCode(),
+	})
 	if err = validRegisterRequest(req); err != nil {
 		return
 	}
@@ -191,7 +194,7 @@ func (s *Service) convertToPetInfo(ctx context.Context, pet *rds.PetInfo) (res *
 			Uuid: pet.AvatarId,
 			Type: api.MediaType_USER_AVA,
 		}
-		media.GetUrl, err = s.data.GenerateGetPresignedURLByMediaInfo(ctx, media)
+		media.GetUrl, err = s.data.GenerateGetPresignedURLByMediaInfo(ctx, media, utils.TokenExpireDuration)
 		if err != nil {
 			err = EM_CommonFail_Internal.PutDesc(err.Error())
 			return
@@ -224,8 +227,8 @@ func validRegisterRequest(req *api.FastRegisterWeChatReq) (err error) {
 	if err != nil {
 		return EM_CommonFail_BadRequest.PutDesc(err.Error())
 	}
-	if regData.GetPetAvatarData() == "" {
-		return EM_CommonFail_BadRequest.PutDesc("pet_avatar_data is required")
-	}
+	// if regData.GetPetAvatarData() == "" {
+	// 	return EM_CommonFail_BadRequest.PutDesc("pet_avatar_data is required")
+	// }
 	return nil
 }
