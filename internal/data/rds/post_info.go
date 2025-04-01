@@ -26,7 +26,7 @@ type PostInfo struct {
 	// 评论唯一id
 	Id uint64 `gorm:"primaryKey;autoIncrement"`
 	// 创建者UId
-	UId uint64 `gorm:"index"`
+	UId uint64 `gorm:"index;column:uid"`
 	// 底层频道id
 	RootId uint64 `gorm:"index"`
 	// 关联的上级帖子id, 空则为根帖子

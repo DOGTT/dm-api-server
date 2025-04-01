@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"encoding/base64"
 	"errors"
 	"net/http"
 
@@ -44,24 +43,10 @@ func (s *Service) putGinError(c *gin.Context, err error) {
 }
 
 func (s *Service) BaseServiceFastRegisterWeChat(c *gin.Context) {
-	reqG := &gin_api.FastRegisterWeChatReq{}
-	if err := c.ShouldBind(&reqG); err != nil {
+	req := &api.FastRegisterWeChatReq{}
+	if err := c.ShouldBind(req); err != nil {
 		s.putGinError(c, EM_CommonFail_BadRequest)
 		return
-	}
-	req := &api.FastRegisterWeChatReq{
-		WxCode: *reqG.WxCode,
-	}
-	if reqG.RegData != nil {
-		req.RegData = &api.FastRegisterData{
-			Name: *reqG.RegData.Name,
-		}
-		avatarData, err := base64.StdEncoding.DecodeString(*reqG.RegData.AvatarData)
-		if err != nil {
-			s.putGinError(c, EM_CommonFail_BadRequest)
-			return
-		}
-		req.RegData.AvatarData = avatarData
 	}
 	res, err := s.WeChatRegisterFast(withGinContext(c), req)
 	if err != nil {

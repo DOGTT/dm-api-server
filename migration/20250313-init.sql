@@ -1,6 +1,6 @@
 
-SELECT setval(pg_get_serial_sequence('user_info', 'id'), 200000001);
-SELECT setval(pg_get_serial_sequence('pet_info', 'id'), 100000001);
+SELECT setval(pg_get_serial_sequence('user_info', 'id'), 100000000);
+SELECT setval(pg_get_serial_sequence('pet_info', 'id'), 500000000);
 
 
 INSERT INTO channel_type_info (id, name, coverage_radius, theme_color, created_at, updated_at) 

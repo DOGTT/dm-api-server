@@ -37,6 +37,13 @@ func (e *ErrMsg) PutDesc(desc string) *ErrMsg {
 }
 
 func putDescByDBErr(err error) *ErrMsg {
+	if err == nil {
+		return nil
+	}
+	orErr, ok := err.(*ErrMsg)
+	if ok {
+		return orErr
+	}
 	n := *EM_CommonFail_DBError
 	if rds.IsNotFound(err) {
 		n.Desc = "db not found"

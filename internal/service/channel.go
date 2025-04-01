@@ -89,15 +89,15 @@ func (s *Service) ChannelInx(ctx context.Context, req *api.ChannelInxReq) (res *
 	// 事件互动基于用户和爱宠
 	if req.GetIxnEvent() != 0 {
 		// 加载爱宠id
-		var userInfo *rds.UserInfo
-		userInfo, err = s.data.GetUserInfoByID(ctx, tc.UId)
+		var petIds []uint64
+		petIds, err = s.data.GetPetIdsFromUserId(ctx, tc.UId)
 		if err != nil {
 			log.E(ctx, "user load error", err)
 			err = putDescByDBErr(err)
+			return
 		}
-		pids := userInfo.GetPIDs()
-		events := make([]*rds.UserChannelIxnEvent, len(pids))
-		for i, pid := range userInfo.GetPIDs() {
+		events := make([]*rds.UserChannelIxnEvent, len(petIds))
+		for i, pid := range petIds {
 			events[i] = &rds.UserChannelIxnEvent{
 				UId:       tc.UId,
 				PId:       pid,

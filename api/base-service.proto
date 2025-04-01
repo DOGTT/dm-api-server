@@ -160,27 +160,21 @@ message LoginWeChatReq {
 
 message LoginWeChatRes {
     string token = 1;
-    user.UserInfo user_info = 2;
+    user.UserInfo user = 2;
 }
 
 
-// 宠物注册信息
-message FastRegisterData {
-    // 名字
-    string name = 1;
-    // base64 data
-    bytes avatar_data = 2;
-}
+
 
 // 快速注册请求
 message FastRegisterWeChatReq {
-    FastRegisterData reg_data = 1;
+    user.FastRegisterData reg_data = 1;
     string wx_code = 2;
 }
 
 message FastRegisterWeChatRes {
     string token = 1;
-    user.UserInfo user_info = 2;
+    user.UserInfo user = 2;
 }
 
 // 通用地点搜索请求

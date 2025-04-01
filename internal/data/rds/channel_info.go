@@ -29,10 +29,10 @@ func init() {
 // 足迹频道基本信息
 type ChannelInfo struct {
 	Id uint64 `gorm:"primaryKey;autoIncrement"`
+	// - 创建者的 Uid
+	UId uint64 `gorm:"index;column:uid"`
 	// 类型id
 	TypeId uint32 `gorm:"index"`
-	// - 创建者的 Uid
-	UId uint64 `gorm:"index"`
 	// - 关键内容
 	Title string `gorm:"type:text;size:50;not null"`
 	// 频道头像

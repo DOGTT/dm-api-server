@@ -1,7 +1,8 @@
 {
-  "wx_code": "abcd",
-  "reg_data": {
-    "name": "嗷嗷",
-    "avatar_data": "test"
-  }
+    "wx_code": "abcd",
+    "reg_data": {
+        "name": "香香",
+        "avatar_data": "test",
+        "pet_title": "麻麻"
+    }
 }

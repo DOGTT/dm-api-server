@@ -10,7 +10,7 @@ func init() {
 
 // 用户帖子互动状态 TODO
 type UserPostIxnEvent struct {
-	UId uint64 `gorm:"index"`
+	UId uint64 `gorm:"index;column:uid"`
 	// 帖子类型
 	PostId uint64 `gorm:"index"`
 	//

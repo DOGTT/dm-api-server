@@ -3,6 +3,8 @@ package rds
 import (
 	"context"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 func init() {
@@ -13,7 +15,7 @@ func init() {
 type PetInfo struct {
 	Id uint64 `gorm:"primaryKey;autoIncrement"`
 	// 创建者用户id
-	CreaterUid uint64 `gorm:"type:bigint;"`
+	UId uint64 `gorm:"type:bigint;;column:uid"`
 	// 状态
 	Status uint8 `gorm:"type:smallint;"`
 	// 物种
@@ -35,30 +37,41 @@ type PetInfo struct {
 	// 体重
 	Weight int `gorm:"type:smallint;"`
 
-	Users []UserInfo `gorm:"many2many:user_pets;"`
+	// 关联
+	Users []*UserInfo `gorm:"many2many:user_pets;"`
 
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
+	// 软删除字段
+	DeletedAt gorm.DeletedAt `gorm:"index"`
 }
 
 func (p *PetInfo) TableName() string {
 	return "pet_info"
 }
 
+func (c *RDSClient) CreatePetInfo(ctx context.Context, in *PetInfo) error {
+	res := c.db.WithContext(ctx).Create(in)
+	if res.Error != nil {
+		return res.Error
+	}
+	return nil
+}
+
 func (c *RDSClient) GetPetInfoByID(ctx context.Context, id uint) (*PetInfo, error) {
 	var pet PetInfo
-	err := c.db.WithContext(ctx).Where("id = ?", id).First(&pet).Error
+	err := c.db.WithContext(ctx).First(&pet, id).Error
 	if err != nil {
 		return nil, err
 	}
 	return &pet, nil
 }
 
-func (c *RDSClient) GetFirstPetInfoByUID(ctx context.Context, uid uint) (*PetInfo, error) {
-	var pet PetInfo
-	err := c.db.WithContext(ctx).Where("uid = ?", uid).First(&pet).Error
-	if err != nil {
-		return nil, err
-	}
-	return &pet, nil
-}
+// func (c *RDSClient) GetFirstPetInfoByUID(ctx context.Context, uid uint) (*PetInfo, error) {
+// 	var pet PetInfo
+// 	err := c.db.WithContext(ctx).Where("uid = ?", uid).First(&pet).Error
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return &pet, nil
+// }

@@ -15,8 +15,8 @@ func init() {
 
 // 爱宠频道互动事件
 type UserChannelIxnEvent struct {
-	UId       uint64              `gorm:"index"`
-	PId       uint64              `gorm:"index"`
+	UId       uint64              `gorm:"index;column:uid"`
+	PId       uint64              `gorm:"index;column:pid"`
 	ChannelId uint64              `gorm:"index"`
 	IxnEvent  api.ChannelIxnEvent `gorm:"type:int;default:0"`
 
@@ -25,7 +25,7 @@ type UserChannelIxnEvent struct {
 
 // 用户频道互动状态
 type UserChannelIxnState struct {
-	UId       uint64 `gorm:"index:ix_user_channel_inx,unique"`
+	UId       uint64 `gorm:"index:ix_user_channel_inx,unique;column:uid"`
 	ChannelId uint64 `gorm:"index:ix_user_channel_inx,unique"`
 	//
 	IxnState api.ChannelIxnState `gorm:"type:int;default:0;index:ix_user_channel_inx,unique"`

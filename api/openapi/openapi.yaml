@@ -523,14 +523,16 @@ components:
     FastRegisterData:
       type: object
       properties:
-        name:
+        pet_name:
           type: string
           description: 名字
-        avatar_data:
+        pet_avatar_data:
           type: string
-          description: base64 data
-          format: bytes
-      description: 宠物注册信息
+          description: 宠物头像 base64 data
+        pet_title:
+          type: string
+          description: 宠物和人的关系
+      description: 宠物快速注册信息
     FastRegisterWeChatReq:
       type: object
       properties:
@@ -544,7 +546,7 @@ components:
       properties:
         token:
           type: string
-        user_info:
+        user:
           $ref: '#/components/schemas/UserInfo'
     LocationCommonSearchRes:
       type: object
@@ -570,7 +572,7 @@ components:
       properties:
         token:
           type: string
-        user_info:
+        user:
           $ref: '#/components/schemas/UserInfo'
     MediaInfo:
       type: object
@@ -660,12 +662,20 @@ components:
       properties:
         id:
           type: string
-        title:
-          type: string
-        pets:
+        user_pets:
           type: array
           items:
-            $ref: '#/components/schemas/PetInfo'
+            $ref: '#/components/schemas/UserPetInfo'
+    UserPetInfo:
+      type: object
+      properties:
+        pet:
+          $ref: '#/components/schemas/PetInfo'
+        pet_title:
+          type: string
+        pet_status:
+          type: integer
+          format: int32
   securitySchemes:
     bearerAuth:
       type: http

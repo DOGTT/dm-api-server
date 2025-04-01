@@ -15,6 +15,7 @@ const (
 
 	sqlFieldId       = "id"
 	sqlFieldUId      = "uid"
+	sqlFieldPId      = "pid"
 	sqlFieldName     = "name"
 	sqlFieldTitle    = "title"
 	sqlFieldIntro    = "intro"
