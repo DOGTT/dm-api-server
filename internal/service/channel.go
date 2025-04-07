@@ -285,7 +285,7 @@ func (s *Service) convertToChannelInfo(ctx context.Context, in *rds.ChannelInfo)
 	// set stats
 	res.Stats = s.convertToChannelStats(ctx, &in.Stats)
 	if res.Avatar != nil && res.Avatar.GetUuid() != "" {
-		res.Avatar.GetUrl, err = s.data.GenerateGetPresignedURLByMediaInfo(ctx, res.Avatar)
+		res.Avatar.GetUrl, err = s.data.GenerateGetPresignedURLByMediaInfo(ctx, res.Avatar, 0)
 		if err != nil {
 			err = EM_CommonFail_Internal.PutDesc(err.Error())
 			return

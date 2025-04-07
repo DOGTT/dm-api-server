@@ -15,7 +15,7 @@ func (s *Service) MediaPutPresignURLBatchGet(ctx context.Context, req *base_api.
 		n = int(req.GetCount())
 	)
 	res = &base_api.MediaPutURLBatchGetRes{
-		Media: make([]*base_api.MediaInfo, 0, n),
+		Media: make([]*base_api.MediaInfo, n),
 	}
 	for i := 0; i < n; i++ {
 		res.Media[i] = &base_api.MediaInfo{

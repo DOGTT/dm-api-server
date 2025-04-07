@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 
 	api "github.com/DOGTT/dm-api-server/api/base"
@@ -109,6 +110,7 @@ func (s *Service) BaseServiceChannelTypeList(c *gin.Context) {
 func (s *Service) BaseServiceChannelCreate(c *gin.Context) {
 	req := &api.ChannelCreateReq{}
 	if err := c.ShouldBind(&req); err != nil {
+		fmt.Println(err)
 		s.putGinError(c, EM_CommonFail_BadRequest)
 		return
 	}

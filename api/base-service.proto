@@ -23,6 +23,20 @@ servers:
 // @name Authorization
 service BaseService {
 
+    // 通用地点搜索
+    rpc LocationCommonSearch(LocationCommonSearchReq) returns (LocationCommonSearchRes) {
+        option (google.api.http) = {
+            get: "/v1/location/search"
+        };
+    }
+
+    // 批量获取对象上传预签名URL
+    rpc MediaPutURLBatchGet(MediaPutURLBatchGetReq) returns (MediaPutURLBatchGetRes) {
+        option (google.api.http) = {
+            get: "/v1/media/put_url/batch"
+        };
+    }
+
     // 微信小程序登录接口
     // @security BearerAuth
     rpc LoginWeChat(LoginWeChatReq) returns (LoginWeChatRes) {
@@ -39,17 +53,19 @@ service BaseService {
         };
     }
 
-    // 通用地点搜索
-    rpc LocationCommonSearch(LocationCommonSearchReq) returns (LocationCommonSearchRes) {
+    
+    // 宠物资料更新
+    rpc UserPetUpdate(UserPetUpdateReq) returns (UserPetUpdateRes) {
         option (google.api.http) = {
-            get: "/v1/location/search"
+            put: "/v1/user/pet"
+            body: "*"
         };
     }
 
-    // 批量获取对象上传预签名URL
-    rpc MediaPutURLBatchGet(MediaPutURLBatchGetReq) returns (MediaPutURLBatchGetRes) {
+    // 宠物资料查询
+    rpc UserPeGet(UserPeGetReq) returns (UserPeGetRes) {
         option (google.api.http) = {
-            get: "/v1/media/put_url/batch"
+            get: "/v1/user/pet"
         };
     }
 
@@ -186,6 +202,21 @@ message LocationCommonSearchRes {
     //TODO
 }
 
+message UserPetUpdateReq {
+    user.UserPetInfo user_pet = 1;
+}
+
+message UserPetUpdateRes {
+    user.UserPetInfo user_pet = 1;
+}
+
+message UserPeGetReq {
+    uint64 user_id = 1;
+}
+
+message UserPeGetRes {
+    user.UserInfo  user = 1;
+}
 
 // 批量获取对象上传预签名URL请求
 message MediaPutURLBatchGetReq {
@@ -208,6 +239,8 @@ message ChannelTypeListRes {
 // 足迹创建
 message ChannelCreateReq {
     channel.ChannelInfo channel = 1;
+    // 创建时候可以携带第一条帖子
+    post.PostInfo post = 2;
 }
 
 message ChannelCreateRes {
@@ -220,7 +253,7 @@ message ChannelUpdateReq {
 }
 
 message ChannelUpdateRes {
-
+    channel.ChannelInfo channel = 1;
 }
 
 // 足迹删除
