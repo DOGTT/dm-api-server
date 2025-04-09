@@ -71,6 +71,33 @@ func (s *Service) BaseServiceLoginWeChat(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
+func (s *Service) BaseServiceUserPeGet(c *gin.Context, params gin_api.BaseServiceUserPeGetParams) {
+	req := &api.UserPeGetReq{}
+	if params.UserId != nil {
+		req.UserId = *params.UserId
+	}
+	res, err := s.UserPeGet(withGinContext(c), req)
+	if err != nil {
+		s.putGinError(c, err)
+		return
+	}
+	c.JSON(http.StatusOK, res)
+}
+
+func (s *Service) BaseServiceUserPetUpdate(c *gin.Context) {
+	req := &api.UserPetUpdateReq{}
+	if err := c.ShouldBind(&req); err != nil {
+		s.putGinError(c, EM_CommonFail_BadRequest)
+		return
+	}
+	res, err := s.UserPetUpdate(withGinContext(c), req)
+	if err != nil {
+		s.putGinError(c, err)
+		return
+	}
+	c.JSON(http.StatusOK, res)
+}
+
 func (s *Service) BaseServiceLocationCommonSearch(c *gin.Context, params gin_api.BaseServiceLocationCommonSearchParams) {
 	req := &api.LocationCommonSearchReq{}
 	if params.Input != nil {

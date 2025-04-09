@@ -49,6 +49,9 @@ type ChannelBaseQueryByBoundRes struct {
 type ChannelCreateReq struct {
 	// Channel 频道信息
 	Channel *ChannelInfo `json:"channel,omitempty"`
+
+	// Post 创建时候可以携带第一条帖子
+	Post *PostInfo `json:"post,omitempty"`
 }
 
 // ChannelCreateRes defines model for ChannelCreateRes.
@@ -198,7 +201,10 @@ type ChannelUpdateReq struct {
 }
 
 // ChannelUpdateRes defines model for ChannelUpdateRes.
-type ChannelUpdateRes = map[string]interface{}
+type ChannelUpdateRes struct {
+	// Channel 频道信息
+	Channel *ChannelInfo `json:"channel,omitempty"`
+}
 
 // FastRegisterData 宠物快速注册信息
 type FastRegisterData struct {
@@ -315,11 +321,26 @@ type UserInfo struct {
 	UserPets *[]UserPetInfo `json:"user_pets,omitempty"`
 }
 
+// UserPeGetRes defines model for UserPeGetRes.
+type UserPeGetRes struct {
+	User *UserInfo `json:"user,omitempty"`
+}
+
 // UserPetInfo defines model for UserPetInfo.
 type UserPetInfo struct {
 	Pet       *PetInfo `json:"pet,omitempty"`
 	PetStatus *int32   `json:"pet_status,omitempty"`
 	PetTitle  *string  `json:"pet_title,omitempty"`
+}
+
+// UserPetUpdateReq defines model for UserPetUpdateReq.
+type UserPetUpdateReq struct {
+	UserPet *UserPetInfo `json:"user_pet,omitempty"`
+}
+
+// UserPetUpdateRes defines model for UserPetUpdateRes.
+type UserPetUpdateRes struct {
+	UserPet *UserPetInfo `json:"user_pet,omitempty"`
 }
 
 // BaseServiceChannelDeleteParams defines parameters for BaseServiceChannelDelete.
@@ -347,6 +368,11 @@ type BaseServiceLocationCommonSearchParams struct {
 type BaseServiceMediaPutURLBatchGetParams struct {
 	MediaType *int   `form:"media_type,omitempty" json:"media_type,omitempty"`
 	Count     *int32 `form:"count,omitempty" json:"count,omitempty"`
+}
+
+// BaseServiceUserPeGetParams defines parameters for BaseServiceUserPeGet.
+type BaseServiceUserPeGetParams struct {
+	UserId *string `form:"user_id,omitempty" json:"user_id,omitempty"`
 }
 
 // BaseServiceChannelCreateJSONRequestBody defines body for BaseServiceChannelCreate for application/json ContentType.
@@ -378,6 +404,9 @@ type BaseServiceFastRegisterWeChatJSONRequestBody = FastRegisterWeChatReq
 
 // BaseServiceLoginWeChatJSONRequestBody defines body for BaseServiceLoginWeChat for application/json ContentType.
 type BaseServiceLoginWeChatJSONRequestBody = LoginWeChatReq
+
+// BaseServiceUserPetUpdateJSONRequestBody defines body for BaseServiceUserPetUpdate for application/json ContentType.
+type BaseServiceUserPetUpdateJSONRequestBody = UserPetUpdateReq
 
 // RequestEditorFn  is the function signature for the RequestEditor callback function
 type RequestEditorFn func(ctx context.Context, req *http.Request) error
@@ -519,6 +548,14 @@ type ClientInterface interface {
 	BaseServiceLoginWeChatWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	BaseServiceLoginWeChat(ctx context.Context, body BaseServiceLoginWeChatJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BaseServiceUserPeGet request
+	BaseServiceUserPeGet(ctx context.Context, params *BaseServiceUserPeGetParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BaseServiceUserPetUpdateWithBody request with any body
+	BaseServiceUserPetUpdateWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	BaseServiceUserPetUpdate(ctx context.Context, body BaseServiceUserPetUpdateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
 func (c *Client) BaseServiceChannelDelete(ctx context.Context, params *BaseServiceChannelDeleteParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -823,6 +860,42 @@ func (c *Client) BaseServiceLoginWeChatWithBody(ctx context.Context, contentType
 
 func (c *Client) BaseServiceLoginWeChat(ctx context.Context, body BaseServiceLoginWeChatJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewBaseServiceLoginWeChatRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServiceUserPeGet(ctx context.Context, params *BaseServiceUserPeGetParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServiceUserPeGetRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServiceUserPetUpdateWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServiceUserPetUpdateRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServiceUserPetUpdate(ctx context.Context, body BaseServiceUserPetUpdateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServiceUserPetUpdateRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -1537,6 +1610,95 @@ func NewBaseServiceLoginWeChatRequestWithBody(server string, contentType string,
 	return req, nil
 }
 
+// NewBaseServiceUserPeGetRequest generates requests for BaseServiceUserPeGet
+func NewBaseServiceUserPeGetRequest(server string, params *BaseServiceUserPeGetParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/user/pet")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.UserId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "user_id", runtime.ParamLocationQuery, *params.UserId); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewBaseServiceUserPetUpdateRequest calls the generic BaseServiceUserPetUpdate builder with application/json body
+func NewBaseServiceUserPetUpdateRequest(server string, body BaseServiceUserPetUpdateJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewBaseServiceUserPetUpdateRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewBaseServiceUserPetUpdateRequestWithBody generates requests for BaseServiceUserPetUpdate with any type of body
+func NewBaseServiceUserPetUpdateRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/user/pet")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 func (c *Client) applyEditors(ctx context.Context, req *http.Request, additionalEditors []RequestEditorFn) error {
 	for _, r := range c.RequestEditors {
 		if err := r(ctx, req); err != nil {
@@ -1647,6 +1809,14 @@ type ClientWithResponsesInterface interface {
 	BaseServiceLoginWeChatWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceLoginWeChatResponse, error)
 
 	BaseServiceLoginWeChatWithResponse(ctx context.Context, body BaseServiceLoginWeChatJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceLoginWeChatResponse, error)
+
+	// BaseServiceUserPeGetWithResponse request
+	BaseServiceUserPeGetWithResponse(ctx context.Context, params *BaseServiceUserPeGetParams, reqEditors ...RequestEditorFn) (*BaseServiceUserPeGetResponse, error)
+
+	// BaseServiceUserPetUpdateWithBodyWithResponse request with any body
+	BaseServiceUserPetUpdateWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceUserPetUpdateResponse, error)
+
+	BaseServiceUserPetUpdateWithResponse(ctx context.Context, body BaseServiceUserPetUpdateJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceUserPetUpdateResponse, error)
 }
 
 type BaseServiceChannelDeleteResponse struct {
@@ -2001,6 +2171,50 @@ func (r BaseServiceLoginWeChatResponse) StatusCode() int {
 	return 0
 }
 
+type BaseServiceUserPeGetResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *UserPeGetRes
+}
+
+// Status returns HTTPResponse.Status
+func (r BaseServiceUserPeGetResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BaseServiceUserPeGetResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type BaseServiceUserPetUpdateResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *UserPetUpdateRes
+}
+
+// Status returns HTTPResponse.Status
+func (r BaseServiceUserPetUpdateResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BaseServiceUserPetUpdateResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 // BaseServiceChannelDeleteWithResponse request returning *BaseServiceChannelDeleteResponse
 func (c *ClientWithResponses) BaseServiceChannelDeleteWithResponse(ctx context.Context, params *BaseServiceChannelDeleteParams, reqEditors ...RequestEditorFn) (*BaseServiceChannelDeleteResponse, error) {
 	rsp, err := c.BaseServiceChannelDelete(ctx, params, reqEditors...)
@@ -2223,6 +2437,32 @@ func (c *ClientWithResponses) BaseServiceLoginWeChatWithResponse(ctx context.Con
 		return nil, err
 	}
 	return ParseBaseServiceLoginWeChatResponse(rsp)
+}
+
+// BaseServiceUserPeGetWithResponse request returning *BaseServiceUserPeGetResponse
+func (c *ClientWithResponses) BaseServiceUserPeGetWithResponse(ctx context.Context, params *BaseServiceUserPeGetParams, reqEditors ...RequestEditorFn) (*BaseServiceUserPeGetResponse, error) {
+	rsp, err := c.BaseServiceUserPeGet(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServiceUserPeGetResponse(rsp)
+}
+
+// BaseServiceUserPetUpdateWithBodyWithResponse request with arbitrary body returning *BaseServiceUserPetUpdateResponse
+func (c *ClientWithResponses) BaseServiceUserPetUpdateWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceUserPetUpdateResponse, error) {
+	rsp, err := c.BaseServiceUserPetUpdateWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServiceUserPetUpdateResponse(rsp)
+}
+
+func (c *ClientWithResponses) BaseServiceUserPetUpdateWithResponse(ctx context.Context, body BaseServiceUserPetUpdateJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceUserPetUpdateResponse, error) {
+	rsp, err := c.BaseServiceUserPetUpdate(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServiceUserPetUpdateResponse(rsp)
 }
 
 // ParseBaseServiceChannelDeleteResponse parses an HTTP response from a BaseServiceChannelDeleteWithResponse call
@@ -2641,6 +2881,58 @@ func ParseBaseServiceLoginWeChatResponse(rsp *http.Response) (*BaseServiceLoginW
 	return response, nil
 }
 
+// ParseBaseServiceUserPeGetResponse parses an HTTP response from a BaseServiceUserPeGetWithResponse call
+func ParseBaseServiceUserPeGetResponse(rsp *http.Response) (*BaseServiceUserPeGetResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BaseServiceUserPeGetResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest UserPeGetRes
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseBaseServiceUserPetUpdateResponse parses an HTTP response from a BaseServiceUserPetUpdateWithResponse call
+func ParseBaseServiceUserPetUpdateResponse(rsp *http.Response) (*BaseServiceUserPetUpdateResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BaseServiceUserPetUpdateResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest UserPetUpdateRes
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
 
@@ -2691,6 +2983,12 @@ type ServerInterface interface {
 
 	// (POST /v1/user/login/wx)
 	BaseServiceLoginWeChat(c *gin.Context)
+
+	// (GET /v1/user/pet)
+	BaseServiceUserPeGet(c *gin.Context, params BaseServiceUserPeGetParams)
+
+	// (PUT /v1/user/pet)
+	BaseServiceUserPetUpdate(c *gin.Context)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -3023,6 +3321,49 @@ func (siw *ServerInterfaceWrapper) BaseServiceLoginWeChat(c *gin.Context) {
 	siw.Handler.BaseServiceLoginWeChat(c)
 }
 
+// BaseServiceUserPeGet operation middleware
+func (siw *ServerInterfaceWrapper) BaseServiceUserPeGet(c *gin.Context) {
+
+	var err error
+
+	c.Set(BearerAuthScopes, []string{})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params BaseServiceUserPeGetParams
+
+	// ------------- Optional query parameter "user_id" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "user_id", c.Request.URL.Query(), &params.UserId)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter user_id: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.BaseServiceUserPeGet(c, params)
+}
+
+// BaseServiceUserPetUpdate operation middleware
+func (siw *ServerInterfaceWrapper) BaseServiceUserPetUpdate(c *gin.Context) {
+
+	c.Set(BearerAuthScopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.BaseServiceUserPetUpdate(c)
+}
+
 // GinServerOptions provides options for the Gin server.
 type GinServerOptions struct {
 	BaseURL      string
@@ -3066,50 +3407,54 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	router.GET(options.BaseURL+"/v1/media/put_url/batch", wrapper.BaseServiceMediaPutURLBatchGet)
 	router.POST(options.BaseURL+"/v1/user/fast_reg/wx", wrapper.BaseServiceFastRegisterWeChat)
 	router.POST(options.BaseURL+"/v1/user/login/wx", wrapper.BaseServiceLoginWeChat)
+	router.GET(options.BaseURL+"/v1/user/pet", wrapper.BaseServiceUserPeGet)
+	router.PUT(options.BaseURL+"/v1/user/pet", wrapper.BaseServiceUserPetUpdate)
 }
 
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"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",
+	"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",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

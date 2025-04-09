@@ -211,7 +211,7 @@ message UserPetUpdateRes {
 }
 
 message UserPeGetReq {
-    uint64 user_id = 1;
+    string user_id = 1;
 }
 
 message UserPeGetRes {

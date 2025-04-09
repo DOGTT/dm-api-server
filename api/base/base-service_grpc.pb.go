@@ -19,10 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	BaseService_LoginWeChat_FullMethodName             = "/base_service.v1.BaseService/LoginWeChat"
-	BaseService_FastRegisterWeChat_FullMethodName      = "/base_service.v1.BaseService/FastRegisterWeChat"
 	BaseService_LocationCommonSearch_FullMethodName    = "/base_service.v1.BaseService/LocationCommonSearch"
 	BaseService_MediaPutURLBatchGet_FullMethodName     = "/base_service.v1.BaseService/MediaPutURLBatchGet"
+	BaseService_LoginWeChat_FullMethodName             = "/base_service.v1.BaseService/LoginWeChat"
+	BaseService_FastRegisterWeChat_FullMethodName      = "/base_service.v1.BaseService/FastRegisterWeChat"
+	BaseService_UserPetUpdate_FullMethodName           = "/base_service.v1.BaseService/UserPetUpdate"
+	BaseService_UserPeGet_FullMethodName               = "/base_service.v1.BaseService/UserPeGet"
 	BaseService_ChannelTypeList_FullMethodName         = "/base_service.v1.BaseService/ChannelTypeList"
 	BaseService_ChannelCreate_FullMethodName           = "/base_service.v1.BaseService/ChannelCreate"
 	BaseService_ChannelUpdate_FullMethodName           = "/base_service.v1.BaseService/ChannelUpdate"
@@ -45,15 +47,19 @@ const (
 // @in header
 // @name Authorization
 type BaseServiceClient interface {
+	// 通用地点搜索
+	LocationCommonSearch(ctx context.Context, in *LocationCommonSearchReq, opts ...grpc.CallOption) (*LocationCommonSearchRes, error)
+	// 批量获取对象上传预签名URL
+	MediaPutURLBatchGet(ctx context.Context, in *MediaPutURLBatchGetReq, opts ...grpc.CallOption) (*MediaPutURLBatchGetRes, error)
 	// 微信小程序登录接口
 	// @security BearerAuth
 	LoginWeChat(ctx context.Context, in *LoginWeChatReq, opts ...grpc.CallOption) (*LoginWeChatRes, error)
 	// 微信小程序快速登录注册接口定义
 	FastRegisterWeChat(ctx context.Context, in *FastRegisterWeChatReq, opts ...grpc.CallOption) (*FastRegisterWeChatRes, error)
-	// 通用地点搜索
-	LocationCommonSearch(ctx context.Context, in *LocationCommonSearchReq, opts ...grpc.CallOption) (*LocationCommonSearchRes, error)
-	// 批量获取对象上传预签名URL
-	MediaPutURLBatchGet(ctx context.Context, in *MediaPutURLBatchGetReq, opts ...grpc.CallOption) (*MediaPutURLBatchGetRes, error)
+	// 宠物资料更新
+	UserPetUpdate(ctx context.Context, in *UserPetUpdateReq, opts ...grpc.CallOption) (*UserPetUpdateRes, error)
+	// 宠物资料查询
+	UserPeGet(ctx context.Context, in *UserPeGetReq, opts ...grpc.CallOption) (*UserPeGetRes, error)
 	// 列表查询足迹频道类型
 	ChannelTypeList(ctx context.Context, in *ChannelTypeListReq, opts ...grpc.CallOption) (*ChannelTypeListRes, error)
 	// 创建足迹频道
@@ -88,6 +94,26 @@ func NewBaseServiceClient(cc grpc.ClientConnInterface) BaseServiceClient {
 	return &baseServiceClient{cc}
 }
 
+func (c *baseServiceClient) LocationCommonSearch(ctx context.Context, in *LocationCommonSearchReq, opts ...grpc.CallOption) (*LocationCommonSearchRes, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(LocationCommonSearchRes)
+	err := c.cc.Invoke(ctx, BaseService_LocationCommonSearch_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *baseServiceClient) MediaPutURLBatchGet(ctx context.Context, in *MediaPutURLBatchGetReq, opts ...grpc.CallOption) (*MediaPutURLBatchGetRes, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(MediaPutURLBatchGetRes)
+	err := c.cc.Invoke(ctx, BaseService_MediaPutURLBatchGet_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *baseServiceClient) LoginWeChat(ctx context.Context, in *LoginWeChatReq, opts ...grpc.CallOption) (*LoginWeChatRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(LoginWeChatRes)
@@ -108,20 +134,20 @@ func (c *baseServiceClient) FastRegisterWeChat(ctx context.Context, in *FastRegi
 	return out, nil
 }
 
-func (c *baseServiceClient) LocationCommonSearch(ctx context.Context, in *LocationCommonSearchReq, opts ...grpc.CallOption) (*LocationCommonSearchRes, error) {
+func (c *baseServiceClient) UserPetUpdate(ctx context.Context, in *UserPetUpdateReq, opts ...grpc.CallOption) (*UserPetUpdateRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(LocationCommonSearchRes)
-	err := c.cc.Invoke(ctx, BaseService_LocationCommonSearch_FullMethodName, in, out, cOpts...)
+	out := new(UserPetUpdateRes)
+	err := c.cc.Invoke(ctx, BaseService_UserPetUpdate_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *baseServiceClient) MediaPutURLBatchGet(ctx context.Context, in *MediaPutURLBatchGetReq, opts ...grpc.CallOption) (*MediaPutURLBatchGetRes, error) {
+func (c *baseServiceClient) UserPeGet(ctx context.Context, in *UserPeGetReq, opts ...grpc.CallOption) (*UserPeGetRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(MediaPutURLBatchGetRes)
-	err := c.cc.Invoke(ctx, BaseService_MediaPutURLBatchGet_FullMethodName, in, out, cOpts...)
+	out := new(UserPeGetRes)
+	err := c.cc.Invoke(ctx, BaseService_UserPeGet_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -256,15 +282,19 @@ func (c *baseServiceClient) ChannelPostInx(ctx context.Context, in *ChannelPostI
 // @in header
 // @name Authorization
 type BaseServiceServer interface {
+	// 通用地点搜索
+	LocationCommonSearch(context.Context, *LocationCommonSearchReq) (*LocationCommonSearchRes, error)
+	// 批量获取对象上传预签名URL
+	MediaPutURLBatchGet(context.Context, *MediaPutURLBatchGetReq) (*MediaPutURLBatchGetRes, error)
 	// 微信小程序登录接口
 	// @security BearerAuth
 	LoginWeChat(context.Context, *LoginWeChatReq) (*LoginWeChatRes, error)
 	// 微信小程序快速登录注册接口定义
 	FastRegisterWeChat(context.Context, *FastRegisterWeChatReq) (*FastRegisterWeChatRes, error)
-	// 通用地点搜索
-	LocationCommonSearch(context.Context, *LocationCommonSearchReq) (*LocationCommonSearchRes, error)
-	// 批量获取对象上传预签名URL
-	MediaPutURLBatchGet(context.Context, *MediaPutURLBatchGetReq) (*MediaPutURLBatchGetRes, error)
+	// 宠物资料更新
+	UserPetUpdate(context.Context, *UserPetUpdateReq) (*UserPetUpdateRes, error)
+	// 宠物资料查询
+	UserPeGet(context.Context, *UserPeGetReq) (*UserPeGetRes, error)
 	// 列表查询足迹频道类型
 	ChannelTypeList(context.Context, *ChannelTypeListReq) (*ChannelTypeListRes, error)
 	// 创建足迹频道
@@ -299,17 +329,23 @@ type BaseServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedBaseServiceServer struct{}
 
+func (UnimplementedBaseServiceServer) LocationCommonSearch(context.Context, *LocationCommonSearchReq) (*LocationCommonSearchRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LocationCommonSearch not implemented")
+}
+func (UnimplementedBaseServiceServer) MediaPutURLBatchGet(context.Context, *MediaPutURLBatchGetReq) (*MediaPutURLBatchGetRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MediaPutURLBatchGet not implemented")
+}
 func (UnimplementedBaseServiceServer) LoginWeChat(context.Context, *LoginWeChatReq) (*LoginWeChatRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LoginWeChat not implemented")
 }
 func (UnimplementedBaseServiceServer) FastRegisterWeChat(context.Context, *FastRegisterWeChatReq) (*FastRegisterWeChatRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FastRegisterWeChat not implemented")
 }
-func (UnimplementedBaseServiceServer) LocationCommonSearch(context.Context, *LocationCommonSearchReq) (*LocationCommonSearchRes, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method LocationCommonSearch not implemented")
+func (UnimplementedBaseServiceServer) UserPetUpdate(context.Context, *UserPetUpdateReq) (*UserPetUpdateRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserPetUpdate not implemented")
 }
-func (UnimplementedBaseServiceServer) MediaPutURLBatchGet(context.Context, *MediaPutURLBatchGetReq) (*MediaPutURLBatchGetRes, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method MediaPutURLBatchGet not implemented")
+func (UnimplementedBaseServiceServer) UserPeGet(context.Context, *UserPeGetReq) (*UserPeGetRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserPeGet not implemented")
 }
 func (UnimplementedBaseServiceServer) ChannelTypeList(context.Context, *ChannelTypeListReq) (*ChannelTypeListRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChannelTypeList not implemented")
@@ -368,6 +404,42 @@ func RegisterBaseServiceServer(s grpc.ServiceRegistrar, srv BaseServiceServer) {
 	s.RegisterService(&BaseService_ServiceDesc, srv)
 }
 
+func _BaseService_LocationCommonSearch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LocationCommonSearchReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BaseServiceServer).LocationCommonSearch(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BaseService_LocationCommonSearch_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BaseServiceServer).LocationCommonSearch(ctx, req.(*LocationCommonSearchReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BaseService_MediaPutURLBatchGet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MediaPutURLBatchGetReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BaseServiceServer).MediaPutURLBatchGet(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BaseService_MediaPutURLBatchGet_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BaseServiceServer).MediaPutURLBatchGet(ctx, req.(*MediaPutURLBatchGetReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _BaseService_LoginWeChat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(LoginWeChatReq)
 	if err := dec(in); err != nil {
@@ -404,38 +476,38 @@ func _BaseService_FastRegisterWeChat_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BaseService_LocationCommonSearch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LocationCommonSearchReq)
+func _BaseService_UserPetUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserPetUpdateReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BaseServiceServer).LocationCommonSearch(ctx, in)
+		return srv.(BaseServiceServer).UserPetUpdate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BaseService_LocationCommonSearch_FullMethodName,
+		FullMethod: BaseService_UserPetUpdate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).LocationCommonSearch(ctx, req.(*LocationCommonSearchReq))
+		return srv.(BaseServiceServer).UserPetUpdate(ctx, req.(*UserPetUpdateReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BaseService_MediaPutURLBatchGet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MediaPutURLBatchGetReq)
+func _BaseService_UserPeGet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserPeGetReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BaseServiceServer).MediaPutURLBatchGet(ctx, in)
+		return srv.(BaseServiceServer).UserPeGet(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BaseService_MediaPutURLBatchGet_FullMethodName,
+		FullMethod: BaseService_UserPeGet_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).MediaPutURLBatchGet(ctx, req.(*MediaPutURLBatchGetReq))
+		return srv.(BaseServiceServer).UserPeGet(ctx, req.(*UserPeGetReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -664,6 +736,14 @@ var BaseService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*BaseServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "LocationCommonSearch",
+			Handler:    _BaseService_LocationCommonSearch_Handler,
+		},
+		{
+			MethodName: "MediaPutURLBatchGet",
+			Handler:    _BaseService_MediaPutURLBatchGet_Handler,
+		},
+		{
 			MethodName: "LoginWeChat",
 			Handler:    _BaseService_LoginWeChat_Handler,
 		},
@@ -672,12 +752,12 @@ var BaseService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _BaseService_FastRegisterWeChat_Handler,
 		},
 		{
-			MethodName: "LocationCommonSearch",
-			Handler:    _BaseService_LocationCommonSearch_Handler,
+			MethodName: "UserPetUpdate",
+			Handler:    _BaseService_UserPetUpdate_Handler,
 		},
 		{
-			MethodName: "MediaPutURLBatchGet",
-			Handler:    _BaseService_MediaPutURLBatchGet_Handler,
+			MethodName: "UserPeGet",
+			Handler:    _BaseService_UserPeGet_Handler,
 		},
 		{
 			MethodName: "ChannelTypeList",

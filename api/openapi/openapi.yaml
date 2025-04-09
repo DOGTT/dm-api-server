@@ -311,6 +311,42 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoginWeChatRes'
+  /v1/user/pet:
+    get:
+      tags:
+        - BaseService
+      description: 宠物资料查询
+      operationId: BaseService_UserPeGet
+      parameters:
+        - name: user_id
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPeGetRes'
+    put:
+      tags:
+        - BaseService
+      description: 宠物资料更新
+      operationId: BaseService_UserPetUpdate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserPetUpdateReq'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPetUpdateRes'
 components:
   schemas:
     BoundCoord:
@@ -345,6 +381,10 @@ components:
       properties:
         channel:
           $ref: '#/components/schemas/ChannelInfo'
+        post:
+          allOf:
+            - $ref: '#/components/schemas/PostInfo'
+          description: 创建时候可以携带第一条帖子
       description: 足迹创建
     ChannelCreateRes:
       type: object
@@ -519,7 +559,9 @@ components:
       description: 足迹更新
     ChannelUpdateRes:
       type: object
-      properties: {}
+      properties:
+        channel:
+          $ref: '#/components/schemas/ChannelInfo'
     FastRegisterData:
       type: object
       properties:
@@ -666,6 +708,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UserPetInfo'
+    UserPeGetRes:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/UserInfo'
     UserPetInfo:
       type: object
       properties:
@@ -676,6 +723,16 @@ components:
         pet_status:
           type: integer
           format: int32
+    UserPetUpdateReq:
+      type: object
+      properties:
+        user_pet:
+          $ref: '#/components/schemas/UserPetInfo'
+    UserPetUpdateRes:
+      type: object
+      properties:
+        user_pet:
+          $ref: '#/components/schemas/UserPetInfo'
   securitySchemes:
     bearerAuth:
       type: http
