@@ -381,7 +381,7 @@ components:
       properties:
         channel:
           $ref: '#/components/schemas/ChannelInfo'
-        post:
+        post_init:
           allOf:
             - $ref: '#/components/schemas/PostInfo'
           description: 创建时候可以携带第一条帖子
@@ -498,7 +498,9 @@ components:
           $ref: '#/components/schemas/PostInfo'
     ChannelPostUpdateRes:
       type: object
-      properties: {}
+      properties:
+        post:
+          $ref: '#/components/schemas/PostInfo'
     ChannelStats:
       type: object
       properties:
@@ -644,25 +646,31 @@ components:
       properties:
         id:
           type: string
+        uid:
+          type: string
         status:
           type: integer
           format: int32
+        specie:
+          type: string
         name:
+          type: string
+        intro:
           type: string
         gender:
           type: integer
           format: uint32
+        birth_date:
+          type: string
         avatar:
           $ref: '#/components/schemas/MediaInfo'
-        specie:
+        size:
           type: string
         breed:
           type: string
         weight:
           type: integer
           format: int32
-        birth_date:
-          type: string
         created_at:
           type: string
         updated_at:

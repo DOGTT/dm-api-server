@@ -2,18 +2,17 @@ syntax = "proto3";
 
 package user;
 
-option go_package="github.com/DOGTT/dm-api-server/api/base;api";
+option go_package = "github.com/DOGTT/dm-api-server/api/base;api";
 
 import "pet.proto";
 
-
 message UserInfo {
-    string id = 1;
-    repeated UserPetInfo user_pets = 3;
-}   
+    string id                      = 1;
+    repeated UserPetInfo user_pets = 2;
+}
 
 message UserPetInfo {
-    pet.PetInfo pet = 1;
+    pet.PetInfo pet  = 1;
     string pet_title = 2;
     int32 pet_status = 3;
 }

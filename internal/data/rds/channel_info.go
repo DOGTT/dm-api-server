@@ -144,10 +144,10 @@ func (c *RDSClient) UpdateChannelInfo(ctx context.Context, info *ChannelInfo) er
 	}
 	updateField := []string{}
 	if info.Title != "" {
-		updateField = append(updateField, sqlFieldIntro)
+		updateField = append(updateField, sqlFieldTitle)
 	}
 	if info.Intro != "" {
-		updateField = append(updateField, sqlFieldTitle)
+		updateField = append(updateField, sqlFieldIntro)
 	}
 	if info.AvatarId != "" {
 		updateField = append(updateField, sqlFieldAvatarId)

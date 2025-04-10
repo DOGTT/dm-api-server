@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package base_service.v1;
-option go_package="github.com/DOGTT/dm-api-server/api/base;api";
+option go_package = "github.com/DOGTT/dm-api-server/api/base;api";
 
 import "google/api/annotations.proto";
 
@@ -10,7 +10,6 @@ import "pet.proto";
 import "user.proto";
 import "channel.proto";
 import "post.proto";
-
 
 // 通用业务服务接口定义.
 /**
@@ -22,16 +21,17 @@ servers:
 // @in header
 // @name Authorization
 service BaseService {
-
     // 通用地点搜索
-    rpc LocationCommonSearch(LocationCommonSearchReq) returns (LocationCommonSearchRes) {
+    rpc LocationCommonSearch(LocationCommonSearchReq)
+        returns (LocationCommonSearchRes) {
         option (google.api.http) = {
             get: "/v1/location/search"
         };
     }
 
     // 批量获取对象上传预签名URL
-    rpc MediaPutURLBatchGet(MediaPutURLBatchGetReq) returns (MediaPutURLBatchGetRes) {
+    rpc MediaPutURLBatchGet(MediaPutURLBatchGetReq)
+        returns (MediaPutURLBatchGetRes) {
         option (google.api.http) = {
             get: "/v1/media/put_url/batch"
         };
@@ -46,14 +46,14 @@ service BaseService {
         };
     }
     // 微信小程序快速登录注册接口定义
-    rpc FastRegisterWeChat(FastRegisterWeChatReq) returns (FastRegisterWeChatRes) {
+    rpc FastRegisterWeChat(FastRegisterWeChatReq)
+        returns (FastRegisterWeChatRes) {
         option (google.api.http) = {
             post: "/v1/user/fast_reg/wx"
             body: "*"
         };
     }
 
-    
     // 宠物资料更新
     rpc UserPetUpdate(UserPetUpdateReq) returns (UserPetUpdateRes) {
         option (google.api.http) = {
@@ -91,24 +91,26 @@ service BaseService {
             body: "*"
         };
     }
-    
+
     // 删除足迹频道
     rpc ChannelDelete(ChannelDeleteReq) returns (ChannelDeleteRes) {
         option (google.api.http) = {
             delete: "/v1/channel"
         };
     }
-    
+
     // 按照范围查询足迹基础信息
-    rpc ChannelBaseQueryByBound(ChannelBaseQueryByBoundReq) returns (ChannelBaseQueryByBoundRes) {
+    rpc ChannelBaseQueryByBound(ChannelBaseQueryByBoundReq)
+        returns (ChannelBaseQueryByBoundRes) {
         option (google.api.http) = {
             post: "/v1/channel/base_query_by_bound"
             body: "*"
         };
     }
-    
+
     // 按照id查询足迹频道动态信息
-    rpc ChannelFullQueryById(ChannelFullQueryByIdReq) returns (ChannelFullQueryByIdRes) {
+    rpc ChannelFullQueryById(ChannelFullQueryByIdReq)
+        returns (ChannelFullQueryByIdRes) {
         option (google.api.http) = {
             get: "/v1/channel/full_query_by_id"
         };
@@ -121,7 +123,7 @@ service BaseService {
             body: "*"
         };
     }
-    
+
     // 频道帖子创建
     rpc ChannelPostCreate(ChannelPostCreateReq) returns (ChannelPostCreateRes) {
         option (google.api.http) = {
@@ -168,28 +170,24 @@ message ErrorMessage {
     string desc = 2;
 }
 
-
 // 登录请求
 message LoginWeChatReq {
-    string wx_code = 1; // 微信小程序登录时获取临时登录凭证code
+    string wx_code = 1;  // 微信小程序登录时获取临时登录凭证code
 }
 
 message LoginWeChatRes {
-    string token = 1;
+    string token       = 1;
     user.UserInfo user = 2;
 }
-
-
-
 
 // 快速注册请求
 message FastRegisterWeChatReq {
     user.FastRegisterData reg_data = 1;
-    string wx_code = 2;
+    string wx_code                 = 2;
 }
 
 message FastRegisterWeChatRes {
-    string token = 1;
+    string token       = 1;
     user.UserInfo user = 2;
 }
 
@@ -199,7 +197,7 @@ message LocationCommonSearchReq {
 }
 
 message LocationCommonSearchRes {
-    //TODO
+    // TODO
 }
 
 message UserPetUpdateReq {
@@ -215,22 +213,20 @@ message UserPeGetReq {
 }
 
 message UserPeGetRes {
-    user.UserInfo  user = 1;
+    user.UserInfo user = 1;
 }
 
 // 批量获取对象上传预签名URL请求
 message MediaPutURLBatchGetReq {
-    common.MediaType media_type  = 1;
-    int32 count = 2;
+    common.MediaType media_type = 1;
+    int32 count                 = 2;
 }
 
 message MediaPutURLBatchGetRes {
     repeated common.MediaInfo media = 1;
 }
 
-message ChannelTypeListReq {
-
-}
+message ChannelTypeListReq {}
 
 message ChannelTypeListRes {
     repeated channel.ChannelTypeInfo channel_types = 1;
@@ -240,7 +236,7 @@ message ChannelTypeListRes {
 message ChannelCreateReq {
     channel.ChannelInfo channel = 1;
     // 创建时候可以携带第一条帖子
-    post.PostInfo post = 2;
+    post.PostInfo post_init = 2;
 }
 
 message ChannelCreateRes {
@@ -261,9 +257,7 @@ message ChannelDeleteReq {
     string chan_id = 1;
 }
 
-message ChannelDeleteRes {
-
-}
+message ChannelDeleteRes {}
 
 message ChannelBaseQueryByBoundReq {
     // 足迹类型id列表
@@ -302,9 +296,7 @@ message ChannelInxReq {
     channel.ChannelIxnEvent ixn_event = 4;
 }
 
-message ChannelInxRes {
-
-}
+message ChannelInxRes {}
 
 message ChannelPostCreateReq {
     post.PostInfo post = 1;
@@ -319,7 +311,7 @@ message ChannelPostUpdateReq {
 }
 
 message ChannelPostUpdateRes {
-
+    post.PostInfo post = 1;
 }
 
 message ChannelPostDeleteReq {
@@ -327,9 +319,7 @@ message ChannelPostDeleteReq {
     string post_id = 2;
 }
 
-message ChannelPostDeleteRes {
-
-}
+message ChannelPostDeleteRes {}
 
 message ChannelPostLoadReq {
     string chan_id = 1;
@@ -346,6 +336,4 @@ message ChannelPostInxReq {
     string post_id = 2;
 }
 
-message ChannelPostInxRes {
-
-}
+message ChannelPostInxRes {}

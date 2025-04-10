@@ -2,13 +2,18 @@ package rds
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"gorm.io/gorm"
 )
 
+var (
+	petModel = &PetInfo{}
+)
+
 func init() {
-	dbModelList = append(dbModelList, &PetInfo{})
+	dbModelList = append(dbModelList, petModel)
 }
 
 // 宠信息
@@ -23,7 +28,7 @@ type PetInfo struct {
 	// 名字
 	Name string `gorm:"type:varchar(20);"`
 	// 简介
-	Introduce string `gorm:"type:varchar(128);"`
+	Intro string `gorm:"type:varchar(128);"`
 	// 性别
 	Gender uint8 `gorm:"type:smallint;"`
 	// 生日
@@ -58,6 +63,17 @@ func (c *RDSClient) CreatePetInfo(ctx context.Context, in *PetInfo) error {
 	return nil
 }
 
+func (c *RDSClient) UpdatePetInfo(ctx context.Context, pet *PetInfo) error {
+	if pet.Id == 0 {
+		return fmt.Errorf("id is empty")
+	}
+	res := c.db.WithContext(ctx).Save(pet)
+	if res.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+	return res.Error
+}
+
 func (c *RDSClient) GetPetInfoByID(ctx context.Context, id uint) (*PetInfo, error) {
 	var pet PetInfo
 	err := c.db.WithContext(ctx).First(&pet, id).Error
@@ -67,11 +83,14 @@ func (c *RDSClient) GetPetInfoByID(ctx context.Context, id uint) (*PetInfo, erro
 	return &pet, nil
 }
 
-// func (c *RDSClient) GetFirstPetInfoByUID(ctx context.Context, uid uint) (*PetInfo, error) {
-// 	var pet PetInfo
-// 	err := c.db.WithContext(ctx).Where("uid = ?", uid).First(&pet).Error
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return &pet, nil
-// }
+func (c *RDSClient) GetPetCreatorId(ctx context.Context, id uint64) (uid uint64, err error) {
+	result := &PetInfo{}
+	err = c.db.WithContext(ctx).
+		Select(sqlFieldUId).
+		First(&result, id).Error
+	if err != nil {
+		return
+	}
+	uid = result.UId
+	return
+}

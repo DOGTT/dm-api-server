@@ -2,22 +2,28 @@ package rds
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
+var (
+	userPetModel = &UserPet{}
+)
+
 func init() {
-	dbModelList = append(dbModelList, &UserPet{})
+	dbModelList = append(dbModelList, userPetModel)
 }
 
 type UserPet struct {
 	UId uint64 `gorm:"primaryKey;column:uid"`
 	PId uint64 `gorm:"primaryKey;column:pid"`
-	// 宠物的称呼 aa的bb
+	// 宠物对用户的称呼 aa的bb
 	PetTitle string `gorm:"type:varchar(16);"`
-
+	// 用户宠物的关系状态
+	PetStatus uint8 `gorm:"type:smallint;"`
 	// 关联模型（方便查询）
 	User *UserInfo `gorm:"foreignKey:UId"`
 	Pet  *PetInfo  `gorm:"foreignKey:PId"`
@@ -91,11 +97,25 @@ func (c *RDSClient) ListUserPetByPId(ctx context.Context, pid uint64) ([]*UserPe
 }
 
 func (c *RDSClient) UpdateUserPet(ctx context.Context, userPet *UserPet) error {
-	res := c.db.WithContext(ctx).Save(userPet)
-	if res.Error != nil {
-		return res.Error
+	if userPet.UId == 0 || userPet.PId == 0 {
+		return fmt.Errorf("id is empty")
 	}
-	return nil
+	updateField := []string{}
+	if userPet.PetTitle != "" {
+		updateField = append(updateField, "pet_title")
+	}
+	if userPet.PetStatus != 0 {
+		updateField = append(updateField, "pet_status")
+	}
+	res := c.db.WithContext(ctx).Model(userPetModel).
+		Where(sqlEqual(sqlFieldUId), userPet.UId).
+		Where(sqlEqual(sqlFieldUId), userPet.UId).
+		Select(updateField).
+		Updates(userPet)
+	if res.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+	return res.Error
 }
 
 func (c *RDSClient) DeleteUserPet(ctx context.Context, userPet *UserPet) error {

@@ -5,42 +5,42 @@ package common;
 option go_package = "github.com/DOGTT/dm-api-server/api/base;api";
 
 message PointCoord {
-  float lat = 1;
-  float lng = 2;
+    float lat = 1;
+    float lng = 2;
 }
 
 message BoundCoord {
-  PointCoord sw = 1;
-  PointCoord ne = 2;
+    PointCoord sw = 1;
+    PointCoord ne = 2;
 }
 
 message LocationInfo {
-  // 足迹位置, 不可更新
-  common.PointCoord lng_lat = 1;
-  // POI 地址, 不可更新
-  string address = 2;
+    // 足迹位置, 不可更新
+    common.PointCoord lng_lat = 1;
+    // POI 地址, 不可更新
+    string address = 2;
 }
 
 enum MediaType {
-  MT_DEFAULT = 0;
-  USER_AVA = 1;
-  CHANNEL_AVA = 2;
-  POST_IMG = 3;
+    MT_DEFAULT  = 0;
+    USER_AVA    = 1;
+    CHANNEL_AVA = 2;
+    POST_IMG    = 3;
 }
 
 message MediaInfo {
-  // ID, 可写入
-  string uuid = 1;
-  // 类型
-  MediaType type = 2;
-  // 读取URL
-  string get_url = 3;
-  // 写入URL
-  string put_url = 4;
+    // ID, 可写入
+    string uuid = 1;
+    // 类型
+    MediaType type = 2;
+    // 读取URL
+    string get_url = 3;
+    // 写入URL
+    string put_url = 4;
 }
 
 // 互动撤销
 enum InxUndoType {
-  IU_DEFAULT = 0;
-  UNDO = 1;
+    IU_DEFAULT = 0;
+    UNDO       = 1;
 }

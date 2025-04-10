@@ -91,6 +91,7 @@ func (s *Service) dbCreateUserAndPet(ctx context.Context, up *rds.UserPet) (err 
 	}
 	return err
 }
+
 func (s *Service) WeChatRegisterFast(ctx context.Context, req *api.FastRegisterWeChatReq) (res *api.FastRegisterWeChatRes, err error) {
 	log.D(ctx, "request in", "req", map[string]any{
 		"avatar_len": len(req.GetRegData().GetPetAvatarData()),

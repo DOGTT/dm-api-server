@@ -148,9 +148,8 @@ func (s *Service) ChannelCreate(ctx context.Context, req *api.ChannelCreateReq) 
 	tc := utils.GetClaimFromContext(ctx)
 	// TODO: 检查类型，检查坐标是否太近
 	ch := req.GetChannel()
-	chanId := utils.GenSnowflakeId()
 	channel := &rds.ChannelInfo{
-		Id:       chanId,
+		Id:       utils.GenSnowflakeId(),
 		TypeId:   ch.GetTypeId(),
 		UId:      tc.UId,
 		Title:    ch.GetTitle(),
@@ -160,14 +159,16 @@ func (s *Service) ChannelCreate(ctx context.Context, req *api.ChannelCreateReq) 
 		PoiDetail: rds.PoiDetail{
 			Address: ch.GetLocation().GetAddress(),
 		},
-		Stats: rds.ChannelStats{
-			Id: chanId,
-		},
-		Set: rds.ChannelSet{
-			Id: chanId,
-		},
 	}
-	if err = s.data.CreateChannelInfo(ctx, channel); err != nil {
+	var postInit *rds.PostInfo
+	if req.GetPostInit() != nil {
+		postInit = &rds.PostInfo{
+			Id:      utils.GenSnowflakeId(),
+			UId:     tc.UId,
+			Content: req.GetPostInit().GetContent(),
+		}
+	}
+	if err = s.dbCreateChannel(ctx, channel, postInit); err != nil {
 		log.E(ctx, "create channel error", err)
 		err = putDescByDBErr(err)
 		return
@@ -178,6 +179,41 @@ func (s *Service) ChannelCreate(ctx context.Context, req *api.ChannelCreateReq) 
 		return
 	}
 	return
+}
+
+func (s *Service) dbCreateChannel(ctx context.Context, channel *rds.ChannelInfo, initPost *rds.PostInfo) (err error) {
+	tx, err := s.data.NewTransaction(ctx)
+	if err != nil {
+		err = putDescByDBErr(err)
+		return
+	}
+	defer func() {
+		if err != nil {
+			err = putDescByDBErr(err)
+			if rbErr := tx.Rollback(); rbErr != nil {
+				log.E(ctx, "rollback error", rbErr)
+			}
+		}
+	}()
+	channel.Set = rds.ChannelSet{
+		Id: channel.Id,
+	}
+	channel.Stats = rds.ChannelStats{
+		Id: channel.Id,
+	}
+	err = s.data.CreateChannelInfo(ctx, channel)
+	if err != nil {
+		return
+	}
+	if initPost == nil {
+		return
+	}
+	initPost.RootId = channel.Id
+	err = s.data.CreatePostInfo(ctx, initPost)
+	if err != nil {
+		return
+	}
+	return err
 }
 
 func (s *Service) ChannelDelete(ctx context.Context, req *api.ChannelDeleteReq) (res *api.ChannelDeleteRes, err error) {
@@ -225,14 +261,26 @@ func (s *Service) ChannelUpdate(ctx context.Context, req *api.ChannelUpdateReq) 
 	if err = s.validChannelPermission(ctx, tc, chanId); err != nil {
 		return
 	}
-	if err = s.data.UpdateChannelInfo(ctx, &rds.ChannelInfo{
+	chanData := &rds.ChannelInfo{
 		Id:       chanId,
 		Title:    ch.GetTitle(),
 		AvatarId: ch.GetAvatar().GetUuid(),
 		Intro:    ch.GetIntro(),
-	}); err != nil {
+	}
+	if err = s.data.UpdateChannelInfo(ctx, chanData); err != nil {
 		log.E(ctx, "update channel info error", err)
 		err = putDescByDBErr(err)
+		return
+	}
+	chanData, err = s.data.GetChannelInfo(ctx, chanId)
+	if err != nil {
+		log.E(ctx, "get channel info error", err)
+		err = putDescByDBErr(err)
+		return
+	}
+	res.Channel, err = s.convertToChannelInfo(ctx, chanData)
+	if err != nil {
+		log.E(ctx, "convert channel info error", err)
 		return
 	}
 	return

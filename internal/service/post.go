@@ -88,6 +88,77 @@ func (s *Service) ChannelPostCreate(ctx context.Context, req *api.ChannelPostCre
 	return
 }
 
+func (s *Service) ChannelPostDelete(ctx context.Context, req *api.ChannelPostDeleteReq) (res *api.ChannelPostDeleteRes, err error) {
+	log.D(ctx, "request in", "req", req)
+	res = &api.ChannelPostDeleteRes{}
+	var (
+		chanId = utils.StrToUint64(req.GetChanId())
+		postId = utils.StrToUint64(req.GetPostId())
+		tc     = utils.GetClaimFromContext(ctx)
+	)
+	if err = s.validPostPermission(ctx, tc, postId); err != nil {
+		return
+	}
+	if err = s.data.DeletePostInfo(ctx, postId); err != nil {
+		log.E(ctx, "delete post error", err)
+		err = putDescByDBErr(err)
+		return
+	}
+	s.asyncUpdateChannelStatsByPost(ctx, chanId, true)
+	return
+}
+
+func (s *Service) ChannelPostUpdate(ctx context.Context, req *api.ChannelPostUpdateReq) (res *api.ChannelPostUpdateRes, err error) {
+	log.D(ctx, "request in", "req", req)
+	if err = s.validChannelPostUpdateRequest(req); err != nil {
+		return
+	}
+	res = new(api.ChannelPostUpdateRes)
+	var (
+		post   = req.GetPost()
+		postId = utils.StrToUint64(post.GetId())
+		tc     = utils.GetClaimFromContext(ctx)
+	)
+	if err = s.validPostPermission(ctx, tc, postId); err != nil {
+		return
+	}
+	postData := &rds.PostInfo{
+		Id:      postId,
+		Content: post.GetContent(),
+	}
+	if err = s.data.UpdatePostInfo(ctx, postData); err != nil {
+		log.E(ctx, "update post info error", err)
+		err = putDescByDBErr(err)
+		return
+	}
+	postData, err = s.data.GetPostInfo(ctx, postId)
+	if err != nil {
+		log.E(ctx, "get post info error", err)
+		err = putDescByDBErr(err)
+		return
+	}
+	res.Post, err = s.convertToPostInfo(ctx, postData)
+	if err != nil {
+		log.E(ctx, "convert post info error", err)
+		return
+	}
+	return
+}
+
+func (s *Service) asyncUpdateChannelStatsByPost(ctx context.Context, channelId uint64, isDecrease bool) {
+	go func() {
+		var err error
+		if isDecrease {
+			err = s.data.ChannelStatsDecrease(ctx, channelId, rds.ChannelStatsPost)
+		} else {
+			err = s.data.ChannelStatsIncrease(ctx, channelId, rds.ChannelStatsPost)
+		}
+		if err != nil {
+			log.E(ctx, "post stats update error", err)
+		}
+	}()
+}
+
 func (s *Service) convertToPostInfo(ctx context.Context, in *rds.PostInfo) (res *api.PostInfo, err error) {
 	res = &api.PostInfo{
 		Id:       utils.Uint64ToStr(in.Id),
@@ -118,26 +189,6 @@ func (s *Service) validPostPermission(ctx context.Context, tc *utils.TokenClaims
 	return nil
 }
 
-func (s *Service) ChannelPostDelete(ctx context.Context, req *api.ChannelPostDeleteReq) (res *api.ChannelPostDeleteRes, err error) {
-	log.D(ctx, "request in", "req", req)
-	res = &api.ChannelPostDeleteRes{}
-	var (
-		chanId = utils.StrToUint64(req.GetChanId())
-		postId = utils.StrToUint64(req.GetPostId())
-		tc     = utils.GetClaimFromContext(ctx)
-	)
-	if err = s.validPostPermission(ctx, tc, postId); err != nil {
-		return
-	}
-	if err = s.data.DeletePostInfo(ctx, postId); err != nil {
-		log.E(ctx, "delete post error", err)
-		err = putDescByDBErr(err)
-		return
-	}
-	s.asyncUpdateChannelStatsByPost(ctx, chanId, true)
-	return
-}
-
 func (s *Service) validChannelPostUpdateRequest(req *api.ChannelPostUpdateReq) error {
 	if req == nil {
 		return EM_CommonFail_BadRequest.PutDesc("req is required")
@@ -154,45 +205,6 @@ func (s *Service) validChannelPostUpdateRequest(req *api.ChannelPostUpdateReq) e
 	}
 	// ..
 	return nil
-}
-
-func (s *Service) ChannelPostUpdate(ctx context.Context, req *api.ChannelPostUpdateReq) (res *api.ChannelPostUpdateRes, err error) {
-	log.D(ctx, "request in", "req", req)
-	if err = s.validChannelPostUpdateRequest(req); err != nil {
-		return
-	}
-	res = new(api.ChannelPostUpdateRes)
-	var (
-		post   = req.GetPost()
-		postId = utils.StrToUint64(post.GetId())
-		tc     = utils.GetClaimFromContext(ctx)
-	)
-	if err = s.validPostPermission(ctx, tc, postId); err != nil {
-		return
-	}
-	if err = s.data.UpdatePostInfo(ctx, &rds.PostInfo{
-		Id:      postId,
-		Content: post.GetContent(),
-	}); err != nil {
-		log.E(ctx, "update post info error", err)
-		err = putDescByDBErr(err)
-		return
-	}
-	return
-}
-
-func (s *Service) asyncUpdateChannelStatsByPost(ctx context.Context, channelId uint64, isDecrease bool) {
-	go func() {
-		var err error
-		if isDecrease {
-			err = s.data.ChannelStatsDecrease(ctx, channelId, rds.ChannelStatsPost)
-		} else {
-			err = s.data.ChannelStatsIncrease(ctx, channelId, rds.ChannelStatsPost)
-		}
-		if err != nil {
-			log.E(ctx, "post stats update error", err)
-		}
-	}()
 }
 
 func validPostCreateRequest(req *api.ChannelPostCreateReq) error {
