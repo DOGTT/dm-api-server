@@ -116,6 +116,9 @@ service BaseService {
         };
     }
 
+    // 关系查询频道列表
+    
+
     // 足迹频道互动
     rpc ChannelInx(ChannelInxReq) returns (ChannelInxRes) {
         option (google.api.http) = {
@@ -162,6 +165,11 @@ service BaseService {
             body: "*"
         };
     }
+
+    // 通知接口
+
+
+
 }
 
 // 通用错误消息结构

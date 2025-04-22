@@ -17,6 +17,7 @@ func (s *Service) LocationCommonSearch(ctx context.Context, req *api.LocationCom
 		return
 	}
 	log.D(ctx, "search result", "searchRes", searchRes)
+
 	// 转换搜索结果
 	// res.Locations = make([]*api.LocationInfo, len(searchRes))
 	// for i, item := range searchRes {
