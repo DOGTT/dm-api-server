@@ -22,7 +22,7 @@ message LocationInfo {
 }
 
 enum MediaType {
-    MT_DEFAULT  = 0;
+    MT_UNSPECIFIED  = 0;
     USER_AVA    = 1;
     CHANNEL_AVA = 2;
     POST_IMG    = 3;
@@ -41,6 +41,6 @@ message MediaInfo {
 
 // 互动撤销
 enum InxUndoType {
-    IU_DEFAULT = 0;
+    IUT_UNSPECIFIED = 0;
     UNDO       = 1;
 }

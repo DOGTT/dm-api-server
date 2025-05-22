@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	BaseService_LocationCommonSearch_FullMethodName    = "/base_service.v1.BaseService/LocationCommonSearch"
 	BaseService_MediaPutURLBatchGet_FullMethodName     = "/base_service.v1.BaseService/MediaPutURLBatchGet"
+	BaseService_SystemNotifyQuery_FullMethodName       = "/base_service.v1.BaseService/SystemNotifyQuery"
 	BaseService_LoginWeChat_FullMethodName             = "/base_service.v1.BaseService/LoginWeChat"
 	BaseService_FastRegisterWeChat_FullMethodName      = "/base_service.v1.BaseService/FastRegisterWeChat"
 	BaseService_UserPetUpdate_FullMethodName           = "/base_service.v1.BaseService/UserPetUpdate"
@@ -30,6 +31,7 @@ const (
 	BaseService_ChannelUpdate_FullMethodName           = "/base_service.v1.BaseService/ChannelUpdate"
 	BaseService_ChannelDelete_FullMethodName           = "/base_service.v1.BaseService/ChannelDelete"
 	BaseService_ChannelBaseQueryByBound_FullMethodName = "/base_service.v1.BaseService/ChannelBaseQueryByBound"
+	BaseService_ChannelBaseQueryByUser_FullMethodName  = "/base_service.v1.BaseService/ChannelBaseQueryByUser"
 	BaseService_ChannelFullQueryById_FullMethodName    = "/base_service.v1.BaseService/ChannelFullQueryById"
 	BaseService_ChannelInx_FullMethodName              = "/base_service.v1.BaseService/ChannelInx"
 	BaseService_ChannelPostCreate_FullMethodName       = "/base_service.v1.BaseService/ChannelPostCreate"
@@ -51,6 +53,8 @@ type BaseServiceClient interface {
 	LocationCommonSearch(ctx context.Context, in *LocationCommonSearchReq, opts ...grpc.CallOption) (*LocationCommonSearchRes, error)
 	// 批量获取对象上传预签名URL
 	MediaPutURLBatchGet(ctx context.Context, in *MediaPutURLBatchGetReq, opts ...grpc.CallOption) (*MediaPutURLBatchGetRes, error)
+	// 查询系统通知接口
+	SystemNotifyQuery(ctx context.Context, in *SystemNotifyQueryReq, opts ...grpc.CallOption) (*SystemNotifyQueryRes, error)
 	// 微信小程序登录接口
 	// @security BearerAuth
 	LoginWeChat(ctx context.Context, in *LoginWeChatReq, opts ...grpc.CallOption) (*LoginWeChatRes, error)
@@ -68,8 +72,10 @@ type BaseServiceClient interface {
 	ChannelUpdate(ctx context.Context, in *ChannelUpdateReq, opts ...grpc.CallOption) (*ChannelUpdateRes, error)
 	// 删除足迹频道
 	ChannelDelete(ctx context.Context, in *ChannelDeleteReq, opts ...grpc.CallOption) (*ChannelDeleteRes, error)
-	// 按照范围查询足迹基础信息
+	// 按照范围按照用户互动记录
 	ChannelBaseQueryByBound(ctx context.Context, in *ChannelBaseQueryByBoundReq, opts ...grpc.CallOption) (*ChannelBaseQueryByBoundRes, error)
+	// 按照用户互动记录查询频道列表
+	ChannelBaseQueryByUser(ctx context.Context, in *ChannelBaseQueryByUserReq, opts ...grpc.CallOption) (*ChannelBaseQueryByUserRes, error)
 	// 按照id查询足迹频道动态信息
 	ChannelFullQueryById(ctx context.Context, in *ChannelFullQueryByIdReq, opts ...grpc.CallOption) (*ChannelFullQueryByIdRes, error)
 	// 足迹频道互动
@@ -108,6 +114,16 @@ func (c *baseServiceClient) MediaPutURLBatchGet(ctx context.Context, in *MediaPu
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(MediaPutURLBatchGetRes)
 	err := c.cc.Invoke(ctx, BaseService_MediaPutURLBatchGet_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *baseServiceClient) SystemNotifyQuery(ctx context.Context, in *SystemNotifyQueryReq, opts ...grpc.CallOption) (*SystemNotifyQueryRes, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SystemNotifyQueryRes)
+	err := c.cc.Invoke(ctx, BaseService_SystemNotifyQuery_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -204,6 +220,16 @@ func (c *baseServiceClient) ChannelBaseQueryByBound(ctx context.Context, in *Cha
 	return out, nil
 }
 
+func (c *baseServiceClient) ChannelBaseQueryByUser(ctx context.Context, in *ChannelBaseQueryByUserReq, opts ...grpc.CallOption) (*ChannelBaseQueryByUserRes, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ChannelBaseQueryByUserRes)
+	err := c.cc.Invoke(ctx, BaseService_ChannelBaseQueryByUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *baseServiceClient) ChannelFullQueryById(ctx context.Context, in *ChannelFullQueryByIdReq, opts ...grpc.CallOption) (*ChannelFullQueryByIdRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ChannelFullQueryByIdRes)
@@ -286,6 +312,8 @@ type BaseServiceServer interface {
 	LocationCommonSearch(context.Context, *LocationCommonSearchReq) (*LocationCommonSearchRes, error)
 	// 批量获取对象上传预签名URL
 	MediaPutURLBatchGet(context.Context, *MediaPutURLBatchGetReq) (*MediaPutURLBatchGetRes, error)
+	// 查询系统通知接口
+	SystemNotifyQuery(context.Context, *SystemNotifyQueryReq) (*SystemNotifyQueryRes, error)
 	// 微信小程序登录接口
 	// @security BearerAuth
 	LoginWeChat(context.Context, *LoginWeChatReq) (*LoginWeChatRes, error)
@@ -303,8 +331,10 @@ type BaseServiceServer interface {
 	ChannelUpdate(context.Context, *ChannelUpdateReq) (*ChannelUpdateRes, error)
 	// 删除足迹频道
 	ChannelDelete(context.Context, *ChannelDeleteReq) (*ChannelDeleteRes, error)
-	// 按照范围查询足迹基础信息
+	// 按照范围按照用户互动记录
 	ChannelBaseQueryByBound(context.Context, *ChannelBaseQueryByBoundReq) (*ChannelBaseQueryByBoundRes, error)
+	// 按照用户互动记录查询频道列表
+	ChannelBaseQueryByUser(context.Context, *ChannelBaseQueryByUserReq) (*ChannelBaseQueryByUserRes, error)
 	// 按照id查询足迹频道动态信息
 	ChannelFullQueryById(context.Context, *ChannelFullQueryByIdReq) (*ChannelFullQueryByIdRes, error)
 	// 足迹频道互动
@@ -335,6 +365,9 @@ func (UnimplementedBaseServiceServer) LocationCommonSearch(context.Context, *Loc
 func (UnimplementedBaseServiceServer) MediaPutURLBatchGet(context.Context, *MediaPutURLBatchGetReq) (*MediaPutURLBatchGetRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MediaPutURLBatchGet not implemented")
 }
+func (UnimplementedBaseServiceServer) SystemNotifyQuery(context.Context, *SystemNotifyQueryReq) (*SystemNotifyQueryRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SystemNotifyQuery not implemented")
+}
 func (UnimplementedBaseServiceServer) LoginWeChat(context.Context, *LoginWeChatReq) (*LoginWeChatRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LoginWeChat not implemented")
 }
@@ -361,6 +394,9 @@ func (UnimplementedBaseServiceServer) ChannelDelete(context.Context, *ChannelDel
 }
 func (UnimplementedBaseServiceServer) ChannelBaseQueryByBound(context.Context, *ChannelBaseQueryByBoundReq) (*ChannelBaseQueryByBoundRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChannelBaseQueryByBound not implemented")
+}
+func (UnimplementedBaseServiceServer) ChannelBaseQueryByUser(context.Context, *ChannelBaseQueryByUserReq) (*ChannelBaseQueryByUserRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChannelBaseQueryByUser not implemented")
 }
 func (UnimplementedBaseServiceServer) ChannelFullQueryById(context.Context, *ChannelFullQueryByIdReq) (*ChannelFullQueryByIdRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChannelFullQueryById not implemented")
@@ -436,6 +472,24 @@ func _BaseService_MediaPutURLBatchGet_Handler(srv interface{}, ctx context.Conte
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(BaseServiceServer).MediaPutURLBatchGet(ctx, req.(*MediaPutURLBatchGetReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BaseService_SystemNotifyQuery_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SystemNotifyQueryReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BaseServiceServer).SystemNotifyQuery(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BaseService_SystemNotifyQuery_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BaseServiceServer).SystemNotifyQuery(ctx, req.(*SystemNotifyQueryReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -602,6 +656,24 @@ func _BaseService_ChannelBaseQueryByBound_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BaseService_ChannelBaseQueryByUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChannelBaseQueryByUserReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BaseServiceServer).ChannelBaseQueryByUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BaseService_ChannelBaseQueryByUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BaseServiceServer).ChannelBaseQueryByUser(ctx, req.(*ChannelBaseQueryByUserReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _BaseService_ChannelFullQueryById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ChannelFullQueryByIdReq)
 	if err := dec(in); err != nil {
@@ -744,6 +816,10 @@ var BaseService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _BaseService_MediaPutURLBatchGet_Handler,
 		},
 		{
+			MethodName: "SystemNotifyQuery",
+			Handler:    _BaseService_SystemNotifyQuery_Handler,
+		},
+		{
 			MethodName: "LoginWeChat",
 			Handler:    _BaseService_LoginWeChat_Handler,
 		},
@@ -778,6 +854,10 @@ var BaseService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ChannelBaseQueryByBound",
 			Handler:    _BaseService_ChannelBaseQueryByBound_Handler,
+		},
+		{
+			MethodName: "ChannelBaseQueryByUser",
+			Handler:    _BaseService_ChannelBaseQueryByUser_Handler,
 		},
 		{
 			MethodName: "ChannelFullQueryById",

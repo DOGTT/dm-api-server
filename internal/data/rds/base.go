@@ -5,24 +5,33 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 	"errors"
+	"time"
+
+	"gorm.io/gorm"
 )
 
-const limitDefault = 100
+const (
+	batchCreateSize = 10
+	limitDefault    = 100
+)
 
 // common field define
 const (
 	sqlFieldAll = "*"
 
-	sqlFieldId       = "id"
-	sqlFieldUId      = "uid"
-	sqlFieldPId      = "pid"
-	sqlFieldName     = "name"
-	sqlFieldTitle    = "title"
-	sqlFieldIntro    = "intro"
-	sqlFieldContent  = "content"
-	sqlFieldTypeId   = "type_id"
-	sqlFieldAvatarId = "avatar_id"
-	sqlFieldWeChatId = "we_chat_id"
+	sqlFieldId        = "id"
+	sqlFieldUId       = "uid"
+	sqlFieldPId       = "pid"
+	sqlFieldPostId    = "post_id"
+	sqlFieldChannelId = "channel_id"
+	sqlFieldReactId   = "react_id"
+	sqlFieldName      = "name"
+	sqlFieldTitle     = "title"
+	sqlFieldIntro     = "intro"
+	sqlFieldContent   = "content"
+	sqlFieldTypeId    = "type_id"
+	sqlFieldAvatarId  = "avatar_id"
+	sqlFieldWeChatId  = "we_chat_id"
 
 	sqlFieldCreatedAt = "created_at"
 	sqlFieldUpdatedAt = "updated_at"
@@ -119,4 +128,11 @@ func (a *Uint64Array) Scan(value interface{}) error {
 		return errors.New("type assertion to []byte failed")
 	}
 	return json.Unmarshal(b, a)
+}
+
+type CommonTableTails struct {
+	// --- 基础字段
+	CreatedAt time.Time      `gorm:"autoCreateTime"`
+	UpdatedAt time.Time      `gorm:"autoUpdateTime"`
+	DeletedAt gorm.DeletedAt `gorm:"index"`
 }

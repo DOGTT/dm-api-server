@@ -8,17 +8,77 @@ option go_package = "github.com/DOGTT/dm-api-server/api/base;api";
 
 // 频道帖子或者评论
 message PostInfo {
-    // 评论id
-    string id = 1;
-    // 足迹作者, 不可更新
-    string uid = 2;
-    // 根id, 频道id
-    string root_id = 3;
-    // 上级帖子id
-    string parent_id = 4;
-    // 正文内容
-    string content = 5;
+  // 评论id
+  string id = 1;
+  // 足迹作者, 不可更新
+  string uid = 2;
+  // 根id, 频道id
+  string root_id = 3;
+  // 上级帖子id
+  string parent_id = 4;
+  // 正文内容
+  string content = 5;
+  // 媒体id
+  repeated string media_ids = 6;
 
-    int64 created_at = 31;
-    int64 updated_at = 32;
+  // 动态状态信息，只读
+  PostStats stats = 20;
+
+  int64 created_at = 31;
+  int64 updated_at = 32;
 }
+
+// 帖子用户状态互动状态
+enum PostUserIxnState {
+  PUIS_UNSPECIFIED = 0;
+  // 收藏
+  STAR = 1;
+}
+
+// 帖子用户状态互动事件
+enum PostUserIxnEvent {
+  PUIE_UNSPECIFIED = 0;
+  // 分享
+  SHARE = 1;
+}
+
+
+// 频道状态, 只读
+message PostStats {
+  // 收藏数
+  int32 stars_cnt = 1;
+  int64 last_star_at = 2;
+  // 回复数量
+  int32 replies_cnt = 3;
+  int64 last_reply_at = 4;
+
+  repeated PostReaction reacts = 5;
+
+  int64 updated_at = 21;
+}
+
+enum PostReactType {
+  // 默认不记名类型
+  PRT_DEFAULT = 0;
+  // 记名类型
+  PRT_SIGN = 1;
+}
+
+message PostReaction {
+  // 反应类型
+  string id = 1;
+  // 反应类型
+  PostReactType type = 2;
+  // 反应数量
+  int32 count = 3;
+  // 反应用户信息列表.
+  repeated PostReactSignInfo signs = 4;
+
+  int64 updated_at = 21;
+}
+
+message PostReactSignInfo {
+  string user_id = 1;
+  string user_name = 2;
+}
+

@@ -49,7 +49,7 @@ func (s *Service) BaseServiceFastRegisterWeChat(c *gin.Context) {
 		s.putGinError(c, EM_CommonFail_BadRequest)
 		return
 	}
-	res, err := s.WeChatRegisterFast(withGinContext(c), req)
+	res, err := s.FastRegisterWeChat(withGinContext(c), req)
 	if err != nil {
 		s.putGinError(c, err)
 		return
@@ -63,7 +63,7 @@ func (s *Service) BaseServiceLoginWeChat(c *gin.Context) {
 		s.putGinError(c, EM_CommonFail_BadRequest)
 		return
 	}
-	res, err := s.WeChatLogin(withGinContext(c), req)
+	res, err := s.LoginWeChat(withGinContext(c), req)
 	if err != nil {
 		s.putGinError(c, err)
 		return
@@ -116,7 +116,7 @@ func (s *Service) BaseServiceMediaPutURLBatchGet(c *gin.Context, params gin_api.
 		MediaType: api.MediaType(*params.MediaType),
 		Count:     *params.Count,
 	}
-	res, err := s.MediaPutPresignURLBatchGet(withGinContext(c), req)
+	res, err := s.MediaPutURLBatchGet(withGinContext(c), req)
 	if err != nil {
 		s.putGinError(c, err)
 		return
@@ -277,6 +277,34 @@ func (s *Service) BaseServiceChannelPostLoad(c *gin.Context) {
 		return
 	}
 	res, err := s.ChannelPostLoad(withGinContext(c), req)
+	if err != nil {
+		s.putGinError(c, err)
+		return
+	}
+	c.JSON(http.StatusOK, res)
+}
+
+func (s *Service) BaseServiceChannelBaseQueryByUser(c *gin.Context) {
+	req := &api.ChannelBaseQueryByUserReq{}
+	if err := c.ShouldBind(&req); err != nil {
+		s.putGinError(c, EM_CommonFail_BadRequest)
+		return
+	}
+	res, err := s.ChannelBaseQueryByUser(withGinContext(c), req)
+	if err != nil {
+		s.putGinError(c, err)
+		return
+	}
+	c.JSON(http.StatusOK, res)
+}
+
+func (s *Service) BaseServiceSystemNotifyQuery(c *gin.Context) {
+	req := &api.SystemNotifyQueryReq{}
+	if err := c.ShouldBind(&req); err != nil {
+		s.putGinError(c, EM_CommonFail_BadRequest)
+		return
+	}
+	res, err := s.SystemNotifyQuery(withGinContext(c), req)
 	if err != nil {
 		s.putGinError(c, err)
 		return

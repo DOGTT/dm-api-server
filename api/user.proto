@@ -7,22 +7,23 @@ option go_package = "github.com/DOGTT/dm-api-server/api/base;api";
 import "pet.proto";
 
 message UserInfo {
-    string id                      = 1;
-    repeated UserPetInfo user_pets = 2;
+  string id = 1;
+  string name = 2;
+  repeated UserPetInfo user_pets = 3;
 }
 
 message UserPetInfo {
-    pet.PetInfo pet  = 1;
-    string pet_title = 2;
-    int32 pet_status = 3;
+  pet.PetInfo pet = 1;
+  string pet_title = 2;
+  int32 pet_status = 3;
 }
 
 // 宠物快速注册信息
-message FastRegisterData {
-    // 名字
-    string pet_name = 1;
-    // 宠物头像 base64 data
-    string pet_avatar_data = 2;
-    // 宠物和人的关系
-    string pet_title = 3;
+message UserFastRegisterData {
+  // 名字
+  string pet_name = 1;
+  // 宠物头像 base64 data
+  string pet_avatar_data = 2;
+  // 宠物和人的关系
+  string pet_title = 3;
 }

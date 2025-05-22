@@ -3,9 +3,6 @@ package rds
 
 import (
 	"context"
-	"time"
-
-	"gorm.io/gorm"
 )
 
 func init() {
@@ -14,16 +11,14 @@ func init() {
 
 // 用户信息
 type UserInfo struct {
-	Id       uint64 `gorm:"primaryKey;autoIncrement"`
-	WeChatId string `gorm:"type:varchar(32);unique"`
-	Phone    string `gorm:"type:varchar(16);"`
+	Id       uint64  `gorm:"primaryKey;autoIncrement"`
+	Phone    *string `gorm:"type:varchar(16);unique"`
+	WeChatId *string `gorm:"type:varchar(32);unique"`
+	Name     string  `gorm:"type:varchar(32)"`
 
 	Pets []*PetInfo `gorm:"many2many:user_pets;"`
 
-	CreatedAt time.Time `gorm:"autoCreateTime"`
-	UpdatedAt time.Time `gorm:"autoUpdateTime"`
-	// 软删除字段
-	DeletedAt gorm.DeletedAt `gorm:"index"`
+	CommonTableTails
 }
 
 func (u *UserInfo) TableName() string {

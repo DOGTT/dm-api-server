@@ -3,7 +3,6 @@ package rds
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -24,14 +23,12 @@ type UserPet struct {
 	PetTitle string `gorm:"type:varchar(16);"`
 	// 用户宠物的关系状态
 	PetStatus uint8 `gorm:"type:smallint;"`
+
 	// 关联模型（方便查询）
 	User *UserInfo `gorm:"foreignKey:UId"`
 	Pet  *PetInfo  `gorm:"foreignKey:PId"`
 
-	CreatedAt time.Time `gorm:"autoCreateTime"`
-	UpdatedAt time.Time `gorm:"autoUpdateTime"`
-	// 软删除字段
-	DeletedAt gorm.DeletedAt `gorm:"index"`
+	CommonTableTails
 }
 
 func (t *UserPet) TableName() string {

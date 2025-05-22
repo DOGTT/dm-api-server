@@ -68,7 +68,7 @@ paths:
     post:
       tags:
         - BaseService
-      description: 按照范围查询足迹基础信息
+      description: 按照范围按照用户互动记录
       operationId: BaseService_ChannelBaseQueryByBound
       requestBody:
         content:
@@ -83,6 +83,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ChannelBaseQueryByBoundRes'
+  /v1/channel/base_query_by_user:
+    post:
+      tags:
+        - BaseService
+      description: 按照用户互动记录查询频道列表
+      operationId: BaseService_ChannelBaseQueryByUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChannelBaseQueryByUserReq'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChannelBaseQueryByUserRes'
   /v1/channel/full_query_by_id:
     get:
       tags:
@@ -271,6 +290,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MediaPutURLBatchGetRes'
+  /v1/notify/query:
+    post:
+      tags:
+        - BaseService
+      description: 查询系统通知接口
+      operationId: BaseService_SystemNotifyQuery
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SystemNotifyQueryReq'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemNotifyQueryRes'
   /v1/user/fast_reg/wx:
     post:
       tags:
@@ -376,6 +414,26 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ChannelInfo'
+    ChannelBaseQueryByUserReq:
+      type: object
+      properties:
+        user_id:
+          type: string
+        ixn_state:
+          type: integer
+          description: 互动状态类型, 二选一
+          format: enum
+        ixn_event:
+          type: integer
+          description: 互动时间类型, 二选一
+          format: enum
+    ChannelBaseQueryByUserRes:
+      type: object
+      properties:
+        channels:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChannelInfo'
     ChannelCreateReq:
       type: object
       properties:
@@ -438,17 +496,21 @@ components:
       properties:
         chan_id:
           type: string
-        ixn_state:
+        inx_state:
           type: integer
           description: 互动状态
           format: enum
-        state_undo:
+        inx_state_undo:
           type: integer
           description: 是否撤销状态
           format: enum
-        ixn_event:
+        inx_event:
           type: integer
           description: 互动事件
+          format: enum
+        pet_inx_event:
+          type: integer
+          description: 宠物互动事件
           format: enum
     ChannelInxRes:
       type: object
@@ -469,10 +531,20 @@ components:
     ChannelPostInxReq:
       type: object
       properties:
-        chan_id:
-          type: string
         post_id:
           type: string
+        inx_state:
+          type: integer
+          description: 互动状态
+          format: enum
+        inx_state_undo:
+          type: integer
+          description: 是否撤销状态
+          format: enum
+        ixn_event:
+          type: integer
+          description: 互动事件
+          format: enum
     ChannelPostInxRes:
       type: object
       properties: {}
@@ -564,24 +636,11 @@ components:
       properties:
         channel:
           $ref: '#/components/schemas/ChannelInfo'
-    FastRegisterData:
-      type: object
-      properties:
-        pet_name:
-          type: string
-          description: 名字
-        pet_avatar_data:
-          type: string
-          description: 宠物头像 base64 data
-        pet_title:
-          type: string
-          description: 宠物和人的关系
-      description: 宠物快速注册信息
     FastRegisterWeChatReq:
       type: object
       properties:
         reg_data:
-          $ref: '#/components/schemas/FastRegisterData'
+          $ref: '#/components/schemas/UserFastRegisterData'
         wx_code:
           type: string
       description: 快速注册请求
@@ -641,6 +700,20 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/MediaInfo'
+    NotifyInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 通知id
+        content:
+          type: string
+          description: 正文内容
+        created_at:
+          type: string
+        updated_at:
+          type: string
+      description: 系统通知
     PetInfo:
       type: object
       properties:
@@ -702,15 +775,101 @@ components:
         content:
           type: string
           description: 正文内容
+        media_ids:
+          type: array
+          items:
+            type: string
+          description: 媒体id
+        stats:
+          allOf:
+            - $ref: '#/components/schemas/PostStats'
+          description: 动态状态信息，只读
         created_at:
           type: string
         updated_at:
           type: string
       description: 频道帖子或者评论
+    PostReactionInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 反应类型
+        type:
+          type: integer
+          description: 反应类型
+          format: enum
+        count:
+          type: integer
+          description: 反应数量
+          format: int32
+        signs:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostReactionSignInfo'
+          description: 反应用户信息列表.
+        updated_at:
+          type: string
+    PostReactionSignInfo:
+      type: object
+      properties:
+        user_id:
+          type: string
+        user_name:
+          type: string
+    PostStats:
+      type: object
+      properties:
+        stars_cnt:
+          type: integer
+          description: 收藏数
+          format: int32
+        last_star_at:
+          type: string
+        replies_cnt:
+          type: integer
+          description: 回复数量
+          format: int32
+        last_reply_at:
+          type: string
+        reactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostReactionInfo'
+        updated_at:
+          type: string
+      description: 频道状态, 只读
+    SystemNotifyQueryReq:
+      type: object
+      properties:
+        last_notify_id:
+          type: string
+    SystemNotifyQueryRes:
+      type: object
+      properties:
+        notifies:
+          type: array
+          items:
+            $ref: '#/components/schemas/NotifyInfo'
+    UserFastRegisterData:
+      type: object
+      properties:
+        pet_name:
+          type: string
+          description: 名字
+        pet_avatar_data:
+          type: string
+          description: 宠物头像 base64 data
+        pet_title:
+          type: string
+          description: 宠物和人的关系
+      description: 宠物快速注册信息
     UserInfo:
       type: object
       properties:
         id:
+          type: string
+        name:
           type: string
         user_pets:
           type: array

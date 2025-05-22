@@ -8,29 +8,30 @@ import (
 )
 
 var (
-	channelStatsModel = &ChannelStats{}
+	postStatsModel = &PostStats{}
 )
 
 func init() {
-	dbModelList = append(dbModelList, channelStatsModel)
+	dbModelList = append(dbModelList, postStatsModel)
 }
 
-type ChannelStatsType int
+type PostStatsType int
 
 const (
-	ChannelStatsView ChannelStatsType = iota
-	ChannelStatsStar
-	ChannelStatsPost
-	ChannelStatsPee
+	PostStatsView PostStatsType = iota
+	PostStatsStar
+	PostStatsPost
+	PostStatsPee
 )
 
 var (
-	channelStatsFieldCntList  = []string{"views_cnt", "stars_cnt", "posts_cnt", "pee_cnt"}
-	channelStatsFieldTimeList = []string{"", "last_star_at", "last_post_at", "last_pee_at"}
+	PostStatsFieldCntList  = []string{"views_cnt", "stars_cnt", "posts_cnt", "pee_cnt"}
+	PostStatsFieldTimeList = []string{"", "last_star_at", "last_post_at", "last_pee_at"}
 )
 
-type ChannelStats struct {
+type PostStats struct {
 	Id uint64 `gorm:"primaryKey;autoIncrement"`
+
 	// -- 反应互动信息
 	Reactions map[string]int `gorm:"type:jsonb"`
 	// - 互动信息
@@ -56,14 +57,14 @@ type ChannelStats struct {
 	DeletedAt gorm.DeletedAt `gorm:"index"`
 }
 
-func (c *RDSClient) ChannelStatsIncrease(ctx context.Context, chanId uint64, st ChannelStatsType) error {
+func (c *RDSClient) PostStatsIncrease(ctx context.Context, chanId uint64, st PostStatsType) error {
 	updateField := map[string]any{}
-	fieldName := channelStatsFieldCntList[st]
+	fieldName := PostStatsFieldCntList[st]
 	updateField[fieldName] = gorm.Expr(fieldName + " + 1")
-	if timeField := channelStatsFieldTimeList[st]; timeField != "" {
+	if timeField := PostStatsFieldTimeList[st]; timeField != "" {
 		updateField[timeField] = time.Now()
 	}
-	res := c.db.WithContext(ctx).Model(channelStatsModel).
+	res := c.db.WithContext(ctx).Model(postStatsModel).
 		Where(sqlEqualId, chanId).
 		Updates(updateField)
 	if res.RowsAffected == 0 {
@@ -72,14 +73,14 @@ func (c *RDSClient) ChannelStatsIncrease(ctx context.Context, chanId uint64, st 
 	return res.Error
 }
 
-func (c *RDSClient) ChannelStatsDecrease(ctx context.Context, chanId uint64, st ChannelStatsType) error {
+func (c *RDSClient) PostStatsDecrease(ctx context.Context, chanId uint64, st PostStatsType) error {
 	updateField := map[string]any{}
-	fieldName := channelStatsFieldCntList[st]
+	fieldName := PostStatsFieldCntList[st]
 	updateField[fieldName] = gorm.Expr(fieldName + " - 1")
-	if timeField := channelStatsFieldTimeList[st]; timeField != "" {
+	if timeField := PostStatsFieldTimeList[st]; timeField != "" {
 		updateField[timeField] = time.Now()
 	}
-	res := c.db.WithContext(ctx).Model(channelStatsModel).
+	res := c.db.WithContext(ctx).Model(postStatsModel).
 		Where(sqlEqualId, chanId).
 		Updates(updateField)
 	if res.RowsAffected == 0 {

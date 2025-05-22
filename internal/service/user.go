@@ -91,20 +91,20 @@ func (s *Service) dbUpdateUserPet(ctx context.Context, up *rds.UserPet) (err err
 	return
 }
 
-func (s *Service) convertFromPetInfo(ctx context.Context, up *api.PetInfo) (res *rds.PetInfo, err error) {
+func (s *Service) convertFromPetInfo(ctx context.Context, in *api.PetInfo) (res *rds.PetInfo, err error) {
 	res = &rds.PetInfo{
-		Id:        utils.StrToUint64(up.Id),
-		UId:       utils.StrToUint64(up.Uid),
-		Status:    uint8(up.Status),
-		Specie:    up.Specie,
-		Name:      up.Name,
-		Intro:     up.Intro,
-		Gender:    uint8(up.Gender),
-		BirthDate: up.BirthDate,
-		AvatarId:  up.Avatar.GetUuid(),
-		Size:      up.Size,
-		Breed:     up.Breed,
-		Weight:    int(up.Weight),
+		Id:        utils.StrToUint64(in.Id),
+		UId:       utils.StrToUint64(in.Uid),
+		Status:    uint8(in.Status),
+		Specie:    in.Specie,
+		Name:      in.Name,
+		Intro:     in.Intro,
+		Gender:    uint8(in.Gender),
+		BirthDate: in.BirthDate,
+		AvatarId:  in.Avatar.GetUuid(),
+		Size:      in.Size,
+		Breed:     in.Breed,
+		Weight:    int(in.Weight),
 	}
 	return
 }

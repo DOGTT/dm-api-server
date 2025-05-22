@@ -10,7 +10,7 @@ import "pet.proto";
 import "user.proto";
 import "channel.proto";
 import "post.proto";
-
+import "system.proto";
 // 通用业务服务接口定义.
 /**
 servers:
@@ -21,6 +21,7 @@ servers:
 // @in header
 // @name Authorization
 service BaseService {
+
     // 通用地点搜索
     rpc LocationCommonSearch(LocationCommonSearchReq)
         returns (LocationCommonSearchRes) {
@@ -37,6 +38,14 @@ service BaseService {
         };
     }
 
+    // 查询系统通知接口
+     rpc SystemNotifyQuery(SystemNotifyQueryReq) returns (SystemNotifyQueryRes) {
+        option (google.api.http) = {
+            post: "/v1/notify/query"
+            body: "*"
+        };
+    }
+
     // 微信小程序登录接口
     // @security BearerAuth
     rpc LoginWeChat(LoginWeChatReq) returns (LoginWeChatRes) {
@@ -45,6 +54,7 @@ service BaseService {
             body: "*"
         };
     }
+
     // 微信小程序快速登录注册接口定义
     rpc FastRegisterWeChat(FastRegisterWeChatReq)
         returns (FastRegisterWeChatRes) {
@@ -99,11 +109,20 @@ service BaseService {
         };
     }
 
-    // 按照范围查询足迹基础信息
+    // 按照范围按照用户互动记录
     rpc ChannelBaseQueryByBound(ChannelBaseQueryByBoundReq)
         returns (ChannelBaseQueryByBoundRes) {
         option (google.api.http) = {
             post: "/v1/channel/base_query_by_bound"
+            body: "*"
+        };
+    }
+
+    // 按照用户互动记录查询频道列表
+    rpc ChannelBaseQueryByUser(ChannelBaseQueryByUserReq)
+        returns (ChannelBaseQueryByUserRes) {
+        option (google.api.http) = {
+            post: "/v1/channel/base_query_by_user"
             body: "*"
         };
     }
@@ -115,9 +134,6 @@ service BaseService {
             get: "/v1/channel/full_query_by_id"
         };
     }
-
-    // 关系查询频道列表
-    
 
     // 足迹频道互动
     rpc ChannelInx(ChannelInxReq) returns (ChannelInxRes) {
@@ -166,10 +182,16 @@ service BaseService {
         };
     }
 
-    // 通知接口
+    // 频道帖子回应
+    rpc ChannelPostReact(ChannelPostReactReq) returns (ChannelPostReactRes) {
+        option (google.api.http) = {
+            post: "/v1/channel/post/react"
+            body: "*"
+        };
+    }
 
 
-
+    // 发现页业务 TODO
 }
 
 // 通用错误消息结构
@@ -190,7 +212,7 @@ message LoginWeChatRes {
 
 // 快速注册请求
 message FastRegisterWeChatReq {
-    user.FastRegisterData reg_data = 1;
+    user.UserFastRegisterData reg_data = 1;
     string wx_code                 = 2;
 }
 
@@ -232,6 +254,14 @@ message MediaPutURLBatchGetReq {
 
 message MediaPutURLBatchGetRes {
     repeated common.MediaInfo media = 1;
+}
+
+message SystemNotifyQueryReq {
+    string last_notify_id = 1;
+}
+
+message SystemNotifyQueryRes {
+    repeated system.NotifyInfo notifies = 1;
 }
 
 message ChannelTypeListReq {}
@@ -278,6 +308,18 @@ message ChannelBaseQueryByBoundRes {
     repeated channel.ChannelInfo channels = 1;
 }
 
+message ChannelBaseQueryByUserReq {
+    string user_id = 1;
+    // 互动状态类型, 二选一
+    channel.ChannelUserIxnState ixn_state = 2;
+    // 互动时间类型, 二选一
+    channel.ChannelUserIxnEvent ixn_event = 3;
+}
+
+message ChannelBaseQueryByUserRes {
+    repeated channel.ChannelInfo channels = 1;
+}
+
 message ChannelDetailQueryByIdReq {
     string chan_id = 1;
 }
@@ -297,11 +339,13 @@ message ChannelFullQueryByIdRes {
 message ChannelInxReq {
     string chan_id = 1;
     // 互动状态
-    channel.ChannelIxnState ixn_state = 2;
+    channel.ChannelUserIxnState inx_state = 2;
     // 是否撤销状态
-    common.InxUndoType state_undo = 3;
+    common.InxUndoType inx_state_undo = 3;
     // 互动事件
-    channel.ChannelIxnEvent ixn_event = 4;
+    channel.ChannelUserIxnEvent inx_event = 4;
+    // 宠物互动事件
+    channel.ChannelPetIxnEvent pet_inx_event = 5;
 }
 
 message ChannelInxRes {}
@@ -340,8 +384,21 @@ message ChannelPostLoadRes {
 }
 
 message ChannelPostInxReq {
-    string chan_id = 1;
-    string post_id = 2;
+    string post_id = 1;
+    // 互动状态
+    post.PostUserIxnState inx_state = 2;
+    // 是否撤销状态
+    common.InxUndoType inx_state_undo = 3;
+    // 互动事件
+    post.PostUserIxnEvent ixn_event = 4;
 }
 
 message ChannelPostInxRes {}
+
+message ChannelPostReactReq {
+    string post_id = 1;
+    string react_id = 2;
+}
+
+message ChannelPostReactRes {}
+

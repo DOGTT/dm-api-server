@@ -56,18 +56,25 @@ message ChannelStats {
     int64 updated_at = 32;
 }
 
-// 状态互动类型
-enum ChannelIxnState {
-    STATE_DEFAULT = 0;
+// 频道用户状态互动状态
+enum ChannelUserIxnState {
+    CUIS_UNSPECIFIED = 0;
     // 关注/收藏, 关注后可以发言
     STAR = 1;
     // 加入, 加入后可以逐渐无限制发言, 有一定条件
-    LAND = 3;
+    LAND = 2;
 }
 
-// 事件互动类型
-enum ChannelIxnEvent {
-    EVENT_DEFAULT = 0;
-    // 到达，类似于打卡
+// 频道用户状态互动事件
+enum ChannelUserIxnEvent {
+    CUIE_UNSPECIFIED = 0;
+    // 分享
+    SHARE = 1;
+}
+
+// 频道宠物用户事件互动类型
+enum ChannelPetIxnEvent {
+    CPIE_UNSPECIFIED = 0;
+    // 狗狗到达，类似于打卡
     PEE = 1;
 }

@@ -3,7 +3,6 @@ package rds
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/lib/pq"
 	"gorm.io/gorm"
@@ -33,20 +32,13 @@ type PostInfo struct {
 	ParentId uint64 `gorm:"default:0"`
 	// 帖子内容
 	Content string `gorm:"type:text"`
-	// 帖子图片
-	PhotoIds pq.StringArray `gorm:"type:text[]"`
+	// 帖子图片/视频
+	MediaIds pq.StringArray `gorm:"type:text[]"`
 
-	// -- 动态互动信息
-	// 添加的标签
-	Tags []string `gorm:"type:text[]"`
-	// 喜欢的数量
-	LikesCnt int `gorm:"default:0"`
+	// 互动统计子表
+	Stats ChannelStats `gorm:"foreignKey:Id;constraint:OnDelete:CASCADE"`
 
-	// --- 基础字段
-	CreatedAt time.Time `gorm:"autoCreateTime"`
-	UpdatedAt time.Time `gorm:"autoUpdateTime"`
-	// 软删除字段
-	DeletedAt gorm.DeletedAt `gorm:"index"`
+	CommonTableTails
 }
 
 func (c *RDSClient) CreatePostInfo(ctx context.Context, info *PostInfo) error {

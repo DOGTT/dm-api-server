@@ -3,7 +3,6 @@ package rds
 
 import (
 	"context"
-	"time"
 )
 
 func init() {
@@ -20,10 +19,8 @@ type ChannelTypeInfo struct {
 	// 主题色, 16进制
 	// 如: #FF0000
 	ThemeColor string `gorm:"type:varchar(12)"`
-	// 创建时间
-	CreatedAt time.Time `gorm:"autoCreateTime"`
-	// 更新时间
-	UpdatedAt time.Time `gorm:"autoUpdateTime"`
+
+	CommonTableTails
 }
 
 func (c *RDSClient) ListChannelTypeInfo(ctx context.Context) (list []*ChannelTypeInfo, err error) {

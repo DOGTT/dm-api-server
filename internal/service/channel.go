@@ -56,6 +56,11 @@ func (s *Service) ChannelBaseQueryByBound(ctx context.Context, req *api.ChannelB
 	return
 }
 
+func (s *Service) ChannelBaseQueryByUser(ctx context.Context, req *api.ChannelBaseQueryByUserReq) (res *api.ChannelBaseQueryByUserRes, err error) {
+	log.D(ctx, "request in", "req", req)
+	return
+}
+
 func (s *Service) ChannelInx(ctx context.Context, req *api.ChannelInxReq) (res *api.ChannelInxRes, err error) {
 	log.D(ctx, "request in", "req", req)
 	res = new(api.ChannelInxRes)
@@ -69,16 +74,16 @@ func (s *Service) ChannelInx(ctx context.Context, req *api.ChannelInxReq) (res *
 		return
 	}
 	// 状态互动基于用户
-	if req.GetIxnState() != 0 {
-		dbIn := &rds.UserChannelIxnState{
+	if req.GetInxState() != 0 {
+		dbIn := &rds.ChannelIxnState{
 			UId:       tc.UId,
 			ChannelId: chanId,
-			IxnState:  req.GetIxnState(),
+			IxnState:  req.GetInxState(),
 		}
-		if req.GetStateUndo() == api.InxUndoType_UNDO {
-			err = s.data.DeleteUserChannelIxnState(ctx, dbIn)
+		if req.GetInxStateUndo() == api.InxUndoType_UNDO {
+			err = s.data.DeleteChannelIxnState(ctx, dbIn)
 		} else {
-			err = s.data.CreateUserChannelIxnState(ctx, dbIn)
+			err = s.data.CreateChannelIxnState(ctx, dbIn)
 		}
 		if err != nil {
 			log.E(ctx, "mod user channel ixn state error", err)
@@ -87,7 +92,7 @@ func (s *Service) ChannelInx(ctx context.Context, req *api.ChannelInxReq) (res *
 		}
 	}
 	// 事件互动基于用户和爱宠
-	if req.GetIxnEvent() != 0 {
+	if req.GetPetInxEvent() != 0 {
 		// 加载爱宠id
 		var petIds []uint64
 		petIds, err = s.data.GetPetIdsFromUserId(ctx, tc.UId)
@@ -96,16 +101,16 @@ func (s *Service) ChannelInx(ctx context.Context, req *api.ChannelInxReq) (res *
 			err = putDescByDBErr(err)
 			return
 		}
-		events := make([]*rds.UserChannelIxnEvent, len(petIds))
+		events := make([]*rds.ChannelPetIxnEvent, len(petIds))
 		for i, pid := range petIds {
-			events[i] = &rds.UserChannelIxnEvent{
+			events[i] = &rds.ChannelPetIxnEvent{
 				UId:       tc.UId,
 				PId:       pid,
 				ChannelId: chanId,
-				IxnEvent:  req.GetIxnEvent(),
+				IxnEvent:  req.GetPetInxEvent(),
 			}
 		}
-		err = s.data.BatchCreateUserPetChannelIxnEvent(ctx, events)
+		err = s.data.BatchCreateChannelPetIxnEvent(ctx, events)
 		if err != nil {
 			log.E(ctx, "create user channel ixn event error", err)
 			err = putDescByDBErr(err)
@@ -346,13 +351,13 @@ func (s *Service) asyncUpdateChannelStatsByInx(ctx context.Context, channelId ui
 	go func() {
 		var (
 			err         error
-			event       = inxReq.GetIxnEvent()
-			status      = inxReq.GetIxnState()
+			status      = inxReq.GetInxState()
+			petEvent    = inxReq.GetPetInxEvent()
 			rdsStatItem rds.ChannelStatsType
 		)
-		if event != api.ChannelIxnEvent_EVENT_DEFAULT {
-			switch event {
-			case api.ChannelIxnEvent_PEE:
+		if petEvent != api.ChannelPetIxnEvent_CPIE_UNSPECIFIED {
+			switch petEvent {
+			case api.ChannelPetIxnEvent_PEE:
 				rdsStatItem = rds.ChannelStatsPee
 			}
 			err = s.data.ChannelStatsIncrease(ctx, channelId, rdsStatItem)
@@ -360,19 +365,19 @@ func (s *Service) asyncUpdateChannelStatsByInx(ctx context.Context, channelId ui
 				log.E(ctx, "event stats increase error", err, "inx_req", inxReq)
 			}
 		}
-		if status != api.ChannelIxnState_STATE_DEFAULT {
+		if status != api.ChannelUserIxnState_CUIS_UNSPECIFIED {
 			switch status {
-			case api.ChannelIxnState_STAR:
+			case api.ChannelUserIxnState_STAR:
 				rdsStatItem = rds.ChannelStatsStar
 			}
-			if inxReq.GetStateUndo() == api.InxUndoType_UNDO {
+			if inxReq.GetInxStateUndo() == api.InxUndoType_UNDO {
 				err = s.data.ChannelStatsDecrease(ctx, channelId, rdsStatItem)
 			} else {
 				err = s.data.ChannelStatsIncrease(ctx, channelId, rdsStatItem)
 			}
 			if err != nil {
 				log.E(ctx, "status stats change error", err,
-					"inx_req", inxReq, "is_undo", inxReq.GetStateUndo().String())
+					"inx_req", inxReq, "is_undo", inxReq.GetInxStateUndo().String())
 			}
 		}
 	}()

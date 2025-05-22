@@ -3,7 +3,6 @@ package rds
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"gorm.io/gorm"
 )
@@ -45,10 +44,7 @@ type PetInfo struct {
 	// 关联
 	Users []*UserInfo `gorm:"many2many:user_pets;"`
 
-	CreatedAt time.Time `gorm:"autoCreateTime"`
-	UpdatedAt time.Time `gorm:"autoUpdateTime"`
-	// 软删除字段
-	DeletedAt gorm.DeletedAt `gorm:"index"`
+	CommonTableTails
 }
 
 func (p *PetInfo) TableName() string {

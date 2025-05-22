@@ -45,6 +45,21 @@ type ChannelBaseQueryByBoundRes struct {
 	Channels *[]ChannelInfo `json:"channels,omitempty"`
 }
 
+// ChannelBaseQueryByUserReq defines model for ChannelBaseQueryByUserReq.
+type ChannelBaseQueryByUserReq struct {
+	// IxnEvent 互动时间类型, 二选一
+	IxnEvent *int `json:"ixn_event,omitempty"`
+
+	// IxnState 互动状态类型, 二选一
+	IxnState *int    `json:"ixn_state,omitempty"`
+	UserId   *string `json:"user_id,omitempty"`
+}
+
+// ChannelBaseQueryByUserRes defines model for ChannelBaseQueryByUserRes.
+type ChannelBaseQueryByUserRes struct {
+	Channels *[]ChannelInfo `json:"channels,omitempty"`
+}
+
 // ChannelCreateReq 足迹创建
 type ChannelCreateReq struct {
 	// Channel 频道信息
@@ -100,14 +115,17 @@ type ChannelInfo struct {
 type ChannelInxReq struct {
 	ChanId *string `json:"chan_id,omitempty"`
 
-	// IxnEvent 互动事件
-	IxnEvent *int `json:"ixn_event,omitempty"`
+	// InxEvent 互动事件
+	InxEvent *int `json:"inx_event,omitempty"`
 
-	// IxnState 互动状态
-	IxnState *int `json:"ixn_state,omitempty"`
+	// InxState 互动状态
+	InxState *int `json:"inx_state,omitempty"`
 
-	// StateUndo 是否撤销状态
-	StateUndo *int `json:"state_undo,omitempty"`
+	// InxStateUndo 是否撤销状态
+	InxStateUndo *int `json:"inx_state_undo,omitempty"`
+
+	// PetInxEvent 宠物互动事件
+	PetInxEvent *int `json:"pet_inx_event,omitempty"`
 }
 
 // ChannelInxRes defines model for ChannelInxRes.
@@ -130,8 +148,15 @@ type ChannelPostDeleteRes = map[string]interface{}
 
 // ChannelPostInxReq defines model for ChannelPostInxReq.
 type ChannelPostInxReq struct {
-	ChanId *string `json:"chan_id,omitempty"`
-	PostId *string `json:"post_id,omitempty"`
+	// InxState 互动状态
+	InxState *int `json:"inx_state,omitempty"`
+
+	// InxStateUndo 是否撤销状态
+	InxStateUndo *int `json:"inx_state_undo,omitempty"`
+
+	// IxnEvent 互动事件
+	IxnEvent *int    `json:"ixn_event,omitempty"`
+	PostId   *string `json:"post_id,omitempty"`
 }
 
 // ChannelPostInxRes defines model for ChannelPostInxRes.
@@ -209,23 +234,11 @@ type ChannelUpdateRes struct {
 	Channel *ChannelInfo `json:"channel,omitempty"`
 }
 
-// FastRegisterData 宠物快速注册信息
-type FastRegisterData struct {
-	// PetAvatarData 宠物头像 base64 data
-	PetAvatarData *string `json:"pet_avatar_data,omitempty"`
-
-	// PetName 名字
-	PetName *string `json:"pet_name,omitempty"`
-
-	// PetTitle 宠物和人的关系
-	PetTitle *string `json:"pet_title,omitempty"`
-}
-
 // FastRegisterWeChatReq 快速注册请求
 type FastRegisterWeChatReq struct {
 	// RegData 宠物快速注册信息
-	RegData *FastRegisterData `json:"reg_data,omitempty"`
-	WxCode  *string           `json:"wx_code,omitempty"`
+	RegData *UserFastRegisterData `json:"reg_data,omitempty"`
+	WxCode  *string               `json:"wx_code,omitempty"`
 }
 
 // FastRegisterWeChatRes defines model for FastRegisterWeChatRes.
@@ -277,6 +290,17 @@ type MediaPutURLBatchGetRes struct {
 	Media *[]MediaInfo `json:"media,omitempty"`
 }
 
+// NotifyInfo 系统通知
+type NotifyInfo struct {
+	// Content 正文内容
+	Content   *string `json:"content,omitempty"`
+	CreatedAt *string `json:"created_at,omitempty"`
+
+	// Id 通知id
+	Id        *string `json:"id,omitempty"`
+	UpdatedAt *string `json:"updated_at,omitempty"`
+}
+
 // PetInfo defines model for PetInfo.
 type PetInfo struct {
 	Avatar    *MediaInfo `json:"avatar,omitempty"`
@@ -310,20 +334,85 @@ type PostInfo struct {
 	// Id 评论id
 	Id *string `json:"id,omitempty"`
 
+	// MediaIds 媒体id
+	MediaIds *[]string `json:"media_ids,omitempty"`
+
 	// ParentId 上级帖子id
 	ParentId *string `json:"parent_id,omitempty"`
 
 	// RootId 根id, 频道id
 	RootId *string `json:"root_id,omitempty"`
 
+	// Stats 动态状态信息，只读
+	Stats *PostStats `json:"stats,omitempty"`
+
 	// Uid 足迹作者, 不可更新
 	Uid       *string `json:"uid,omitempty"`
 	UpdatedAt *string `json:"updated_at,omitempty"`
 }
 
+// PostReactionInfo defines model for PostReactionInfo.
+type PostReactionInfo struct {
+	// Count 反应数量
+	Count *int32 `json:"count,omitempty"`
+
+	// Id 反应类型
+	Id *string `json:"id,omitempty"`
+
+	// Signs 反应用户信息列表.
+	Signs *[]PostReactionSignInfo `json:"signs,omitempty"`
+
+	// Type 反应类型
+	Type      *int    `json:"type,omitempty"`
+	UpdatedAt *string `json:"updated_at,omitempty"`
+}
+
+// PostReactionSignInfo defines model for PostReactionSignInfo.
+type PostReactionSignInfo struct {
+	UserId   *string `json:"user_id,omitempty"`
+	UserName *string `json:"user_name,omitempty"`
+}
+
+// PostStats 频道状态, 只读
+type PostStats struct {
+	LastReplyAt *string             `json:"last_reply_at,omitempty"`
+	LastStarAt  *string             `json:"last_star_at,omitempty"`
+	Reactions   *[]PostReactionInfo `json:"reactions,omitempty"`
+
+	// RepliesCnt 回复数量
+	RepliesCnt *int32 `json:"replies_cnt,omitempty"`
+
+	// StarsCnt 收藏数
+	StarsCnt  *int32  `json:"stars_cnt,omitempty"`
+	UpdatedAt *string `json:"updated_at,omitempty"`
+}
+
+// SystemNotifyQueryReq defines model for SystemNotifyQueryReq.
+type SystemNotifyQueryReq struct {
+	LastNotifyId *string `json:"last_notify_id,omitempty"`
+}
+
+// SystemNotifyQueryRes defines model for SystemNotifyQueryRes.
+type SystemNotifyQueryRes struct {
+	Notifies *[]NotifyInfo `json:"notifies,omitempty"`
+}
+
+// UserFastRegisterData 宠物快速注册信息
+type UserFastRegisterData struct {
+	// PetAvatarData 宠物头像 base64 data
+	PetAvatarData *string `json:"pet_avatar_data,omitempty"`
+
+	// PetName 名字
+	PetName *string `json:"pet_name,omitempty"`
+
+	// PetTitle 宠物和人的关系
+	PetTitle *string `json:"pet_title,omitempty"`
+}
+
 // UserInfo defines model for UserInfo.
 type UserInfo struct {
 	Id       *string        `json:"id,omitempty"`
+	Name     *string        `json:"name,omitempty"`
 	UserPets *[]UserPetInfo `json:"user_pets,omitempty"`
 }
 
@@ -390,6 +479,9 @@ type BaseServiceChannelUpdateJSONRequestBody = ChannelUpdateReq
 // BaseServiceChannelBaseQueryByBoundJSONRequestBody defines body for BaseServiceChannelBaseQueryByBound for application/json ContentType.
 type BaseServiceChannelBaseQueryByBoundJSONRequestBody = ChannelBaseQueryByBoundReq
 
+// BaseServiceChannelBaseQueryByUserJSONRequestBody defines body for BaseServiceChannelBaseQueryByUser for application/json ContentType.
+type BaseServiceChannelBaseQueryByUserJSONRequestBody = ChannelBaseQueryByUserReq
+
 // BaseServiceChannelInxJSONRequestBody defines body for BaseServiceChannelInx for application/json ContentType.
 type BaseServiceChannelInxJSONRequestBody = ChannelInxReq
 
@@ -404,6 +496,9 @@ type BaseServiceChannelPostInxJSONRequestBody = ChannelPostInxReq
 
 // BaseServiceChannelPostLoadJSONRequestBody defines body for BaseServiceChannelPostLoad for application/json ContentType.
 type BaseServiceChannelPostLoadJSONRequestBody = ChannelPostLoadReq
+
+// BaseServiceSystemNotifyQueryJSONRequestBody defines body for BaseServiceSystemNotifyQuery for application/json ContentType.
+type BaseServiceSystemNotifyQueryJSONRequestBody = SystemNotifyQueryReq
 
 // BaseServiceFastRegisterWeChatJSONRequestBody defines body for BaseServiceFastRegisterWeChat for application/json ContentType.
 type BaseServiceFastRegisterWeChatJSONRequestBody = FastRegisterWeChatReq
@@ -505,6 +600,11 @@ type ClientInterface interface {
 
 	BaseServiceChannelBaseQueryByBound(ctx context.Context, body BaseServiceChannelBaseQueryByBoundJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// BaseServiceChannelBaseQueryByUserWithBody request with any body
+	BaseServiceChannelBaseQueryByUserWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	BaseServiceChannelBaseQueryByUser(ctx context.Context, body BaseServiceChannelBaseQueryByUserJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// BaseServiceChannelFullQueryById request
 	BaseServiceChannelFullQueryById(ctx context.Context, params *BaseServiceChannelFullQueryByIdParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -544,6 +644,11 @@ type ClientInterface interface {
 
 	// BaseServiceMediaPutURLBatchGet request
 	BaseServiceMediaPutURLBatchGet(ctx context.Context, params *BaseServiceMediaPutURLBatchGetParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BaseServiceSystemNotifyQueryWithBody request with any body
+	BaseServiceSystemNotifyQueryWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	BaseServiceSystemNotifyQuery(ctx context.Context, body BaseServiceSystemNotifyQueryJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// BaseServiceFastRegisterWeChatWithBody request with any body
 	BaseServiceFastRegisterWeChatWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -638,6 +743,30 @@ func (c *Client) BaseServiceChannelBaseQueryByBoundWithBody(ctx context.Context,
 
 func (c *Client) BaseServiceChannelBaseQueryByBound(ctx context.Context, body BaseServiceChannelBaseQueryByBoundJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewBaseServiceChannelBaseQueryByBoundRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServiceChannelBaseQueryByUserWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServiceChannelBaseQueryByUserRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServiceChannelBaseQueryByUser(ctx context.Context, body BaseServiceChannelBaseQueryByUserJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServiceChannelBaseQueryByUserRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -818,6 +947,30 @@ func (c *Client) BaseServiceLocationCommonSearch(ctx context.Context, params *Ba
 
 func (c *Client) BaseServiceMediaPutURLBatchGet(ctx context.Context, params *BaseServiceMediaPutURLBatchGetParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewBaseServiceMediaPutURLBatchGetRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServiceSystemNotifyQueryWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServiceSystemNotifyQueryRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServiceSystemNotifyQuery(ctx context.Context, body BaseServiceSystemNotifyQueryJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServiceSystemNotifyQueryRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -1062,6 +1215,46 @@ func NewBaseServiceChannelBaseQueryByBoundRequestWithBody(server string, content
 	}
 
 	operationPath := fmt.Sprintf("/v1/channel/base_query_by_bound")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewBaseServiceChannelBaseQueryByUserRequest calls the generic BaseServiceChannelBaseQueryByUser builder with application/json body
+func NewBaseServiceChannelBaseQueryByUserRequest(server string, body BaseServiceChannelBaseQueryByUserJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewBaseServiceChannelBaseQueryByUserRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewBaseServiceChannelBaseQueryByUserRequestWithBody generates requests for BaseServiceChannelBaseQueryByUser with any type of body
+func NewBaseServiceChannelBaseQueryByUserRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/channel/base_query_by_user")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1536,6 +1729,46 @@ func NewBaseServiceMediaPutURLBatchGetRequest(server string, params *BaseService
 	return req, nil
 }
 
+// NewBaseServiceSystemNotifyQueryRequest calls the generic BaseServiceSystemNotifyQuery builder with application/json body
+func NewBaseServiceSystemNotifyQueryRequest(server string, body BaseServiceSystemNotifyQueryJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewBaseServiceSystemNotifyQueryRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewBaseServiceSystemNotifyQueryRequestWithBody generates requests for BaseServiceSystemNotifyQuery with any type of body
+func NewBaseServiceSystemNotifyQueryRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/notify/query")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewBaseServiceFastRegisterWeChatRequest calls the generic BaseServiceFastRegisterWeChat builder with application/json body
 func NewBaseServiceFastRegisterWeChatRequest(server string, body BaseServiceFastRegisterWeChatJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -1766,6 +1999,11 @@ type ClientWithResponsesInterface interface {
 
 	BaseServiceChannelBaseQueryByBoundWithResponse(ctx context.Context, body BaseServiceChannelBaseQueryByBoundJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceChannelBaseQueryByBoundResponse, error)
 
+	// BaseServiceChannelBaseQueryByUserWithBodyWithResponse request with any body
+	BaseServiceChannelBaseQueryByUserWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceChannelBaseQueryByUserResponse, error)
+
+	BaseServiceChannelBaseQueryByUserWithResponse(ctx context.Context, body BaseServiceChannelBaseQueryByUserJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceChannelBaseQueryByUserResponse, error)
+
 	// BaseServiceChannelFullQueryByIdWithResponse request
 	BaseServiceChannelFullQueryByIdWithResponse(ctx context.Context, params *BaseServiceChannelFullQueryByIdParams, reqEditors ...RequestEditorFn) (*BaseServiceChannelFullQueryByIdResponse, error)
 
@@ -1805,6 +2043,11 @@ type ClientWithResponsesInterface interface {
 
 	// BaseServiceMediaPutURLBatchGetWithResponse request
 	BaseServiceMediaPutURLBatchGetWithResponse(ctx context.Context, params *BaseServiceMediaPutURLBatchGetParams, reqEditors ...RequestEditorFn) (*BaseServiceMediaPutURLBatchGetResponse, error)
+
+	// BaseServiceSystemNotifyQueryWithBodyWithResponse request with any body
+	BaseServiceSystemNotifyQueryWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceSystemNotifyQueryResponse, error)
+
+	BaseServiceSystemNotifyQueryWithResponse(ctx context.Context, body BaseServiceSystemNotifyQueryJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceSystemNotifyQueryResponse, error)
 
 	// BaseServiceFastRegisterWeChatWithBodyWithResponse request with any body
 	BaseServiceFastRegisterWeChatWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceFastRegisterWeChatResponse, error)
@@ -1907,6 +2150,28 @@ func (r BaseServiceChannelBaseQueryByBoundResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r BaseServiceChannelBaseQueryByBoundResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type BaseServiceChannelBaseQueryByUserResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *ChannelBaseQueryByUserRes
+}
+
+// Status returns HTTPResponse.Status
+func (r BaseServiceChannelBaseQueryByUserResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BaseServiceChannelBaseQueryByUserResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -2133,6 +2398,28 @@ func (r BaseServiceMediaPutURLBatchGetResponse) StatusCode() int {
 	return 0
 }
 
+type BaseServiceSystemNotifyQueryResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *SystemNotifyQueryRes
+}
+
+// Status returns HTTPResponse.Status
+func (r BaseServiceSystemNotifyQueryResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BaseServiceSystemNotifyQueryResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type BaseServiceFastRegisterWeChatResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -2281,6 +2568,23 @@ func (c *ClientWithResponses) BaseServiceChannelBaseQueryByBoundWithResponse(ctx
 	return ParseBaseServiceChannelBaseQueryByBoundResponse(rsp)
 }
 
+// BaseServiceChannelBaseQueryByUserWithBodyWithResponse request with arbitrary body returning *BaseServiceChannelBaseQueryByUserResponse
+func (c *ClientWithResponses) BaseServiceChannelBaseQueryByUserWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceChannelBaseQueryByUserResponse, error) {
+	rsp, err := c.BaseServiceChannelBaseQueryByUserWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServiceChannelBaseQueryByUserResponse(rsp)
+}
+
+func (c *ClientWithResponses) BaseServiceChannelBaseQueryByUserWithResponse(ctx context.Context, body BaseServiceChannelBaseQueryByUserJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceChannelBaseQueryByUserResponse, error) {
+	rsp, err := c.BaseServiceChannelBaseQueryByUser(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServiceChannelBaseQueryByUserResponse(rsp)
+}
+
 // BaseServiceChannelFullQueryByIdWithResponse request returning *BaseServiceChannelFullQueryByIdResponse
 func (c *ClientWithResponses) BaseServiceChannelFullQueryByIdWithResponse(ctx context.Context, params *BaseServiceChannelFullQueryByIdParams, reqEditors ...RequestEditorFn) (*BaseServiceChannelFullQueryByIdResponse, error) {
 	rsp, err := c.BaseServiceChannelFullQueryById(ctx, params, reqEditors...)
@@ -2409,6 +2713,23 @@ func (c *ClientWithResponses) BaseServiceMediaPutURLBatchGetWithResponse(ctx con
 		return nil, err
 	}
 	return ParseBaseServiceMediaPutURLBatchGetResponse(rsp)
+}
+
+// BaseServiceSystemNotifyQueryWithBodyWithResponse request with arbitrary body returning *BaseServiceSystemNotifyQueryResponse
+func (c *ClientWithResponses) BaseServiceSystemNotifyQueryWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceSystemNotifyQueryResponse, error) {
+	rsp, err := c.BaseServiceSystemNotifyQueryWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServiceSystemNotifyQueryResponse(rsp)
+}
+
+func (c *ClientWithResponses) BaseServiceSystemNotifyQueryWithResponse(ctx context.Context, body BaseServiceSystemNotifyQueryJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceSystemNotifyQueryResponse, error) {
+	rsp, err := c.BaseServiceSystemNotifyQuery(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServiceSystemNotifyQueryResponse(rsp)
 }
 
 // BaseServiceFastRegisterWeChatWithBodyWithResponse request with arbitrary body returning *BaseServiceFastRegisterWeChatResponse
@@ -2565,6 +2886,32 @@ func ParseBaseServiceChannelBaseQueryByBoundResponse(rsp *http.Response) (*BaseS
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest ChannelBaseQueryByBoundRes
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseBaseServiceChannelBaseQueryByUserResponse parses an HTTP response from a BaseServiceChannelBaseQueryByUserWithResponse call
+func ParseBaseServiceChannelBaseQueryByUserResponse(rsp *http.Response) (*BaseServiceChannelBaseQueryByUserResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BaseServiceChannelBaseQueryByUserResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ChannelBaseQueryByUserRes
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -2835,6 +3182,32 @@ func ParseBaseServiceMediaPutURLBatchGetResponse(rsp *http.Response) (*BaseServi
 	return response, nil
 }
 
+// ParseBaseServiceSystemNotifyQueryResponse parses an HTTP response from a BaseServiceSystemNotifyQueryWithResponse call
+func ParseBaseServiceSystemNotifyQueryResponse(rsp *http.Response) (*BaseServiceSystemNotifyQueryResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BaseServiceSystemNotifyQueryResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SystemNotifyQueryRes
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseBaseServiceFastRegisterWeChatResponse parses an HTTP response from a BaseServiceFastRegisterWeChatWithResponse call
 func ParseBaseServiceFastRegisterWeChatResponse(rsp *http.Response) (*BaseServiceFastRegisterWeChatResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -2954,6 +3327,9 @@ type ServerInterface interface {
 	// (POST /v1/channel/base_query_by_bound)
 	BaseServiceChannelBaseQueryByBound(c *gin.Context)
 
+	// (POST /v1/channel/base_query_by_user)
+	BaseServiceChannelBaseQueryByUser(c *gin.Context)
+
 	// (GET /v1/channel/full_query_by_id)
 	BaseServiceChannelFullQueryById(c *gin.Context, params BaseServiceChannelFullQueryByIdParams)
 
@@ -2983,6 +3359,9 @@ type ServerInterface interface {
 
 	// (GET /v1/media/put_url/batch)
 	BaseServiceMediaPutURLBatchGet(c *gin.Context, params BaseServiceMediaPutURLBatchGetParams)
+
+	// (POST /v1/notify/query)
+	BaseServiceSystemNotifyQuery(c *gin.Context)
 
 	// (POST /v1/user/fast_reg/wx)
 	BaseServiceFastRegisterWeChat(c *gin.Context)
@@ -3077,6 +3456,21 @@ func (siw *ServerInterfaceWrapper) BaseServiceChannelBaseQueryByBound(c *gin.Con
 	}
 
 	siw.Handler.BaseServiceChannelBaseQueryByBound(c)
+}
+
+// BaseServiceChannelBaseQueryByUser operation middleware
+func (siw *ServerInterfaceWrapper) BaseServiceChannelBaseQueryByUser(c *gin.Context) {
+
+	c.Set(BearerAuthScopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.BaseServiceChannelBaseQueryByUser(c)
 }
 
 // BaseServiceChannelFullQueryById operation middleware
@@ -3297,6 +3691,21 @@ func (siw *ServerInterfaceWrapper) BaseServiceMediaPutURLBatchGet(c *gin.Context
 	siw.Handler.BaseServiceMediaPutURLBatchGet(c, params)
 }
 
+// BaseServiceSystemNotifyQuery operation middleware
+func (siw *ServerInterfaceWrapper) BaseServiceSystemNotifyQuery(c *gin.Context) {
+
+	c.Set(BearerAuthScopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.BaseServiceSystemNotifyQuery(c)
+}
+
 // BaseServiceFastRegisterWeChat operation middleware
 func (siw *ServerInterfaceWrapper) BaseServiceFastRegisterWeChat(c *gin.Context) {
 
@@ -3401,6 +3810,7 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	router.POST(options.BaseURL+"/v1/channel", wrapper.BaseServiceChannelCreate)
 	router.PUT(options.BaseURL+"/v1/channel", wrapper.BaseServiceChannelUpdate)
 	router.POST(options.BaseURL+"/v1/channel/base_query_by_bound", wrapper.BaseServiceChannelBaseQueryByBound)
+	router.POST(options.BaseURL+"/v1/channel/base_query_by_user", wrapper.BaseServiceChannelBaseQueryByUser)
 	router.GET(options.BaseURL+"/v1/channel/full_query_by_id", wrapper.BaseServiceChannelFullQueryById)
 	router.POST(options.BaseURL+"/v1/channel/inx", wrapper.BaseServiceChannelInx)
 	router.DELETE(options.BaseURL+"/v1/channel/post", wrapper.BaseServiceChannelPostDelete)
@@ -3411,6 +3821,7 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	router.GET(options.BaseURL+"/v1/channel/type", wrapper.BaseServiceChannelTypeList)
 	router.GET(options.BaseURL+"/v1/location/search", wrapper.BaseServiceLocationCommonSearch)
 	router.GET(options.BaseURL+"/v1/media/put_url/batch", wrapper.BaseServiceMediaPutURLBatchGet)
+	router.POST(options.BaseURL+"/v1/notify/query", wrapper.BaseServiceSystemNotifyQuery)
 	router.POST(options.BaseURL+"/v1/user/fast_reg/wx", wrapper.BaseServiceFastRegisterWeChat)
 	router.POST(options.BaseURL+"/v1/user/login/wx", wrapper.BaseServiceLoginWeChat)
 	router.GET(options.BaseURL+"/v1/user/pet", wrapper.BaseServiceUserPeGet)
@@ -3420,48 +3831,54 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"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",
-	"AAD//+k9J0H2OAAA",
+	"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",
+	"2HFFAAA=",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

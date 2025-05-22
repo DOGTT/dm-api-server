@@ -11,7 +11,7 @@ import (
 	"github.com/DOGTT/dm-api-server/internal/utils/log"
 )
 
-func (s *Service) WeChatLogin(ctx context.Context, req *api.LoginWeChatReq) (res *api.LoginWeChatRes, err error) {
+func (s *Service) LoginWeChat(ctx context.Context, req *api.LoginWeChatReq) (res *api.LoginWeChatRes, err error) {
 	log.D(ctx, "request in", "req", req)
 	res = &api.LoginWeChatRes{}
 	wxId, err := s.wxCodeToWxId(ctx, req.GetWxCode())
@@ -92,7 +92,7 @@ func (s *Service) dbCreateUserAndPet(ctx context.Context, up *rds.UserPet) (err 
 	return err
 }
 
-func (s *Service) WeChatRegisterFast(ctx context.Context, req *api.FastRegisterWeChatReq) (res *api.FastRegisterWeChatRes, err error) {
+func (s *Service) FastRegisterWeChat(ctx context.Context, req *api.FastRegisterWeChatReq) (res *api.FastRegisterWeChatRes, err error) {
 	log.D(ctx, "request in", "req", map[string]any{
 		"avatar_len": len(req.GetRegData().GetPetAvatarData()),
 		"wx_code":    req.GetWxCode(),
@@ -108,7 +108,8 @@ func (s *Service) WeChatRegisterFast(ctx context.Context, req *api.FastRegisterW
 	userPet := &rds.UserPet{
 		PetTitle: req.GetRegData().GetPetTitle(),
 		User: &rds.UserInfo{
-			WeChatId: wxId,
+			WeChatId: &wxId,
+			Name:     fmt.Sprintf("%s的%s", req.GetRegData().GetPetName(), req.GetRegData().GetPetTitle()),
 		},
 		Pet: &rds.PetInfo{
 			Name:     req.GetRegData().GetPetName(),

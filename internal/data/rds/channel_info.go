@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"time"
 
 	"gorm.io/gorm/clause"
 
@@ -43,16 +42,13 @@ type ChannelInfo struct {
 	LngLat string `gorm:"type:geometry(Point,4326);not null"`
 	// 位置的关键兴趣点详情
 	PoiDetail PoiDetail `gorm:"type:jsonb"`
+
 	// 配置和状态子表
 	Set ChannelSet `gorm:"foreignKey:Id;constraint:OnDelete:CASCADE"`
 	// 互动统计子表
 	Stats ChannelStats `gorm:"foreignKey:Id;constraint:OnDelete:CASCADE"`
 
-	// --- 基础字段
-	CreatedAt time.Time `gorm:"autoCreateTime"`
-	UpdatedAt time.Time `gorm:"autoUpdateTime"`
-	// 软删除字段
-	DeletedAt gorm.DeletedAt `gorm:"index"`
+	CommonTableTails
 }
 
 type PoiDetail struct {

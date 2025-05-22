@@ -9,7 +9,7 @@ import (
 	"github.com/DOGTT/dm-api-server/internal/utils/log"
 )
 
-func (s *Service) MediaPutPresignURLBatchGet(ctx context.Context, req *base_api.MediaPutURLBatchGetReq) (res *base_api.MediaPutURLBatchGetRes, err error) {
+func (s *Service) MediaPutURLBatchGet(ctx context.Context, req *base_api.MediaPutURLBatchGetReq) (res *base_api.MediaPutURLBatchGetRes, err error) {
 	log.D(ctx, "request in", "req", req)
 	var (
 		n = int(req.GetCount())

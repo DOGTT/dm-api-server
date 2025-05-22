@@ -21,104 +21,152 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// 状态互动类型
-type ChannelIxnState int32
+// 频道用户状态互动状态
+type ChannelUserIxnState int32
 
 const (
-	ChannelIxnState_STATE_DEFAULT ChannelIxnState = 0
+	ChannelUserIxnState_CUIS_UNSPECIFIED ChannelUserIxnState = 0
 	// 关注/收藏, 关注后可以发言
-	ChannelIxnState_STAR ChannelIxnState = 1
+	ChannelUserIxnState_STAR ChannelUserIxnState = 1
 	// 加入, 加入后可以逐渐无限制发言, 有一定条件
-	ChannelIxnState_LAND ChannelIxnState = 3
+	ChannelUserIxnState_LAND ChannelUserIxnState = 2
 )
 
-// Enum value maps for ChannelIxnState.
+// Enum value maps for ChannelUserIxnState.
 var (
-	ChannelIxnState_name = map[int32]string{
-		0: "STATE_DEFAULT",
+	ChannelUserIxnState_name = map[int32]string{
+		0: "CUIS_UNSPECIFIED",
 		1: "STAR",
-		3: "LAND",
+		2: "LAND",
 	}
-	ChannelIxnState_value = map[string]int32{
-		"STATE_DEFAULT": 0,
-		"STAR":          1,
-		"LAND":          3,
+	ChannelUserIxnState_value = map[string]int32{
+		"CUIS_UNSPECIFIED": 0,
+		"STAR":             1,
+		"LAND":             2,
 	}
 )
 
-func (x ChannelIxnState) Enum() *ChannelIxnState {
-	p := new(ChannelIxnState)
+func (x ChannelUserIxnState) Enum() *ChannelUserIxnState {
+	p := new(ChannelUserIxnState)
 	*p = x
 	return p
 }
 
-func (x ChannelIxnState) String() string {
+func (x ChannelUserIxnState) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
-func (ChannelIxnState) Descriptor() protoreflect.EnumDescriptor {
+func (ChannelUserIxnState) Descriptor() protoreflect.EnumDescriptor {
 	return file_channel_proto_enumTypes[0].Descriptor()
 }
 
-func (ChannelIxnState) Type() protoreflect.EnumType {
+func (ChannelUserIxnState) Type() protoreflect.EnumType {
 	return &file_channel_proto_enumTypes[0]
 }
 
-func (x ChannelIxnState) Number() protoreflect.EnumNumber {
+func (x ChannelUserIxnState) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
 
-// Deprecated: Use ChannelIxnState.Descriptor instead.
-func (ChannelIxnState) EnumDescriptor() ([]byte, []int) {
+// Deprecated: Use ChannelUserIxnState.Descriptor instead.
+func (ChannelUserIxnState) EnumDescriptor() ([]byte, []int) {
 	return file_channel_proto_rawDescGZIP(), []int{0}
 }
 
-// 事件互动类型
-type ChannelIxnEvent int32
+// 频道用户状态互动事件
+type ChannelUserIxnEvent int32
 
 const (
-	ChannelIxnEvent_EVENT_DEFAULT ChannelIxnEvent = 0
-	// 到达，类似于打卡
-	ChannelIxnEvent_PEE ChannelIxnEvent = 1
+	ChannelUserIxnEvent_CUIE_UNSPECIFIED ChannelUserIxnEvent = 0
+	// 分享
+	ChannelUserIxnEvent_SHARE ChannelUserIxnEvent = 1
 )
 
-// Enum value maps for ChannelIxnEvent.
+// Enum value maps for ChannelUserIxnEvent.
 var (
-	ChannelIxnEvent_name = map[int32]string{
-		0: "EVENT_DEFAULT",
-		1: "PEE",
+	ChannelUserIxnEvent_name = map[int32]string{
+		0: "CUIE_UNSPECIFIED",
+		1: "SHARE",
 	}
-	ChannelIxnEvent_value = map[string]int32{
-		"EVENT_DEFAULT": 0,
-		"PEE":           1,
+	ChannelUserIxnEvent_value = map[string]int32{
+		"CUIE_UNSPECIFIED": 0,
+		"SHARE":            1,
 	}
 )
 
-func (x ChannelIxnEvent) Enum() *ChannelIxnEvent {
-	p := new(ChannelIxnEvent)
+func (x ChannelUserIxnEvent) Enum() *ChannelUserIxnEvent {
+	p := new(ChannelUserIxnEvent)
 	*p = x
 	return p
 }
 
-func (x ChannelIxnEvent) String() string {
+func (x ChannelUserIxnEvent) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
-func (ChannelIxnEvent) Descriptor() protoreflect.EnumDescriptor {
+func (ChannelUserIxnEvent) Descriptor() protoreflect.EnumDescriptor {
 	return file_channel_proto_enumTypes[1].Descriptor()
 }
 
-func (ChannelIxnEvent) Type() protoreflect.EnumType {
+func (ChannelUserIxnEvent) Type() protoreflect.EnumType {
 	return &file_channel_proto_enumTypes[1]
 }
 
-func (x ChannelIxnEvent) Number() protoreflect.EnumNumber {
+func (x ChannelUserIxnEvent) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
 
-// Deprecated: Use ChannelIxnEvent.Descriptor instead.
-func (ChannelIxnEvent) EnumDescriptor() ([]byte, []int) {
+// Deprecated: Use ChannelUserIxnEvent.Descriptor instead.
+func (ChannelUserIxnEvent) EnumDescriptor() ([]byte, []int) {
 	return file_channel_proto_rawDescGZIP(), []int{1}
+}
+
+// 频道宠物用户事件互动类型
+type ChannelPetIxnEvent int32
+
+const (
+	ChannelPetIxnEvent_CPIE_UNSPECIFIED ChannelPetIxnEvent = 0
+	// 狗狗到达，类似于打卡
+	ChannelPetIxnEvent_PEE ChannelPetIxnEvent = 1
+)
+
+// Enum value maps for ChannelPetIxnEvent.
+var (
+	ChannelPetIxnEvent_name = map[int32]string{
+		0: "CPIE_UNSPECIFIED",
+		1: "PEE",
+	}
+	ChannelPetIxnEvent_value = map[string]int32{
+		"CPIE_UNSPECIFIED": 0,
+		"PEE":              1,
+	}
+)
+
+func (x ChannelPetIxnEvent) Enum() *ChannelPetIxnEvent {
+	p := new(ChannelPetIxnEvent)
+	*p = x
+	return p
+}
+
+func (x ChannelPetIxnEvent) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (ChannelPetIxnEvent) Descriptor() protoreflect.EnumDescriptor {
+	return file_channel_proto_enumTypes[2].Descriptor()
+}
+
+func (ChannelPetIxnEvent) Type() protoreflect.EnumType {
+	return &file_channel_proto_enumTypes[2]
+}
+
+func (x ChannelPetIxnEvent) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use ChannelPetIxnEvent.Descriptor instead.
+func (ChannelPetIxnEvent) EnumDescriptor() ([]byte, []int) {
+	return file_channel_proto_rawDescGZIP(), []int{2}
 }
 
 // 足迹频道类型
@@ -488,17 +536,21 @@ var file_channel_proto_rawDesc = string([]byte{
 	0x09, 0x76, 0x69, 0x65, 0x77, 0x73, 0x5f, 0x63, 0x6e, 0x74, 0x18, 0x07, 0x20, 0x01, 0x28, 0x05,
 	0x52, 0x08, 0x76, 0x69, 0x65, 0x77, 0x73, 0x43, 0x6e, 0x74, 0x12, 0x1d, 0x0a, 0x0a, 0x75, 0x70,
 	0x64, 0x61, 0x74, 0x65, 0x64, 0x5f, 0x61, 0x74, 0x18, 0x20, 0x20, 0x01, 0x28, 0x03, 0x52, 0x09,
-	0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x64, 0x41, 0x74, 0x2a, 0x38, 0x0a, 0x0f, 0x43, 0x68, 0x61,
-	0x6e, 0x6e, 0x65, 0x6c, 0x49, 0x78, 0x6e, 0x53, 0x74, 0x61, 0x74, 0x65, 0x12, 0x11, 0x0a, 0x0d,
-	0x53, 0x54, 0x41, 0x54, 0x45, 0x5f, 0x44, 0x45, 0x46, 0x41, 0x55, 0x4c, 0x54, 0x10, 0x00, 0x12,
-	0x08, 0x0a, 0x04, 0x53, 0x54, 0x41, 0x52, 0x10, 0x01, 0x12, 0x08, 0x0a, 0x04, 0x4c, 0x41, 0x4e,
-	0x44, 0x10, 0x03, 0x2a, 0x2d, 0x0a, 0x0f, 0x43, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x49, 0x78,
-	0x6e, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x11, 0x0a, 0x0d, 0x45, 0x56, 0x45, 0x4e, 0x54, 0x5f,
-	0x44, 0x45, 0x46, 0x41, 0x55, 0x4c, 0x54, 0x10, 0x00, 0x12, 0x07, 0x0a, 0x03, 0x50, 0x45, 0x45,
-	0x10, 0x01, 0x42, 0x2d, 0x5a, 0x2b, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d,
-	0x2f, 0x44, 0x4f, 0x47, 0x54, 0x54, 0x2f, 0x64, 0x6d, 0x2d, 0x61, 0x70, 0x69, 0x2d, 0x73, 0x65,
-	0x72, 0x76, 0x65, 0x72, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x62, 0x61, 0x73, 0x65, 0x3b, 0x61, 0x70,
-	0x69, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x64, 0x41, 0x74, 0x2a, 0x3f, 0x0a, 0x13, 0x43, 0x68, 0x61,
+	0x6e, 0x6e, 0x65, 0x6c, 0x55, 0x73, 0x65, 0x72, 0x49, 0x78, 0x6e, 0x53, 0x74, 0x61, 0x74, 0x65,
+	0x12, 0x14, 0x0a, 0x10, 0x43, 0x55, 0x49, 0x53, 0x5f, 0x55, 0x4e, 0x53, 0x50, 0x45, 0x43, 0x49,
+	0x46, 0x49, 0x45, 0x44, 0x10, 0x00, 0x12, 0x08, 0x0a, 0x04, 0x53, 0x54, 0x41, 0x52, 0x10, 0x01,
+	0x12, 0x08, 0x0a, 0x04, 0x4c, 0x41, 0x4e, 0x44, 0x10, 0x02, 0x2a, 0x36, 0x0a, 0x13, 0x43, 0x68,
+	0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x55, 0x73, 0x65, 0x72, 0x49, 0x78, 0x6e, 0x45, 0x76, 0x65, 0x6e,
+	0x74, 0x12, 0x14, 0x0a, 0x10, 0x43, 0x55, 0x49, 0x45, 0x5f, 0x55, 0x4e, 0x53, 0x50, 0x45, 0x43,
+	0x49, 0x46, 0x49, 0x45, 0x44, 0x10, 0x00, 0x12, 0x09, 0x0a, 0x05, 0x53, 0x48, 0x41, 0x52, 0x45,
+	0x10, 0x01, 0x2a, 0x33, 0x0a, 0x12, 0x43, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x50, 0x65, 0x74,
+	0x49, 0x78, 0x6e, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x14, 0x0a, 0x10, 0x43, 0x50, 0x49, 0x45,
+	0x5f, 0x55, 0x4e, 0x53, 0x50, 0x45, 0x43, 0x49, 0x46, 0x49, 0x45, 0x44, 0x10, 0x00, 0x12, 0x07,
+	0x0a, 0x03, 0x50, 0x45, 0x45, 0x10, 0x01, 0x42, 0x2d, 0x5a, 0x2b, 0x67, 0x69, 0x74, 0x68, 0x75,
+	0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x44, 0x4f, 0x47, 0x54, 0x54, 0x2f, 0x64, 0x6d, 0x2d, 0x61,
+	0x70, 0x69, 0x2d, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x62, 0x61,
+	0x73, 0x65, 0x3b, 0x61, 0x70, 0x69, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 })
 
 var (
@@ -513,21 +565,22 @@ func file_channel_proto_rawDescGZIP() []byte {
 	return file_channel_proto_rawDescData
 }
 
-var file_channel_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
+var file_channel_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
 var file_channel_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_channel_proto_goTypes = []any{
-	(ChannelIxnState)(0),    // 0: channel.ChannelIxnState
-	(ChannelIxnEvent)(0),    // 1: channel.ChannelIxnEvent
-	(*ChannelTypeInfo)(nil), // 2: channel.ChannelTypeInfo
-	(*ChannelInfo)(nil),     // 3: channel.ChannelInfo
-	(*ChannelStats)(nil),    // 4: channel.ChannelStats
-	(*MediaInfo)(nil),       // 5: common.MediaInfo
-	(*LocationInfo)(nil),    // 6: common.LocationInfo
+	(ChannelUserIxnState)(0), // 0: channel.ChannelUserIxnState
+	(ChannelUserIxnEvent)(0), // 1: channel.ChannelUserIxnEvent
+	(ChannelPetIxnEvent)(0),  // 2: channel.ChannelPetIxnEvent
+	(*ChannelTypeInfo)(nil),  // 3: channel.ChannelTypeInfo
+	(*ChannelInfo)(nil),      // 4: channel.ChannelInfo
+	(*ChannelStats)(nil),     // 5: channel.ChannelStats
+	(*MediaInfo)(nil),        // 6: common.MediaInfo
+	(*LocationInfo)(nil),     // 7: common.LocationInfo
 }
 var file_channel_proto_depIdxs = []int32{
-	5, // 0: channel.ChannelInfo.avatar:type_name -> common.MediaInfo
-	6, // 1: channel.ChannelInfo.location:type_name -> common.LocationInfo
-	4, // 2: channel.ChannelInfo.stats:type_name -> channel.ChannelStats
+	6, // 0: channel.ChannelInfo.avatar:type_name -> common.MediaInfo
+	7, // 1: channel.ChannelInfo.location:type_name -> common.LocationInfo
+	5, // 2: channel.ChannelInfo.stats:type_name -> channel.ChannelStats
 	3, // [3:3] is the sub-list for method output_type
 	3, // [3:3] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name
@@ -546,7 +599,7 @@ func file_channel_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_channel_proto_rawDesc), len(file_channel_proto_rawDesc)),
-			NumEnums:      2,
+			NumEnums:      3,
 			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
