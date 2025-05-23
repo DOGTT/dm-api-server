@@ -5,42 +5,51 @@ package common;
 option go_package = "github.com/DOGTT/dm-api-server/api/base;api";
 
 message PointCoord {
-    float lat = 1;
-    float lng = 2;
+  float lat = 1;
+  float lng = 2;
 }
 
 message BoundCoord {
-    PointCoord sw = 1;
-    PointCoord ne = 2;
+  PointCoord sw = 1;
+  PointCoord ne = 2;
 }
 
-message LocationInfo {
-    // 足迹位置, 不可更新
-    common.PointCoord lng_lat = 1;
-    // POI 地址, 不可更新
-    string address = 2;
-}
-
-enum MediaType {
-    MT_UNSPECIFIED  = 0;
-    USER_AVA    = 1;
-    CHANNEL_AVA = 2;
-    POST_IMG    = 3;
+enum MediaBucket {
+  MEDIA_BUCKET_UNSPECIFIED = 0;
+  MEDIA_BUCKET_USER_AVA = 1;
+  MEDIA_BUCKET_POST_IMG = 2;
 }
 
 message MediaInfo {
-    // ID, 可写入
-    string uuid = 1;
-    // 类型
-    MediaType type = 2;
-    // 读取URL
-    string get_url = 3;
-    // 写入URL
-    string put_url = 4;
+  // 位置
+  MediaBucket bucket = 1;
+  // ID, 可写入
+  string uuid = 2;
+  // 读取URL
+  string get_url = 3;
+  // 写入URL
+  string put_url = 4;
 }
 
-// 互动撤销
-enum InxUndoType {
-    IUT_UNSPECIFIED = 0;
-    UNDO       = 1;
+// 用户互动撤销
+enum UserAction {
+  USER_ACTION_UNSPECIFIED = 0;
+  USER_ACTION_DO = 1;
+  USER_ACTION_UNDO = 2;
+}
+
+// 用户状态互动状态
+enum UserIxnState {
+  USER_IXN_STATE_UNSPECIFIED = 0;
+  // 点赞，觉得这个频道不错
+  USER_IXN_STATE_LIKE = 1;
+  // 收藏, 收藏后会接收这个频道的动态
+  USER_IXN_STATE_STAR = 2;
+}
+
+// 用户状态互动事件
+enum UserIxnEvent {
+  USER_IXN_EVENT_UNSPECIFIED = 0;
+  // 分享
+  USER_IXN_EVENT_SHARE = 1;
 }

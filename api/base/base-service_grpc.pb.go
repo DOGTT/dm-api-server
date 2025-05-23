@@ -39,6 +39,7 @@ const (
 	BaseService_ChannelPostDelete_FullMethodName       = "/base_service.v1.BaseService/ChannelPostDelete"
 	BaseService_ChannelPostLoad_FullMethodName         = "/base_service.v1.BaseService/ChannelPostLoad"
 	BaseService_ChannelPostInx_FullMethodName          = "/base_service.v1.BaseService/ChannelPostInx"
+	BaseService_ChannelPostReact_FullMethodName        = "/base_service.v1.BaseService/ChannelPostReact"
 )
 
 // BaseServiceClient is the client API for BaseService service.
@@ -90,6 +91,8 @@ type BaseServiceClient interface {
 	ChannelPostLoad(ctx context.Context, in *ChannelPostLoadReq, opts ...grpc.CallOption) (*ChannelPostLoadRes, error)
 	// 频道帖子互动
 	ChannelPostInx(ctx context.Context, in *ChannelPostInxReq, opts ...grpc.CallOption) (*ChannelPostInxRes, error)
+	// 频道帖子回应
+	ChannelPostReact(ctx context.Context, in *ChannelPostReactReq, opts ...grpc.CallOption) (*ChannelPostReactRes, error)
 }
 
 type baseServiceClient struct {
@@ -300,6 +303,16 @@ func (c *baseServiceClient) ChannelPostInx(ctx context.Context, in *ChannelPostI
 	return out, nil
 }
 
+func (c *baseServiceClient) ChannelPostReact(ctx context.Context, in *ChannelPostReactReq, opts ...grpc.CallOption) (*ChannelPostReactRes, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ChannelPostReactRes)
+	err := c.cc.Invoke(ctx, BaseService_ChannelPostReact_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BaseServiceServer is the server API for BaseService service.
 // All implementations must embed UnimplementedBaseServiceServer
 // for forward compatibility.
@@ -349,6 +362,8 @@ type BaseServiceServer interface {
 	ChannelPostLoad(context.Context, *ChannelPostLoadReq) (*ChannelPostLoadRes, error)
 	// 频道帖子互动
 	ChannelPostInx(context.Context, *ChannelPostInxReq) (*ChannelPostInxRes, error)
+	// 频道帖子回应
+	ChannelPostReact(context.Context, *ChannelPostReactReq) (*ChannelPostReactRes, error)
 	mustEmbedUnimplementedBaseServiceServer()
 }
 
@@ -418,6 +433,9 @@ func (UnimplementedBaseServiceServer) ChannelPostLoad(context.Context, *ChannelP
 }
 func (UnimplementedBaseServiceServer) ChannelPostInx(context.Context, *ChannelPostInxReq) (*ChannelPostInxRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChannelPostInx not implemented")
+}
+func (UnimplementedBaseServiceServer) ChannelPostReact(context.Context, *ChannelPostReactReq) (*ChannelPostReactRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChannelPostReact not implemented")
 }
 func (UnimplementedBaseServiceServer) mustEmbedUnimplementedBaseServiceServer() {}
 func (UnimplementedBaseServiceServer) testEmbeddedByValue()                     {}
@@ -800,6 +818,24 @@ func _BaseService_ChannelPostInx_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BaseService_ChannelPostReact_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChannelPostReactReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BaseServiceServer).ChannelPostReact(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BaseService_ChannelPostReact_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BaseServiceServer).ChannelPostReact(ctx, req.(*ChannelPostReactReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // BaseService_ServiceDesc is the grpc.ServiceDesc for BaseService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -886,6 +922,10 @@ var BaseService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ChannelPostInx",
 			Handler:    _BaseService_ChannelPostInx_Handler,
+		},
+		{
+			MethodName: "ChannelPostReact",
+			Handler:    _BaseService_ChannelPostReact_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

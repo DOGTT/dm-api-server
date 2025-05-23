@@ -175,6 +175,15 @@ type ChannelPostLoadRes struct {
 	Posts *[]PostInfo `json:"posts,omitempty"`
 }
 
+// ChannelPostReactReq defines model for ChannelPostReactReq.
+type ChannelPostReactReq struct {
+	PostId  *string `json:"post_id,omitempty"`
+	ReactId *string `json:"react_id,omitempty"`
+}
+
+// ChannelPostReactRes defines model for ChannelPostReactRes.
+type ChannelPostReactRes = map[string]interface{}
+
 // ChannelPostUpdateReq defines model for ChannelPostUpdateReq.
 type ChannelPostUpdateReq struct {
 	// Post 频道帖子或者评论
@@ -351,8 +360,14 @@ type PostInfo struct {
 	UpdatedAt *string `json:"updated_at,omitempty"`
 }
 
-// PostReactionInfo defines model for PostReactionInfo.
-type PostReactionInfo struct {
+// PostReactSignInfo defines model for PostReactSignInfo.
+type PostReactSignInfo struct {
+	UserId   *string `json:"user_id,omitempty"`
+	UserName *string `json:"user_name,omitempty"`
+}
+
+// PostReaction defines model for PostReaction.
+type PostReaction struct {
 	// Count 反应数量
 	Count *int32 `json:"count,omitempty"`
 
@@ -360,24 +375,18 @@ type PostReactionInfo struct {
 	Id *string `json:"id,omitempty"`
 
 	// Signs 反应用户信息列表.
-	Signs *[]PostReactionSignInfo `json:"signs,omitempty"`
+	Signs *[]PostReactSignInfo `json:"signs,omitempty"`
 
 	// Type 反应类型
 	Type      *int    `json:"type,omitempty"`
 	UpdatedAt *string `json:"updated_at,omitempty"`
 }
 
-// PostReactionSignInfo defines model for PostReactionSignInfo.
-type PostReactionSignInfo struct {
-	UserId   *string `json:"user_id,omitempty"`
-	UserName *string `json:"user_name,omitempty"`
-}
-
 // PostStats 频道状态, 只读
 type PostStats struct {
-	LastReplyAt *string             `json:"last_reply_at,omitempty"`
-	LastStarAt  *string             `json:"last_star_at,omitempty"`
-	Reactions   *[]PostReactionInfo `json:"reactions,omitempty"`
+	LastReplyAt *string         `json:"last_reply_at,omitempty"`
+	LastStarAt  *string         `json:"last_star_at,omitempty"`
+	Reacts      *[]PostReaction `json:"reacts,omitempty"`
 
 	// RepliesCnt 回复数量
 	RepliesCnt *int32 `json:"replies_cnt,omitempty"`
@@ -496,6 +505,9 @@ type BaseServiceChannelPostInxJSONRequestBody = ChannelPostInxReq
 
 // BaseServiceChannelPostLoadJSONRequestBody defines body for BaseServiceChannelPostLoad for application/json ContentType.
 type BaseServiceChannelPostLoadJSONRequestBody = ChannelPostLoadReq
+
+// BaseServiceChannelPostReactJSONRequestBody defines body for BaseServiceChannelPostReact for application/json ContentType.
+type BaseServiceChannelPostReactJSONRequestBody = ChannelPostReactReq
 
 // BaseServiceSystemNotifyQueryJSONRequestBody defines body for BaseServiceSystemNotifyQuery for application/json ContentType.
 type BaseServiceSystemNotifyQueryJSONRequestBody = SystemNotifyQueryReq
@@ -635,6 +647,11 @@ type ClientInterface interface {
 	BaseServiceChannelPostLoadWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	BaseServiceChannelPostLoad(ctx context.Context, body BaseServiceChannelPostLoadJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BaseServiceChannelPostReactWithBody request with any body
+	BaseServiceChannelPostReactWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	BaseServiceChannelPostReact(ctx context.Context, body BaseServiceChannelPostReactJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// BaseServiceChannelTypeList request
 	BaseServiceChannelTypeList(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -911,6 +928,30 @@ func (c *Client) BaseServiceChannelPostLoadWithBody(ctx context.Context, content
 
 func (c *Client) BaseServiceChannelPostLoad(ctx context.Context, body BaseServiceChannelPostLoadJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewBaseServiceChannelPostLoadRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServiceChannelPostReactWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServiceChannelPostReactRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServiceChannelPostReact(ctx context.Context, body BaseServiceChannelPostReactJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServiceChannelPostReactRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -1588,6 +1629,46 @@ func NewBaseServiceChannelPostLoadRequestWithBody(server string, contentType str
 	return req, nil
 }
 
+// NewBaseServiceChannelPostReactRequest calls the generic BaseServiceChannelPostReact builder with application/json body
+func NewBaseServiceChannelPostReactRequest(server string, body BaseServiceChannelPostReactJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewBaseServiceChannelPostReactRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewBaseServiceChannelPostReactRequestWithBody generates requests for BaseServiceChannelPostReact with any type of body
+func NewBaseServiceChannelPostReactRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/channel/post/react")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewBaseServiceChannelTypeListRequest generates requests for BaseServiceChannelTypeList
 func NewBaseServiceChannelTypeListRequest(server string) (*http.Request, error) {
 	var err error
@@ -2035,6 +2116,11 @@ type ClientWithResponsesInterface interface {
 
 	BaseServiceChannelPostLoadWithResponse(ctx context.Context, body BaseServiceChannelPostLoadJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceChannelPostLoadResponse, error)
 
+	// BaseServiceChannelPostReactWithBodyWithResponse request with any body
+	BaseServiceChannelPostReactWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceChannelPostReactResponse, error)
+
+	BaseServiceChannelPostReactWithResponse(ctx context.Context, body BaseServiceChannelPostReactJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceChannelPostReactResponse, error)
+
 	// BaseServiceChannelTypeListWithResponse request
 	BaseServiceChannelTypeListWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*BaseServiceChannelTypeListResponse, error)
 
@@ -2326,6 +2412,28 @@ func (r BaseServiceChannelPostLoadResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r BaseServiceChannelPostLoadResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type BaseServiceChannelPostReactResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *ChannelPostReactRes
+}
+
+// Status returns HTTPResponse.Status
+func (r BaseServiceChannelPostReactResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BaseServiceChannelPostReactResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -2686,6 +2794,23 @@ func (c *ClientWithResponses) BaseServiceChannelPostLoadWithResponse(ctx context
 		return nil, err
 	}
 	return ParseBaseServiceChannelPostLoadResponse(rsp)
+}
+
+// BaseServiceChannelPostReactWithBodyWithResponse request with arbitrary body returning *BaseServiceChannelPostReactResponse
+func (c *ClientWithResponses) BaseServiceChannelPostReactWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceChannelPostReactResponse, error) {
+	rsp, err := c.BaseServiceChannelPostReactWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServiceChannelPostReactResponse(rsp)
+}
+
+func (c *ClientWithResponses) BaseServiceChannelPostReactWithResponse(ctx context.Context, body BaseServiceChannelPostReactJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceChannelPostReactResponse, error) {
+	rsp, err := c.BaseServiceChannelPostReact(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServiceChannelPostReactResponse(rsp)
 }
 
 // BaseServiceChannelTypeListWithResponse request returning *BaseServiceChannelTypeListResponse
@@ -3104,6 +3229,32 @@ func ParseBaseServiceChannelPostLoadResponse(rsp *http.Response) (*BaseServiceCh
 	return response, nil
 }
 
+// ParseBaseServiceChannelPostReactResponse parses an HTTP response from a BaseServiceChannelPostReactWithResponse call
+func ParseBaseServiceChannelPostReactResponse(rsp *http.Response) (*BaseServiceChannelPostReactResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BaseServiceChannelPostReactResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ChannelPostReactRes
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseBaseServiceChannelTypeListResponse parses an HTTP response from a BaseServiceChannelTypeListWithResponse call
 func ParseBaseServiceChannelTypeListResponse(rsp *http.Response) (*BaseServiceChannelTypeListResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -3350,6 +3501,9 @@ type ServerInterface interface {
 
 	// (POST /v1/channel/post/load)
 	BaseServiceChannelPostLoad(c *gin.Context)
+
+	// (POST /v1/channel/post/react)
+	BaseServiceChannelPostReact(c *gin.Context)
 
 	// (GET /v1/channel/type)
 	BaseServiceChannelTypeList(c *gin.Context)
@@ -3612,6 +3766,21 @@ func (siw *ServerInterfaceWrapper) BaseServiceChannelPostLoad(c *gin.Context) {
 	siw.Handler.BaseServiceChannelPostLoad(c)
 }
 
+// BaseServiceChannelPostReact operation middleware
+func (siw *ServerInterfaceWrapper) BaseServiceChannelPostReact(c *gin.Context) {
+
+	c.Set(BearerAuthScopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.BaseServiceChannelPostReact(c)
+}
+
 // BaseServiceChannelTypeList operation middleware
 func (siw *ServerInterfaceWrapper) BaseServiceChannelTypeList(c *gin.Context) {
 
@@ -3818,6 +3987,7 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	router.PUT(options.BaseURL+"/v1/channel/post", wrapper.BaseServiceChannelPostUpdate)
 	router.POST(options.BaseURL+"/v1/channel/post/inx", wrapper.BaseServiceChannelPostInx)
 	router.POST(options.BaseURL+"/v1/channel/post/load", wrapper.BaseServiceChannelPostLoad)
+	router.POST(options.BaseURL+"/v1/channel/post/react", wrapper.BaseServiceChannelPostReact)
 	router.GET(options.BaseURL+"/v1/channel/type", wrapper.BaseServiceChannelTypeList)
 	router.GET(options.BaseURL+"/v1/location/search", wrapper.BaseServiceLocationCommonSearch)
 	router.GET(options.BaseURL+"/v1/media/put_url/batch", wrapper.BaseServiceMediaPutURLBatchGet)
@@ -3831,54 +4001,54 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"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",
-	"2HFFAAA=",
+	"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",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

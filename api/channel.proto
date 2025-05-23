@@ -6,75 +6,82 @@ import "common.proto";
 
 option go_package = "github.com/DOGTT/dm-api-server/api/base;api";
 
-// 足迹频道类型
-message ChannelTypeInfo {
-    string id             = 1;
-    string name           = 2;
-    int32 coverage_radius = 3;
-    string theme_color    = 4;
-    int64 created_at      = 31;
-    int64 updated_at      = 32;
+
+// 频道拓展类型
+enum ChannelExtType {
+  CHANNEL_EXT_TYPE_UNSPECIFIED = 0;
+  // 群组类型, 自由聊天话题
+  CHANNEL_EXT_TYPE_GROUP = 1;
+  // 位置类型, 分享聚合位置
+  CHANNEL_EXT_TYPE_LOCATION = 2;
+  // 功能类型, 提供服务
+  CHANNEL_EXT_TYPE_FUNCTION = 3;
 }
 
 // 频道信息
 message ChannelInfo {
-    // 足迹频道 ID
-    string id = 1;
-    // 足迹频道类型, 不可更新
-    uint32 type_id = 2;
-    // 足迹作者, 不可更新
-    string uid = 3;
-    // 足迹名称, 可更新
-    string title = 4;
-    // 头像
-    common.MediaInfo avatar = 5;
-    // 简介, 可更新
-    string intro                 = 6;
-    common.LocationInfo location = 7;
+  // 频道 ID
+  string id = 1;
+  // 频道创建者
+  string uid = 2;
+  // 频道拓展类型
+  ChannelExtType ext_type = 3;
+  // 状态信息，只读
+  ChannelStats stats = 4;
 
-    // 动态状态信息，只读
-    ChannelStats stats = 20;
+  // 群组拓展
+  ChannelExtGroup group_ext = 11;
+  // 地点拓展
+  ChannelExtLocation location_ext = 12;
 
-    int64 created_at = 31;
-    int64 updated_at = 32;
+  int64 created_at = 31;
+  int64 updated_at = 32;
 }
 
 // 频道状态, 只读
 message ChannelStats {
-    // 收藏数
-    int32 stars_cnt    = 1;
-    int64 last_star_at = 2;
-    // 帖子数量
-    int32 posts_cnt    = 3;
-    int64 last_post_at = 4;
-    // 宠物到访次数
-    int32 pee_cnt     = 5;
-    int64 last_pee_at = 6;
-    // 查看数
-    int32 views_cnt = 7;
+  // 帖子数量
+  int32 posts_cnt = 1;
+  int64 last_post_at = 2;
+  // 收藏数, 收藏代表订阅
+  int32 stars_cnt = 3;
+  int64 last_star_at = 4;
+  // 点赞数, 点赞代表认可
+  int32 likes_cnt = 5;
+  int64 last_like_at = 6;
 
-    int64 updated_at = 32;
+  // 查看数
+  int32 views_cnt = 7;
+  int64 updated_at = 32;
 }
 
-// 频道用户状态互动状态
-enum ChannelUserIxnState {
-    CUIS_UNSPECIFIED = 0;
-    // 关注/收藏, 关注后可以发言
-    STAR = 1;
-    // 加入, 加入后可以逐渐无限制发言, 有一定条件
-    LAND = 2;
+
+// 频道群组拓展
+message ChannelExtGroup {
+  // 频道名称标题
+  string title = 3;
+  // 简介, 可更新
+  string intro = 4;
+  // 频道头像
+  common.MediaInfo avatar = 5;
 }
 
-// 频道用户状态互动事件
-enum ChannelUserIxnEvent {
-    CUIE_UNSPECIFIED = 0;
-    // 分享
-    SHARE = 1;
+// 频道地点拓展
+message ChannelExtLocation {
+  ChannelExtLocationStats stats = 1;
+  // 地点名字
+  string name = 2;
+  // POI 地址, 不可更新
+  string address = 3;
+  // 足迹位置, 不可更新
+  common.PointCoord coord = 4;
 }
 
-// 频道宠物用户事件互动类型
-enum ChannelPetIxnEvent {
-    CPIE_UNSPECIFIED = 0;
-    // 狗狗到达，类似于打卡
-    PEE = 1;
+message ChannelExtLocationStats {
+  // 足迹数量
+  int32 marks_cnt = 1;
+  // 最新足迹时间
+  int64 last_mark_at = 2;
+  // 来过的狗狗数量
+  int32 pets_cnt = 3;
 }

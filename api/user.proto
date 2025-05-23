@@ -8,8 +8,12 @@ import "pet.proto";
 
 message UserInfo {
   string id = 1;
-  string name = 2;
-  repeated UserPetInfo user_pets = 3;
+  repeated UserPetInfo user_pets = 2;
+  string name = 3;
+  string avatar = 4;
+
+  int64 created_at = 21;
+  int64 updated_at = 22;
 }
 
 message UserPetInfo {

@@ -235,6 +235,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ChannelPostLoadRes'
+  /v1/channel/post/react:
+    post:
+      tags:
+        - BaseService
+      description: 频道帖子回应
+      operationId: BaseService_ChannelPostReact
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChannelPostReactReq'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChannelPostReactRes'
   /v1/channel/type:
     get:
       tags:
@@ -563,6 +582,16 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PostInfo'
+    ChannelPostReactReq:
+      type: object
+      properties:
+        post_id:
+          type: string
+        react_id:
+          type: string
+    ChannelPostReactRes:
+      type: object
+      properties: {}
     ChannelPostUpdateReq:
       type: object
       properties:
@@ -789,7 +818,14 @@ components:
         updated_at:
           type: string
       description: 频道帖子或者评论
-    PostReactionInfo:
+    PostReactSignInfo:
+      type: object
+      properties:
+        user_id:
+          type: string
+        user_name:
+          type: string
+    PostReaction:
       type: object
       properties:
         id:
@@ -806,16 +842,9 @@ components:
         signs:
           type: array
           items:
-            $ref: '#/components/schemas/PostReactionSignInfo'
+            $ref: '#/components/schemas/PostReactSignInfo'
           description: 反应用户信息列表.
         updated_at:
-          type: string
-    PostReactionSignInfo:
-      type: object
-      properties:
-        user_id:
-          type: string
-        user_name:
           type: string
     PostStats:
       type: object
@@ -832,10 +861,10 @@ components:
           format: int32
         last_reply_at:
           type: string
-        reactions:
+        reacts:
           type: array
           items:
-            $ref: '#/components/schemas/PostReactionInfo'
+            $ref: '#/components/schemas/PostReaction'
         updated_at:
           type: string
       description: 频道状态, 只读
