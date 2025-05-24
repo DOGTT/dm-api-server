@@ -19,11 +19,11 @@ func (s *Service) MediaPutURLBatchGet(ctx context.Context, req *base_api.MediaPu
 	}
 	for i := 0; i < n; i++ {
 		res.Media[i] = &base_api.MediaInfo{
-			Type: req.GetMediaType(),
-			Uuid: utils.GenUUID(),
+			Bucket: req.GetBucket(),
+			Uuid:   utils.GenUUID(),
 		}
 		res.Media[i].PutUrl, err = s.data.GeneratePutPresignedURL(ctx,
-			fds.GetBucketName(req.GetMediaType()),
+			fds.GetBucketName(req.GetBucket()),
 			res.Media[i].Uuid,
 			fds.PreSignDurationDefault)
 		if err != nil {

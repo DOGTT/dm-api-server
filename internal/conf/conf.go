@@ -22,14 +22,14 @@ type Server struct {
 }
 
 type HTTPServer struct {
-	Enable            bool          `default:"true"`
-	Addr              string        `default:":8080"`
-	Timeout           time.Duration `default:"1s"`
-	AuthWhitePathlist []string      `yaml:"auth_white_pathlist"`
-	EnableMetric      bool          `yaml:"enable_metric"`
-	EnableTrace       bool          `yaml:"enable_trace"`
-	EnableSwagger     bool          `yaml:"enable_swagger"`
-	EnableCORS        bool          `yaml:"enable_cors"`
+	Enable        bool          `default:"true"`
+	Addr          string        `default:":8080"`
+	Timeout       time.Duration `default:"1s"`
+	NoAuthPaths   []string      `yaml:"no_auth_paths"`
+	EnableMetric  bool          `yaml:"enable_metric"`
+	EnableTrace   bool          `yaml:"enable_trace"`
+	EnableSwagger bool          `yaml:"enable_swagger"`
+	EnableCORS    bool          `yaml:"enable_cors"`
 }
 
 func GetAddrSplit(addr string) (ip string, portStr string) {

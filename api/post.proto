@@ -38,25 +38,14 @@ message PostInfo {
   // 媒体id
   repeated string media_ids = 8;
 
-  PostExtPetMark ext_pet_mark = 11;
+  PostExtPetMarker ext_pet_mark = 11;
 
-  int64 created_at = 31;
-  int64 updated_at = 32;
-}
-
-
-// 足迹频道类型
-message DogMarkTypeInfo {
-  int32 id = 1;
-  string name = 2;
-  int32 coverage_radius = 3;
-  string theme_color = 4;
   int64 created_at = 31;
   int64 updated_at = 32;
 }
 
 // 足迹拓展
-message PostExtPetMark {
+message PostExtPetMarker {
   repeated int32 marker_ids = 1;
   repeated string pids = 2;
 }
@@ -94,4 +83,15 @@ message PostSignReaction {
   repeated user.UserInfo users = 3;
 
   int64 updated_at = 4;
+}
+
+
+// 狗狗足迹信息
+message PetMarkerInfo {
+  int32 id = 1;
+  string name = 2;
+  int32 coverage_radius = 3;
+  string theme_color = 4;
+  int64 created_at = 31;
+  int64 updated_at = 32;
 }

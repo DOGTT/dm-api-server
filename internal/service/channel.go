@@ -9,10 +9,10 @@ import (
 	"github.com/DOGTT/dm-api-server/internal/utils/log"
 )
 
-func (s *Service) ChannelFullQueryById(ctx context.Context, req *api.ChannelFullQueryByIdReq) (res *api.ChannelFullQueryByIdRes, err error) {
+func (s *Service) ChannelGet(ctx context.Context, req *api.ChannelGetReq) (res *api.ChannelGetRes, err error) {
 	log.D(ctx, "request in", "req", req)
-	res = new(api.ChannelFullQueryByIdRes)
-	channel, err := s.data.GetChannelFullInfo(ctx, utils.StrToUint64(req.GetChanId()))
+	res = new(api.ChannelGetRes)
+	channel, err := s.data.GetChannelFullInfo(ctx, utils.StrToUint64(req.GetChannelId()))
 	if err != nil {
 		err = putDescByDBErr(err)
 		log.E(ctx, "data get channel error", err)
@@ -29,7 +29,7 @@ func (s *Service) ChannelFullQueryById(ctx context.Context, req *api.ChannelFull
 	return
 }
 
-func (s *Service) ChannelBaseQueryByBound(ctx context.Context, req *api.ChannelBaseQueryByBoundReq) (res *api.ChannelBaseQueryByBoundRes, err error) {
+func (s *Service) ChannelQueryByLocationBound(ctx context.Context, req *api.ChannelQueryByLocationBoundReq) (res *api.ChannelQueryByLocationBoundRes, err error) {
 	log.D(ctx, "request in", "req", req)
 	channels, err := s.data.ListChannelInfo(ctx,
 		&rds.ChannelFilter{
@@ -42,7 +42,7 @@ func (s *Service) ChannelBaseQueryByBound(ctx context.Context, req *api.ChannelB
 		return
 	}
 	log.D(ctx, "query result", "channels", channels)
-	res = &api.ChannelBaseQueryByBoundRes{
+	res = &api.ChannelQueryByLocationBoundRes{
 		Channels: make([]*api.ChannelInfo, len(channels)),
 	}
 	for i, channel := range channels {
@@ -56,90 +56,8 @@ func (s *Service) ChannelBaseQueryByBound(ctx context.Context, req *api.ChannelB
 	return
 }
 
-func (s *Service) ChannelBaseQueryByUser(ctx context.Context, req *api.ChannelBaseQueryByUserReq) (res *api.ChannelBaseQueryByUserRes, err error) {
+func (s *Service) ChannelQueryByUser(ctx context.Context, req *api.ChannelQueryByUserReq) (res *api.ChannelQueryByUserRes, err error) {
 	log.D(ctx, "request in", "req", req)
-	return
-}
-
-func (s *Service) ChannelInx(ctx context.Context, req *api.ChannelInxReq) (res *api.ChannelInxRes, err error) {
-	log.D(ctx, "request in", "req", req)
-	res = new(api.ChannelInxRes)
-	tc := utils.GetClaimFromContext(ctx)
-	chanId := utils.StrToUint64(req.GetChanId())
-	_, err = s.data.GetChannelCreatorId(ctx, chanId)
-	// 查询Channel信息，检查是否存在
-	if err != nil {
-		log.E(ctx, "channel not exist", err)
-		err = putDescByDBErr(err)
-		return
-	}
-	// 状态互动基于用户
-	if req.GetInxState() != 0 {
-		dbIn := &rds.ChannelIxnState{
-			UId:       tc.UId,
-			ChannelId: chanId,
-			IxnState:  req.GetInxState(),
-		}
-		if req.GetInxStateUndo() == api.InxUndoType_UNDO {
-			err = s.data.DeleteChannelIxnState(ctx, dbIn)
-		} else {
-			err = s.data.CreateChannelIxnState(ctx, dbIn)
-		}
-		if err != nil {
-			log.E(ctx, "mod user channel ixn state error", err)
-			err = putDescByDBErr(err)
-			return
-		}
-	}
-	// 事件互动基于用户和爱宠
-	if req.GetPetInxEvent() != 0 {
-		// 加载爱宠id
-		var petIds []uint64
-		petIds, err = s.data.GetPetIdsFromUserId(ctx, tc.UId)
-		if err != nil {
-			log.E(ctx, "user load error", err)
-			err = putDescByDBErr(err)
-			return
-		}
-		events := make([]*rds.ChannelPetIxnEvent, len(petIds))
-		for i, pid := range petIds {
-			events[i] = &rds.ChannelPetIxnEvent{
-				UId:       tc.UId,
-				PId:       pid,
-				ChannelId: chanId,
-				IxnEvent:  req.GetPetInxEvent(),
-			}
-		}
-		err = s.data.BatchCreateChannelPetIxnEvent(ctx, events)
-		if err != nil {
-			log.E(ctx, "create user channel ixn event error", err)
-			err = putDescByDBErr(err)
-			return
-		}
-	}
-	// 更新统计信息
-	s.asyncUpdateChannelStatsByInx(ctx, chanId, req)
-	return
-}
-
-func (s *Service) ChannelTypeList(ctx context.Context, req *api.ChannelTypeListReq) (res *api.ChannelTypeListRes, err error) {
-	log.D(ctx, "request in", "req", req)
-	res = &api.ChannelTypeListRes{}
-	data, err := s.data.ListChannelTypeInfo(ctx)
-	if err != nil {
-		return
-	}
-	res.ChannelTypes = make([]*api.ChannelTypeInfo, len(data))
-	for i, v := range data {
-		res.ChannelTypes[i] = &api.ChannelTypeInfo{
-			Id:             utils.Uint64ToStr(v.Id),
-			Name:           v.Name,
-			CoverageRadius: int32(v.CoverageRadius),
-			ThemeColor:     v.ThemeColor,
-			CreatedAt:      v.CreatedAt.UnixMilli(),
-			UpdatedAt:      v.UpdatedAt.UnixMilli(),
-		}
-	}
 	return
 }
 

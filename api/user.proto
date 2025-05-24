@@ -31,3 +31,21 @@ message UserFastRegisterData {
   // 宠物和人的关系
   string pet_title = 3;
 }
+
+
+
+// 用户状态互动状态
+enum UserIxnState {
+  USER_IXN_STATE_UNSPECIFIED = 0;
+  // 点赞，觉得这个频道不错
+  USER_IXN_STATE_LIKE = 1;
+  // 收藏, 收藏后会接收这个频道的动态
+  USER_IXN_STATE_STAR = 2;
+}
+
+// 用户状态互动事件
+enum UserIxnEvent {
+  USER_IXN_EVENT_UNSPECIFIED = 0;
+  // 分享
+  USER_IXN_EVENT_SHARE = 1;
+}

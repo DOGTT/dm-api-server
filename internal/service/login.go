@@ -120,7 +120,7 @@ func (s *Service) FastRegisterWeChat(ctx context.Context, req *api.FastRegisterW
 	if req.GetRegData().GetPetAvatarData() != "" {
 		avatarData := utils.Base64ToBytes(req.GetRegData().GetPetAvatarData())
 		err = s.data.PutObject(ctx,
-			fds.GetBucketName(api.MediaType_USER_AVA),
+			fds.GetBucketName(api.MediaBucket_MEDIA_BUCKET_USER_AVA),
 			userPet.Pet.AvatarId, avatarData)
 		if err != nil {
 			err = putDescByDBErr(err)
@@ -193,8 +193,8 @@ func (s *Service) convertToPetInfo(ctx context.Context, pet *rds.PetInfo) (res *
 	}
 	if pet.AvatarId != "" {
 		media := &api.MediaInfo{
-			Uuid: pet.AvatarId,
-			Type: api.MediaType_USER_AVA,
+			Uuid:   pet.AvatarId,
+			Bucket: api.MediaBucket_MEDIA_BUCKET_USER_AVA,
 		}
 		media.GetUrl, err = s.data.GenerateGetPresignedURLByMediaInfo(ctx, media, utils.TokenExpireDuration)
 		if err != nil {

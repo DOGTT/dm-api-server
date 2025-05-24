@@ -9,6 +9,27 @@ import (
 	"github.com/DOGTT/dm-api-server/internal/utils/log"
 )
 
+func (s *Service) ChannelTypeList(ctx context.Context, req *api.ChannelTypeListReq) (res *api.ChannelTypeListRes, err error) {
+	log.D(ctx, "request in", "req", req)
+	res = &api.ChannelTypeListRes{}
+	data, err := s.data.ListChannelTypeInfo(ctx)
+	if err != nil {
+		return
+	}
+	res.ChannelTypes = make([]*api.ChannelTypeInfo, len(data))
+	for i, v := range data {
+		res.ChannelTypes[i] = &api.ChannelTypeInfo{
+			Id:             utils.Uint64ToStr(v.Id),
+			Name:           v.Name,
+			CoverageRadius: int32(v.CoverageRadius),
+			ThemeColor:     v.ThemeColor,
+			CreatedAt:      v.CreatedAt.UnixMilli(),
+			UpdatedAt:      v.UpdatedAt.UnixMilli(),
+		}
+	}
+	return
+}
+
 func (s *Service) ChannelPostLoad(ctx context.Context, req *api.ChannelPostLoadReq) (res *api.ChannelPostLoadRes, err error) {
 	log.D(ctx, "request in", "req", req)
 	res = new(api.ChannelPostLoadRes)

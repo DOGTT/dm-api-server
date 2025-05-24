@@ -4,6 +4,13 @@ package common;
 
 option go_package = "github.com/DOGTT/dm-api-server/api/base;api";
 
+// 互动类别
+enum ActionType {
+  ACTION_TYPE_UNSPECIFIED = 0;
+  ACTION_TYPE_DO = 1;
+  ACTION_TYPE_UNDO = 2;
+}
+
 message PointCoord {
   float lat = 1;
   float lng = 2;
@@ -31,25 +38,3 @@ message MediaInfo {
   string put_url = 4;
 }
 
-// 用户互动撤销
-enum UserAction {
-  USER_ACTION_UNSPECIFIED = 0;
-  USER_ACTION_DO = 1;
-  USER_ACTION_UNDO = 2;
-}
-
-// 用户状态互动状态
-enum UserIxnState {
-  USER_IXN_STATE_UNSPECIFIED = 0;
-  // 点赞，觉得这个频道不错
-  USER_IXN_STATE_LIKE = 1;
-  // 收藏, 收藏后会接收这个频道的动态
-  USER_IXN_STATE_STAR = 2;
-}
-
-// 用户状态互动事件
-enum UserIxnEvent {
-  USER_IXN_EVENT_UNSPECIFIED = 0;
-  // 分享
-  USER_IXN_EVENT_SHARE = 1;
-}

@@ -27,10 +27,11 @@ import (
 )
 
 // AuthMiddleware 鉴权中间件
-func AuthMiddleware(whitelist []string, svc *service.Service) gin.HandlerFunc {
+func AuthMiddleware(svc *service.Service, noAuthList []string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// 检查请求路径是否在白名单中
-		if slices.Contains(whitelist, c.Request.URL.Path) {
+		addr := fmt.Sprintf("%s:%s", c.Request.Method, c.Request.URL.Path)
+		if slices.Contains(noAuthList, addr) {
 			c.Next() // 如果在白名单中，继续处理请求
 			return
 		}
@@ -89,7 +90,7 @@ func NewGinHandler(c *conf.Server, svc *service.Service) http.Handler {
 		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler, fn))
 	}
 
-	r.Use(AuthMiddleware(c.HTTP.AuthWhitePathlist, svc))
+	r.Use(AuthMiddleware(svc, c.HTTP.NoAuthPaths))
 	r.Use(ginzap.Ginzap(zap.L(), time.RFC3339, true))
 	r.Use(ginzap.RecoveryWithZap(zap.L(), true))
 

@@ -1,7 +1,6 @@
 package service
 
 import (
-	api "github.com/DOGTT/dm-api-server/api/base"
 	"github.com/DOGTT/dm-api-server/internal/conf"
 	"github.com/DOGTT/dm-api-server/internal/data"
 	"github.com/DOGTT/dm-api-server/internal/utils"
@@ -12,7 +11,7 @@ import (
 )
 
 type Service struct {
-	api.UnimplementedBaseServiceServer
+	// api.UnimplementedBaseServiceServer
 	conf *conf.ServiceConfig
 	data *data.DataEntry
 

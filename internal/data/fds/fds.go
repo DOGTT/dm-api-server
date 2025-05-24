@@ -23,9 +23,9 @@ var (
 )
 
 func init() {
-	n := len(api.MediaType_name)
+	n := len(api.MediaBucket_name)
 	for i := 0; i < n; i++ {
-		bucketInitList = append(bucketInitList, toBucketName(api.MediaType_name[int32(i)]))
+		bucketInitList = append(bucketInitList, toBucketName(api.MediaBucket_name[int32(i)]))
 	}
 }
 
@@ -34,7 +34,7 @@ func toBucketName(in string) string {
 	return strings.ToLower(out)
 }
 
-func GetBucketName(objectType api.MediaType) string {
+func GetBucketName(objectType api.MediaBucket) string {
 	return bucketInitList[objectType]
 }
 

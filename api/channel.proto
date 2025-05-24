@@ -6,7 +6,6 @@ import "common.proto";
 
 option go_package = "github.com/DOGTT/dm-api-server/api/base;api";
 
-
 // 频道拓展类型
 enum ChannelExtType {
   CHANNEL_EXT_TYPE_UNSPECIFIED = 0;
@@ -55,7 +54,6 @@ message ChannelStats {
   int64 updated_at = 32;
 }
 
-
 // 频道群组拓展
 message ChannelExtGroup {
   // 频道名称标题
@@ -78,10 +76,12 @@ message ChannelExtLocation {
 }
 
 message ChannelExtLocationStats {
+  // 出现过的标记id
+  repeated int32 marker_ids = 1;
   // 足迹数量
-  int32 marks_cnt = 1;
+  int32 marks_cnt = 2;
   // 最新足迹时间
-  int64 last_mark_at = 2;
+  int64 last_mark_at = 3;
   // 来过的狗狗数量
-  int32 pets_cnt = 3;
+  int32 pets_cnt = 4;
 }

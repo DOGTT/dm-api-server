@@ -6,11 +6,9 @@ server:
     enable_metric: false
     enable_trace: false
     enable_swagger: true
-    auth_white_pathlist:
-      - /v1/user/login/wx
-      - /v1/user/fast_reg/wx
-      - /v1/channel/type
-      - /v1/channel/base_query_by_bound
+    no_auth_method:
+      no_auth_paths:
+      - POST:/v1/user/login/wx
   grpc:
     enable: false
     addr: 0.0.0.0:8081

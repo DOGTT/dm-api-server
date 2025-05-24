@@ -25,48 +25,10 @@ const (
 	BearerAuthScopes = "bearerAuth.Scopes"
 )
 
-// BoundCoord defines model for BoundCoord.
-type BoundCoord struct {
-	Ne *PointCoord `json:"ne,omitempty"`
-	Sw *PointCoord `json:"sw,omitempty"`
-}
-
-// ChannelBaseQueryByBoundReq defines model for ChannelBaseQueryByBoundReq.
-type ChannelBaseQueryByBoundReq struct {
-	// Bound 坐标范围
-	Bound *BoundCoord `json:"bound,omitempty"`
-
-	// TypeIds 足迹类型id列表
-	TypeIds *[]int32 `json:"type_ids,omitempty"`
-}
-
-// ChannelBaseQueryByBoundRes defines model for ChannelBaseQueryByBoundRes.
-type ChannelBaseQueryByBoundRes struct {
-	Channels *[]ChannelInfo `json:"channels,omitempty"`
-}
-
-// ChannelBaseQueryByUserReq defines model for ChannelBaseQueryByUserReq.
-type ChannelBaseQueryByUserReq struct {
-	// IxnEvent 互动时间类型, 二选一
-	IxnEvent *int `json:"ixn_event,omitempty"`
-
-	// IxnState 互动状态类型, 二选一
-	IxnState *int    `json:"ixn_state,omitempty"`
-	UserId   *string `json:"user_id,omitempty"`
-}
-
-// ChannelBaseQueryByUserRes defines model for ChannelBaseQueryByUserRes.
-type ChannelBaseQueryByUserRes struct {
-	Channels *[]ChannelInfo `json:"channels,omitempty"`
-}
-
-// ChannelCreateReq 足迹创建
+// ChannelCreateReq 创建频道
 type ChannelCreateReq struct {
 	// Channel 频道信息
 	Channel *ChannelInfo `json:"channel,omitempty"`
-
-	// PostInit 创建时候可以携带第一条帖子
-	PostInit *PostInfo `json:"post_init,omitempty"`
 }
 
 // ChannelCreateRes defines model for ChannelCreateRes.
@@ -78,137 +40,99 @@ type ChannelCreateRes struct {
 // ChannelDeleteRes defines model for ChannelDeleteRes.
 type ChannelDeleteRes = map[string]interface{}
 
-// ChannelFullQueryByIdRes defines model for ChannelFullQueryByIdRes.
-type ChannelFullQueryByIdRes struct {
+// ChannelExtGroup 频道群组拓展
+type ChannelExtGroup struct {
+	// Avatar 频道头像
+	Avatar *MediaInfo `json:"avatar,omitempty"`
+
+	// Intro 简介, 可更新
+	Intro *string `json:"intro,omitempty"`
+
+	// Title 频道名称标题
+	Title *string `json:"title,omitempty"`
+}
+
+// ChannelExtLocation 频道地点拓展
+type ChannelExtLocation struct {
+	// Address POI 地址, 不可更新
+	Address *string `json:"address,omitempty"`
+
+	// Coord 足迹位置, 不可更新
+	Coord *PointCoord `json:"coord,omitempty"`
+
+	// Name 地点名字
+	Name  *string                  `json:"name,omitempty"`
+	Stats *ChannelExtLocationStats `json:"stats,omitempty"`
+}
+
+// ChannelExtLocationStats defines model for ChannelExtLocationStats.
+type ChannelExtLocationStats struct {
+	// LastMarkAt 最新足迹时间
+	LastMarkAt *string `json:"last_mark_at,omitempty"`
+
+	// MarkerIds 出现过的标记id
+	MarkerIds *[]int32 `json:"marker_ids,omitempty"`
+
+	// MarksCnt 足迹数量
+	MarksCnt *int32 `json:"marks_cnt,omitempty"`
+
+	// PetsCnt 来过的狗狗数量
+	PetsCnt *int32 `json:"pets_cnt,omitempty"`
+}
+
+// ChannelGetRes defines model for ChannelGetRes.
+type ChannelGetRes struct {
 	// Channel 频道信息
 	Channel *ChannelInfo `json:"channel,omitempty"`
 }
 
 // ChannelInfo 频道信息
 type ChannelInfo struct {
-	// Avatar 头像
-	Avatar    *MediaInfo `json:"avatar,omitempty"`
-	CreatedAt *string    `json:"created_at,omitempty"`
+	CreatedAt *string `json:"created_at,omitempty"`
 
-	// Id 足迹频道 ID
+	// ExtType 频道拓展类型
+	ExtType *int `json:"ext_type,omitempty"`
+
+	// GroupExt 群组拓展
+	GroupExt *ChannelExtGroup `json:"group_ext,omitempty"`
+
+	// Id 频道 ID
 	Id *string `json:"id,omitempty"`
 
-	// Intro 简介, 可更新
-	Intro    *string       `json:"intro,omitempty"`
-	Location *LocationInfo `json:"location,omitempty"`
+	// LocationExt 地点拓展
+	LocationExt *ChannelExtLocation `json:"location_ext,omitempty"`
 
-	// Stats 动态状态信息，只读
+	// Stats 状态信息，只读
 	Stats *ChannelStats `json:"stats,omitempty"`
 
-	// Title 足迹名称, 可更新
-	Title *string `json:"title,omitempty"`
-
-	// TypeId 足迹频道类型, 不可更新
-	TypeId *uint32 `json:"type_id,omitempty"`
-
-	// Uid 足迹作者, 不可更新
+	// Uid 频道创建者
 	Uid       *string `json:"uid,omitempty"`
 	UpdatedAt *string `json:"updated_at,omitempty"`
 }
 
-// ChannelInxReq defines model for ChannelInxReq.
-type ChannelInxReq struct {
-	ChanId *string `json:"chan_id,omitempty"`
-
-	// InxEvent 互动事件
-	InxEvent *int `json:"inx_event,omitempty"`
-
-	// InxState 互动状态
-	InxState *int `json:"inx_state,omitempty"`
-
-	// InxStateUndo 是否撤销状态
-	InxStateUndo *int `json:"inx_state_undo,omitempty"`
-
-	// PetInxEvent 宠物互动事件
-	PetInxEvent *int `json:"pet_inx_event,omitempty"`
+// ChannelQueryByLocationBoundRes defines model for ChannelQueryByLocationBoundRes.
+type ChannelQueryByLocationBoundRes struct {
+	Channels *[]ChannelInfo `json:"channels,omitempty"`
 }
 
-// ChannelInxRes defines model for ChannelInxRes.
-type ChannelInxRes = map[string]interface{}
-
-// ChannelPostCreateReq defines model for ChannelPostCreateReq.
-type ChannelPostCreateReq struct {
-	// Post 频道帖子或者评论
-	Post *PostInfo `json:"post,omitempty"`
-}
-
-// ChannelPostCreateRes defines model for ChannelPostCreateRes.
-type ChannelPostCreateRes struct {
-	// Post 频道帖子或者评论
-	Post *PostInfo `json:"post,omitempty"`
-}
-
-// ChannelPostDeleteRes defines model for ChannelPostDeleteRes.
-type ChannelPostDeleteRes = map[string]interface{}
-
-// ChannelPostInxReq defines model for ChannelPostInxReq.
-type ChannelPostInxReq struct {
-	// InxState 互动状态
-	InxState *int `json:"inx_state,omitempty"`
-
-	// InxStateUndo 是否撤销状态
-	InxStateUndo *int `json:"inx_state_undo,omitempty"`
-
-	// IxnEvent 互动事件
-	IxnEvent *int    `json:"ixn_event,omitempty"`
-	PostId   *string `json:"post_id,omitempty"`
-}
-
-// ChannelPostInxRes defines model for ChannelPostInxRes.
-type ChannelPostInxRes = map[string]interface{}
-
-// ChannelPostLoadReq defines model for ChannelPostLoadReq.
-type ChannelPostLoadReq struct {
-	ChanId *string `json:"chan_id,omitempty"`
-
-	// LastPostId 从传空加载最新100条
-	LastPostId *string `json:"last_post_id,omitempty"`
-}
-
-// ChannelPostLoadRes defines model for ChannelPostLoadRes.
-type ChannelPostLoadRes struct {
-	Posts *[]PostInfo `json:"posts,omitempty"`
-}
-
-// ChannelPostReactReq defines model for ChannelPostReactReq.
-type ChannelPostReactReq struct {
-	PostId  *string `json:"post_id,omitempty"`
-	ReactId *string `json:"react_id,omitempty"`
-}
-
-// ChannelPostReactRes defines model for ChannelPostReactRes.
-type ChannelPostReactRes = map[string]interface{}
-
-// ChannelPostUpdateReq defines model for ChannelPostUpdateReq.
-type ChannelPostUpdateReq struct {
-	// Post 频道帖子或者评论
-	Post *PostInfo `json:"post,omitempty"`
-}
-
-// ChannelPostUpdateRes defines model for ChannelPostUpdateRes.
-type ChannelPostUpdateRes struct {
-	// Post 频道帖子或者评论
-	Post *PostInfo `json:"post,omitempty"`
+// ChannelQueryByUserRes defines model for ChannelQueryByUserRes.
+type ChannelQueryByUserRes struct {
+	Channels *[]ChannelInfo `json:"channels,omitempty"`
 }
 
 // ChannelStats 频道状态, 只读
 type ChannelStats struct {
-	LastPeeAt  *string `json:"last_pee_at,omitempty"`
+	LastLikeAt *string `json:"last_like_at,omitempty"`
 	LastPostAt *string `json:"last_post_at,omitempty"`
 	LastStarAt *string `json:"last_star_at,omitempty"`
 
-	// PeeCnt 宠物到访次数
-	PeeCnt *int32 `json:"pee_cnt,omitempty"`
+	// LikesCnt 点赞数, 点赞代表认可
+	LikesCnt *int32 `json:"likes_cnt,omitempty"`
 
 	// PostsCnt 帖子数量
 	PostsCnt *int32 `json:"posts_cnt,omitempty"`
 
-	// StarsCnt 收藏数
+	// StarsCnt 收藏数, 收藏代表订阅
 	StarsCnt  *int32  `json:"stars_cnt,omitempty"`
 	UpdatedAt *string `json:"updated_at,omitempty"`
 
@@ -216,22 +140,7 @@ type ChannelStats struct {
 	ViewsCnt *int32 `json:"views_cnt,omitempty"`
 }
 
-// ChannelTypeInfo 足迹频道类型
-type ChannelTypeInfo struct {
-	CoverageRadius *int32  `json:"coverage_radius,omitempty"`
-	CreatedAt      *string `json:"created_at,omitempty"`
-	Id             *string `json:"id,omitempty"`
-	Name           *string `json:"name,omitempty"`
-	ThemeColor     *string `json:"theme_color,omitempty"`
-	UpdatedAt      *string `json:"updated_at,omitempty"`
-}
-
-// ChannelTypeListRes defines model for ChannelTypeListRes.
-type ChannelTypeListRes struct {
-	ChannelTypes *[]ChannelTypeInfo `json:"channel_types,omitempty"`
-}
-
-// ChannelUpdateReq 足迹更新
+// ChannelUpdateReq 频道更新
 type ChannelUpdateReq struct {
 	// Channel 频道信息
 	Channel *ChannelInfo `json:"channel,omitempty"`
@@ -259,15 +168,6 @@ type FastRegisterWeChatRes struct {
 // LocationCommonSearchRes defines model for LocationCommonSearchRes.
 type LocationCommonSearchRes = map[string]interface{}
 
-// LocationInfo defines model for LocationInfo.
-type LocationInfo struct {
-	// Address POI 地址, 不可更新
-	Address *string `json:"address,omitempty"`
-
-	// LngLat 足迹位置, 不可更新
-	LngLat *PointCoord `json:"lng_lat,omitempty"`
-}
-
 // LoginWeChatReq 登录请求
 type LoginWeChatReq struct {
 	WxCode *string `json:"wx_code,omitempty"`
@@ -281,14 +181,14 @@ type LoginWeChatRes struct {
 
 // MediaInfo defines model for MediaInfo.
 type MediaInfo struct {
+	// Bucket 位置
+	Bucket *int `json:"bucket,omitempty"`
+
 	// GetUrl 读取URL
 	GetUrl *string `json:"get_url,omitempty"`
 
 	// PutUrl 写入URL
 	PutUrl *string `json:"put_url,omitempty"`
-
-	// Type 类型
-	Type *int `json:"type,omitempty"`
 
 	// Uuid ID, 可写入
 	Uuid *string `json:"uuid,omitempty"`
@@ -328,17 +228,62 @@ type PetInfo struct {
 	Weight    *int32     `json:"weight,omitempty"`
 }
 
+// PetMarkerInfo 狗狗足迹信息
+type PetMarkerInfo struct {
+	CoverageRadius *int32  `json:"coverage_radius,omitempty"`
+	CreatedAt      *string `json:"created_at,omitempty"`
+	Id             *int32  `json:"id,omitempty"`
+	Name           *string `json:"name,omitempty"`
+	ThemeColor     *string `json:"theme_color,omitempty"`
+	UpdatedAt      *string `json:"updated_at,omitempty"`
+}
+
+// PetMarkerInfoRes defines model for PetMarkerInfoRes.
+type PetMarkerInfoRes struct {
+	PetMarks *[]PetMarkerInfo `json:"pet_marks,omitempty"`
+}
+
 // PointCoord defines model for PointCoord.
 type PointCoord struct {
 	Lat *float32 `json:"lat,omitempty"`
 	Lng *float32 `json:"lng,omitempty"`
 }
 
-// PostInfo 频道帖子或者评论
+// PostCreateReq defines model for PostCreateReq.
+type PostCreateReq struct {
+	// Post 帖子
+	Post *PostInfo `json:"post,omitempty"`
+}
+
+// PostCreateRes defines model for PostCreateRes.
+type PostCreateRes struct {
+	// Post 帖子
+	Post *PostInfo `json:"post,omitempty"`
+}
+
+// PostDeleteRes defines model for PostDeleteRes.
+type PostDeleteRes = map[string]interface{}
+
+// PostExtPetMarker 足迹拓展
+type PostExtPetMarker struct {
+	MarkerIds *[]int32  `json:"marker_ids,omitempty"`
+	Pids      *[]string `json:"pids,omitempty"`
+}
+
+// PostInfo 帖子
 type PostInfo struct {
+	// ChannelId 频道id
+	ChannelId *string `json:"channel_id,omitempty"`
+
 	// Content 正文内容
 	Content   *string `json:"content,omitempty"`
 	CreatedAt *string `json:"created_at,omitempty"`
+
+	// ExtPetMark 足迹拓展
+	ExtPetMark *PostExtPetMarker `json:"ext_pet_mark,omitempty"`
+
+	// ExtType 频道拓展类型
+	ExtType *int `json:"ext_type,omitempty"`
 
 	// Id 评论id
 	Id *string `json:"id,omitempty"`
@@ -349,22 +294,37 @@ type PostInfo struct {
 	// ParentId 上级帖子id
 	ParentId *string `json:"parent_id,omitempty"`
 
-	// RootId 根id, 频道id
-	RootId *string `json:"root_id,omitempty"`
-
 	// Stats 动态状态信息，只读
 	Stats *PostStats `json:"stats,omitempty"`
 
-	// Uid 足迹作者, 不可更新
+	// Uid 足迹作者
 	Uid       *string `json:"uid,omitempty"`
 	UpdatedAt *string `json:"updated_at,omitempty"`
 }
 
-// PostReactSignInfo defines model for PostReactSignInfo.
-type PostReactSignInfo struct {
-	UserId   *string `json:"user_id,omitempty"`
-	UserName *string `json:"user_name,omitempty"`
+// PostLoadRes defines model for PostLoadRes.
+type PostLoadRes struct {
+	Posts *[]PostInfo `json:"posts,omitempty"`
 }
+
+// PostQueryByUserRes defines model for PostQueryByUserRes.
+type PostQueryByUserRes struct {
+	Posts *[]PostInfo `json:"posts,omitempty"`
+}
+
+// PostQueryRes defines model for PostQueryRes.
+type PostQueryRes struct {
+	Posts *[]PostInfo `json:"posts,omitempty"`
+}
+
+// PostReactReq defines model for PostReactReq.
+type PostReactReq struct {
+	PostId  *string `json:"post_id,omitempty"`
+	ReactId *string `json:"react_id,omitempty"`
+}
+
+// PostReactRes defines model for PostReactRes.
+type PostReactRes = map[string]interface{}
 
 // PostReaction defines model for PostReaction.
 type PostReaction struct {
@@ -372,14 +332,21 @@ type PostReaction struct {
 	Count *int32 `json:"count,omitempty"`
 
 	// Id 反应类型
-	Id *string `json:"id,omitempty"`
-
-	// Signs 反应用户信息列表.
-	Signs *[]PostReactSignInfo `json:"signs,omitempty"`
-
-	// Type 反应类型
-	Type      *int    `json:"type,omitempty"`
+	Id        *string `json:"id,omitempty"`
 	UpdatedAt *string `json:"updated_at,omitempty"`
+}
+
+// PostSignReaction defines model for PostSignReaction.
+type PostSignReaction struct {
+	// Count 反应数量
+	Count *int32 `json:"count,omitempty"`
+
+	// Id 反应类型
+	Id        *string `json:"id,omitempty"`
+	UpdatedAt *string `json:"updated_at,omitempty"`
+
+	// Users 反应用户信息列表.
+	Users *[]UserInfo `json:"users,omitempty"`
 }
 
 // PostStats 频道状态, 只读
@@ -389,20 +356,28 @@ type PostStats struct {
 	Reacts      *[]PostReaction `json:"reacts,omitempty"`
 
 	// RepliesCnt 回复数量
-	RepliesCnt *int32 `json:"replies_cnt,omitempty"`
+	RepliesCnt *int32              `json:"replies_cnt,omitempty"`
+	SignReacts *[]PostSignReaction `json:"sign_reacts,omitempty"`
 
 	// StarsCnt 收藏数
 	StarsCnt  *int32  `json:"stars_cnt,omitempty"`
 	UpdatedAt *string `json:"updated_at,omitempty"`
 }
 
-// SystemNotifyQueryReq defines model for SystemNotifyQueryReq.
-type SystemNotifyQueryReq struct {
-	LastNotifyId *string `json:"last_notify_id,omitempty"`
+// PostUpdateReq defines model for PostUpdateReq.
+type PostUpdateReq struct {
+	// Post 帖子
+	Post *PostInfo `json:"post,omitempty"`
 }
 
-// SystemNotifyQueryRes defines model for SystemNotifyQueryRes.
-type SystemNotifyQueryRes struct {
+// PostUpdateRes defines model for PostUpdateRes.
+type PostUpdateRes struct {
+	// Post 帖子
+	Post *PostInfo `json:"post,omitempty"`
+}
+
+// SystemNotifyGetRes defines model for SystemNotifyGetRes.
+type SystemNotifyGetRes struct {
 	Notifies *[]NotifyInfo `json:"notifies,omitempty"`
 }
 
@@ -420,10 +395,34 @@ type UserFastRegisterData struct {
 
 // UserInfo defines model for UserInfo.
 type UserInfo struct {
-	Id       *string        `json:"id,omitempty"`
-	Name     *string        `json:"name,omitempty"`
-	UserPets *[]UserPetInfo `json:"user_pets,omitempty"`
+	Avatar    *string        `json:"avatar,omitempty"`
+	CreatedAt *string        `json:"created_at,omitempty"`
+	Id        *string        `json:"id,omitempty"`
+	Name      *string        `json:"name,omitempty"`
+	UpdatedAt *string        `json:"updated_at,omitempty"`
+	UserPets  *[]UserPetInfo `json:"user_pets,omitempty"`
 }
+
+// UserInxReq defines model for UserInxReq.
+type UserInxReq struct {
+	// ChannelId 互动的频道
+	ChannelId *string `json:"channel_id,omitempty"`
+
+	// InxEvent 互动事件
+	InxEvent *int `json:"inx_event,omitempty"`
+
+	// InxState 互动状态
+	InxState *int `json:"inx_state,omitempty"`
+
+	// InxStateAction 是否撤销状态
+	InxStateAction *int `json:"inx_state_action,omitempty"`
+
+	// PostId 互动的帖子，为空则为互动频道
+	PostId *string `json:"post_id,omitempty"`
+}
+
+// UserInxRes defines model for UserInxRes.
+type UserInxRes = map[string]interface{}
 
 // UserPeGetRes defines model for UserPeGetRes.
 type UserPeGetRes struct {
@@ -449,18 +448,37 @@ type UserPetUpdateRes struct {
 
 // BaseServiceChannelDeleteParams defines parameters for BaseServiceChannelDelete.
 type BaseServiceChannelDeleteParams struct {
-	ChanId *string `form:"chan_id,omitempty" json:"chan_id,omitempty"`
+	ChannelId *string `form:"channel_id,omitempty" json:"channel_id,omitempty"`
 }
 
-// BaseServiceChannelFullQueryByIdParams defines parameters for BaseServiceChannelFullQueryById.
-type BaseServiceChannelFullQueryByIdParams struct {
-	ChanId *string `form:"chan_id,omitempty" json:"chan_id,omitempty"`
+// BaseServiceChannelGetParams defines parameters for BaseServiceChannelGet.
+type BaseServiceChannelGetParams struct {
+	ChannelId *string `form:"channel_id,omitempty" json:"channel_id,omitempty"`
 }
 
-// BaseServiceChannelPostDeleteParams defines parameters for BaseServiceChannelPostDelete.
-type BaseServiceChannelPostDeleteParams struct {
-	ChanId *string `form:"chan_id,omitempty" json:"chan_id,omitempty"`
-	PostId *string `form:"post_id,omitempty" json:"post_id,omitempty"`
+// BaseServiceChannelQueryByLocationBoundParams defines parameters for BaseServiceChannelQueryByLocationBound.
+type BaseServiceChannelQueryByLocationBoundParams struct {
+	BoundSwLat *float32 `form:"bound.sw.lat,omitempty" json:"bound.sw.lat,omitempty"`
+	BoundSwLng *float32 `form:"bound.sw.lng,omitempty" json:"bound.sw.lng,omitempty"`
+	BoundNeLat *float32 `form:"bound.ne.lat,omitempty" json:"bound.ne.lat,omitempty"`
+	BoundNeLng *float32 `form:"bound.ne.lng,omitempty" json:"bound.ne.lng,omitempty"`
+
+	// MarkerIds 足迹类型id列表
+	MarkerIds *[]int32 `form:"marker_ids,omitempty" json:"marker_ids,omitempty"`
+}
+
+// BaseServiceChannelQueryByUserParams defines parameters for BaseServiceChannelQueryByUser.
+type BaseServiceChannelQueryByUserParams struct {
+	UserId *string `form:"user_id,omitempty" json:"user_id,omitempty"`
+
+	// IxnState 互动状态类型, 二选一
+	IxnState *int `form:"ixn_state,omitempty" json:"ixn_state,omitempty"`
+
+	// IxnEvent 互动时间类型, 二选一
+	IxnEvent *int `form:"ixn_event,omitempty" json:"ixn_event,omitempty"`
+
+	// ExtTypes 类型
+	ExtTypes *[]int `form:"ext_types,omitempty" json:"ext_types,omitempty"`
 }
 
 // BaseServiceLocationCommonSearchParams defines parameters for BaseServiceLocationCommonSearch.
@@ -470,8 +488,49 @@ type BaseServiceLocationCommonSearchParams struct {
 
 // BaseServiceMediaPutURLBatchGetParams defines parameters for BaseServiceMediaPutURLBatchGet.
 type BaseServiceMediaPutURLBatchGetParams struct {
-	MediaType *int   `form:"media_type,omitempty" json:"media_type,omitempty"`
-	Count     *int32 `form:"count,omitempty" json:"count,omitempty"`
+	Bucket *int   `form:"bucket,omitempty" json:"bucket,omitempty"`
+	Count  *int32 `form:"count,omitempty" json:"count,omitempty"`
+}
+
+// BaseServicePostDeleteParams defines parameters for BaseServicePostDelete.
+type BaseServicePostDeleteParams struct {
+	ChannelId *string `form:"channel_id,omitempty" json:"channel_id,omitempty"`
+	PostId    *string `form:"post_id,omitempty" json:"post_id,omitempty"`
+}
+
+// BaseServicePostLoadParams defines parameters for BaseServicePostLoad.
+type BaseServicePostLoadParams struct {
+	ChannelId *string `form:"channel_id,omitempty" json:"channel_id,omitempty"`
+	Limit     *int32  `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// LastPostId 从传空加载最新100条
+	LastPostId *string `form:"last_post_id,omitempty" json:"last_post_id,omitempty"`
+}
+
+// BaseServicePostQueryParams defines parameters for BaseServicePostQuery.
+type BaseServicePostQueryParams struct {
+	ChannelId *string `form:"channel_id,omitempty" json:"channel_id,omitempty"`
+	Limit     *int32  `form:"limit,omitempty" json:"limit,omitempty"`
+	MarkerId  *int32  `form:"marker_id,omitempty" json:"marker_id,omitempty"`
+}
+
+// BaseServicePostQueryByUserParams defines parameters for BaseServicePostQueryByUser.
+type BaseServicePostQueryByUserParams struct {
+	UserId *string `form:"user_id,omitempty" json:"user_id,omitempty"`
+
+	// IxnState 互动状态类型, 二选一
+	IxnState *int `form:"ixn_state,omitempty" json:"ixn_state,omitempty"`
+
+	// IxnEvent 互动时间类型, 二选一
+	IxnEvent *int `form:"ixn_event,omitempty" json:"ixn_event,omitempty"`
+
+	// ExtTypes 类型
+	ExtTypes *[]int `form:"ext_types,omitempty" json:"ext_types,omitempty"`
+}
+
+// BaseServiceSystemNotifyGetParams defines parameters for BaseServiceSystemNotifyGet.
+type BaseServiceSystemNotifyGetParams struct {
+	LastNotifyId *string `form:"last_notify_id,omitempty" json:"last_notify_id,omitempty"`
 }
 
 // BaseServiceUserPeGetParams defines parameters for BaseServiceUserPeGet.
@@ -485,35 +544,20 @@ type BaseServiceChannelCreateJSONRequestBody = ChannelCreateReq
 // BaseServiceChannelUpdateJSONRequestBody defines body for BaseServiceChannelUpdate for application/json ContentType.
 type BaseServiceChannelUpdateJSONRequestBody = ChannelUpdateReq
 
-// BaseServiceChannelBaseQueryByBoundJSONRequestBody defines body for BaseServiceChannelBaseQueryByBound for application/json ContentType.
-type BaseServiceChannelBaseQueryByBoundJSONRequestBody = ChannelBaseQueryByBoundReq
+// BaseServicePostCreateJSONRequestBody defines body for BaseServicePostCreate for application/json ContentType.
+type BaseServicePostCreateJSONRequestBody = PostCreateReq
 
-// BaseServiceChannelBaseQueryByUserJSONRequestBody defines body for BaseServiceChannelBaseQueryByUser for application/json ContentType.
-type BaseServiceChannelBaseQueryByUserJSONRequestBody = ChannelBaseQueryByUserReq
+// BaseServicePostUpdateJSONRequestBody defines body for BaseServicePostUpdate for application/json ContentType.
+type BaseServicePostUpdateJSONRequestBody = PostUpdateReq
 
-// BaseServiceChannelInxJSONRequestBody defines body for BaseServiceChannelInx for application/json ContentType.
-type BaseServiceChannelInxJSONRequestBody = ChannelInxReq
-
-// BaseServiceChannelPostCreateJSONRequestBody defines body for BaseServiceChannelPostCreate for application/json ContentType.
-type BaseServiceChannelPostCreateJSONRequestBody = ChannelPostCreateReq
-
-// BaseServiceChannelPostUpdateJSONRequestBody defines body for BaseServiceChannelPostUpdate for application/json ContentType.
-type BaseServiceChannelPostUpdateJSONRequestBody = ChannelPostUpdateReq
-
-// BaseServiceChannelPostInxJSONRequestBody defines body for BaseServiceChannelPostInx for application/json ContentType.
-type BaseServiceChannelPostInxJSONRequestBody = ChannelPostInxReq
-
-// BaseServiceChannelPostLoadJSONRequestBody defines body for BaseServiceChannelPostLoad for application/json ContentType.
-type BaseServiceChannelPostLoadJSONRequestBody = ChannelPostLoadReq
-
-// BaseServiceChannelPostReactJSONRequestBody defines body for BaseServiceChannelPostReact for application/json ContentType.
-type BaseServiceChannelPostReactJSONRequestBody = ChannelPostReactReq
-
-// BaseServiceSystemNotifyQueryJSONRequestBody defines body for BaseServiceSystemNotifyQuery for application/json ContentType.
-type BaseServiceSystemNotifyQueryJSONRequestBody = SystemNotifyQueryReq
+// BaseServicePostReactJSONRequestBody defines body for BaseServicePostReact for application/json ContentType.
+type BaseServicePostReactJSONRequestBody = PostReactReq
 
 // BaseServiceFastRegisterWeChatJSONRequestBody defines body for BaseServiceFastRegisterWeChat for application/json ContentType.
 type BaseServiceFastRegisterWeChatJSONRequestBody = FastRegisterWeChatReq
+
+// BaseServiceUserInxJSONRequestBody defines body for BaseServiceUserInx for application/json ContentType.
+type BaseServiceUserInxJSONRequestBody = UserInxReq
 
 // BaseServiceLoginWeChatJSONRequestBody defines body for BaseServiceLoginWeChat for application/json ContentType.
 type BaseServiceLoginWeChatJSONRequestBody = LoginWeChatReq
@@ -597,6 +641,9 @@ type ClientInterface interface {
 	// BaseServiceChannelDelete request
 	BaseServiceChannelDelete(ctx context.Context, params *BaseServiceChannelDeleteParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// BaseServiceChannelGet request
+	BaseServiceChannelGet(ctx context.Context, params *BaseServiceChannelGetParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// BaseServiceChannelCreateWithBody request with any body
 	BaseServiceChannelCreateWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -607,54 +654,11 @@ type ClientInterface interface {
 
 	BaseServiceChannelUpdate(ctx context.Context, body BaseServiceChannelUpdateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// BaseServiceChannelBaseQueryByBoundWithBody request with any body
-	BaseServiceChannelBaseQueryByBoundWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// BaseServiceChannelQueryByLocationBound request
+	BaseServiceChannelQueryByLocationBound(ctx context.Context, params *BaseServiceChannelQueryByLocationBoundParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	BaseServiceChannelBaseQueryByBound(ctx context.Context, body BaseServiceChannelBaseQueryByBoundJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// BaseServiceChannelBaseQueryByUserWithBody request with any body
-	BaseServiceChannelBaseQueryByUserWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	BaseServiceChannelBaseQueryByUser(ctx context.Context, body BaseServiceChannelBaseQueryByUserJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// BaseServiceChannelFullQueryById request
-	BaseServiceChannelFullQueryById(ctx context.Context, params *BaseServiceChannelFullQueryByIdParams, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// BaseServiceChannelInxWithBody request with any body
-	BaseServiceChannelInxWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	BaseServiceChannelInx(ctx context.Context, body BaseServiceChannelInxJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// BaseServiceChannelPostDelete request
-	BaseServiceChannelPostDelete(ctx context.Context, params *BaseServiceChannelPostDeleteParams, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// BaseServiceChannelPostCreateWithBody request with any body
-	BaseServiceChannelPostCreateWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	BaseServiceChannelPostCreate(ctx context.Context, body BaseServiceChannelPostCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// BaseServiceChannelPostUpdateWithBody request with any body
-	BaseServiceChannelPostUpdateWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	BaseServiceChannelPostUpdate(ctx context.Context, body BaseServiceChannelPostUpdateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// BaseServiceChannelPostInxWithBody request with any body
-	BaseServiceChannelPostInxWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	BaseServiceChannelPostInx(ctx context.Context, body BaseServiceChannelPostInxJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// BaseServiceChannelPostLoadWithBody request with any body
-	BaseServiceChannelPostLoadWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	BaseServiceChannelPostLoad(ctx context.Context, body BaseServiceChannelPostLoadJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// BaseServiceChannelPostReactWithBody request with any body
-	BaseServiceChannelPostReactWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	BaseServiceChannelPostReact(ctx context.Context, body BaseServiceChannelPostReactJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// BaseServiceChannelTypeList request
-	BaseServiceChannelTypeList(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// BaseServiceChannelQueryByUser request
+	BaseServiceChannelQueryByUser(ctx context.Context, params *BaseServiceChannelQueryByUserParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// BaseServiceLocationCommonSearch request
 	BaseServiceLocationCommonSearch(ctx context.Context, params *BaseServiceLocationCommonSearchParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -662,15 +666,48 @@ type ClientInterface interface {
 	// BaseServiceMediaPutURLBatchGet request
 	BaseServiceMediaPutURLBatchGet(ctx context.Context, params *BaseServiceMediaPutURLBatchGetParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// BaseServiceSystemNotifyQueryWithBody request with any body
-	BaseServiceSystemNotifyQueryWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// BaseServicePetMarkerInfoList request
+	BaseServicePetMarkerInfoList(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	BaseServiceSystemNotifyQuery(ctx context.Context, body BaseServiceSystemNotifyQueryJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// BaseServicePostDelete request
+	BaseServicePostDelete(ctx context.Context, params *BaseServicePostDeleteParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BaseServicePostCreateWithBody request with any body
+	BaseServicePostCreateWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	BaseServicePostCreate(ctx context.Context, body BaseServicePostCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BaseServicePostUpdateWithBody request with any body
+	BaseServicePostUpdateWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	BaseServicePostUpdate(ctx context.Context, body BaseServicePostUpdateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BaseServicePostLoad request
+	BaseServicePostLoad(ctx context.Context, params *BaseServicePostLoadParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BaseServicePostQuery request
+	BaseServicePostQuery(ctx context.Context, params *BaseServicePostQueryParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BaseServicePostQueryByUser request
+	BaseServicePostQueryByUser(ctx context.Context, params *BaseServicePostQueryByUserParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BaseServicePostReactWithBody request with any body
+	BaseServicePostReactWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	BaseServicePostReact(ctx context.Context, body BaseServicePostReactJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BaseServiceSystemNotifyGet request
+	BaseServiceSystemNotifyGet(ctx context.Context, params *BaseServiceSystemNotifyGetParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// BaseServiceFastRegisterWeChatWithBody request with any body
 	BaseServiceFastRegisterWeChatWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	BaseServiceFastRegisterWeChat(ctx context.Context, body BaseServiceFastRegisterWeChatJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BaseServiceUserInxWithBody request with any body
+	BaseServiceUserInxWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	BaseServiceUserInx(ctx context.Context, body BaseServiceUserInxJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// BaseServiceLoginWeChatWithBody request with any body
 	BaseServiceLoginWeChatWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -688,6 +725,18 @@ type ClientInterface interface {
 
 func (c *Client) BaseServiceChannelDelete(ctx context.Context, params *BaseServiceChannelDeleteParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewBaseServiceChannelDeleteRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServiceChannelGet(ctx context.Context, params *BaseServiceChannelGetParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServiceChannelGetRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -746,8 +795,8 @@ func (c *Client) BaseServiceChannelUpdate(ctx context.Context, body BaseServiceC
 	return c.Client.Do(req)
 }
 
-func (c *Client) BaseServiceChannelBaseQueryByBoundWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServiceChannelBaseQueryByBoundRequestWithBody(c.Server, contentType, body)
+func (c *Client) BaseServiceChannelQueryByLocationBound(ctx context.Context, params *BaseServiceChannelQueryByLocationBoundParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServiceChannelQueryByLocationBoundRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -758,212 +807,8 @@ func (c *Client) BaseServiceChannelBaseQueryByBoundWithBody(ctx context.Context,
 	return c.Client.Do(req)
 }
 
-func (c *Client) BaseServiceChannelBaseQueryByBound(ctx context.Context, body BaseServiceChannelBaseQueryByBoundJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServiceChannelBaseQueryByBoundRequest(c.Server, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) BaseServiceChannelBaseQueryByUserWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServiceChannelBaseQueryByUserRequestWithBody(c.Server, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) BaseServiceChannelBaseQueryByUser(ctx context.Context, body BaseServiceChannelBaseQueryByUserJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServiceChannelBaseQueryByUserRequest(c.Server, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) BaseServiceChannelFullQueryById(ctx context.Context, params *BaseServiceChannelFullQueryByIdParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServiceChannelFullQueryByIdRequest(c.Server, params)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) BaseServiceChannelInxWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServiceChannelInxRequestWithBody(c.Server, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) BaseServiceChannelInx(ctx context.Context, body BaseServiceChannelInxJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServiceChannelInxRequest(c.Server, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) BaseServiceChannelPostDelete(ctx context.Context, params *BaseServiceChannelPostDeleteParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServiceChannelPostDeleteRequest(c.Server, params)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) BaseServiceChannelPostCreateWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServiceChannelPostCreateRequestWithBody(c.Server, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) BaseServiceChannelPostCreate(ctx context.Context, body BaseServiceChannelPostCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServiceChannelPostCreateRequest(c.Server, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) BaseServiceChannelPostUpdateWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServiceChannelPostUpdateRequestWithBody(c.Server, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) BaseServiceChannelPostUpdate(ctx context.Context, body BaseServiceChannelPostUpdateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServiceChannelPostUpdateRequest(c.Server, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) BaseServiceChannelPostInxWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServiceChannelPostInxRequestWithBody(c.Server, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) BaseServiceChannelPostInx(ctx context.Context, body BaseServiceChannelPostInxJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServiceChannelPostInxRequest(c.Server, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) BaseServiceChannelPostLoadWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServiceChannelPostLoadRequestWithBody(c.Server, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) BaseServiceChannelPostLoad(ctx context.Context, body BaseServiceChannelPostLoadJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServiceChannelPostLoadRequest(c.Server, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) BaseServiceChannelPostReactWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServiceChannelPostReactRequestWithBody(c.Server, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) BaseServiceChannelPostReact(ctx context.Context, body BaseServiceChannelPostReactJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServiceChannelPostReactRequest(c.Server, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) BaseServiceChannelTypeList(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServiceChannelTypeListRequest(c.Server)
+func (c *Client) BaseServiceChannelQueryByUser(ctx context.Context, params *BaseServiceChannelQueryByUserParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServiceChannelQueryByUserRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -998,8 +843,8 @@ func (c *Client) BaseServiceMediaPutURLBatchGet(ctx context.Context, params *Bas
 	return c.Client.Do(req)
 }
 
-func (c *Client) BaseServiceSystemNotifyQueryWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServiceSystemNotifyQueryRequestWithBody(c.Server, contentType, body)
+func (c *Client) BaseServicePetMarkerInfoList(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServicePetMarkerInfoListRequest(c.Server)
 	if err != nil {
 		return nil, err
 	}
@@ -1010,8 +855,128 @@ func (c *Client) BaseServiceSystemNotifyQueryWithBody(ctx context.Context, conte
 	return c.Client.Do(req)
 }
 
-func (c *Client) BaseServiceSystemNotifyQuery(ctx context.Context, body BaseServiceSystemNotifyQueryJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewBaseServiceSystemNotifyQueryRequest(c.Server, body)
+func (c *Client) BaseServicePostDelete(ctx context.Context, params *BaseServicePostDeleteParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServicePostDeleteRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServicePostCreateWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServicePostCreateRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServicePostCreate(ctx context.Context, body BaseServicePostCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServicePostCreateRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServicePostUpdateWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServicePostUpdateRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServicePostUpdate(ctx context.Context, body BaseServicePostUpdateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServicePostUpdateRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServicePostLoad(ctx context.Context, params *BaseServicePostLoadParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServicePostLoadRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServicePostQuery(ctx context.Context, params *BaseServicePostQueryParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServicePostQueryRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServicePostQueryByUser(ctx context.Context, params *BaseServicePostQueryByUserParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServicePostQueryByUserRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServicePostReactWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServicePostReactRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServicePostReact(ctx context.Context, body BaseServicePostReactJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServicePostReactRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServiceSystemNotifyGet(ctx context.Context, params *BaseServiceSystemNotifyGetParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServiceSystemNotifyGetRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -1036,6 +1001,30 @@ func (c *Client) BaseServiceFastRegisterWeChatWithBody(ctx context.Context, cont
 
 func (c *Client) BaseServiceFastRegisterWeChat(ctx context.Context, body BaseServiceFastRegisterWeChatJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewBaseServiceFastRegisterWeChatRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServiceUserInxWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServiceUserInxRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BaseServiceUserInx(ctx context.Context, body BaseServiceUserInxJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBaseServiceUserInxRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -1128,9 +1117,9 @@ func NewBaseServiceChannelDeleteRequest(server string, params *BaseServiceChanne
 	if params != nil {
 		queryValues := queryURL.Query()
 
-		if params.ChanId != nil {
+		if params.ChannelId != nil {
 
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "chan_id", runtime.ParamLocationQuery, *params.ChanId); err != nil {
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "channel_id", runtime.ParamLocationQuery, *params.ChannelId); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -1148,6 +1137,55 @@ func NewBaseServiceChannelDeleteRequest(server string, params *BaseServiceChanne
 	}
 
 	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewBaseServiceChannelGetRequest generates requests for BaseServiceChannelGet
+func NewBaseServiceChannelGetRequest(server string, params *BaseServiceChannelGetParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/channel")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.ChannelId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "channel_id", runtime.ParamLocationQuery, *params.ChannelId); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -1235,19 +1273,8 @@ func NewBaseServiceChannelUpdateRequestWithBody(server string, contentType strin
 	return req, nil
 }
 
-// NewBaseServiceChannelBaseQueryByBoundRequest calls the generic BaseServiceChannelBaseQueryByBound builder with application/json body
-func NewBaseServiceChannelBaseQueryByBoundRequest(server string, body BaseServiceChannelBaseQueryByBoundJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewBaseServiceChannelBaseQueryByBoundRequestWithBody(server, "application/json", bodyReader)
-}
-
-// NewBaseServiceChannelBaseQueryByBoundRequestWithBody generates requests for BaseServiceChannelBaseQueryByBound with any type of body
-func NewBaseServiceChannelBaseQueryByBoundRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+// NewBaseServiceChannelQueryByLocationBoundRequest generates requests for BaseServiceChannelQueryByLocationBound
+func NewBaseServiceChannelQueryByLocationBoundRequest(server string, params *BaseServiceChannelQueryByLocationBoundParams) (*http.Request, error) {
 	var err error
 
 	serverURL, err := url.Parse(server)
@@ -1255,76 +1282,7 @@ func NewBaseServiceChannelBaseQueryByBoundRequestWithBody(server string, content
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/v1/channel/base_query_by_bound")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
-// NewBaseServiceChannelBaseQueryByUserRequest calls the generic BaseServiceChannelBaseQueryByUser builder with application/json body
-func NewBaseServiceChannelBaseQueryByUserRequest(server string, body BaseServiceChannelBaseQueryByUserJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewBaseServiceChannelBaseQueryByUserRequestWithBody(server, "application/json", bodyReader)
-}
-
-// NewBaseServiceChannelBaseQueryByUserRequestWithBody generates requests for BaseServiceChannelBaseQueryByUser with any type of body
-func NewBaseServiceChannelBaseQueryByUserRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/v1/channel/base_query_by_user")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
-// NewBaseServiceChannelFullQueryByIdRequest generates requests for BaseServiceChannelFullQueryById
-func NewBaseServiceChannelFullQueryByIdRequest(server string, params *BaseServiceChannelFullQueryByIdParams) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/v1/channel/full_query_by_id")
+	operationPath := fmt.Sprintf("/v1/channel/query_by_location_bound")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1337,9 +1295,73 @@ func NewBaseServiceChannelFullQueryByIdRequest(server string, params *BaseServic
 	if params != nil {
 		queryValues := queryURL.Query()
 
-		if params.ChanId != nil {
+		if params.BoundSwLat != nil {
 
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "chan_id", runtime.ParamLocationQuery, *params.ChanId); err != nil {
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "bound.sw.lat", runtime.ParamLocationQuery, *params.BoundSwLat); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.BoundSwLng != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "bound.sw.lng", runtime.ParamLocationQuery, *params.BoundSwLng); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.BoundNeLat != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "bound.ne.lat", runtime.ParamLocationQuery, *params.BoundNeLat); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.BoundNeLng != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "bound.ne.lng", runtime.ParamLocationQuery, *params.BoundNeLng); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.MarkerIds != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "marker_ids", runtime.ParamLocationQuery, *params.MarkerIds); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -1364,19 +1386,8 @@ func NewBaseServiceChannelFullQueryByIdRequest(server string, params *BaseServic
 	return req, nil
 }
 
-// NewBaseServiceChannelInxRequest calls the generic BaseServiceChannelInx builder with application/json body
-func NewBaseServiceChannelInxRequest(server string, body BaseServiceChannelInxJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewBaseServiceChannelInxRequestWithBody(server, "application/json", bodyReader)
-}
-
-// NewBaseServiceChannelInxRequestWithBody generates requests for BaseServiceChannelInx with any type of body
-func NewBaseServiceChannelInxRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+// NewBaseServiceChannelQueryByUserRequest generates requests for BaseServiceChannelQueryByUser
+func NewBaseServiceChannelQueryByUserRequest(server string, params *BaseServiceChannelQueryByUserParams) (*http.Request, error) {
 	var err error
 
 	serverURL, err := url.Parse(server)
@@ -1384,36 +1395,7 @@ func NewBaseServiceChannelInxRequestWithBody(server string, contentType string, 
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/v1/channel/inx")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
-// NewBaseServiceChannelPostDeleteRequest generates requests for BaseServiceChannelPostDelete
-func NewBaseServiceChannelPostDeleteRequest(server string, params *BaseServiceChannelPostDeleteParams) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/v1/channel/post")
+	operationPath := fmt.Sprintf("/v1/channel/query_by_user")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1426,9 +1408,9 @@ func NewBaseServiceChannelPostDeleteRequest(server string, params *BaseServiceCh
 	if params != nil {
 		queryValues := queryURL.Query()
 
-		if params.ChanId != nil {
+		if params.UserId != nil {
 
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "chan_id", runtime.ParamLocationQuery, *params.ChanId); err != nil {
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "user_id", runtime.ParamLocationQuery, *params.UserId); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -1442,9 +1424,41 @@ func NewBaseServiceChannelPostDeleteRequest(server string, params *BaseServiceCh
 
 		}
 
-		if params.PostId != nil {
+		if params.IxnState != nil {
 
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "post_id", runtime.ParamLocationQuery, *params.PostId); err != nil {
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "ixn_state", runtime.ParamLocationQuery, *params.IxnState); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.IxnEvent != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "ixn_event", runtime.ParamLocationQuery, *params.IxnEvent); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ExtTypes != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "ext_types", runtime.ParamLocationQuery, *params.ExtTypes); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -1459,233 +1473,6 @@ func NewBaseServiceChannelPostDeleteRequest(server string, params *BaseServiceCh
 		}
 
 		queryURL.RawQuery = queryValues.Encode()
-	}
-
-	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
-}
-
-// NewBaseServiceChannelPostCreateRequest calls the generic BaseServiceChannelPostCreate builder with application/json body
-func NewBaseServiceChannelPostCreateRequest(server string, body BaseServiceChannelPostCreateJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewBaseServiceChannelPostCreateRequestWithBody(server, "application/json", bodyReader)
-}
-
-// NewBaseServiceChannelPostCreateRequestWithBody generates requests for BaseServiceChannelPostCreate with any type of body
-func NewBaseServiceChannelPostCreateRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/v1/channel/post")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
-// NewBaseServiceChannelPostUpdateRequest calls the generic BaseServiceChannelPostUpdate builder with application/json body
-func NewBaseServiceChannelPostUpdateRequest(server string, body BaseServiceChannelPostUpdateJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewBaseServiceChannelPostUpdateRequestWithBody(server, "application/json", bodyReader)
-}
-
-// NewBaseServiceChannelPostUpdateRequestWithBody generates requests for BaseServiceChannelPostUpdate with any type of body
-func NewBaseServiceChannelPostUpdateRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/v1/channel/post")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("PUT", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
-// NewBaseServiceChannelPostInxRequest calls the generic BaseServiceChannelPostInx builder with application/json body
-func NewBaseServiceChannelPostInxRequest(server string, body BaseServiceChannelPostInxJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewBaseServiceChannelPostInxRequestWithBody(server, "application/json", bodyReader)
-}
-
-// NewBaseServiceChannelPostInxRequestWithBody generates requests for BaseServiceChannelPostInx with any type of body
-func NewBaseServiceChannelPostInxRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/v1/channel/post/inx")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
-// NewBaseServiceChannelPostLoadRequest calls the generic BaseServiceChannelPostLoad builder with application/json body
-func NewBaseServiceChannelPostLoadRequest(server string, body BaseServiceChannelPostLoadJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewBaseServiceChannelPostLoadRequestWithBody(server, "application/json", bodyReader)
-}
-
-// NewBaseServiceChannelPostLoadRequestWithBody generates requests for BaseServiceChannelPostLoad with any type of body
-func NewBaseServiceChannelPostLoadRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/v1/channel/post/load")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
-// NewBaseServiceChannelPostReactRequest calls the generic BaseServiceChannelPostReact builder with application/json body
-func NewBaseServiceChannelPostReactRequest(server string, body BaseServiceChannelPostReactJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewBaseServiceChannelPostReactRequestWithBody(server, "application/json", bodyReader)
-}
-
-// NewBaseServiceChannelPostReactRequestWithBody generates requests for BaseServiceChannelPostReact with any type of body
-func NewBaseServiceChannelPostReactRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/v1/channel/post/react")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
-// NewBaseServiceChannelTypeListRequest generates requests for BaseServiceChannelTypeList
-func NewBaseServiceChannelTypeListRequest(server string) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/v1/channel/type")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
 	}
 
 	req, err := http.NewRequest("GET", queryURL.String(), nil)
@@ -1767,9 +1554,9 @@ func NewBaseServiceMediaPutURLBatchGetRequest(server string, params *BaseService
 	if params != nil {
 		queryValues := queryURL.Query()
 
-		if params.MediaType != nil {
+		if params.Bucket != nil {
 
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "media_type", runtime.ParamLocationQuery, *params.MediaType); err != nil {
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "bucket", runtime.ParamLocationQuery, *params.Bucket); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -1810,19 +1597,8 @@ func NewBaseServiceMediaPutURLBatchGetRequest(server string, params *BaseService
 	return req, nil
 }
 
-// NewBaseServiceSystemNotifyQueryRequest calls the generic BaseServiceSystemNotifyQuery builder with application/json body
-func NewBaseServiceSystemNotifyQueryRequest(server string, body BaseServiceSystemNotifyQueryJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewBaseServiceSystemNotifyQueryRequestWithBody(server, "application/json", bodyReader)
-}
-
-// NewBaseServiceSystemNotifyQueryRequestWithBody generates requests for BaseServiceSystemNotifyQuery with any type of body
-func NewBaseServiceSystemNotifyQueryRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+// NewBaseServicePetMarkerInfoListRequest generates requests for BaseServicePetMarkerInfoList
+func NewBaseServicePetMarkerInfoListRequest(server string) (*http.Request, error) {
 	var err error
 
 	serverURL, err := url.Parse(server)
@@ -1830,7 +1606,110 @@ func NewBaseServiceSystemNotifyQueryRequestWithBody(server string, contentType s
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/v1/notify/query")
+	operationPath := fmt.Sprintf("/v1/pet/marker")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewBaseServicePostDeleteRequest generates requests for BaseServicePostDelete
+func NewBaseServicePostDeleteRequest(server string, params *BaseServicePostDeleteParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/post")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.ChannelId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "channel_id", runtime.ParamLocationQuery, *params.ChannelId); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.PostId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "post_id", runtime.ParamLocationQuery, *params.PostId); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewBaseServicePostCreateRequest calls the generic BaseServicePostCreate builder with application/json body
+func NewBaseServicePostCreateRequest(server string, body BaseServicePostCreateJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewBaseServicePostCreateRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewBaseServicePostCreateRequestWithBody generates requests for BaseServicePostCreate with any type of body
+func NewBaseServicePostCreateRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/post")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1846,6 +1725,394 @@ func NewBaseServiceSystemNotifyQueryRequestWithBody(server string, contentType s
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewBaseServicePostUpdateRequest calls the generic BaseServicePostUpdate builder with application/json body
+func NewBaseServicePostUpdateRequest(server string, body BaseServicePostUpdateJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewBaseServicePostUpdateRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewBaseServicePostUpdateRequestWithBody generates requests for BaseServicePostUpdate with any type of body
+func NewBaseServicePostUpdateRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/post")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewBaseServicePostLoadRequest generates requests for BaseServicePostLoad
+func NewBaseServicePostLoadRequest(server string, params *BaseServicePostLoadParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/post/load")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.ChannelId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "channel_id", runtime.ParamLocationQuery, *params.ChannelId); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.LastPostId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "last_post_id", runtime.ParamLocationQuery, *params.LastPostId); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewBaseServicePostQueryRequest generates requests for BaseServicePostQuery
+func NewBaseServicePostQueryRequest(server string, params *BaseServicePostQueryParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/post/query")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.ChannelId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "channel_id", runtime.ParamLocationQuery, *params.ChannelId); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.MarkerId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "marker_id", runtime.ParamLocationQuery, *params.MarkerId); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewBaseServicePostQueryByUserRequest generates requests for BaseServicePostQueryByUser
+func NewBaseServicePostQueryByUserRequest(server string, params *BaseServicePostQueryByUserParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/post/query_by_user")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.UserId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "user_id", runtime.ParamLocationQuery, *params.UserId); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.IxnState != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "ixn_state", runtime.ParamLocationQuery, *params.IxnState); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.IxnEvent != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "ixn_event", runtime.ParamLocationQuery, *params.IxnEvent); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ExtTypes != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "ext_types", runtime.ParamLocationQuery, *params.ExtTypes); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewBaseServicePostReactRequest calls the generic BaseServicePostReact builder with application/json body
+func NewBaseServicePostReactRequest(server string, body BaseServicePostReactJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewBaseServicePostReactRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewBaseServicePostReactRequestWithBody generates requests for BaseServicePostReact with any type of body
+func NewBaseServicePostReactRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/post/react")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewBaseServiceSystemNotifyGetRequest generates requests for BaseServiceSystemNotifyGet
+func NewBaseServiceSystemNotifyGetRequest(server string, params *BaseServiceSystemNotifyGetParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/system/notify")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.LastNotifyId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "last_notify_id", runtime.ParamLocationQuery, *params.LastNotifyId); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	return req, nil
 }
@@ -1871,6 +2138,46 @@ func NewBaseServiceFastRegisterWeChatRequestWithBody(server string, contentType 
 	}
 
 	operationPath := fmt.Sprintf("/v1/user/fast_reg/wx")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewBaseServiceUserInxRequest calls the generic BaseServiceUserInx builder with application/json body
+func NewBaseServiceUserInxRequest(server string, body BaseServiceUserInxJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewBaseServiceUserInxRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewBaseServiceUserInxRequestWithBody generates requests for BaseServiceUserInx with any type of body
+func NewBaseServiceUserInxRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/user/inx")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -2065,6 +2372,9 @@ type ClientWithResponsesInterface interface {
 	// BaseServiceChannelDeleteWithResponse request
 	BaseServiceChannelDeleteWithResponse(ctx context.Context, params *BaseServiceChannelDeleteParams, reqEditors ...RequestEditorFn) (*BaseServiceChannelDeleteResponse, error)
 
+	// BaseServiceChannelGetWithResponse request
+	BaseServiceChannelGetWithResponse(ctx context.Context, params *BaseServiceChannelGetParams, reqEditors ...RequestEditorFn) (*BaseServiceChannelGetResponse, error)
+
 	// BaseServiceChannelCreateWithBodyWithResponse request with any body
 	BaseServiceChannelCreateWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceChannelCreateResponse, error)
 
@@ -2075,54 +2385,11 @@ type ClientWithResponsesInterface interface {
 
 	BaseServiceChannelUpdateWithResponse(ctx context.Context, body BaseServiceChannelUpdateJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceChannelUpdateResponse, error)
 
-	// BaseServiceChannelBaseQueryByBoundWithBodyWithResponse request with any body
-	BaseServiceChannelBaseQueryByBoundWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceChannelBaseQueryByBoundResponse, error)
+	// BaseServiceChannelQueryByLocationBoundWithResponse request
+	BaseServiceChannelQueryByLocationBoundWithResponse(ctx context.Context, params *BaseServiceChannelQueryByLocationBoundParams, reqEditors ...RequestEditorFn) (*BaseServiceChannelQueryByLocationBoundResponse, error)
 
-	BaseServiceChannelBaseQueryByBoundWithResponse(ctx context.Context, body BaseServiceChannelBaseQueryByBoundJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceChannelBaseQueryByBoundResponse, error)
-
-	// BaseServiceChannelBaseQueryByUserWithBodyWithResponse request with any body
-	BaseServiceChannelBaseQueryByUserWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceChannelBaseQueryByUserResponse, error)
-
-	BaseServiceChannelBaseQueryByUserWithResponse(ctx context.Context, body BaseServiceChannelBaseQueryByUserJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceChannelBaseQueryByUserResponse, error)
-
-	// BaseServiceChannelFullQueryByIdWithResponse request
-	BaseServiceChannelFullQueryByIdWithResponse(ctx context.Context, params *BaseServiceChannelFullQueryByIdParams, reqEditors ...RequestEditorFn) (*BaseServiceChannelFullQueryByIdResponse, error)
-
-	// BaseServiceChannelInxWithBodyWithResponse request with any body
-	BaseServiceChannelInxWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceChannelInxResponse, error)
-
-	BaseServiceChannelInxWithResponse(ctx context.Context, body BaseServiceChannelInxJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceChannelInxResponse, error)
-
-	// BaseServiceChannelPostDeleteWithResponse request
-	BaseServiceChannelPostDeleteWithResponse(ctx context.Context, params *BaseServiceChannelPostDeleteParams, reqEditors ...RequestEditorFn) (*BaseServiceChannelPostDeleteResponse, error)
-
-	// BaseServiceChannelPostCreateWithBodyWithResponse request with any body
-	BaseServiceChannelPostCreateWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceChannelPostCreateResponse, error)
-
-	BaseServiceChannelPostCreateWithResponse(ctx context.Context, body BaseServiceChannelPostCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceChannelPostCreateResponse, error)
-
-	// BaseServiceChannelPostUpdateWithBodyWithResponse request with any body
-	BaseServiceChannelPostUpdateWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceChannelPostUpdateResponse, error)
-
-	BaseServiceChannelPostUpdateWithResponse(ctx context.Context, body BaseServiceChannelPostUpdateJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceChannelPostUpdateResponse, error)
-
-	// BaseServiceChannelPostInxWithBodyWithResponse request with any body
-	BaseServiceChannelPostInxWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceChannelPostInxResponse, error)
-
-	BaseServiceChannelPostInxWithResponse(ctx context.Context, body BaseServiceChannelPostInxJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceChannelPostInxResponse, error)
-
-	// BaseServiceChannelPostLoadWithBodyWithResponse request with any body
-	BaseServiceChannelPostLoadWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceChannelPostLoadResponse, error)
-
-	BaseServiceChannelPostLoadWithResponse(ctx context.Context, body BaseServiceChannelPostLoadJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceChannelPostLoadResponse, error)
-
-	// BaseServiceChannelPostReactWithBodyWithResponse request with any body
-	BaseServiceChannelPostReactWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceChannelPostReactResponse, error)
-
-	BaseServiceChannelPostReactWithResponse(ctx context.Context, body BaseServiceChannelPostReactJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceChannelPostReactResponse, error)
-
-	// BaseServiceChannelTypeListWithResponse request
-	BaseServiceChannelTypeListWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*BaseServiceChannelTypeListResponse, error)
+	// BaseServiceChannelQueryByUserWithResponse request
+	BaseServiceChannelQueryByUserWithResponse(ctx context.Context, params *BaseServiceChannelQueryByUserParams, reqEditors ...RequestEditorFn) (*BaseServiceChannelQueryByUserResponse, error)
 
 	// BaseServiceLocationCommonSearchWithResponse request
 	BaseServiceLocationCommonSearchWithResponse(ctx context.Context, params *BaseServiceLocationCommonSearchParams, reqEditors ...RequestEditorFn) (*BaseServiceLocationCommonSearchResponse, error)
@@ -2130,15 +2397,48 @@ type ClientWithResponsesInterface interface {
 	// BaseServiceMediaPutURLBatchGetWithResponse request
 	BaseServiceMediaPutURLBatchGetWithResponse(ctx context.Context, params *BaseServiceMediaPutURLBatchGetParams, reqEditors ...RequestEditorFn) (*BaseServiceMediaPutURLBatchGetResponse, error)
 
-	// BaseServiceSystemNotifyQueryWithBodyWithResponse request with any body
-	BaseServiceSystemNotifyQueryWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceSystemNotifyQueryResponse, error)
+	// BaseServicePetMarkerInfoListWithResponse request
+	BaseServicePetMarkerInfoListWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*BaseServicePetMarkerInfoListResponse, error)
 
-	BaseServiceSystemNotifyQueryWithResponse(ctx context.Context, body BaseServiceSystemNotifyQueryJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceSystemNotifyQueryResponse, error)
+	// BaseServicePostDeleteWithResponse request
+	BaseServicePostDeleteWithResponse(ctx context.Context, params *BaseServicePostDeleteParams, reqEditors ...RequestEditorFn) (*BaseServicePostDeleteResponse, error)
+
+	// BaseServicePostCreateWithBodyWithResponse request with any body
+	BaseServicePostCreateWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServicePostCreateResponse, error)
+
+	BaseServicePostCreateWithResponse(ctx context.Context, body BaseServicePostCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServicePostCreateResponse, error)
+
+	// BaseServicePostUpdateWithBodyWithResponse request with any body
+	BaseServicePostUpdateWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServicePostUpdateResponse, error)
+
+	BaseServicePostUpdateWithResponse(ctx context.Context, body BaseServicePostUpdateJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServicePostUpdateResponse, error)
+
+	// BaseServicePostLoadWithResponse request
+	BaseServicePostLoadWithResponse(ctx context.Context, params *BaseServicePostLoadParams, reqEditors ...RequestEditorFn) (*BaseServicePostLoadResponse, error)
+
+	// BaseServicePostQueryWithResponse request
+	BaseServicePostQueryWithResponse(ctx context.Context, params *BaseServicePostQueryParams, reqEditors ...RequestEditorFn) (*BaseServicePostQueryResponse, error)
+
+	// BaseServicePostQueryByUserWithResponse request
+	BaseServicePostQueryByUserWithResponse(ctx context.Context, params *BaseServicePostQueryByUserParams, reqEditors ...RequestEditorFn) (*BaseServicePostQueryByUserResponse, error)
+
+	// BaseServicePostReactWithBodyWithResponse request with any body
+	BaseServicePostReactWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServicePostReactResponse, error)
+
+	BaseServicePostReactWithResponse(ctx context.Context, body BaseServicePostReactJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServicePostReactResponse, error)
+
+	// BaseServiceSystemNotifyGetWithResponse request
+	BaseServiceSystemNotifyGetWithResponse(ctx context.Context, params *BaseServiceSystemNotifyGetParams, reqEditors ...RequestEditorFn) (*BaseServiceSystemNotifyGetResponse, error)
 
 	// BaseServiceFastRegisterWeChatWithBodyWithResponse request with any body
 	BaseServiceFastRegisterWeChatWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceFastRegisterWeChatResponse, error)
 
 	BaseServiceFastRegisterWeChatWithResponse(ctx context.Context, body BaseServiceFastRegisterWeChatJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceFastRegisterWeChatResponse, error)
+
+	// BaseServiceUserInxWithBodyWithResponse request with any body
+	BaseServiceUserInxWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceUserInxResponse, error)
+
+	BaseServiceUserInxWithResponse(ctx context.Context, body BaseServiceUserInxJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceUserInxResponse, error)
 
 	// BaseServiceLoginWeChatWithBodyWithResponse request with any body
 	BaseServiceLoginWeChatWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceLoginWeChatResponse, error)
@@ -2170,6 +2470,28 @@ func (r BaseServiceChannelDeleteResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r BaseServiceChannelDeleteResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type BaseServiceChannelGetResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *ChannelGetRes
+}
+
+// Status returns HTTPResponse.Status
+func (r BaseServiceChannelGetResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BaseServiceChannelGetResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -2220,14 +2542,14 @@ func (r BaseServiceChannelUpdateResponse) StatusCode() int {
 	return 0
 }
 
-type BaseServiceChannelBaseQueryByBoundResponse struct {
+type BaseServiceChannelQueryByLocationBoundResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *ChannelBaseQueryByBoundRes
+	JSON200      *ChannelQueryByLocationBoundRes
 }
 
 // Status returns HTTPResponse.Status
-func (r BaseServiceChannelBaseQueryByBoundResponse) Status() string {
+func (r BaseServiceChannelQueryByLocationBoundResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -2235,21 +2557,21 @@ func (r BaseServiceChannelBaseQueryByBoundResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r BaseServiceChannelBaseQueryByBoundResponse) StatusCode() int {
+func (r BaseServiceChannelQueryByLocationBoundResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
 	return 0
 }
 
-type BaseServiceChannelBaseQueryByUserResponse struct {
+type BaseServiceChannelQueryByUserResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *ChannelBaseQueryByUserRes
+	JSON200      *ChannelQueryByUserRes
 }
 
 // Status returns HTTPResponse.Status
-func (r BaseServiceChannelBaseQueryByUserResponse) Status() string {
+func (r BaseServiceChannelQueryByUserResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -2257,205 +2579,7 @@ func (r BaseServiceChannelBaseQueryByUserResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r BaseServiceChannelBaseQueryByUserResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type BaseServiceChannelFullQueryByIdResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *ChannelFullQueryByIdRes
-}
-
-// Status returns HTTPResponse.Status
-func (r BaseServiceChannelFullQueryByIdResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r BaseServiceChannelFullQueryByIdResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type BaseServiceChannelInxResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *ChannelInxRes
-}
-
-// Status returns HTTPResponse.Status
-func (r BaseServiceChannelInxResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r BaseServiceChannelInxResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type BaseServiceChannelPostDeleteResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *ChannelPostDeleteRes
-}
-
-// Status returns HTTPResponse.Status
-func (r BaseServiceChannelPostDeleteResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r BaseServiceChannelPostDeleteResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type BaseServiceChannelPostCreateResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *ChannelPostCreateRes
-}
-
-// Status returns HTTPResponse.Status
-func (r BaseServiceChannelPostCreateResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r BaseServiceChannelPostCreateResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type BaseServiceChannelPostUpdateResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *ChannelPostUpdateRes
-}
-
-// Status returns HTTPResponse.Status
-func (r BaseServiceChannelPostUpdateResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r BaseServiceChannelPostUpdateResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type BaseServiceChannelPostInxResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *ChannelPostInxRes
-}
-
-// Status returns HTTPResponse.Status
-func (r BaseServiceChannelPostInxResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r BaseServiceChannelPostInxResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type BaseServiceChannelPostLoadResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *ChannelPostLoadRes
-}
-
-// Status returns HTTPResponse.Status
-func (r BaseServiceChannelPostLoadResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r BaseServiceChannelPostLoadResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type BaseServiceChannelPostReactResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *ChannelPostReactRes
-}
-
-// Status returns HTTPResponse.Status
-func (r BaseServiceChannelPostReactResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r BaseServiceChannelPostReactResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type BaseServiceChannelTypeListResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *ChannelTypeListRes
-}
-
-// Status returns HTTPResponse.Status
-func (r BaseServiceChannelTypeListResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r BaseServiceChannelTypeListResponse) StatusCode() int {
+func (r BaseServiceChannelQueryByUserResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -2506,14 +2630,14 @@ func (r BaseServiceMediaPutURLBatchGetResponse) StatusCode() int {
 	return 0
 }
 
-type BaseServiceSystemNotifyQueryResponse struct {
+type BaseServicePetMarkerInfoListResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *SystemNotifyQueryRes
+	JSON200      *PetMarkerInfoRes
 }
 
 // Status returns HTTPResponse.Status
-func (r BaseServiceSystemNotifyQueryResponse) Status() string {
+func (r BaseServicePetMarkerInfoListResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -2521,7 +2645,183 @@ func (r BaseServiceSystemNotifyQueryResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r BaseServiceSystemNotifyQueryResponse) StatusCode() int {
+func (r BaseServicePetMarkerInfoListResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type BaseServicePostDeleteResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *PostDeleteRes
+}
+
+// Status returns HTTPResponse.Status
+func (r BaseServicePostDeleteResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BaseServicePostDeleteResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type BaseServicePostCreateResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *PostCreateRes
+}
+
+// Status returns HTTPResponse.Status
+func (r BaseServicePostCreateResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BaseServicePostCreateResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type BaseServicePostUpdateResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *PostUpdateRes
+}
+
+// Status returns HTTPResponse.Status
+func (r BaseServicePostUpdateResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BaseServicePostUpdateResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type BaseServicePostLoadResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *PostLoadRes
+}
+
+// Status returns HTTPResponse.Status
+func (r BaseServicePostLoadResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BaseServicePostLoadResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type BaseServicePostQueryResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *PostQueryRes
+}
+
+// Status returns HTTPResponse.Status
+func (r BaseServicePostQueryResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BaseServicePostQueryResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type BaseServicePostQueryByUserResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *PostQueryByUserRes
+}
+
+// Status returns HTTPResponse.Status
+func (r BaseServicePostQueryByUserResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BaseServicePostQueryByUserResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type BaseServicePostReactResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *PostReactRes
+}
+
+// Status returns HTTPResponse.Status
+func (r BaseServicePostReactResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BaseServicePostReactResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type BaseServiceSystemNotifyGetResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *SystemNotifyGetRes
+}
+
+// Status returns HTTPResponse.Status
+func (r BaseServiceSystemNotifyGetResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BaseServiceSystemNotifyGetResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -2544,6 +2844,28 @@ func (r BaseServiceFastRegisterWeChatResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r BaseServiceFastRegisterWeChatResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type BaseServiceUserInxResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *UserInxRes
+}
+
+// Status returns HTTPResponse.Status
+func (r BaseServiceUserInxResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BaseServiceUserInxResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -2625,6 +2947,15 @@ func (c *ClientWithResponses) BaseServiceChannelDeleteWithResponse(ctx context.C
 	return ParseBaseServiceChannelDeleteResponse(rsp)
 }
 
+// BaseServiceChannelGetWithResponse request returning *BaseServiceChannelGetResponse
+func (c *ClientWithResponses) BaseServiceChannelGetWithResponse(ctx context.Context, params *BaseServiceChannelGetParams, reqEditors ...RequestEditorFn) (*BaseServiceChannelGetResponse, error) {
+	rsp, err := c.BaseServiceChannelGet(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServiceChannelGetResponse(rsp)
+}
+
 // BaseServiceChannelCreateWithBodyWithResponse request with arbitrary body returning *BaseServiceChannelCreateResponse
 func (c *ClientWithResponses) BaseServiceChannelCreateWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceChannelCreateResponse, error) {
 	rsp, err := c.BaseServiceChannelCreateWithBody(ctx, contentType, body, reqEditors...)
@@ -2659,167 +2990,22 @@ func (c *ClientWithResponses) BaseServiceChannelUpdateWithResponse(ctx context.C
 	return ParseBaseServiceChannelUpdateResponse(rsp)
 }
 
-// BaseServiceChannelBaseQueryByBoundWithBodyWithResponse request with arbitrary body returning *BaseServiceChannelBaseQueryByBoundResponse
-func (c *ClientWithResponses) BaseServiceChannelBaseQueryByBoundWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceChannelBaseQueryByBoundResponse, error) {
-	rsp, err := c.BaseServiceChannelBaseQueryByBoundWithBody(ctx, contentType, body, reqEditors...)
+// BaseServiceChannelQueryByLocationBoundWithResponse request returning *BaseServiceChannelQueryByLocationBoundResponse
+func (c *ClientWithResponses) BaseServiceChannelQueryByLocationBoundWithResponse(ctx context.Context, params *BaseServiceChannelQueryByLocationBoundParams, reqEditors ...RequestEditorFn) (*BaseServiceChannelQueryByLocationBoundResponse, error) {
+	rsp, err := c.BaseServiceChannelQueryByLocationBound(ctx, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseBaseServiceChannelBaseQueryByBoundResponse(rsp)
+	return ParseBaseServiceChannelQueryByLocationBoundResponse(rsp)
 }
 
-func (c *ClientWithResponses) BaseServiceChannelBaseQueryByBoundWithResponse(ctx context.Context, body BaseServiceChannelBaseQueryByBoundJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceChannelBaseQueryByBoundResponse, error) {
-	rsp, err := c.BaseServiceChannelBaseQueryByBound(ctx, body, reqEditors...)
+// BaseServiceChannelQueryByUserWithResponse request returning *BaseServiceChannelQueryByUserResponse
+func (c *ClientWithResponses) BaseServiceChannelQueryByUserWithResponse(ctx context.Context, params *BaseServiceChannelQueryByUserParams, reqEditors ...RequestEditorFn) (*BaseServiceChannelQueryByUserResponse, error) {
+	rsp, err := c.BaseServiceChannelQueryByUser(ctx, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseBaseServiceChannelBaseQueryByBoundResponse(rsp)
-}
-
-// BaseServiceChannelBaseQueryByUserWithBodyWithResponse request with arbitrary body returning *BaseServiceChannelBaseQueryByUserResponse
-func (c *ClientWithResponses) BaseServiceChannelBaseQueryByUserWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceChannelBaseQueryByUserResponse, error) {
-	rsp, err := c.BaseServiceChannelBaseQueryByUserWithBody(ctx, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseBaseServiceChannelBaseQueryByUserResponse(rsp)
-}
-
-func (c *ClientWithResponses) BaseServiceChannelBaseQueryByUserWithResponse(ctx context.Context, body BaseServiceChannelBaseQueryByUserJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceChannelBaseQueryByUserResponse, error) {
-	rsp, err := c.BaseServiceChannelBaseQueryByUser(ctx, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseBaseServiceChannelBaseQueryByUserResponse(rsp)
-}
-
-// BaseServiceChannelFullQueryByIdWithResponse request returning *BaseServiceChannelFullQueryByIdResponse
-func (c *ClientWithResponses) BaseServiceChannelFullQueryByIdWithResponse(ctx context.Context, params *BaseServiceChannelFullQueryByIdParams, reqEditors ...RequestEditorFn) (*BaseServiceChannelFullQueryByIdResponse, error) {
-	rsp, err := c.BaseServiceChannelFullQueryById(ctx, params, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseBaseServiceChannelFullQueryByIdResponse(rsp)
-}
-
-// BaseServiceChannelInxWithBodyWithResponse request with arbitrary body returning *BaseServiceChannelInxResponse
-func (c *ClientWithResponses) BaseServiceChannelInxWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceChannelInxResponse, error) {
-	rsp, err := c.BaseServiceChannelInxWithBody(ctx, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseBaseServiceChannelInxResponse(rsp)
-}
-
-func (c *ClientWithResponses) BaseServiceChannelInxWithResponse(ctx context.Context, body BaseServiceChannelInxJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceChannelInxResponse, error) {
-	rsp, err := c.BaseServiceChannelInx(ctx, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseBaseServiceChannelInxResponse(rsp)
-}
-
-// BaseServiceChannelPostDeleteWithResponse request returning *BaseServiceChannelPostDeleteResponse
-func (c *ClientWithResponses) BaseServiceChannelPostDeleteWithResponse(ctx context.Context, params *BaseServiceChannelPostDeleteParams, reqEditors ...RequestEditorFn) (*BaseServiceChannelPostDeleteResponse, error) {
-	rsp, err := c.BaseServiceChannelPostDelete(ctx, params, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseBaseServiceChannelPostDeleteResponse(rsp)
-}
-
-// BaseServiceChannelPostCreateWithBodyWithResponse request with arbitrary body returning *BaseServiceChannelPostCreateResponse
-func (c *ClientWithResponses) BaseServiceChannelPostCreateWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceChannelPostCreateResponse, error) {
-	rsp, err := c.BaseServiceChannelPostCreateWithBody(ctx, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseBaseServiceChannelPostCreateResponse(rsp)
-}
-
-func (c *ClientWithResponses) BaseServiceChannelPostCreateWithResponse(ctx context.Context, body BaseServiceChannelPostCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceChannelPostCreateResponse, error) {
-	rsp, err := c.BaseServiceChannelPostCreate(ctx, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseBaseServiceChannelPostCreateResponse(rsp)
-}
-
-// BaseServiceChannelPostUpdateWithBodyWithResponse request with arbitrary body returning *BaseServiceChannelPostUpdateResponse
-func (c *ClientWithResponses) BaseServiceChannelPostUpdateWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceChannelPostUpdateResponse, error) {
-	rsp, err := c.BaseServiceChannelPostUpdateWithBody(ctx, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseBaseServiceChannelPostUpdateResponse(rsp)
-}
-
-func (c *ClientWithResponses) BaseServiceChannelPostUpdateWithResponse(ctx context.Context, body BaseServiceChannelPostUpdateJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceChannelPostUpdateResponse, error) {
-	rsp, err := c.BaseServiceChannelPostUpdate(ctx, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseBaseServiceChannelPostUpdateResponse(rsp)
-}
-
-// BaseServiceChannelPostInxWithBodyWithResponse request with arbitrary body returning *BaseServiceChannelPostInxResponse
-func (c *ClientWithResponses) BaseServiceChannelPostInxWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceChannelPostInxResponse, error) {
-	rsp, err := c.BaseServiceChannelPostInxWithBody(ctx, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseBaseServiceChannelPostInxResponse(rsp)
-}
-
-func (c *ClientWithResponses) BaseServiceChannelPostInxWithResponse(ctx context.Context, body BaseServiceChannelPostInxJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceChannelPostInxResponse, error) {
-	rsp, err := c.BaseServiceChannelPostInx(ctx, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseBaseServiceChannelPostInxResponse(rsp)
-}
-
-// BaseServiceChannelPostLoadWithBodyWithResponse request with arbitrary body returning *BaseServiceChannelPostLoadResponse
-func (c *ClientWithResponses) BaseServiceChannelPostLoadWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceChannelPostLoadResponse, error) {
-	rsp, err := c.BaseServiceChannelPostLoadWithBody(ctx, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseBaseServiceChannelPostLoadResponse(rsp)
-}
-
-func (c *ClientWithResponses) BaseServiceChannelPostLoadWithResponse(ctx context.Context, body BaseServiceChannelPostLoadJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceChannelPostLoadResponse, error) {
-	rsp, err := c.BaseServiceChannelPostLoad(ctx, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseBaseServiceChannelPostLoadResponse(rsp)
-}
-
-// BaseServiceChannelPostReactWithBodyWithResponse request with arbitrary body returning *BaseServiceChannelPostReactResponse
-func (c *ClientWithResponses) BaseServiceChannelPostReactWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceChannelPostReactResponse, error) {
-	rsp, err := c.BaseServiceChannelPostReactWithBody(ctx, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseBaseServiceChannelPostReactResponse(rsp)
-}
-
-func (c *ClientWithResponses) BaseServiceChannelPostReactWithResponse(ctx context.Context, body BaseServiceChannelPostReactJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceChannelPostReactResponse, error) {
-	rsp, err := c.BaseServiceChannelPostReact(ctx, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseBaseServiceChannelPostReactResponse(rsp)
-}
-
-// BaseServiceChannelTypeListWithResponse request returning *BaseServiceChannelTypeListResponse
-func (c *ClientWithResponses) BaseServiceChannelTypeListWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*BaseServiceChannelTypeListResponse, error) {
-	rsp, err := c.BaseServiceChannelTypeList(ctx, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseBaseServiceChannelTypeListResponse(rsp)
+	return ParseBaseServiceChannelQueryByUserResponse(rsp)
 }
 
 // BaseServiceLocationCommonSearchWithResponse request returning *BaseServiceLocationCommonSearchResponse
@@ -2840,21 +3026,109 @@ func (c *ClientWithResponses) BaseServiceMediaPutURLBatchGetWithResponse(ctx con
 	return ParseBaseServiceMediaPutURLBatchGetResponse(rsp)
 }
 
-// BaseServiceSystemNotifyQueryWithBodyWithResponse request with arbitrary body returning *BaseServiceSystemNotifyQueryResponse
-func (c *ClientWithResponses) BaseServiceSystemNotifyQueryWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceSystemNotifyQueryResponse, error) {
-	rsp, err := c.BaseServiceSystemNotifyQueryWithBody(ctx, contentType, body, reqEditors...)
+// BaseServicePetMarkerInfoListWithResponse request returning *BaseServicePetMarkerInfoListResponse
+func (c *ClientWithResponses) BaseServicePetMarkerInfoListWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*BaseServicePetMarkerInfoListResponse, error) {
+	rsp, err := c.BaseServicePetMarkerInfoList(ctx, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseBaseServiceSystemNotifyQueryResponse(rsp)
+	return ParseBaseServicePetMarkerInfoListResponse(rsp)
 }
 
-func (c *ClientWithResponses) BaseServiceSystemNotifyQueryWithResponse(ctx context.Context, body BaseServiceSystemNotifyQueryJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceSystemNotifyQueryResponse, error) {
-	rsp, err := c.BaseServiceSystemNotifyQuery(ctx, body, reqEditors...)
+// BaseServicePostDeleteWithResponse request returning *BaseServicePostDeleteResponse
+func (c *ClientWithResponses) BaseServicePostDeleteWithResponse(ctx context.Context, params *BaseServicePostDeleteParams, reqEditors ...RequestEditorFn) (*BaseServicePostDeleteResponse, error) {
+	rsp, err := c.BaseServicePostDelete(ctx, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseBaseServiceSystemNotifyQueryResponse(rsp)
+	return ParseBaseServicePostDeleteResponse(rsp)
+}
+
+// BaseServicePostCreateWithBodyWithResponse request with arbitrary body returning *BaseServicePostCreateResponse
+func (c *ClientWithResponses) BaseServicePostCreateWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServicePostCreateResponse, error) {
+	rsp, err := c.BaseServicePostCreateWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServicePostCreateResponse(rsp)
+}
+
+func (c *ClientWithResponses) BaseServicePostCreateWithResponse(ctx context.Context, body BaseServicePostCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServicePostCreateResponse, error) {
+	rsp, err := c.BaseServicePostCreate(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServicePostCreateResponse(rsp)
+}
+
+// BaseServicePostUpdateWithBodyWithResponse request with arbitrary body returning *BaseServicePostUpdateResponse
+func (c *ClientWithResponses) BaseServicePostUpdateWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServicePostUpdateResponse, error) {
+	rsp, err := c.BaseServicePostUpdateWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServicePostUpdateResponse(rsp)
+}
+
+func (c *ClientWithResponses) BaseServicePostUpdateWithResponse(ctx context.Context, body BaseServicePostUpdateJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServicePostUpdateResponse, error) {
+	rsp, err := c.BaseServicePostUpdate(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServicePostUpdateResponse(rsp)
+}
+
+// BaseServicePostLoadWithResponse request returning *BaseServicePostLoadResponse
+func (c *ClientWithResponses) BaseServicePostLoadWithResponse(ctx context.Context, params *BaseServicePostLoadParams, reqEditors ...RequestEditorFn) (*BaseServicePostLoadResponse, error) {
+	rsp, err := c.BaseServicePostLoad(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServicePostLoadResponse(rsp)
+}
+
+// BaseServicePostQueryWithResponse request returning *BaseServicePostQueryResponse
+func (c *ClientWithResponses) BaseServicePostQueryWithResponse(ctx context.Context, params *BaseServicePostQueryParams, reqEditors ...RequestEditorFn) (*BaseServicePostQueryResponse, error) {
+	rsp, err := c.BaseServicePostQuery(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServicePostQueryResponse(rsp)
+}
+
+// BaseServicePostQueryByUserWithResponse request returning *BaseServicePostQueryByUserResponse
+func (c *ClientWithResponses) BaseServicePostQueryByUserWithResponse(ctx context.Context, params *BaseServicePostQueryByUserParams, reqEditors ...RequestEditorFn) (*BaseServicePostQueryByUserResponse, error) {
+	rsp, err := c.BaseServicePostQueryByUser(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServicePostQueryByUserResponse(rsp)
+}
+
+// BaseServicePostReactWithBodyWithResponse request with arbitrary body returning *BaseServicePostReactResponse
+func (c *ClientWithResponses) BaseServicePostReactWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServicePostReactResponse, error) {
+	rsp, err := c.BaseServicePostReactWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServicePostReactResponse(rsp)
+}
+
+func (c *ClientWithResponses) BaseServicePostReactWithResponse(ctx context.Context, body BaseServicePostReactJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServicePostReactResponse, error) {
+	rsp, err := c.BaseServicePostReact(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServicePostReactResponse(rsp)
+}
+
+// BaseServiceSystemNotifyGetWithResponse request returning *BaseServiceSystemNotifyGetResponse
+func (c *ClientWithResponses) BaseServiceSystemNotifyGetWithResponse(ctx context.Context, params *BaseServiceSystemNotifyGetParams, reqEditors ...RequestEditorFn) (*BaseServiceSystemNotifyGetResponse, error) {
+	rsp, err := c.BaseServiceSystemNotifyGet(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServiceSystemNotifyGetResponse(rsp)
 }
 
 // BaseServiceFastRegisterWeChatWithBodyWithResponse request with arbitrary body returning *BaseServiceFastRegisterWeChatResponse
@@ -2872,6 +3146,23 @@ func (c *ClientWithResponses) BaseServiceFastRegisterWeChatWithResponse(ctx cont
 		return nil, err
 	}
 	return ParseBaseServiceFastRegisterWeChatResponse(rsp)
+}
+
+// BaseServiceUserInxWithBodyWithResponse request with arbitrary body returning *BaseServiceUserInxResponse
+func (c *ClientWithResponses) BaseServiceUserInxWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BaseServiceUserInxResponse, error) {
+	rsp, err := c.BaseServiceUserInxWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServiceUserInxResponse(rsp)
+}
+
+func (c *ClientWithResponses) BaseServiceUserInxWithResponse(ctx context.Context, body BaseServiceUserInxJSONRequestBody, reqEditors ...RequestEditorFn) (*BaseServiceUserInxResponse, error) {
+	rsp, err := c.BaseServiceUserInx(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBaseServiceUserInxResponse(rsp)
 }
 
 // BaseServiceLoginWeChatWithBodyWithResponse request with arbitrary body returning *BaseServiceLoginWeChatResponse
@@ -2943,6 +3234,32 @@ func ParseBaseServiceChannelDeleteResponse(rsp *http.Response) (*BaseServiceChan
 	return response, nil
 }
 
+// ParseBaseServiceChannelGetResponse parses an HTTP response from a BaseServiceChannelGetWithResponse call
+func ParseBaseServiceChannelGetResponse(rsp *http.Response) (*BaseServiceChannelGetResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BaseServiceChannelGetResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ChannelGetRes
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseBaseServiceChannelCreateResponse parses an HTTP response from a BaseServiceChannelCreateWithResponse call
 func ParseBaseServiceChannelCreateResponse(rsp *http.Response) (*BaseServiceChannelCreateResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -2995,22 +3312,22 @@ func ParseBaseServiceChannelUpdateResponse(rsp *http.Response) (*BaseServiceChan
 	return response, nil
 }
 
-// ParseBaseServiceChannelBaseQueryByBoundResponse parses an HTTP response from a BaseServiceChannelBaseQueryByBoundWithResponse call
-func ParseBaseServiceChannelBaseQueryByBoundResponse(rsp *http.Response) (*BaseServiceChannelBaseQueryByBoundResponse, error) {
+// ParseBaseServiceChannelQueryByLocationBoundResponse parses an HTTP response from a BaseServiceChannelQueryByLocationBoundWithResponse call
+func ParseBaseServiceChannelQueryByLocationBoundResponse(rsp *http.Response) (*BaseServiceChannelQueryByLocationBoundResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &BaseServiceChannelBaseQueryByBoundResponse{
+	response := &BaseServiceChannelQueryByLocationBoundResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest ChannelBaseQueryByBoundRes
+		var dest ChannelQueryByLocationBoundRes
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -3021,256 +3338,22 @@ func ParseBaseServiceChannelBaseQueryByBoundResponse(rsp *http.Response) (*BaseS
 	return response, nil
 }
 
-// ParseBaseServiceChannelBaseQueryByUserResponse parses an HTTP response from a BaseServiceChannelBaseQueryByUserWithResponse call
-func ParseBaseServiceChannelBaseQueryByUserResponse(rsp *http.Response) (*BaseServiceChannelBaseQueryByUserResponse, error) {
+// ParseBaseServiceChannelQueryByUserResponse parses an HTTP response from a BaseServiceChannelQueryByUserWithResponse call
+func ParseBaseServiceChannelQueryByUserResponse(rsp *http.Response) (*BaseServiceChannelQueryByUserResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &BaseServiceChannelBaseQueryByUserResponse{
+	response := &BaseServiceChannelQueryByUserResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest ChannelBaseQueryByUserRes
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseBaseServiceChannelFullQueryByIdResponse parses an HTTP response from a BaseServiceChannelFullQueryByIdWithResponse call
-func ParseBaseServiceChannelFullQueryByIdResponse(rsp *http.Response) (*BaseServiceChannelFullQueryByIdResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &BaseServiceChannelFullQueryByIdResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest ChannelFullQueryByIdRes
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseBaseServiceChannelInxResponse parses an HTTP response from a BaseServiceChannelInxWithResponse call
-func ParseBaseServiceChannelInxResponse(rsp *http.Response) (*BaseServiceChannelInxResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &BaseServiceChannelInxResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest ChannelInxRes
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseBaseServiceChannelPostDeleteResponse parses an HTTP response from a BaseServiceChannelPostDeleteWithResponse call
-func ParseBaseServiceChannelPostDeleteResponse(rsp *http.Response) (*BaseServiceChannelPostDeleteResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &BaseServiceChannelPostDeleteResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest ChannelPostDeleteRes
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseBaseServiceChannelPostCreateResponse parses an HTTP response from a BaseServiceChannelPostCreateWithResponse call
-func ParseBaseServiceChannelPostCreateResponse(rsp *http.Response) (*BaseServiceChannelPostCreateResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &BaseServiceChannelPostCreateResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest ChannelPostCreateRes
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseBaseServiceChannelPostUpdateResponse parses an HTTP response from a BaseServiceChannelPostUpdateWithResponse call
-func ParseBaseServiceChannelPostUpdateResponse(rsp *http.Response) (*BaseServiceChannelPostUpdateResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &BaseServiceChannelPostUpdateResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest ChannelPostUpdateRes
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseBaseServiceChannelPostInxResponse parses an HTTP response from a BaseServiceChannelPostInxWithResponse call
-func ParseBaseServiceChannelPostInxResponse(rsp *http.Response) (*BaseServiceChannelPostInxResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &BaseServiceChannelPostInxResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest ChannelPostInxRes
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseBaseServiceChannelPostLoadResponse parses an HTTP response from a BaseServiceChannelPostLoadWithResponse call
-func ParseBaseServiceChannelPostLoadResponse(rsp *http.Response) (*BaseServiceChannelPostLoadResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &BaseServiceChannelPostLoadResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest ChannelPostLoadRes
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseBaseServiceChannelPostReactResponse parses an HTTP response from a BaseServiceChannelPostReactWithResponse call
-func ParseBaseServiceChannelPostReactResponse(rsp *http.Response) (*BaseServiceChannelPostReactResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &BaseServiceChannelPostReactResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest ChannelPostReactRes
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseBaseServiceChannelTypeListResponse parses an HTTP response from a BaseServiceChannelTypeListWithResponse call
-func ParseBaseServiceChannelTypeListResponse(rsp *http.Response) (*BaseServiceChannelTypeListResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &BaseServiceChannelTypeListResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest ChannelTypeListRes
+		var dest ChannelQueryByUserRes
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -3333,22 +3416,230 @@ func ParseBaseServiceMediaPutURLBatchGetResponse(rsp *http.Response) (*BaseServi
 	return response, nil
 }
 
-// ParseBaseServiceSystemNotifyQueryResponse parses an HTTP response from a BaseServiceSystemNotifyQueryWithResponse call
-func ParseBaseServiceSystemNotifyQueryResponse(rsp *http.Response) (*BaseServiceSystemNotifyQueryResponse, error) {
+// ParseBaseServicePetMarkerInfoListResponse parses an HTTP response from a BaseServicePetMarkerInfoListWithResponse call
+func ParseBaseServicePetMarkerInfoListResponse(rsp *http.Response) (*BaseServicePetMarkerInfoListResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &BaseServiceSystemNotifyQueryResponse{
+	response := &BaseServicePetMarkerInfoListResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest SystemNotifyQueryRes
+		var dest PetMarkerInfoRes
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseBaseServicePostDeleteResponse parses an HTTP response from a BaseServicePostDeleteWithResponse call
+func ParseBaseServicePostDeleteResponse(rsp *http.Response) (*BaseServicePostDeleteResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BaseServicePostDeleteResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PostDeleteRes
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseBaseServicePostCreateResponse parses an HTTP response from a BaseServicePostCreateWithResponse call
+func ParseBaseServicePostCreateResponse(rsp *http.Response) (*BaseServicePostCreateResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BaseServicePostCreateResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PostCreateRes
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseBaseServicePostUpdateResponse parses an HTTP response from a BaseServicePostUpdateWithResponse call
+func ParseBaseServicePostUpdateResponse(rsp *http.Response) (*BaseServicePostUpdateResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BaseServicePostUpdateResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PostUpdateRes
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseBaseServicePostLoadResponse parses an HTTP response from a BaseServicePostLoadWithResponse call
+func ParseBaseServicePostLoadResponse(rsp *http.Response) (*BaseServicePostLoadResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BaseServicePostLoadResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PostLoadRes
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseBaseServicePostQueryResponse parses an HTTP response from a BaseServicePostQueryWithResponse call
+func ParseBaseServicePostQueryResponse(rsp *http.Response) (*BaseServicePostQueryResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BaseServicePostQueryResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PostQueryRes
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseBaseServicePostQueryByUserResponse parses an HTTP response from a BaseServicePostQueryByUserWithResponse call
+func ParseBaseServicePostQueryByUserResponse(rsp *http.Response) (*BaseServicePostQueryByUserResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BaseServicePostQueryByUserResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PostQueryByUserRes
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseBaseServicePostReactResponse parses an HTTP response from a BaseServicePostReactWithResponse call
+func ParseBaseServicePostReactResponse(rsp *http.Response) (*BaseServicePostReactResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BaseServicePostReactResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PostReactRes
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseBaseServiceSystemNotifyGetResponse parses an HTTP response from a BaseServiceSystemNotifyGetWithResponse call
+func ParseBaseServiceSystemNotifyGetResponse(rsp *http.Response) (*BaseServiceSystemNotifyGetResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BaseServiceSystemNotifyGetResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SystemNotifyGetRes
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -3375,6 +3666,32 @@ func ParseBaseServiceFastRegisterWeChatResponse(rsp *http.Response) (*BaseServic
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest FastRegisterWeChatRes
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseBaseServiceUserInxResponse parses an HTTP response from a BaseServiceUserInxWithResponse call
+func ParseBaseServiceUserInxResponse(rsp *http.Response) (*BaseServiceUserInxResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BaseServiceUserInxResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest UserInxRes
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -3469,44 +3786,20 @@ type ServerInterface interface {
 	// (DELETE /v1/channel)
 	BaseServiceChannelDelete(c *gin.Context, params BaseServiceChannelDeleteParams)
 
+	// (GET /v1/channel)
+	BaseServiceChannelGet(c *gin.Context, params BaseServiceChannelGetParams)
+
 	// (POST /v1/channel)
 	BaseServiceChannelCreate(c *gin.Context)
 
 	// (PUT /v1/channel)
 	BaseServiceChannelUpdate(c *gin.Context)
 
-	// (POST /v1/channel/base_query_by_bound)
-	BaseServiceChannelBaseQueryByBound(c *gin.Context)
+	// (GET /v1/channel/query_by_location_bound)
+	BaseServiceChannelQueryByLocationBound(c *gin.Context, params BaseServiceChannelQueryByLocationBoundParams)
 
-	// (POST /v1/channel/base_query_by_user)
-	BaseServiceChannelBaseQueryByUser(c *gin.Context)
-
-	// (GET /v1/channel/full_query_by_id)
-	BaseServiceChannelFullQueryById(c *gin.Context, params BaseServiceChannelFullQueryByIdParams)
-
-	// (POST /v1/channel/inx)
-	BaseServiceChannelInx(c *gin.Context)
-
-	// (DELETE /v1/channel/post)
-	BaseServiceChannelPostDelete(c *gin.Context, params BaseServiceChannelPostDeleteParams)
-
-	// (POST /v1/channel/post)
-	BaseServiceChannelPostCreate(c *gin.Context)
-
-	// (PUT /v1/channel/post)
-	BaseServiceChannelPostUpdate(c *gin.Context)
-
-	// (POST /v1/channel/post/inx)
-	BaseServiceChannelPostInx(c *gin.Context)
-
-	// (POST /v1/channel/post/load)
-	BaseServiceChannelPostLoad(c *gin.Context)
-
-	// (POST /v1/channel/post/react)
-	BaseServiceChannelPostReact(c *gin.Context)
-
-	// (GET /v1/channel/type)
-	BaseServiceChannelTypeList(c *gin.Context)
+	// (GET /v1/channel/query_by_user)
+	BaseServiceChannelQueryByUser(c *gin.Context, params BaseServiceChannelQueryByUserParams)
 
 	// (GET /v1/location/search)
 	BaseServiceLocationCommonSearch(c *gin.Context, params BaseServiceLocationCommonSearchParams)
@@ -3514,11 +3807,38 @@ type ServerInterface interface {
 	// (GET /v1/media/put_url/batch)
 	BaseServiceMediaPutURLBatchGet(c *gin.Context, params BaseServiceMediaPutURLBatchGetParams)
 
-	// (POST /v1/notify/query)
-	BaseServiceSystemNotifyQuery(c *gin.Context)
+	// (GET /v1/pet/marker)
+	BaseServicePetMarkerInfoList(c *gin.Context)
+
+	// (DELETE /v1/post)
+	BaseServicePostDelete(c *gin.Context, params BaseServicePostDeleteParams)
+
+	// (POST /v1/post)
+	BaseServicePostCreate(c *gin.Context)
+
+	// (PUT /v1/post)
+	BaseServicePostUpdate(c *gin.Context)
+
+	// (GET /v1/post/load)
+	BaseServicePostLoad(c *gin.Context, params BaseServicePostLoadParams)
+
+	// (GET /v1/post/query)
+	BaseServicePostQuery(c *gin.Context, params BaseServicePostQueryParams)
+
+	// (GET /v1/post/query_by_user)
+	BaseServicePostQueryByUser(c *gin.Context, params BaseServicePostQueryByUserParams)
+
+	// (POST /v1/post/react)
+	BaseServicePostReact(c *gin.Context)
+
+	// (GET /v1/system/notify)
+	BaseServiceSystemNotifyGet(c *gin.Context, params BaseServiceSystemNotifyGetParams)
 
 	// (POST /v1/user/fast_reg/wx)
 	BaseServiceFastRegisterWeChat(c *gin.Context)
+
+	// (POST /v1/user/inx)
+	BaseServiceUserInx(c *gin.Context)
 
 	// (POST /v1/user/login/wx)
 	BaseServiceLoginWeChat(c *gin.Context)
@@ -3549,11 +3869,11 @@ func (siw *ServerInterfaceWrapper) BaseServiceChannelDelete(c *gin.Context) {
 	// Parameter object where we will unmarshal all parameters from the context
 	var params BaseServiceChannelDeleteParams
 
-	// ------------- Optional query parameter "chan_id" -------------
+	// ------------- Optional query parameter "channel_id" -------------
 
-	err = runtime.BindQueryParameter("form", true, false, "chan_id", c.Request.URL.Query(), &params.ChanId)
+	err = runtime.BindQueryParameter("form", true, false, "channel_id", c.Request.URL.Query(), &params.ChannelId)
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter chan_id: %w", err), http.StatusBadRequest)
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter channel_id: %w", err), http.StatusBadRequest)
 		return
 	}
 
@@ -3565,6 +3885,34 @@ func (siw *ServerInterfaceWrapper) BaseServiceChannelDelete(c *gin.Context) {
 	}
 
 	siw.Handler.BaseServiceChannelDelete(c, params)
+}
+
+// BaseServiceChannelGet operation middleware
+func (siw *ServerInterfaceWrapper) BaseServiceChannelGet(c *gin.Context) {
+
+	var err error
+
+	c.Set(BearerAuthScopes, []string{})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params BaseServiceChannelGetParams
+
+	// ------------- Optional query parameter "channel_id" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "channel_id", c.Request.URL.Query(), &params.ChannelId)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter channel_id: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.BaseServiceChannelGet(c, params)
 }
 
 // BaseServiceChannelCreate operation middleware
@@ -3597,51 +3945,53 @@ func (siw *ServerInterfaceWrapper) BaseServiceChannelUpdate(c *gin.Context) {
 	siw.Handler.BaseServiceChannelUpdate(c)
 }
 
-// BaseServiceChannelBaseQueryByBound operation middleware
-func (siw *ServerInterfaceWrapper) BaseServiceChannelBaseQueryByBound(c *gin.Context) {
-
-	c.Set(BearerAuthScopes, []string{})
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.BaseServiceChannelBaseQueryByBound(c)
-}
-
-// BaseServiceChannelBaseQueryByUser operation middleware
-func (siw *ServerInterfaceWrapper) BaseServiceChannelBaseQueryByUser(c *gin.Context) {
-
-	c.Set(BearerAuthScopes, []string{})
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.BaseServiceChannelBaseQueryByUser(c)
-}
-
-// BaseServiceChannelFullQueryById operation middleware
-func (siw *ServerInterfaceWrapper) BaseServiceChannelFullQueryById(c *gin.Context) {
+// BaseServiceChannelQueryByLocationBound operation middleware
+func (siw *ServerInterfaceWrapper) BaseServiceChannelQueryByLocationBound(c *gin.Context) {
 
 	var err error
 
 	c.Set(BearerAuthScopes, []string{})
 
 	// Parameter object where we will unmarshal all parameters from the context
-	var params BaseServiceChannelFullQueryByIdParams
+	var params BaseServiceChannelQueryByLocationBoundParams
 
-	// ------------- Optional query parameter "chan_id" -------------
+	// ------------- Optional query parameter "bound.sw.lat" -------------
 
-	err = runtime.BindQueryParameter("form", true, false, "chan_id", c.Request.URL.Query(), &params.ChanId)
+	err = runtime.BindQueryParameter("form", true, false, "bound.sw.lat", c.Request.URL.Query(), &params.BoundSwLat)
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter chan_id: %w", err), http.StatusBadRequest)
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter bound.sw.lat: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "bound.sw.lng" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "bound.sw.lng", c.Request.URL.Query(), &params.BoundSwLng)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter bound.sw.lng: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "bound.ne.lat" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "bound.ne.lat", c.Request.URL.Query(), &params.BoundNeLat)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter bound.ne.lat: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "bound.ne.lng" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "bound.ne.lng", c.Request.URL.Query(), &params.BoundNeLng)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter bound.ne.lng: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "marker_ids" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "marker_ids", c.Request.URL.Query(), &params.MarkerIds)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter marker_ids: %w", err), http.StatusBadRequest)
 		return
 	}
 
@@ -3652,47 +4002,48 @@ func (siw *ServerInterfaceWrapper) BaseServiceChannelFullQueryById(c *gin.Contex
 		}
 	}
 
-	siw.Handler.BaseServiceChannelFullQueryById(c, params)
+	siw.Handler.BaseServiceChannelQueryByLocationBound(c, params)
 }
 
-// BaseServiceChannelInx operation middleware
-func (siw *ServerInterfaceWrapper) BaseServiceChannelInx(c *gin.Context) {
-
-	c.Set(BearerAuthScopes, []string{})
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.BaseServiceChannelInx(c)
-}
-
-// BaseServiceChannelPostDelete operation middleware
-func (siw *ServerInterfaceWrapper) BaseServiceChannelPostDelete(c *gin.Context) {
+// BaseServiceChannelQueryByUser operation middleware
+func (siw *ServerInterfaceWrapper) BaseServiceChannelQueryByUser(c *gin.Context) {
 
 	var err error
 
 	c.Set(BearerAuthScopes, []string{})
 
 	// Parameter object where we will unmarshal all parameters from the context
-	var params BaseServiceChannelPostDeleteParams
+	var params BaseServiceChannelQueryByUserParams
 
-	// ------------- Optional query parameter "chan_id" -------------
+	// ------------- Optional query parameter "user_id" -------------
 
-	err = runtime.BindQueryParameter("form", true, false, "chan_id", c.Request.URL.Query(), &params.ChanId)
+	err = runtime.BindQueryParameter("form", true, false, "user_id", c.Request.URL.Query(), &params.UserId)
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter chan_id: %w", err), http.StatusBadRequest)
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter user_id: %w", err), http.StatusBadRequest)
 		return
 	}
 
-	// ------------- Optional query parameter "post_id" -------------
+	// ------------- Optional query parameter "ixn_state" -------------
 
-	err = runtime.BindQueryParameter("form", true, false, "post_id", c.Request.URL.Query(), &params.PostId)
+	err = runtime.BindQueryParameter("form", true, false, "ixn_state", c.Request.URL.Query(), &params.IxnState)
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter post_id: %w", err), http.StatusBadRequest)
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter ixn_state: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "ixn_event" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "ixn_event", c.Request.URL.Query(), &params.IxnEvent)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter ixn_event: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "ext_types" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "ext_types", c.Request.URL.Query(), &params.ExtTypes)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter ext_types: %w", err), http.StatusBadRequest)
 		return
 	}
 
@@ -3703,97 +4054,7 @@ func (siw *ServerInterfaceWrapper) BaseServiceChannelPostDelete(c *gin.Context) 
 		}
 	}
 
-	siw.Handler.BaseServiceChannelPostDelete(c, params)
-}
-
-// BaseServiceChannelPostCreate operation middleware
-func (siw *ServerInterfaceWrapper) BaseServiceChannelPostCreate(c *gin.Context) {
-
-	c.Set(BearerAuthScopes, []string{})
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.BaseServiceChannelPostCreate(c)
-}
-
-// BaseServiceChannelPostUpdate operation middleware
-func (siw *ServerInterfaceWrapper) BaseServiceChannelPostUpdate(c *gin.Context) {
-
-	c.Set(BearerAuthScopes, []string{})
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.BaseServiceChannelPostUpdate(c)
-}
-
-// BaseServiceChannelPostInx operation middleware
-func (siw *ServerInterfaceWrapper) BaseServiceChannelPostInx(c *gin.Context) {
-
-	c.Set(BearerAuthScopes, []string{})
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.BaseServiceChannelPostInx(c)
-}
-
-// BaseServiceChannelPostLoad operation middleware
-func (siw *ServerInterfaceWrapper) BaseServiceChannelPostLoad(c *gin.Context) {
-
-	c.Set(BearerAuthScopes, []string{})
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.BaseServiceChannelPostLoad(c)
-}
-
-// BaseServiceChannelPostReact operation middleware
-func (siw *ServerInterfaceWrapper) BaseServiceChannelPostReact(c *gin.Context) {
-
-	c.Set(BearerAuthScopes, []string{})
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.BaseServiceChannelPostReact(c)
-}
-
-// BaseServiceChannelTypeList operation middleware
-func (siw *ServerInterfaceWrapper) BaseServiceChannelTypeList(c *gin.Context) {
-
-	c.Set(BearerAuthScopes, []string{})
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.BaseServiceChannelTypeList(c)
+	siw.Handler.BaseServiceChannelQueryByUser(c, params)
 }
 
 // BaseServiceLocationCommonSearch operation middleware
@@ -3834,11 +4095,11 @@ func (siw *ServerInterfaceWrapper) BaseServiceMediaPutURLBatchGet(c *gin.Context
 	// Parameter object where we will unmarshal all parameters from the context
 	var params BaseServiceMediaPutURLBatchGetParams
 
-	// ------------- Optional query parameter "media_type" -------------
+	// ------------- Optional query parameter "bucket" -------------
 
-	err = runtime.BindQueryParameter("form", true, false, "media_type", c.Request.URL.Query(), &params.MediaType)
+	err = runtime.BindQueryParameter("form", true, false, "bucket", c.Request.URL.Query(), &params.Bucket)
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter media_type: %w", err), http.StatusBadRequest)
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter bucket: %w", err), http.StatusBadRequest)
 		return
 	}
 
@@ -3860,8 +4121,8 @@ func (siw *ServerInterfaceWrapper) BaseServiceMediaPutURLBatchGet(c *gin.Context
 	siw.Handler.BaseServiceMediaPutURLBatchGet(c, params)
 }
 
-// BaseServiceSystemNotifyQuery operation middleware
-func (siw *ServerInterfaceWrapper) BaseServiceSystemNotifyQuery(c *gin.Context) {
+// BaseServicePetMarkerInfoList operation middleware
+func (siw *ServerInterfaceWrapper) BaseServicePetMarkerInfoList(c *gin.Context) {
 
 	c.Set(BearerAuthScopes, []string{})
 
@@ -3872,7 +4133,256 @@ func (siw *ServerInterfaceWrapper) BaseServiceSystemNotifyQuery(c *gin.Context) 
 		}
 	}
 
-	siw.Handler.BaseServiceSystemNotifyQuery(c)
+	siw.Handler.BaseServicePetMarkerInfoList(c)
+}
+
+// BaseServicePostDelete operation middleware
+func (siw *ServerInterfaceWrapper) BaseServicePostDelete(c *gin.Context) {
+
+	var err error
+
+	c.Set(BearerAuthScopes, []string{})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params BaseServicePostDeleteParams
+
+	// ------------- Optional query parameter "channel_id" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "channel_id", c.Request.URL.Query(), &params.ChannelId)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter channel_id: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "post_id" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "post_id", c.Request.URL.Query(), &params.PostId)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter post_id: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.BaseServicePostDelete(c, params)
+}
+
+// BaseServicePostCreate operation middleware
+func (siw *ServerInterfaceWrapper) BaseServicePostCreate(c *gin.Context) {
+
+	c.Set(BearerAuthScopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.BaseServicePostCreate(c)
+}
+
+// BaseServicePostUpdate operation middleware
+func (siw *ServerInterfaceWrapper) BaseServicePostUpdate(c *gin.Context) {
+
+	c.Set(BearerAuthScopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.BaseServicePostUpdate(c)
+}
+
+// BaseServicePostLoad operation middleware
+func (siw *ServerInterfaceWrapper) BaseServicePostLoad(c *gin.Context) {
+
+	var err error
+
+	c.Set(BearerAuthScopes, []string{})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params BaseServicePostLoadParams
+
+	// ------------- Optional query parameter "channel_id" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "channel_id", c.Request.URL.Query(), &params.ChannelId)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter channel_id: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "limit", c.Request.URL.Query(), &params.Limit)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter limit: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "last_post_id" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "last_post_id", c.Request.URL.Query(), &params.LastPostId)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter last_post_id: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.BaseServicePostLoad(c, params)
+}
+
+// BaseServicePostQuery operation middleware
+func (siw *ServerInterfaceWrapper) BaseServicePostQuery(c *gin.Context) {
+
+	var err error
+
+	c.Set(BearerAuthScopes, []string{})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params BaseServicePostQueryParams
+
+	// ------------- Optional query parameter "channel_id" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "channel_id", c.Request.URL.Query(), &params.ChannelId)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter channel_id: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "limit", c.Request.URL.Query(), &params.Limit)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter limit: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "marker_id" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "marker_id", c.Request.URL.Query(), &params.MarkerId)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter marker_id: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.BaseServicePostQuery(c, params)
+}
+
+// BaseServicePostQueryByUser operation middleware
+func (siw *ServerInterfaceWrapper) BaseServicePostQueryByUser(c *gin.Context) {
+
+	var err error
+
+	c.Set(BearerAuthScopes, []string{})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params BaseServicePostQueryByUserParams
+
+	// ------------- Optional query parameter "user_id" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "user_id", c.Request.URL.Query(), &params.UserId)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter user_id: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "ixn_state" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "ixn_state", c.Request.URL.Query(), &params.IxnState)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter ixn_state: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "ixn_event" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "ixn_event", c.Request.URL.Query(), &params.IxnEvent)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter ixn_event: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "ext_types" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "ext_types", c.Request.URL.Query(), &params.ExtTypes)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter ext_types: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.BaseServicePostQueryByUser(c, params)
+}
+
+// BaseServicePostReact operation middleware
+func (siw *ServerInterfaceWrapper) BaseServicePostReact(c *gin.Context) {
+
+	c.Set(BearerAuthScopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.BaseServicePostReact(c)
+}
+
+// BaseServiceSystemNotifyGet operation middleware
+func (siw *ServerInterfaceWrapper) BaseServiceSystemNotifyGet(c *gin.Context) {
+
+	var err error
+
+	c.Set(BearerAuthScopes, []string{})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params BaseServiceSystemNotifyGetParams
+
+	// ------------- Optional query parameter "last_notify_id" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "last_notify_id", c.Request.URL.Query(), &params.LastNotifyId)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter last_notify_id: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.BaseServiceSystemNotifyGet(c, params)
 }
 
 // BaseServiceFastRegisterWeChat operation middleware
@@ -3888,6 +4398,21 @@ func (siw *ServerInterfaceWrapper) BaseServiceFastRegisterWeChat(c *gin.Context)
 	}
 
 	siw.Handler.BaseServiceFastRegisterWeChat(c)
+}
+
+// BaseServiceUserInx operation middleware
+func (siw *ServerInterfaceWrapper) BaseServiceUserInx(c *gin.Context) {
+
+	c.Set(BearerAuthScopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.BaseServiceUserInx(c)
 }
 
 // BaseServiceLoginWeChat operation middleware
@@ -3976,23 +4501,24 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	}
 
 	router.DELETE(options.BaseURL+"/v1/channel", wrapper.BaseServiceChannelDelete)
+	router.GET(options.BaseURL+"/v1/channel", wrapper.BaseServiceChannelGet)
 	router.POST(options.BaseURL+"/v1/channel", wrapper.BaseServiceChannelCreate)
 	router.PUT(options.BaseURL+"/v1/channel", wrapper.BaseServiceChannelUpdate)
-	router.POST(options.BaseURL+"/v1/channel/base_query_by_bound", wrapper.BaseServiceChannelBaseQueryByBound)
-	router.POST(options.BaseURL+"/v1/channel/base_query_by_user", wrapper.BaseServiceChannelBaseQueryByUser)
-	router.GET(options.BaseURL+"/v1/channel/full_query_by_id", wrapper.BaseServiceChannelFullQueryById)
-	router.POST(options.BaseURL+"/v1/channel/inx", wrapper.BaseServiceChannelInx)
-	router.DELETE(options.BaseURL+"/v1/channel/post", wrapper.BaseServiceChannelPostDelete)
-	router.POST(options.BaseURL+"/v1/channel/post", wrapper.BaseServiceChannelPostCreate)
-	router.PUT(options.BaseURL+"/v1/channel/post", wrapper.BaseServiceChannelPostUpdate)
-	router.POST(options.BaseURL+"/v1/channel/post/inx", wrapper.BaseServiceChannelPostInx)
-	router.POST(options.BaseURL+"/v1/channel/post/load", wrapper.BaseServiceChannelPostLoad)
-	router.POST(options.BaseURL+"/v1/channel/post/react", wrapper.BaseServiceChannelPostReact)
-	router.GET(options.BaseURL+"/v1/channel/type", wrapper.BaseServiceChannelTypeList)
+	router.GET(options.BaseURL+"/v1/channel/query_by_location_bound", wrapper.BaseServiceChannelQueryByLocationBound)
+	router.GET(options.BaseURL+"/v1/channel/query_by_user", wrapper.BaseServiceChannelQueryByUser)
 	router.GET(options.BaseURL+"/v1/location/search", wrapper.BaseServiceLocationCommonSearch)
 	router.GET(options.BaseURL+"/v1/media/put_url/batch", wrapper.BaseServiceMediaPutURLBatchGet)
-	router.POST(options.BaseURL+"/v1/notify/query", wrapper.BaseServiceSystemNotifyQuery)
+	router.GET(options.BaseURL+"/v1/pet/marker", wrapper.BaseServicePetMarkerInfoList)
+	router.DELETE(options.BaseURL+"/v1/post", wrapper.BaseServicePostDelete)
+	router.POST(options.BaseURL+"/v1/post", wrapper.BaseServicePostCreate)
+	router.PUT(options.BaseURL+"/v1/post", wrapper.BaseServicePostUpdate)
+	router.GET(options.BaseURL+"/v1/post/load", wrapper.BaseServicePostLoad)
+	router.GET(options.BaseURL+"/v1/post/query", wrapper.BaseServicePostQuery)
+	router.GET(options.BaseURL+"/v1/post/query_by_user", wrapper.BaseServicePostQueryByUser)
+	router.POST(options.BaseURL+"/v1/post/react", wrapper.BaseServicePostReact)
+	router.GET(options.BaseURL+"/v1/system/notify", wrapper.BaseServiceSystemNotifyGet)
 	router.POST(options.BaseURL+"/v1/user/fast_reg/wx", wrapper.BaseServiceFastRegisterWeChat)
+	router.POST(options.BaseURL+"/v1/user/inx", wrapper.BaseServiceUserInx)
 	router.POST(options.BaseURL+"/v1/user/login/wx", wrapper.BaseServiceLoginWeChat)
 	router.GET(options.BaseURL+"/v1/user/pet", wrapper.BaseServiceUserPeGet)
 	router.PUT(options.BaseURL+"/v1/user/pet", wrapper.BaseServiceUserPetUpdate)
@@ -4001,54 +4527,58 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"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",
+	"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",
+	"/wMAAP//dCdMnDxNAAA=",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

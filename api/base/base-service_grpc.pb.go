@@ -19,27 +19,28 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	BaseService_LocationCommonSearch_FullMethodName    = "/base_service.v1.BaseService/LocationCommonSearch"
-	BaseService_MediaPutURLBatchGet_FullMethodName     = "/base_service.v1.BaseService/MediaPutURLBatchGet"
-	BaseService_SystemNotifyQuery_FullMethodName       = "/base_service.v1.BaseService/SystemNotifyQuery"
-	BaseService_LoginWeChat_FullMethodName             = "/base_service.v1.BaseService/LoginWeChat"
-	BaseService_FastRegisterWeChat_FullMethodName      = "/base_service.v1.BaseService/FastRegisterWeChat"
-	BaseService_UserPetUpdate_FullMethodName           = "/base_service.v1.BaseService/UserPetUpdate"
-	BaseService_UserPeGet_FullMethodName               = "/base_service.v1.BaseService/UserPeGet"
-	BaseService_ChannelTypeList_FullMethodName         = "/base_service.v1.BaseService/ChannelTypeList"
-	BaseService_ChannelCreate_FullMethodName           = "/base_service.v1.BaseService/ChannelCreate"
-	BaseService_ChannelUpdate_FullMethodName           = "/base_service.v1.BaseService/ChannelUpdate"
-	BaseService_ChannelDelete_FullMethodName           = "/base_service.v1.BaseService/ChannelDelete"
-	BaseService_ChannelBaseQueryByBound_FullMethodName = "/base_service.v1.BaseService/ChannelBaseQueryByBound"
-	BaseService_ChannelBaseQueryByUser_FullMethodName  = "/base_service.v1.BaseService/ChannelBaseQueryByUser"
-	BaseService_ChannelFullQueryById_FullMethodName    = "/base_service.v1.BaseService/ChannelFullQueryById"
-	BaseService_ChannelInx_FullMethodName              = "/base_service.v1.BaseService/ChannelInx"
-	BaseService_ChannelPostCreate_FullMethodName       = "/base_service.v1.BaseService/ChannelPostCreate"
-	BaseService_ChannelPostUpdate_FullMethodName       = "/base_service.v1.BaseService/ChannelPostUpdate"
-	BaseService_ChannelPostDelete_FullMethodName       = "/base_service.v1.BaseService/ChannelPostDelete"
-	BaseService_ChannelPostLoad_FullMethodName         = "/base_service.v1.BaseService/ChannelPostLoad"
-	BaseService_ChannelPostInx_FullMethodName          = "/base_service.v1.BaseService/ChannelPostInx"
-	BaseService_ChannelPostReact_FullMethodName        = "/base_service.v1.BaseService/ChannelPostReact"
+	BaseService_LocationCommonSearch_FullMethodName        = "/base_service.v1.BaseService/LocationCommonSearch"
+	BaseService_MediaPutURLBatchGet_FullMethodName         = "/base_service.v1.BaseService/MediaPutURLBatchGet"
+	BaseService_SystemNotifyGet_FullMethodName             = "/base_service.v1.BaseService/SystemNotifyGet"
+	BaseService_LoginWeChat_FullMethodName                 = "/base_service.v1.BaseService/LoginWeChat"
+	BaseService_FastRegisterWeChat_FullMethodName          = "/base_service.v1.BaseService/FastRegisterWeChat"
+	BaseService_UserPetUpdate_FullMethodName               = "/base_service.v1.BaseService/UserPetUpdate"
+	BaseService_UserPeGet_FullMethodName                   = "/base_service.v1.BaseService/UserPeGet"
+	BaseService_UserInx_FullMethodName                     = "/base_service.v1.BaseService/UserInx"
+	BaseService_PetMarkerInfoList_FullMethodName           = "/base_service.v1.BaseService/PetMarkerInfoList"
+	BaseService_ChannelCreate_FullMethodName               = "/base_service.v1.BaseService/ChannelCreate"
+	BaseService_ChannelUpdate_FullMethodName               = "/base_service.v1.BaseService/ChannelUpdate"
+	BaseService_ChannelDelete_FullMethodName               = "/base_service.v1.BaseService/ChannelDelete"
+	BaseService_ChannelGet_FullMethodName                  = "/base_service.v1.BaseService/ChannelGet"
+	BaseService_ChannelQueryByUser_FullMethodName          = "/base_service.v1.BaseService/ChannelQueryByUser"
+	BaseService_ChannelQueryByLocationBound_FullMethodName = "/base_service.v1.BaseService/ChannelQueryByLocationBound"
+	BaseService_PostLoad_FullMethodName                    = "/base_service.v1.BaseService/PostLoad"
+	BaseService_PostQuery_FullMethodName                   = "/base_service.v1.BaseService/PostQuery"
+	BaseService_PostQueryByUser_FullMethodName             = "/base_service.v1.BaseService/PostQueryByUser"
+	BaseService_PostCreate_FullMethodName                  = "/base_service.v1.BaseService/PostCreate"
+	BaseService_PostUpdate_FullMethodName                  = "/base_service.v1.BaseService/PostUpdate"
+	BaseService_PostDelete_FullMethodName                  = "/base_service.v1.BaseService/PostDelete"
+	BaseService_PostReact_FullMethodName                   = "/base_service.v1.BaseService/PostReact"
 )
 
 // BaseServiceClient is the client API for BaseService service.
@@ -55,7 +56,7 @@ type BaseServiceClient interface {
 	// 批量获取对象上传预签名URL
 	MediaPutURLBatchGet(ctx context.Context, in *MediaPutURLBatchGetReq, opts ...grpc.CallOption) (*MediaPutURLBatchGetRes, error)
 	// 查询系统通知接口
-	SystemNotifyQuery(ctx context.Context, in *SystemNotifyQueryReq, opts ...grpc.CallOption) (*SystemNotifyQueryRes, error)
+	SystemNotifyGet(ctx context.Context, in *SystemNotifyGetReq, opts ...grpc.CallOption) (*SystemNotifyGetRes, error)
 	// 微信小程序登录接口
 	// @security BearerAuth
 	LoginWeChat(ctx context.Context, in *LoginWeChatReq, opts ...grpc.CallOption) (*LoginWeChatRes, error)
@@ -65,34 +66,36 @@ type BaseServiceClient interface {
 	UserPetUpdate(ctx context.Context, in *UserPetUpdateReq, opts ...grpc.CallOption) (*UserPetUpdateRes, error)
 	// 宠物资料查询
 	UserPeGet(ctx context.Context, in *UserPeGetReq, opts ...grpc.CallOption) (*UserPeGetRes, error)
-	// 列表查询足迹频道类型
-	ChannelTypeList(ctx context.Context, in *ChannelTypeListReq, opts ...grpc.CallOption) (*ChannelTypeListRes, error)
-	// 创建足迹频道
+	// 用户互动
+	UserInx(ctx context.Context, in *UserInxReq, opts ...grpc.CallOption) (*UserInxRes, error)
+	// 查询狗狗标记类型
+	PetMarkerInfoList(ctx context.Context, in *PetMarkerInfoReq, opts ...grpc.CallOption) (*PetMarkerInfoRes, error)
+	// 创建频道
 	ChannelCreate(ctx context.Context, in *ChannelCreateReq, opts ...grpc.CallOption) (*ChannelCreateRes, error)
-	// 更新足迹频道
+	// 更新频道
 	ChannelUpdate(ctx context.Context, in *ChannelUpdateReq, opts ...grpc.CallOption) (*ChannelUpdateRes, error)
-	// 删除足迹频道
+	// 删除频道
 	ChannelDelete(ctx context.Context, in *ChannelDeleteReq, opts ...grpc.CallOption) (*ChannelDeleteRes, error)
-	// 按照范围按照用户互动记录
-	ChannelBaseQueryByBound(ctx context.Context, in *ChannelBaseQueryByBoundReq, opts ...grpc.CallOption) (*ChannelBaseQueryByBoundRes, error)
+	// 按照id查询频道完整信息
+	ChannelGet(ctx context.Context, in *ChannelGetReq, opts ...grpc.CallOption) (*ChannelGetRes, error)
 	// 按照用户互动记录查询频道列表
-	ChannelBaseQueryByUser(ctx context.Context, in *ChannelBaseQueryByUserReq, opts ...grpc.CallOption) (*ChannelBaseQueryByUserRes, error)
-	// 按照id查询足迹频道动态信息
-	ChannelFullQueryById(ctx context.Context, in *ChannelFullQueryByIdReq, opts ...grpc.CallOption) (*ChannelFullQueryByIdRes, error)
-	// 足迹频道互动
-	ChannelInx(ctx context.Context, in *ChannelInxReq, opts ...grpc.CallOption) (*ChannelInxRes, error)
-	// 频道帖子创建
-	ChannelPostCreate(ctx context.Context, in *ChannelPostCreateReq, opts ...grpc.CallOption) (*ChannelPostCreateRes, error)
-	// 频道帖子更新
-	ChannelPostUpdate(ctx context.Context, in *ChannelPostUpdateReq, opts ...grpc.CallOption) (*ChannelPostUpdateRes, error)
-	// 频道帖子删除
-	ChannelPostDelete(ctx context.Context, in *ChannelPostDeleteReq, opts ...grpc.CallOption) (*ChannelPostDeleteRes, error)
+	ChannelQueryByUser(ctx context.Context, in *ChannelQueryByUserReq, opts ...grpc.CallOption) (*ChannelQueryByUserRes, error)
+	// 按照地理范围查询频道
+	ChannelQueryByLocationBound(ctx context.Context, in *ChannelQueryByLocationBoundReq, opts ...grpc.CallOption) (*ChannelQueryByLocationBoundRes, error)
 	// 频道帖子加载
-	ChannelPostLoad(ctx context.Context, in *ChannelPostLoadReq, opts ...grpc.CallOption) (*ChannelPostLoadRes, error)
-	// 频道帖子互动
-	ChannelPostInx(ctx context.Context, in *ChannelPostInxReq, opts ...grpc.CallOption) (*ChannelPostInxRes, error)
+	PostLoad(ctx context.Context, in *PostLoadReq, opts ...grpc.CallOption) (*PostLoadRes, error)
+	// 频道帖子复合查询
+	PostQuery(ctx context.Context, in *PostQueryReq, opts ...grpc.CallOption) (*PostQueryRes, error)
+	// 按照用户互动记录查询帖子列表
+	PostQueryByUser(ctx context.Context, in *PostQueryByUserReq, opts ...grpc.CallOption) (*PostQueryByUserRes, error)
+	// 帖子创建
+	PostCreate(ctx context.Context, in *PostCreateReq, opts ...grpc.CallOption) (*PostCreateRes, error)
+	// 帖子更新
+	PostUpdate(ctx context.Context, in *PostUpdateReq, opts ...grpc.CallOption) (*PostUpdateRes, error)
+	// 帖子删除
+	PostDelete(ctx context.Context, in *PostDeleteReq, opts ...grpc.CallOption) (*PostDeleteRes, error)
 	// 频道帖子回应
-	ChannelPostReact(ctx context.Context, in *ChannelPostReactReq, opts ...grpc.CallOption) (*ChannelPostReactRes, error)
+	PostReact(ctx context.Context, in *PostReactReq, opts ...grpc.CallOption) (*PostReactRes, error)
 }
 
 type baseServiceClient struct {
@@ -123,10 +126,10 @@ func (c *baseServiceClient) MediaPutURLBatchGet(ctx context.Context, in *MediaPu
 	return out, nil
 }
 
-func (c *baseServiceClient) SystemNotifyQuery(ctx context.Context, in *SystemNotifyQueryReq, opts ...grpc.CallOption) (*SystemNotifyQueryRes, error) {
+func (c *baseServiceClient) SystemNotifyGet(ctx context.Context, in *SystemNotifyGetReq, opts ...grpc.CallOption) (*SystemNotifyGetRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(SystemNotifyQueryRes)
-	err := c.cc.Invoke(ctx, BaseService_SystemNotifyQuery_FullMethodName, in, out, cOpts...)
+	out := new(SystemNotifyGetRes)
+	err := c.cc.Invoke(ctx, BaseService_SystemNotifyGet_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -173,10 +176,20 @@ func (c *baseServiceClient) UserPeGet(ctx context.Context, in *UserPeGetReq, opt
 	return out, nil
 }
 
-func (c *baseServiceClient) ChannelTypeList(ctx context.Context, in *ChannelTypeListReq, opts ...grpc.CallOption) (*ChannelTypeListRes, error) {
+func (c *baseServiceClient) UserInx(ctx context.Context, in *UserInxReq, opts ...grpc.CallOption) (*UserInxRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ChannelTypeListRes)
-	err := c.cc.Invoke(ctx, BaseService_ChannelTypeList_FullMethodName, in, out, cOpts...)
+	out := new(UserInxRes)
+	err := c.cc.Invoke(ctx, BaseService_UserInx_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *baseServiceClient) PetMarkerInfoList(ctx context.Context, in *PetMarkerInfoReq, opts ...grpc.CallOption) (*PetMarkerInfoRes, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(PetMarkerInfoRes)
+	err := c.cc.Invoke(ctx, BaseService_PetMarkerInfoList_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -213,100 +226,100 @@ func (c *baseServiceClient) ChannelDelete(ctx context.Context, in *ChannelDelete
 	return out, nil
 }
 
-func (c *baseServiceClient) ChannelBaseQueryByBound(ctx context.Context, in *ChannelBaseQueryByBoundReq, opts ...grpc.CallOption) (*ChannelBaseQueryByBoundRes, error) {
+func (c *baseServiceClient) ChannelGet(ctx context.Context, in *ChannelGetReq, opts ...grpc.CallOption) (*ChannelGetRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ChannelBaseQueryByBoundRes)
-	err := c.cc.Invoke(ctx, BaseService_ChannelBaseQueryByBound_FullMethodName, in, out, cOpts...)
+	out := new(ChannelGetRes)
+	err := c.cc.Invoke(ctx, BaseService_ChannelGet_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *baseServiceClient) ChannelBaseQueryByUser(ctx context.Context, in *ChannelBaseQueryByUserReq, opts ...grpc.CallOption) (*ChannelBaseQueryByUserRes, error) {
+func (c *baseServiceClient) ChannelQueryByUser(ctx context.Context, in *ChannelQueryByUserReq, opts ...grpc.CallOption) (*ChannelQueryByUserRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ChannelBaseQueryByUserRes)
-	err := c.cc.Invoke(ctx, BaseService_ChannelBaseQueryByUser_FullMethodName, in, out, cOpts...)
+	out := new(ChannelQueryByUserRes)
+	err := c.cc.Invoke(ctx, BaseService_ChannelQueryByUser_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *baseServiceClient) ChannelFullQueryById(ctx context.Context, in *ChannelFullQueryByIdReq, opts ...grpc.CallOption) (*ChannelFullQueryByIdRes, error) {
+func (c *baseServiceClient) ChannelQueryByLocationBound(ctx context.Context, in *ChannelQueryByLocationBoundReq, opts ...grpc.CallOption) (*ChannelQueryByLocationBoundRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ChannelFullQueryByIdRes)
-	err := c.cc.Invoke(ctx, BaseService_ChannelFullQueryById_FullMethodName, in, out, cOpts...)
+	out := new(ChannelQueryByLocationBoundRes)
+	err := c.cc.Invoke(ctx, BaseService_ChannelQueryByLocationBound_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *baseServiceClient) ChannelInx(ctx context.Context, in *ChannelInxReq, opts ...grpc.CallOption) (*ChannelInxRes, error) {
+func (c *baseServiceClient) PostLoad(ctx context.Context, in *PostLoadReq, opts ...grpc.CallOption) (*PostLoadRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ChannelInxRes)
-	err := c.cc.Invoke(ctx, BaseService_ChannelInx_FullMethodName, in, out, cOpts...)
+	out := new(PostLoadRes)
+	err := c.cc.Invoke(ctx, BaseService_PostLoad_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *baseServiceClient) ChannelPostCreate(ctx context.Context, in *ChannelPostCreateReq, opts ...grpc.CallOption) (*ChannelPostCreateRes, error) {
+func (c *baseServiceClient) PostQuery(ctx context.Context, in *PostQueryReq, opts ...grpc.CallOption) (*PostQueryRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ChannelPostCreateRes)
-	err := c.cc.Invoke(ctx, BaseService_ChannelPostCreate_FullMethodName, in, out, cOpts...)
+	out := new(PostQueryRes)
+	err := c.cc.Invoke(ctx, BaseService_PostQuery_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *baseServiceClient) ChannelPostUpdate(ctx context.Context, in *ChannelPostUpdateReq, opts ...grpc.CallOption) (*ChannelPostUpdateRes, error) {
+func (c *baseServiceClient) PostQueryByUser(ctx context.Context, in *PostQueryByUserReq, opts ...grpc.CallOption) (*PostQueryByUserRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ChannelPostUpdateRes)
-	err := c.cc.Invoke(ctx, BaseService_ChannelPostUpdate_FullMethodName, in, out, cOpts...)
+	out := new(PostQueryByUserRes)
+	err := c.cc.Invoke(ctx, BaseService_PostQueryByUser_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *baseServiceClient) ChannelPostDelete(ctx context.Context, in *ChannelPostDeleteReq, opts ...grpc.CallOption) (*ChannelPostDeleteRes, error) {
+func (c *baseServiceClient) PostCreate(ctx context.Context, in *PostCreateReq, opts ...grpc.CallOption) (*PostCreateRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ChannelPostDeleteRes)
-	err := c.cc.Invoke(ctx, BaseService_ChannelPostDelete_FullMethodName, in, out, cOpts...)
+	out := new(PostCreateRes)
+	err := c.cc.Invoke(ctx, BaseService_PostCreate_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *baseServiceClient) ChannelPostLoad(ctx context.Context, in *ChannelPostLoadReq, opts ...grpc.CallOption) (*ChannelPostLoadRes, error) {
+func (c *baseServiceClient) PostUpdate(ctx context.Context, in *PostUpdateReq, opts ...grpc.CallOption) (*PostUpdateRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ChannelPostLoadRes)
-	err := c.cc.Invoke(ctx, BaseService_ChannelPostLoad_FullMethodName, in, out, cOpts...)
+	out := new(PostUpdateRes)
+	err := c.cc.Invoke(ctx, BaseService_PostUpdate_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *baseServiceClient) ChannelPostInx(ctx context.Context, in *ChannelPostInxReq, opts ...grpc.CallOption) (*ChannelPostInxRes, error) {
+func (c *baseServiceClient) PostDelete(ctx context.Context, in *PostDeleteReq, opts ...grpc.CallOption) (*PostDeleteRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ChannelPostInxRes)
-	err := c.cc.Invoke(ctx, BaseService_ChannelPostInx_FullMethodName, in, out, cOpts...)
+	out := new(PostDeleteRes)
+	err := c.cc.Invoke(ctx, BaseService_PostDelete_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *baseServiceClient) ChannelPostReact(ctx context.Context, in *ChannelPostReactReq, opts ...grpc.CallOption) (*ChannelPostReactRes, error) {
+func (c *baseServiceClient) PostReact(ctx context.Context, in *PostReactReq, opts ...grpc.CallOption) (*PostReactRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ChannelPostReactRes)
-	err := c.cc.Invoke(ctx, BaseService_ChannelPostReact_FullMethodName, in, out, cOpts...)
+	out := new(PostReactRes)
+	err := c.cc.Invoke(ctx, BaseService_PostReact_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -326,7 +339,7 @@ type BaseServiceServer interface {
 	// 批量获取对象上传预签名URL
 	MediaPutURLBatchGet(context.Context, *MediaPutURLBatchGetReq) (*MediaPutURLBatchGetRes, error)
 	// 查询系统通知接口
-	SystemNotifyQuery(context.Context, *SystemNotifyQueryReq) (*SystemNotifyQueryRes, error)
+	SystemNotifyGet(context.Context, *SystemNotifyGetReq) (*SystemNotifyGetRes, error)
 	// 微信小程序登录接口
 	// @security BearerAuth
 	LoginWeChat(context.Context, *LoginWeChatReq) (*LoginWeChatRes, error)
@@ -336,34 +349,36 @@ type BaseServiceServer interface {
 	UserPetUpdate(context.Context, *UserPetUpdateReq) (*UserPetUpdateRes, error)
 	// 宠物资料查询
 	UserPeGet(context.Context, *UserPeGetReq) (*UserPeGetRes, error)
-	// 列表查询足迹频道类型
-	ChannelTypeList(context.Context, *ChannelTypeListReq) (*ChannelTypeListRes, error)
-	// 创建足迹频道
+	// 用户互动
+	UserInx(context.Context, *UserInxReq) (*UserInxRes, error)
+	// 查询狗狗标记类型
+	PetMarkerInfoList(context.Context, *PetMarkerInfoReq) (*PetMarkerInfoRes, error)
+	// 创建频道
 	ChannelCreate(context.Context, *ChannelCreateReq) (*ChannelCreateRes, error)
-	// 更新足迹频道
+	// 更新频道
 	ChannelUpdate(context.Context, *ChannelUpdateReq) (*ChannelUpdateRes, error)
-	// 删除足迹频道
+	// 删除频道
 	ChannelDelete(context.Context, *ChannelDeleteReq) (*ChannelDeleteRes, error)
-	// 按照范围按照用户互动记录
-	ChannelBaseQueryByBound(context.Context, *ChannelBaseQueryByBoundReq) (*ChannelBaseQueryByBoundRes, error)
+	// 按照id查询频道完整信息
+	ChannelGet(context.Context, *ChannelGetReq) (*ChannelGetRes, error)
 	// 按照用户互动记录查询频道列表
-	ChannelBaseQueryByUser(context.Context, *ChannelBaseQueryByUserReq) (*ChannelBaseQueryByUserRes, error)
-	// 按照id查询足迹频道动态信息
-	ChannelFullQueryById(context.Context, *ChannelFullQueryByIdReq) (*ChannelFullQueryByIdRes, error)
-	// 足迹频道互动
-	ChannelInx(context.Context, *ChannelInxReq) (*ChannelInxRes, error)
-	// 频道帖子创建
-	ChannelPostCreate(context.Context, *ChannelPostCreateReq) (*ChannelPostCreateRes, error)
-	// 频道帖子更新
-	ChannelPostUpdate(context.Context, *ChannelPostUpdateReq) (*ChannelPostUpdateRes, error)
-	// 频道帖子删除
-	ChannelPostDelete(context.Context, *ChannelPostDeleteReq) (*ChannelPostDeleteRes, error)
+	ChannelQueryByUser(context.Context, *ChannelQueryByUserReq) (*ChannelQueryByUserRes, error)
+	// 按照地理范围查询频道
+	ChannelQueryByLocationBound(context.Context, *ChannelQueryByLocationBoundReq) (*ChannelQueryByLocationBoundRes, error)
 	// 频道帖子加载
-	ChannelPostLoad(context.Context, *ChannelPostLoadReq) (*ChannelPostLoadRes, error)
-	// 频道帖子互动
-	ChannelPostInx(context.Context, *ChannelPostInxReq) (*ChannelPostInxRes, error)
+	PostLoad(context.Context, *PostLoadReq) (*PostLoadRes, error)
+	// 频道帖子复合查询
+	PostQuery(context.Context, *PostQueryReq) (*PostQueryRes, error)
+	// 按照用户互动记录查询帖子列表
+	PostQueryByUser(context.Context, *PostQueryByUserReq) (*PostQueryByUserRes, error)
+	// 帖子创建
+	PostCreate(context.Context, *PostCreateReq) (*PostCreateRes, error)
+	// 帖子更新
+	PostUpdate(context.Context, *PostUpdateReq) (*PostUpdateRes, error)
+	// 帖子删除
+	PostDelete(context.Context, *PostDeleteReq) (*PostDeleteRes, error)
 	// 频道帖子回应
-	ChannelPostReact(context.Context, *ChannelPostReactReq) (*ChannelPostReactRes, error)
+	PostReact(context.Context, *PostReactReq) (*PostReactRes, error)
 	mustEmbedUnimplementedBaseServiceServer()
 }
 
@@ -380,8 +395,8 @@ func (UnimplementedBaseServiceServer) LocationCommonSearch(context.Context, *Loc
 func (UnimplementedBaseServiceServer) MediaPutURLBatchGet(context.Context, *MediaPutURLBatchGetReq) (*MediaPutURLBatchGetRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MediaPutURLBatchGet not implemented")
 }
-func (UnimplementedBaseServiceServer) SystemNotifyQuery(context.Context, *SystemNotifyQueryReq) (*SystemNotifyQueryRes, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SystemNotifyQuery not implemented")
+func (UnimplementedBaseServiceServer) SystemNotifyGet(context.Context, *SystemNotifyGetReq) (*SystemNotifyGetRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SystemNotifyGet not implemented")
 }
 func (UnimplementedBaseServiceServer) LoginWeChat(context.Context, *LoginWeChatReq) (*LoginWeChatRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LoginWeChat not implemented")
@@ -395,8 +410,11 @@ func (UnimplementedBaseServiceServer) UserPetUpdate(context.Context, *UserPetUpd
 func (UnimplementedBaseServiceServer) UserPeGet(context.Context, *UserPeGetReq) (*UserPeGetRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserPeGet not implemented")
 }
-func (UnimplementedBaseServiceServer) ChannelTypeList(context.Context, *ChannelTypeListReq) (*ChannelTypeListRes, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ChannelTypeList not implemented")
+func (UnimplementedBaseServiceServer) UserInx(context.Context, *UserInxReq) (*UserInxRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserInx not implemented")
+}
+func (UnimplementedBaseServiceServer) PetMarkerInfoList(context.Context, *PetMarkerInfoReq) (*PetMarkerInfoRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PetMarkerInfoList not implemented")
 }
 func (UnimplementedBaseServiceServer) ChannelCreate(context.Context, *ChannelCreateReq) (*ChannelCreateRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChannelCreate not implemented")
@@ -407,35 +425,35 @@ func (UnimplementedBaseServiceServer) ChannelUpdate(context.Context, *ChannelUpd
 func (UnimplementedBaseServiceServer) ChannelDelete(context.Context, *ChannelDeleteReq) (*ChannelDeleteRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChannelDelete not implemented")
 }
-func (UnimplementedBaseServiceServer) ChannelBaseQueryByBound(context.Context, *ChannelBaseQueryByBoundReq) (*ChannelBaseQueryByBoundRes, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ChannelBaseQueryByBound not implemented")
+func (UnimplementedBaseServiceServer) ChannelGet(context.Context, *ChannelGetReq) (*ChannelGetRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChannelGet not implemented")
 }
-func (UnimplementedBaseServiceServer) ChannelBaseQueryByUser(context.Context, *ChannelBaseQueryByUserReq) (*ChannelBaseQueryByUserRes, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ChannelBaseQueryByUser not implemented")
+func (UnimplementedBaseServiceServer) ChannelQueryByUser(context.Context, *ChannelQueryByUserReq) (*ChannelQueryByUserRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChannelQueryByUser not implemented")
 }
-func (UnimplementedBaseServiceServer) ChannelFullQueryById(context.Context, *ChannelFullQueryByIdReq) (*ChannelFullQueryByIdRes, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ChannelFullQueryById not implemented")
+func (UnimplementedBaseServiceServer) ChannelQueryByLocationBound(context.Context, *ChannelQueryByLocationBoundReq) (*ChannelQueryByLocationBoundRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChannelQueryByLocationBound not implemented")
 }
-func (UnimplementedBaseServiceServer) ChannelInx(context.Context, *ChannelInxReq) (*ChannelInxRes, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ChannelInx not implemented")
+func (UnimplementedBaseServiceServer) PostLoad(context.Context, *PostLoadReq) (*PostLoadRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PostLoad not implemented")
 }
-func (UnimplementedBaseServiceServer) ChannelPostCreate(context.Context, *ChannelPostCreateReq) (*ChannelPostCreateRes, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ChannelPostCreate not implemented")
+func (UnimplementedBaseServiceServer) PostQuery(context.Context, *PostQueryReq) (*PostQueryRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PostQuery not implemented")
 }
-func (UnimplementedBaseServiceServer) ChannelPostUpdate(context.Context, *ChannelPostUpdateReq) (*ChannelPostUpdateRes, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ChannelPostUpdate not implemented")
+func (UnimplementedBaseServiceServer) PostQueryByUser(context.Context, *PostQueryByUserReq) (*PostQueryByUserRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PostQueryByUser not implemented")
 }
-func (UnimplementedBaseServiceServer) ChannelPostDelete(context.Context, *ChannelPostDeleteReq) (*ChannelPostDeleteRes, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ChannelPostDelete not implemented")
+func (UnimplementedBaseServiceServer) PostCreate(context.Context, *PostCreateReq) (*PostCreateRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PostCreate not implemented")
 }
-func (UnimplementedBaseServiceServer) ChannelPostLoad(context.Context, *ChannelPostLoadReq) (*ChannelPostLoadRes, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ChannelPostLoad not implemented")
+func (UnimplementedBaseServiceServer) PostUpdate(context.Context, *PostUpdateReq) (*PostUpdateRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PostUpdate not implemented")
 }
-func (UnimplementedBaseServiceServer) ChannelPostInx(context.Context, *ChannelPostInxReq) (*ChannelPostInxRes, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ChannelPostInx not implemented")
+func (UnimplementedBaseServiceServer) PostDelete(context.Context, *PostDeleteReq) (*PostDeleteRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PostDelete not implemented")
 }
-func (UnimplementedBaseServiceServer) ChannelPostReact(context.Context, *ChannelPostReactReq) (*ChannelPostReactRes, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ChannelPostReact not implemented")
+func (UnimplementedBaseServiceServer) PostReact(context.Context, *PostReactReq) (*PostReactRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PostReact not implemented")
 }
 func (UnimplementedBaseServiceServer) mustEmbedUnimplementedBaseServiceServer() {}
 func (UnimplementedBaseServiceServer) testEmbeddedByValue()                     {}
@@ -494,20 +512,20 @@ func _BaseService_MediaPutURLBatchGet_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BaseService_SystemNotifyQuery_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SystemNotifyQueryReq)
+func _BaseService_SystemNotifyGet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SystemNotifyGetReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BaseServiceServer).SystemNotifyQuery(ctx, in)
+		return srv.(BaseServiceServer).SystemNotifyGet(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BaseService_SystemNotifyQuery_FullMethodName,
+		FullMethod: BaseService_SystemNotifyGet_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).SystemNotifyQuery(ctx, req.(*SystemNotifyQueryReq))
+		return srv.(BaseServiceServer).SystemNotifyGet(ctx, req.(*SystemNotifyGetReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -584,20 +602,38 @@ func _BaseService_UserPeGet_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BaseService_ChannelTypeList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChannelTypeListReq)
+func _BaseService_UserInx_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserInxReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BaseServiceServer).ChannelTypeList(ctx, in)
+		return srv.(BaseServiceServer).UserInx(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BaseService_ChannelTypeList_FullMethodName,
+		FullMethod: BaseService_UserInx_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).ChannelTypeList(ctx, req.(*ChannelTypeListReq))
+		return srv.(BaseServiceServer).UserInx(ctx, req.(*UserInxReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BaseService_PetMarkerInfoList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PetMarkerInfoReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BaseServiceServer).PetMarkerInfoList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BaseService_PetMarkerInfoList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BaseServiceServer).PetMarkerInfoList(ctx, req.(*PetMarkerInfoReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -656,182 +692,182 @@ func _BaseService_ChannelDelete_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BaseService_ChannelBaseQueryByBound_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChannelBaseQueryByBoundReq)
+func _BaseService_ChannelGet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChannelGetReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BaseServiceServer).ChannelBaseQueryByBound(ctx, in)
+		return srv.(BaseServiceServer).ChannelGet(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BaseService_ChannelBaseQueryByBound_FullMethodName,
+		FullMethod: BaseService_ChannelGet_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).ChannelBaseQueryByBound(ctx, req.(*ChannelBaseQueryByBoundReq))
+		return srv.(BaseServiceServer).ChannelGet(ctx, req.(*ChannelGetReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BaseService_ChannelBaseQueryByUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChannelBaseQueryByUserReq)
+func _BaseService_ChannelQueryByUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChannelQueryByUserReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BaseServiceServer).ChannelBaseQueryByUser(ctx, in)
+		return srv.(BaseServiceServer).ChannelQueryByUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BaseService_ChannelBaseQueryByUser_FullMethodName,
+		FullMethod: BaseService_ChannelQueryByUser_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).ChannelBaseQueryByUser(ctx, req.(*ChannelBaseQueryByUserReq))
+		return srv.(BaseServiceServer).ChannelQueryByUser(ctx, req.(*ChannelQueryByUserReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BaseService_ChannelFullQueryById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChannelFullQueryByIdReq)
+func _BaseService_ChannelQueryByLocationBound_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChannelQueryByLocationBoundReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BaseServiceServer).ChannelFullQueryById(ctx, in)
+		return srv.(BaseServiceServer).ChannelQueryByLocationBound(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BaseService_ChannelFullQueryById_FullMethodName,
+		FullMethod: BaseService_ChannelQueryByLocationBound_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).ChannelFullQueryById(ctx, req.(*ChannelFullQueryByIdReq))
+		return srv.(BaseServiceServer).ChannelQueryByLocationBound(ctx, req.(*ChannelQueryByLocationBoundReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BaseService_ChannelInx_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChannelInxReq)
+func _BaseService_PostLoad_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PostLoadReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BaseServiceServer).ChannelInx(ctx, in)
+		return srv.(BaseServiceServer).PostLoad(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BaseService_ChannelInx_FullMethodName,
+		FullMethod: BaseService_PostLoad_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).ChannelInx(ctx, req.(*ChannelInxReq))
+		return srv.(BaseServiceServer).PostLoad(ctx, req.(*PostLoadReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BaseService_ChannelPostCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChannelPostCreateReq)
+func _BaseService_PostQuery_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PostQueryReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BaseServiceServer).ChannelPostCreate(ctx, in)
+		return srv.(BaseServiceServer).PostQuery(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BaseService_ChannelPostCreate_FullMethodName,
+		FullMethod: BaseService_PostQuery_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).ChannelPostCreate(ctx, req.(*ChannelPostCreateReq))
+		return srv.(BaseServiceServer).PostQuery(ctx, req.(*PostQueryReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BaseService_ChannelPostUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChannelPostUpdateReq)
+func _BaseService_PostQueryByUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PostQueryByUserReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BaseServiceServer).ChannelPostUpdate(ctx, in)
+		return srv.(BaseServiceServer).PostQueryByUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BaseService_ChannelPostUpdate_FullMethodName,
+		FullMethod: BaseService_PostQueryByUser_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).ChannelPostUpdate(ctx, req.(*ChannelPostUpdateReq))
+		return srv.(BaseServiceServer).PostQueryByUser(ctx, req.(*PostQueryByUserReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BaseService_ChannelPostDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChannelPostDeleteReq)
+func _BaseService_PostCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PostCreateReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BaseServiceServer).ChannelPostDelete(ctx, in)
+		return srv.(BaseServiceServer).PostCreate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BaseService_ChannelPostDelete_FullMethodName,
+		FullMethod: BaseService_PostCreate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).ChannelPostDelete(ctx, req.(*ChannelPostDeleteReq))
+		return srv.(BaseServiceServer).PostCreate(ctx, req.(*PostCreateReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BaseService_ChannelPostLoad_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChannelPostLoadReq)
+func _BaseService_PostUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PostUpdateReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BaseServiceServer).ChannelPostLoad(ctx, in)
+		return srv.(BaseServiceServer).PostUpdate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BaseService_ChannelPostLoad_FullMethodName,
+		FullMethod: BaseService_PostUpdate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).ChannelPostLoad(ctx, req.(*ChannelPostLoadReq))
+		return srv.(BaseServiceServer).PostUpdate(ctx, req.(*PostUpdateReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BaseService_ChannelPostInx_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChannelPostInxReq)
+func _BaseService_PostDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PostDeleteReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BaseServiceServer).ChannelPostInx(ctx, in)
+		return srv.(BaseServiceServer).PostDelete(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BaseService_ChannelPostInx_FullMethodName,
+		FullMethod: BaseService_PostDelete_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).ChannelPostInx(ctx, req.(*ChannelPostInxReq))
+		return srv.(BaseServiceServer).PostDelete(ctx, req.(*PostDeleteReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BaseService_ChannelPostReact_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChannelPostReactReq)
+func _BaseService_PostReact_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PostReactReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BaseServiceServer).ChannelPostReact(ctx, in)
+		return srv.(BaseServiceServer).PostReact(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BaseService_ChannelPostReact_FullMethodName,
+		FullMethod: BaseService_PostReact_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).ChannelPostReact(ctx, req.(*ChannelPostReactReq))
+		return srv.(BaseServiceServer).PostReact(ctx, req.(*PostReactReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -852,8 +888,8 @@ var BaseService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _BaseService_MediaPutURLBatchGet_Handler,
 		},
 		{
-			MethodName: "SystemNotifyQuery",
-			Handler:    _BaseService_SystemNotifyQuery_Handler,
+			MethodName: "SystemNotifyGet",
+			Handler:    _BaseService_SystemNotifyGet_Handler,
 		},
 		{
 			MethodName: "LoginWeChat",
@@ -872,8 +908,12 @@ var BaseService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _BaseService_UserPeGet_Handler,
 		},
 		{
-			MethodName: "ChannelTypeList",
-			Handler:    _BaseService_ChannelTypeList_Handler,
+			MethodName: "UserInx",
+			Handler:    _BaseService_UserInx_Handler,
+		},
+		{
+			MethodName: "PetMarkerInfoList",
+			Handler:    _BaseService_PetMarkerInfoList_Handler,
 		},
 		{
 			MethodName: "ChannelCreate",
@@ -888,44 +928,44 @@ var BaseService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _BaseService_ChannelDelete_Handler,
 		},
 		{
-			MethodName: "ChannelBaseQueryByBound",
-			Handler:    _BaseService_ChannelBaseQueryByBound_Handler,
+			MethodName: "ChannelGet",
+			Handler:    _BaseService_ChannelGet_Handler,
 		},
 		{
-			MethodName: "ChannelBaseQueryByUser",
-			Handler:    _BaseService_ChannelBaseQueryByUser_Handler,
+			MethodName: "ChannelQueryByUser",
+			Handler:    _BaseService_ChannelQueryByUser_Handler,
 		},
 		{
-			MethodName: "ChannelFullQueryById",
-			Handler:    _BaseService_ChannelFullQueryById_Handler,
+			MethodName: "ChannelQueryByLocationBound",
+			Handler:    _BaseService_ChannelQueryByLocationBound_Handler,
 		},
 		{
-			MethodName: "ChannelInx",
-			Handler:    _BaseService_ChannelInx_Handler,
+			MethodName: "PostLoad",
+			Handler:    _BaseService_PostLoad_Handler,
 		},
 		{
-			MethodName: "ChannelPostCreate",
-			Handler:    _BaseService_ChannelPostCreate_Handler,
+			MethodName: "PostQuery",
+			Handler:    _BaseService_PostQuery_Handler,
 		},
 		{
-			MethodName: "ChannelPostUpdate",
-			Handler:    _BaseService_ChannelPostUpdate_Handler,
+			MethodName: "PostQueryByUser",
+			Handler:    _BaseService_PostQueryByUser_Handler,
 		},
 		{
-			MethodName: "ChannelPostDelete",
-			Handler:    _BaseService_ChannelPostDelete_Handler,
+			MethodName: "PostCreate",
+			Handler:    _BaseService_PostCreate_Handler,
 		},
 		{
-			MethodName: "ChannelPostLoad",
-			Handler:    _BaseService_ChannelPostLoad_Handler,
+			MethodName: "PostUpdate",
+			Handler:    _BaseService_PostUpdate_Handler,
 		},
 		{
-			MethodName: "ChannelPostInx",
-			Handler:    _BaseService_ChannelPostInx_Handler,
+			MethodName: "PostDelete",
+			Handler:    _BaseService_PostDelete_Handler,
 		},
 		{
-			MethodName: "ChannelPostReact",
-			Handler:    _BaseService_ChannelPostReact_Handler,
+			MethodName: "PostReact",
+			Handler:    _BaseService_PostReact_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
