@@ -27,18 +27,29 @@ type PostInfo struct {
 	// 创建者UId
 	UId uint64 `gorm:"index;column:uid"`
 	// 底层频道id
-	RootId uint64 `gorm:"index"`
+	ChannelId uint64 `gorm:"index"`
 	// 关联的上级帖子id, 空则为根帖子
-	ParentId uint64 `gorm:"default:0"`
+	ParentId uint64 `gorm:"index;default:0"`
+	// 拓展类型
+	ExtType uint16 `gorm:"type:smallint"`
 	// 帖子内容
 	Content string `gorm:"type:text"`
 	// 帖子图片/视频
 	MediaIds pq.StringArray `gorm:"type:text[]"`
 
 	// 互动统计子表
-	Stats ChannelStats `gorm:"foreignKey:Id;constraint:OnDelete:CASCADE"`
+	Stats PostStats `gorm:"foreignKey:Id;constraint:OnDelete:CASCADE"`
+
+	ExtPetMark ExtPetMarkInfo `gorm:"type:jsonb"`
 
 	CommonTableTails
+}
+
+type ExtPetMarkInfo struct {
+	// 足迹的id类型
+	MarkIds string `json:"mark_ids"`
+	// 足迹的狗狗id
+	Pids []string `json:"pids"`
 }
 
 func (c *RDSClient) CreatePostInfo(ctx context.Context, info *PostInfo) error {

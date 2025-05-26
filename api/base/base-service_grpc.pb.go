@@ -27,7 +27,7 @@ const (
 	BaseService_UserPetUpdate_FullMethodName               = "/base_service.v1.BaseService/UserPetUpdate"
 	BaseService_UserPeGet_FullMethodName                   = "/base_service.v1.BaseService/UserPeGet"
 	BaseService_UserInx_FullMethodName                     = "/base_service.v1.BaseService/UserInx"
-	BaseService_PetMarkerInfoList_FullMethodName           = "/base_service.v1.BaseService/PetMarkerInfoList"
+	BaseService_PetMarkInfoList_FullMethodName             = "/base_service.v1.BaseService/PetMarkInfoList"
 	BaseService_ChannelCreate_FullMethodName               = "/base_service.v1.BaseService/ChannelCreate"
 	BaseService_ChannelUpdate_FullMethodName               = "/base_service.v1.BaseService/ChannelUpdate"
 	BaseService_ChannelDelete_FullMethodName               = "/base_service.v1.BaseService/ChannelDelete"
@@ -69,7 +69,7 @@ type BaseServiceClient interface {
 	// 用户互动
 	UserInx(ctx context.Context, in *UserInxReq, opts ...grpc.CallOption) (*UserInxRes, error)
 	// 查询狗狗标记类型
-	PetMarkerInfoList(ctx context.Context, in *PetMarkerInfoReq, opts ...grpc.CallOption) (*PetMarkerInfoRes, error)
+	PetMarkInfoList(ctx context.Context, in *PetMarkInfoListReq, opts ...grpc.CallOption) (*PetMarkInfoListRes, error)
 	// 创建频道
 	ChannelCreate(ctx context.Context, in *ChannelCreateReq, opts ...grpc.CallOption) (*ChannelCreateRes, error)
 	// 更新频道
@@ -186,10 +186,10 @@ func (c *baseServiceClient) UserInx(ctx context.Context, in *UserInxReq, opts ..
 	return out, nil
 }
 
-func (c *baseServiceClient) PetMarkerInfoList(ctx context.Context, in *PetMarkerInfoReq, opts ...grpc.CallOption) (*PetMarkerInfoRes, error) {
+func (c *baseServiceClient) PetMarkInfoList(ctx context.Context, in *PetMarkInfoListReq, opts ...grpc.CallOption) (*PetMarkInfoListRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(PetMarkerInfoRes)
-	err := c.cc.Invoke(ctx, BaseService_PetMarkerInfoList_FullMethodName, in, out, cOpts...)
+	out := new(PetMarkInfoListRes)
+	err := c.cc.Invoke(ctx, BaseService_PetMarkInfoList_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -352,7 +352,7 @@ type BaseServiceServer interface {
 	// 用户互动
 	UserInx(context.Context, *UserInxReq) (*UserInxRes, error)
 	// 查询狗狗标记类型
-	PetMarkerInfoList(context.Context, *PetMarkerInfoReq) (*PetMarkerInfoRes, error)
+	PetMarkInfoList(context.Context, *PetMarkInfoListReq) (*PetMarkInfoListRes, error)
 	// 创建频道
 	ChannelCreate(context.Context, *ChannelCreateReq) (*ChannelCreateRes, error)
 	// 更新频道
@@ -413,8 +413,8 @@ func (UnimplementedBaseServiceServer) UserPeGet(context.Context, *UserPeGetReq) 
 func (UnimplementedBaseServiceServer) UserInx(context.Context, *UserInxReq) (*UserInxRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserInx not implemented")
 }
-func (UnimplementedBaseServiceServer) PetMarkerInfoList(context.Context, *PetMarkerInfoReq) (*PetMarkerInfoRes, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PetMarkerInfoList not implemented")
+func (UnimplementedBaseServiceServer) PetMarkInfoList(context.Context, *PetMarkInfoListReq) (*PetMarkInfoListRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PetMarkInfoList not implemented")
 }
 func (UnimplementedBaseServiceServer) ChannelCreate(context.Context, *ChannelCreateReq) (*ChannelCreateRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChannelCreate not implemented")
@@ -620,20 +620,20 @@ func _BaseService_UserInx_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BaseService_PetMarkerInfoList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PetMarkerInfoReq)
+func _BaseService_PetMarkInfoList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PetMarkInfoListReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BaseServiceServer).PetMarkerInfoList(ctx, in)
+		return srv.(BaseServiceServer).PetMarkInfoList(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BaseService_PetMarkerInfoList_FullMethodName,
+		FullMethod: BaseService_PetMarkInfoList_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BaseServiceServer).PetMarkerInfoList(ctx, req.(*PetMarkerInfoReq))
+		return srv.(BaseServiceServer).PetMarkInfoList(ctx, req.(*PetMarkInfoListReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -912,8 +912,8 @@ var BaseService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _BaseService_UserInx_Handler,
 		},
 		{
-			MethodName: "PetMarkerInfoList",
-			Handler:    _BaseService_PetMarkerInfoList_Handler,
+			MethodName: "PetMarkInfoList",
+			Handler:    _BaseService_PetMarkInfoList_Handler,
 		},
 		{
 			MethodName: "ChannelCreate",

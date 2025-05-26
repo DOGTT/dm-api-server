@@ -9,33 +9,12 @@ import (
 	"github.com/DOGTT/dm-api-server/internal/utils/log"
 )
 
-func (s *Service) ChannelTypeList(ctx context.Context, req *api.ChannelTypeListReq) (res *api.ChannelTypeListRes, err error) {
+func (s *Service) PostLoad(ctx context.Context, req *api.PostLoadReq) (res *api.PostLoadRes, err error) {
 	log.D(ctx, "request in", "req", req)
-	res = &api.ChannelTypeListRes{}
-	data, err := s.data.ListChannelTypeInfo(ctx)
-	if err != nil {
-		return
-	}
-	res.ChannelTypes = make([]*api.ChannelTypeInfo, len(data))
-	for i, v := range data {
-		res.ChannelTypes[i] = &api.ChannelTypeInfo{
-			Id:             utils.Uint64ToStr(v.Id),
-			Name:           v.Name,
-			CoverageRadius: int32(v.CoverageRadius),
-			ThemeColor:     v.ThemeColor,
-			CreatedAt:      v.CreatedAt.UnixMilli(),
-			UpdatedAt:      v.UpdatedAt.UnixMilli(),
-		}
-	}
-	return
-}
-
-func (s *Service) ChannelPostLoad(ctx context.Context, req *api.ChannelPostLoadReq) (res *api.ChannelPostLoadRes, err error) {
-	log.D(ctx, "request in", "req", req)
-	res = new(api.ChannelPostLoadRes)
+	res = new(api.PostLoadRes)
 	var (
 		// tc        = utils.GetClaimFromContext(ctx)
-		chanId    = utils.StrToUint64(req.GetChanId())
+		chanId    = utils.StrToUint64(req.GetChannelId())
 		loadLimit = uint32(100)
 		filter    = &rds.PostFilter{
 			RootId: chanId,
@@ -65,9 +44,9 @@ func (s *Service) ChannelPostLoad(ctx context.Context, req *api.ChannelPostLoadR
 	return
 }
 
-func (s *Service) ChannelPostInx(ctx context.Context, req *api.ChannelPostInxReq) (res *api.ChannelPostInxRes, err error) {
+func (s *Service) PostQuery(ctx context.Context, req *api.PostQueryReq) (res *api.PostQueryRes, err error) {
 	log.D(ctx, "request in", "req", req)
-	res = new(api.ChannelPostInxRes)
+	res = new(api.PostQueryRes)
 	// var (
 	// 	tc     =  utils.GetClaimFromContext(ctx)
 	// 	chanId = utils.StrToUint64(req.GetChanId())
@@ -77,22 +56,45 @@ func (s *Service) ChannelPostInx(ctx context.Context, req *api.ChannelPostInxReq
 	return
 }
 
-func (s *Service) ChannelPostCreate(ctx context.Context, req *api.ChannelPostCreateReq) (res *api.ChannelPostCreateRes, err error) {
+func (s *Service) PostQueryByUser(ctx context.Context, req *api.PostQueryByUserReq) (res *api.PostQueryByUserRes, err error) {
+	log.D(ctx, "request in", "req", req)
+	res = new(api.PostQueryByUserRes)
+	// var (
+	// 	tc     =  utils.GetClaimFromContext(ctx)
+	// 	chanId = utils.StrToUint64(req.GetChanId())
+	// )
+	// log.D(ctx, "request in", "req", req)
+	// TODO
+	return
+}
+func (s *Service) PostReact(ctx context.Context, req *api.PostReactReq) (res *api.PostReactRes, err error) {
+	log.D(ctx, "request in", "req", req)
+	res = new(api.PostReactRes)
+	// var (
+	// 	tc     =  utils.GetClaimFromContext(ctx)
+	// 	chanId = utils.StrToUint64(req.GetChanId())
+	// )
+	// log.D(ctx, "request in", "req", req)
+	// TODO
+	return
+}
+
+func (s *Service) PostCreate(ctx context.Context, req *api.PostCreateReq) (res *api.PostCreateRes, err error) {
 	log.D(ctx, "request in", "req", req)
 	// valid
 	if err = validPostCreateRequest(req); err != nil {
 		return
 	}
-	res = new(api.ChannelPostCreateRes)
+	res = new(api.PostCreateRes)
 	var (
 		tc      = utils.GetClaimFromContext(ctx)
 		postReq = req.GetPost()
 		post    = &rds.PostInfo{
-			Id:       utils.GenSnowflakeId(),
-			UId:      tc.UId,
-			RootId:   utils.StrToUint64(postReq.GetRootId()),
-			ParentId: utils.StrToUint64(postReq.GetParentId()),
-			Content:  postReq.GetContent(),
+			Id:        utils.GenSnowflakeId(),
+			UId:       tc.UId,
+			ChannelId: utils.StrToUint64(postReq.GetChannelId()),
+			ParentId:  utils.StrToUint64(postReq.GetParentId()),
+			Content:   postReq.GetContent(),
 		}
 	)
 	if err = s.data.CreatePostInfo(ctx, post); err != nil {
@@ -105,15 +107,15 @@ func (s *Service) ChannelPostCreate(ctx context.Context, req *api.ChannelPostCre
 		log.E(ctx, "convert post info error", err)
 		return
 	}
-	s.asyncUpdateChannelStatsByPost(ctx, post.RootId, false)
+	s.asyncUpdateChannelStatsByPost(ctx, post.ChannelId, false)
 	return
 }
 
-func (s *Service) ChannelPostDelete(ctx context.Context, req *api.ChannelPostDeleteReq) (res *api.ChannelPostDeleteRes, err error) {
+func (s *Service) PostDelete(ctx context.Context, req *api.PostDeleteReq) (res *api.PostDeleteRes, err error) {
 	log.D(ctx, "request in", "req", req)
-	res = &api.ChannelPostDeleteRes{}
+	res = &api.PostDeleteRes{}
 	var (
-		chanId = utils.StrToUint64(req.GetChanId())
+		chanId = utils.StrToUint64(req.GetChannelId())
 		postId = utils.StrToUint64(req.GetPostId())
 		tc     = utils.GetClaimFromContext(ctx)
 	)
@@ -129,12 +131,12 @@ func (s *Service) ChannelPostDelete(ctx context.Context, req *api.ChannelPostDel
 	return
 }
 
-func (s *Service) ChannelPostUpdate(ctx context.Context, req *api.ChannelPostUpdateReq) (res *api.ChannelPostUpdateRes, err error) {
+func (s *Service) PostUpdate(ctx context.Context, req *api.PostUpdateReq) (res *api.PostUpdateRes, err error) {
 	log.D(ctx, "request in", "req", req)
-	if err = s.validChannelPostUpdateRequest(req); err != nil {
+	if err = s.validPostUpdateRequest(req); err != nil {
 		return
 	}
-	res = new(api.ChannelPostUpdateRes)
+	res = new(api.PostUpdateRes)
 	var (
 		post   = req.GetPost()
 		postId = utils.StrToUint64(post.GetId())
@@ -182,11 +184,11 @@ func (s *Service) asyncUpdateChannelStatsByPost(ctx context.Context, channelId u
 
 func (s *Service) convertToPostInfo(ctx context.Context, in *rds.PostInfo) (res *api.PostInfo, err error) {
 	res = &api.PostInfo{
-		Id:       utils.Uint64ToStr(in.Id),
-		Uid:      utils.Uint64ToStr(in.UId),
-		RootId:   utils.Uint64ToStr(in.RootId),
-		ParentId: utils.Uint64ToStr(in.ParentId),
-		Content:  in.Content,
+		Id:        utils.Uint64ToStr(in.Id),
+		Uid:       utils.Uint64ToStr(in.UId),
+		ChannelId: utils.Uint64ToStr(in.ChannelId),
+		ParentId:  utils.Uint64ToStr(in.ParentId),
+		Content:   in.Content,
 	}
 	if !in.CreatedAt.IsZero() {
 		res.CreatedAt = in.CreatedAt.UnixMilli()
@@ -210,7 +212,7 @@ func (s *Service) validPostPermission(ctx context.Context, tc *utils.TokenClaims
 	return nil
 }
 
-func (s *Service) validChannelPostUpdateRequest(req *api.ChannelPostUpdateReq) error {
+func (s *Service) validPostUpdateRequest(req *api.PostUpdateReq) error {
 	if req == nil {
 		return EM_CommonFail_BadRequest.PutDesc("req is required")
 	}
@@ -228,7 +230,7 @@ func (s *Service) validChannelPostUpdateRequest(req *api.ChannelPostUpdateReq) e
 	return nil
 }
 
-func validPostCreateRequest(req *api.ChannelPostCreateReq) error {
+func validPostCreateRequest(req *api.PostCreateReq) error {
 	if req == nil {
 		return EM_CommonFail_BadRequest.PutDesc("req is required")
 	}
@@ -236,8 +238,8 @@ func validPostCreateRequest(req *api.ChannelPostCreateReq) error {
 		return EM_CommonFail_BadRequest.PutDesc("post is required")
 	}
 	p := req.GetPost()
-	if p.GetRootId() == "" {
-		return EM_CommonFail_BadRequest.PutDesc("root id is required")
+	if p.GetChannelId() == "" {
+		return EM_CommonFail_BadRequest.PutDesc("channel id is required")
 	}
 	// ..
 	return nil

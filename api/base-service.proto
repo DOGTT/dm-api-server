@@ -87,7 +87,7 @@ service BaseService {
   }
 
   // 查询狗狗标记类型
-  rpc PetMarkerInfoList(PetMarkerInfoReq) returns (PetMarkerInfoRes) {
+  rpc PetMarkInfoList(PetMarkInfoListReq) returns (PetMarkInfoListRes) {
     option (google.api.http) = {
       get : "/v1/pet/marker"
     };
@@ -127,7 +127,8 @@ service BaseService {
   rpc ChannelQueryByUser(ChannelQueryByUserReq)
       returns (ChannelQueryByUserRes) {
     option (google.api.http) = {
-      get : "/v1/channel/query_by_user"
+      post : "/v1/channel/query_by_user"
+      body : "*"
     };
   }
 
@@ -135,7 +136,8 @@ service BaseService {
   rpc ChannelQueryByLocationBound(ChannelQueryByLocationBoundReq)
       returns (ChannelQueryByLocationBoundRes) {
     option (google.api.http) = {
-      get : "/v1/channel/query_by_location_bound"
+      post : "/v1/channel/query_by_location_bound"
+      body : "*"
     };
   }
 
@@ -149,14 +151,16 @@ service BaseService {
   // 频道帖子复合查询
   rpc PostQuery(PostQueryReq) returns (PostQueryRes) {
     option (google.api.http) = {
-      get : "/v1/post/query"
+      post : "/v1/post/query"
+      body : "*"
     };
   }
 
   // 按照用户互动记录查询帖子列表
   rpc PostQueryByUser(PostQueryByUserReq) returns (PostQueryByUserRes) {
     option (google.api.http) = {
-      get : "/v1/post/query_by_user"
+      post : "/v1/post/query_by_user"
+      body : "*"
     };
   }
 
@@ -248,9 +252,9 @@ message SystemNotifyGetReq { string last_notify_id = 1; }
 
 message SystemNotifyGetRes { repeated system.NotifyInfo notifies = 1; }
 
-message PetMarkerInfoReq {}
+message PetMarkInfoListReq {}
 
-message PetMarkerInfoRes { repeated post.PetMarkerInfo pet_marks = 1; }
+message PetMarkInfoListRes { repeated post.PetMarkInfo pet_marks = 1; }
 
 // 创建频道
 message ChannelCreateReq { channel.ChannelInfo channel = 1; }

@@ -27,7 +27,7 @@ func (c *FDSClient) GenerateGetPresignedURLByMediaInfo(ctx context.Context, in *
 	if expires == 0 {
 		expires = PreSignDurationDefault
 	}
-	return c.GenerateGetPresignedURL(ctx, GetBucketName(in.GetType()), in.GetUuid(), expires)
+	return c.GenerateGetPresignedURL(ctx, GetBucketName(in.GetBucket()), in.GetUuid(), expires)
 }
 
 // GenerateGetPresignedURL 生成预签名 URL

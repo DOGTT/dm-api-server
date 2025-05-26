@@ -158,9 +158,9 @@ func (s *Service) BaseServiceUserInx(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
-func (s *Service) BaseServicePetMarkerInfoList(c *gin.Context) {
-	req := &api.PetMarkerInfoReq{}
-	res, err := s.PetMarkerInfoList(withGinContext(c), req)
+func (s *Service) BaseServicePetMarkInfoList(c *gin.Context) {
+	req := &api.PetMarkInfoListReq{}
+	res, err := s.PetMarkInfoList(withGinContext(c), req)
 	if err != nil {
 		s.putGinError(c, err)
 		return
@@ -224,22 +224,11 @@ func (s *Service) BaseServiceChannelGet(c *gin.Context, params gin_api.BaseServi
 	c.JSON(http.StatusOK, res)
 }
 
-func (s *Service) BaseServiceChannelQueryByUser(c *gin.Context, params gin_api.BaseServiceChannelQueryByUserParams) {
+func (s *Service) BaseServiceChannelQueryByUser(c *gin.Context) {
 	req := &api.ChannelQueryByUserReq{}
-	if params.UserId != nil {
-		req.UserId = *params.UserId
-	}
-	if params.IxnState != nil {
-		req.IxnState = api.UserIxnState(*params.IxnState)
-	}
-	if params.IxnEvent != nil {
-		req.IxnEvent = api.UserIxnEvent(*params.IxnEvent)
-	}
-	if params.ExtTypes != nil {
-		req.ExtTypes = make([]api.ChannelExtType, 0)
-		for _, t := range *params.ExtTypes {
-			req.ExtTypes = append(req.ExtTypes, api.ChannelExtType(t))
-		}
+	if err := c.ShouldBind(&req); err != nil {
+		s.putGinError(c, EM_CommonFail_BadRequest)
+		return
 	}
 	res, err := s.ChannelQueryByUser(withGinContext(c), req)
 	if err != nil {
@@ -249,26 +238,11 @@ func (s *Service) BaseServiceChannelQueryByUser(c *gin.Context, params gin_api.B
 	c.JSON(http.StatusOK, res)
 }
 
-func (s *Service) BaseServiceChannelQueryByLocationBound(c *gin.Context, params gin_api.BaseServiceChannelQueryByLocationBoundParams) {
+func (s *Service) BaseServiceChannelQueryByLocationBound(c *gin.Context) {
 	req := &api.ChannelQueryByLocationBoundReq{}
-	req.Bound = &api.BoundCoord{
-		Ne: &api.PointCoord{},
-		Sw: &api.PointCoord{},
-	}
-	if params.BoundSwLat != nil {
-		req.Bound.Sw.Lat = *params.BoundSwLat
-	}
-	if params.BoundSwLng != nil {
-		req.Bound.Sw.Lng = *params.BoundSwLng
-	}
-	if params.BoundNeLat != nil {
-		req.Bound.Ne.Lat = *params.BoundNeLat
-	}
-	if params.BoundNeLng != nil {
-		req.Bound.Ne.Lng = *params.BoundNeLng
-	}
-	if params.MarkerIds != nil {
-		req.MarkerIds = *params.MarkerIds
+	if err := c.ShouldBind(&req); err != nil {
+		s.putGinError(c, EM_CommonFail_BadRequest)
+		return
 	}
 	res, err := s.ChannelQueryByLocationBound(withGinContext(c), req)
 	if err != nil {
@@ -297,16 +271,11 @@ func (s *Service) BaseServicePostLoad(c *gin.Context, params gin_api.BaseService
 	c.JSON(http.StatusOK, res)
 }
 
-func (s *Service) BaseServicePostQuery(c *gin.Context, params gin_api.BaseServicePostQueryParams) {
+func (s *Service) BaseServicePostQuery(c *gin.Context) {
 	req := &api.PostQueryReq{}
-	if params.ChannelId != nil {
-		req.ChannelId = *params.ChannelId
-	}
-	if params.Limit != nil {
-		req.Limit = *params.Limit
-	}
-	if params.MarkerId != nil {
-		req.MarkerId = *params.MarkerId
+	if err := c.ShouldBind(&req); err != nil {
+		s.putGinError(c, EM_CommonFail_BadRequest)
+		return
 	}
 	res, err := s.PostQuery(withGinContext(c), req)
 	if err != nil {
@@ -316,19 +285,12 @@ func (s *Service) BaseServicePostQuery(c *gin.Context, params gin_api.BaseServic
 	c.JSON(http.StatusOK, res)
 }
 
-func (s *Service) BaseServicePostQueryByUser(c *gin.Context, params gin_api.BaseServicePostQueryByUserParams) {
+func (s *Service) BaseServicePostQueryByUser(c *gin.Context) {
 	req := &api.PostQueryByUserReq{}
-	if params.UserId != nil {
-		req.UserId = *params.UserId
-	}
-	if params.IxnState != nil {
-		req.IxnState = *params.IxnState
-	}
-	if params.IxnEvent != nil {
-		req.IxnEvent = *params.IxnEvent
-	}
-	if params.ExtTypes != nil {
-		req.ExtTypes = params.ExtTypes
+	if err := c.ShouldBind(&req); err != nil {
+		fmt.Println(err)
+		s.putGinError(c, EM_CommonFail_BadRequest)
+		return
 	}
 	res, err := s.PostQueryByUser(withGinContext(c), req)
 	if err != nil {

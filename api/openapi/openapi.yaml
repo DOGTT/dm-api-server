@@ -82,40 +82,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/ChannelDeleteRes'
   /v1/channel/query_by_location_bound:
-    get:
+    post:
       tags:
         - BaseService
       description: 按照地理范围查询频道
       operationId: BaseService_ChannelQueryByLocationBound
-      parameters:
-        - name: bound.sw.lat
-          in: query
-          schema:
-            type: number
-            format: float
-        - name: bound.sw.lng
-          in: query
-          schema:
-            type: number
-            format: float
-        - name: bound.ne.lat
-          in: query
-          schema:
-            type: number
-            format: float
-        - name: bound.ne.lng
-          in: query
-          schema:
-            type: number
-            format: float
-        - name: marker_ids
-          in: query
-          description: 足迹类型id列表
-          schema:
-            type: array
-            items:
-              type: integer
-              format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChannelQueryByLocationBoundReq'
+        required: true
       responses:
         "200":
           description: OK
@@ -124,36 +101,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/ChannelQueryByLocationBoundRes'
   /v1/channel/query_by_user:
-    get:
+    post:
       tags:
         - BaseService
       description: 按照用户互动记录查询频道列表
       operationId: BaseService_ChannelQueryByUser
-      parameters:
-        - name: user_id
-          in: query
-          schema:
-            type: string
-        - name: ixn_state
-          in: query
-          description: 互动状态类型, 二选一
-          schema:
-            type: integer
-            format: enum
-        - name: ixn_event
-          in: query
-          description: 互动时间类型, 二选一
-          schema:
-            type: integer
-            format: enum
-        - name: ext_types
-          in: query
-          description: 类型
-          schema:
-            type: array
-            items:
-              type: integer
-              format: enum
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChannelQueryByUserReq'
+        required: true
       responses:
         "200":
           description: OK
@@ -208,14 +166,14 @@ paths:
       tags:
         - BaseService
       description: 查询狗狗标记类型
-      operationId: BaseService_PetMarkerInfoList
+      operationId: BaseService_PetMarkInfoList
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PetMarkerInfoRes'
+                $ref: '#/components/schemas/PetMarkInfoListRes'
   /v1/post:
     put:
       tags:
@@ -303,26 +261,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/PostLoadRes'
   /v1/post/query:
-    get:
+    post:
       tags:
         - BaseService
       description: 频道帖子复合查询
       operationId: BaseService_PostQuery
-      parameters:
-        - name: channel_id
-          in: query
-          schema:
-            type: string
-        - name: limit
-          in: query
-          schema:
-            type: integer
-            format: int32
-        - name: marker_id
-          in: query
-          schema:
-            type: integer
-            format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostQueryReq'
+        required: true
       responses:
         "200":
           description: OK
@@ -331,36 +280,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/PostQueryRes'
   /v1/post/query_by_user:
-    get:
+    post:
       tags:
         - BaseService
       description: 按照用户互动记录查询帖子列表
       operationId: BaseService_PostQueryByUser
-      parameters:
-        - name: user_id
-          in: query
-          schema:
-            type: string
-        - name: ixn_state
-          in: query
-          description: 互动状态类型, 二选一
-          schema:
-            type: integer
-            format: enum
-        - name: ixn_event
-          in: query
-          description: 互动时间类型, 二选一
-          schema:
-            type: integer
-            format: enum
-        - name: ext_types
-          in: query
-          description: 类型
-          schema:
-            type: array
-            items:
-              type: integer
-              format: enum
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostQueryByUserReq'
+        required: true
       responses:
         "200":
           description: OK
@@ -502,6 +432,13 @@ paths:
                 $ref: '#/components/schemas/UserPetUpdateRes'
 components:
   schemas:
+    BoundCoord:
+      type: object
+      properties:
+        sw:
+          $ref: '#/components/schemas/PointCoord'
+        ne:
+          $ref: '#/components/schemas/PointCoord'
     ChannelCreateReq:
       type: object
       properties:
@@ -549,7 +486,7 @@ components:
     ChannelExtLocationStats:
       type: object
       properties:
-        marker_ids:
+        mark_ids:
           type: array
           items:
             type: integer
@@ -601,6 +538,19 @@ components:
         updated_at:
           type: string
       description: 频道信息
+    ChannelQueryByLocationBoundReq:
+      type: object
+      properties:
+        bound:
+          allOf:
+            - $ref: '#/components/schemas/BoundCoord'
+          description: 坐标范围
+        marker_ids:
+          type: array
+          items:
+            type: integer
+            format: int32
+          description: 足迹类型id列表
     ChannelQueryByLocationBoundRes:
       type: object
       properties:
@@ -608,6 +558,25 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ChannelInfo'
+    ChannelQueryByUserReq:
+      type: object
+      properties:
+        user_id:
+          type: string
+        ixn_state:
+          type: integer
+          description: 互动状态类型, 二选一
+          format: enum
+        ixn_event:
+          type: integer
+          description: 互动时间类型, 二选一
+          format: enum
+        ext_types:
+          type: array
+          items:
+            type: integer
+            format: enum
+          description: 类型
     ChannelQueryByUserRes:
       type: object
       properties:
@@ -756,7 +725,7 @@ components:
           type: string
         updated_at:
           type: string
-    PetMarkerInfo:
+    PetMarkInfo:
       type: object
       properties:
         id:
@@ -774,13 +743,13 @@ components:
         updated_at:
           type: string
       description: 狗狗足迹信息
-    PetMarkerInfoRes:
+    PetMarkInfoListRes:
       type: object
       properties:
         pet_marks:
           type: array
           items:
-            $ref: '#/components/schemas/PetMarkerInfo'
+            $ref: '#/components/schemas/PetMarkInfo'
     PointCoord:
       type: object
       properties:
@@ -803,10 +772,10 @@ components:
     PostDeleteRes:
       type: object
       properties: {}
-    PostExtPetMarker:
+    PostExtPetMark:
       type: object
       properties:
-        marker_ids:
+        mark_ids:
           type: array
           items:
             type: integer
@@ -848,7 +817,7 @@ components:
             type: string
           description: 媒体id
         ext_pet_mark:
-          $ref: '#/components/schemas/PostExtPetMarker'
+          $ref: '#/components/schemas/PostExtPetMark'
         created_at:
           type: string
         updated_at:
@@ -861,6 +830,25 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PostInfo'
+    PostQueryByUserReq:
+      type: object
+      properties:
+        user_id:
+          type: string
+        ixn_state:
+          type: integer
+          description: 互动状态类型, 二选一
+          format: enum
+        ixn_event:
+          type: integer
+          description: 互动时间类型, 二选一
+          format: enum
+        ext_types:
+          type: array
+          items:
+            type: integer
+            format: enum
+          description: 类型
     PostQueryByUserRes:
       type: object
       properties:
@@ -868,6 +856,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PostInfo'
+    PostQueryReq:
+      type: object
+      properties:
+        channel_id:
+          type: string
+        limit:
+          type: integer
+          format: int32
+        marker_id:
+          type: integer
+          format: int32
     PostQueryRes:
       type: object
       properties:
